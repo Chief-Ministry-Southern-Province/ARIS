@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "dashboard": "ප්‍රධාන පුවරුව",
+    "reportAccident": "අනතුරු වාර්තා කිරීම",
+    "caseManagement": "නඩු කළමනාකරණය",
+    "evidence": "සාක්ෂි",
+    "investigation": "විමර්ශනය",
+    "governmentForms": "රජයේ ආකෘති",
+    "fr104_3": "FR 104(3) — අලාභ ප්‍රකාශය",
+    "fr104_4": "FR 104(4) — අයකර ගැනීමේ ආකෘතිය",
+    "fr109": "FR 109 — භාණ්ඩාගාර ආකෘතිය",
+    "approvalWorkflow": "අනුමත කිරීමේ ක්‍රියාවලිය",
+    "digitalSignatures": "ඩිජිටල් අත්සන්",
+    "analytics": "විශ්ලේෂණ",
+    "adminPanel": "පරිපාලන පැනලය"
+  }
+}

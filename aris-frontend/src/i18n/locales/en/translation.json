@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "reportAccident": "Report Accident",
+    "caseManagement": "Case Management",
+    "evidence": "Evidence",
+    "investigation": "Investigation",
+    "governmentForms": "Government Forms",
+    "fr104_3": "FR 104(3) — Loss Statement",
+    "fr104_4": "FR 104(4) — Recovery Form",
+    "fr109": "FR 109 — Treasury Form",
+    "approvalWorkflow": "Approval Workflow",
+    "digitalSignatures": "Digital Signatures",
+    "analytics": "Analytics",
+    "adminPanel": "Admin Panel"
+  }
+}

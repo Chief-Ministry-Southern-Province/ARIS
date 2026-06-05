@@ -1,20 +1,41 @@
 import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "./components/layouts/RootLayout";
-import Home from "./components/pages/Home";
-import Login from "./components/pages/Login";
+
+import DashboardLayout from "@/components/templates/DashboardLayout/DashboardLayout";
+
+import Home from "@/components/pages/Home";
+import Login from "@/components/pages/Login";
+import ReportPage from "@/components/pages/ReportPage";
+import InvestigationPage from "@/components/pages/InvestigationPage";
+import EvidencePage from "@/components/pages/EvidencePage";
 
 export const router = createBrowserRouter([
   {
+    path: "/login",
+    element: <Login />,
+  },
+
+  {
     path: "/",
-    element: <RootLayout />,
+    element: <DashboardLayout />,
     children: [
       {
-        path: "/",
+        index: true,
         element: <Home />,
       },
+
       {
-        path: "/login",
-        element: <Login />,
+        path: "report",
+        element: <ReportPage />,
+      },
+
+      {
+        path: "investigation",
+        element: <InvestigationPage />,
+      },
+
+      {
+        path: "evidence",
+        element: <EvidencePage />,
       },
     ],
   },
