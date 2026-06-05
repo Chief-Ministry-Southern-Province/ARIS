@@ -24,5 +24,15 @@
   },
   "notifications": {
     "title": "දැනුම්දීම්"
+  },
+  "dashboard": {
+    "title": "ප්‍රධාන පුවරුව",
+    "reportIncident": "නව අනතුරු වාර්තාව",
+    "totalIncidents": "මුළු සිදුවීම්",
+    "openInvestigations": "විවෘත පරීක්ෂණ",
+    "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
+    "completedCases": "සම්පූර්ණ කළ නඩු",
+    "totalLosses": "මුළු අලාභ",
+    "recoveries": "යළිලැබීම්"
   }
 }

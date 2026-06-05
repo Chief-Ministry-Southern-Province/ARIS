@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/organisms/Sidebar/Sidebar";
 import { TopNavbar } from "@/components/organisms/TopNavbar/TopNavbar";
 
-export default function DashboardLayout() {
+export default function RootLayout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

@@ -24,5 +24,15 @@
   },
   "notifications": {
     "title": "Notifications"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "reportIncident": "Report New Accident",
+    "totalIncidents": "Total Incidents",
+    "openInvestigations": "Open Investigations",
+    "pendingApprovals": "Pending Approvals",
+    "completedCases": "Completed Cases",
+    "totalLosses": "Total Losses",
+    "recoveries": "Recoveries"
   }
 }

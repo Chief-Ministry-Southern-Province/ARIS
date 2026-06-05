@@ -1,12 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import DashboardLayout from "@/components/templates/DashboardLayout/DashboardLayout";
+import RootLayout from "@/components/templates/RootLayout/RootLayout";
 
-import Home from "@/components/pages/Home";
 import Login from "@/components/pages/Login";
 import ReportPage from "@/components/pages/ReportPage";
 import InvestigationPage from "@/components/pages/InvestigationPage";
 import EvidencePage from "@/components/pages/EvidencePage";
+import DashboardPage from "@/components/pages/DashboardPage";
 
 export const router = createBrowserRouter([
   {
@@ -16,11 +16,11 @@ export const router = createBrowserRouter([
 
   {
     path: "/",
-    element: <DashboardLayout />,
+    element: <RootLayout />,
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <DashboardPage />,
       },
 
       {
