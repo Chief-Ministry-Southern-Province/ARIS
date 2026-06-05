@@ -13,5 +13,16 @@
     "digitalSignatures": "Digital Signatures",
     "analytics": "Analytics",
     "adminPanel": "Admin Panel"
+  },
+  "app": {
+    "name": "Accident Reporting System",
+    "title": "Accident Reporting & Investigation System",
+    "subtitle": "Government of Sri Lanka — Ministry of Health"
+  },
+  "common": {
+    "logout": "Sign Out"
+  },
+  "notifications": {
+    "title": "Notifications"
   }
 }
