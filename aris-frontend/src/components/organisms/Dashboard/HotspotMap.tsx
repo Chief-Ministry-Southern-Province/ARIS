@@ -55,7 +55,7 @@ export const HotspotMapCard = () => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-gray-800">{t("hotspotMap")}</h3>
+            <h3 className="font-bold text-gray-800">{t("dashboard.accidentHotspotMp")}</h3>
             <div className="flex items-center gap-1 text-xs text-gray-500">
               <MapPin className="w-3.5 h-3.5" />
               {hotspotLocations.reduce((s, l) => s + l.count, 0)} incidents

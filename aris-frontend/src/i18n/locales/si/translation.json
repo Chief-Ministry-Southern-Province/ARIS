@@ -33,6 +33,13 @@
     "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
     "completedCases": "සම්පූර්ණ කළ නඩු",
     "totalLosses": "මුළු අලාභ",
-    "recoveries": "යළිලැබීම්"
+    "recoveries": "යළිලැබීම්",
+    "accidentTrends": "අනතුරු ප්‍රවණතා",
+    "lossCategories": "අලාභ කාණ්ඩ",
+    "recentCases": "අලුත් නඩු",
+    "vehicleRisk": "වාහන අවදානම්",
+    "locationRisks": "ස්ථානයේ අවදානම්",
+    "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
+    "recentActivities": "අලුත් ක්‍රියාකාරකම්"
   }
 }

@@ -29,13 +29,13 @@ export const RecentActivities = () => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-gray-800">{t("recentActivities")}</h3>
+        <h3 className="font-bold text-gray-800">{t("dashboard.recentActivities")}</h3>
         <AlertTriangle className="w-4 h-4 text-gray-400" />
       </div>
       <div className="space-y-3">
         {recentActivities.map((act) => (
           <div key={act.id} className="flex items-start gap-2.5">
-            <div className="w-6 h-6 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 mt-0.5">
               {activityIcons[selectIcon(act.type)]}
             </div>
             <div className="flex-1 min-w-0">

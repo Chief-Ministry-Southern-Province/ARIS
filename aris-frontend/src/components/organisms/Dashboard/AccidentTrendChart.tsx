@@ -26,7 +26,7 @@ export function AccidentTrendChart() {
       {/* Accident Trends */}
       <ChartCard className="lg:col-span-2">
         <ChartHeader
-          title={t("accidentTrends")}
+          title={t("dashboard.accidentTrends")}
           subtitle="Jul 2023 – Mar 2024"
         />
 
@@ -127,7 +127,7 @@ export function AccidentTrendChart() {
       {/* Loss Categories */}
       <ChartCard className="lg:col-span-1">
         <ChartHeader 
-          title={t("lossCategories")} 
+          title={t("dashboard.lossCategories")} 
           subtitle={"Total: LKR 9.6M"}
           /> 
 

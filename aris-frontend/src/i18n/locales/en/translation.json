@@ -33,6 +33,13 @@
     "pendingApprovals": "Pending Approvals",
     "completedCases": "Completed Cases",
     "totalLosses": "Total Losses",
-    "recoveries": "Recoveries"
+    "recoveries": "Recoveries",
+    "accidentTrends": "Accident Trends",
+    "lossCategories": "Loss Categories",
+    "recentCases": "Recent Cases",
+    "vehicleRisk": "Vehicle Risk",
+    "locationRisks": "Location Risks",
+    "accidentHotspotMp": "Accident Hotspot Map",
+    "recentActivities": "Recent Activity"
   }
 }
