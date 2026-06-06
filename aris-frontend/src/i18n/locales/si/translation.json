@@ -41,5 +41,36 @@
     "locationRisks": "ස්ථානයේ අවදානම්",
     "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
     "recentActivities": "අලුත් ක්‍රියාකාරකම්"
-  }
+  },
+  "report": {
+    "title": "නව අනතුරු වාර්තාව",
+    "subtitle": "අනතුරු වාර්තාව ඉදිරිපත් කිරීමට සියලු පියවර සම්පූර්ණ කරන්න",
+    "incidentDetails": "සිදුවීමේ විස්තර",
+    "accidentDate": "අනතුරු දිනය",
+    "accidentTime": "අනතුරු වේලාව",
+    "exactLocation": "නිශ්චිත ස්ථානය",
+    "locationPlaceholder": "ස්ථාන විස්තරය ඇතුළත් කරන්න",
+    "province": "පළාත",
+    "district": "දිස්ත්‍රික්කය",
+    "selectProvince": "පළාත තෝරන්න",
+    "vehicleRegistration": "වාහන ලියාපදිංචි අංකය",
+    "driver": "රියදුරා",
+    "selectVehicle": "වාහනය තෝරන්න",
+    "selectDriver": "රියදුරා තෝරන්න",
+    "casualties": "මරණ",
+    "injuries": "තුවාල",
+    "severity": "බරපතලකම",
+    "accidentDescription": "අනතුරේ විස්තරය",
+    "descriptionPlaceholder": "සිදු වූ දේ විස්තරාත්මකව ලියන්න...",
+    "vehicleDamage": "වාහන හානි විස්තරය",
+    "roadCondition": "මාර්ග / කාලගුණ තත්ත්ව",
+    "selectCondition": "තත්ත්වය තෝරන්න",
+    "mapHint": "සිතියමේ අනතුරු ස්ථානය සලකුණු කිරීමට ක්ලික් කරන්න",
+    "evidenceImages": "සාක්ෂි පින්තූර"
+  },
+  "btn": {
+    "next": "ඊළඟ",
+    "previous": "කලින්",
+    "submit": "වාර්තාව යැවීම"
+  } 
 }

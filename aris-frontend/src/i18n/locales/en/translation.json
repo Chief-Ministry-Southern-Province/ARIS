@@ -41,5 +41,37 @@
     "locationRisks": "Location Risks",
     "accidentHotspotMp": "Accident Hotspot Map",
     "recentActivities": "Recent Activity"
-  }
+  },
+  "report": {
+    "title": "Report New Accident",
+    "subtitle": "Complete all steps to submit the accident report",
+    "incidentDetails": "Incident Details",
+    "accidentDate": "Accident Date",
+    "accidentTime": "Accident Time",
+    "exactLocation": "Exact Location",
+    "locationPlaceholder": "Enter location description",
+    "province": "Province",
+    "district": "District",
+    "selectProvince": "Select Province",
+    "selectDistrict": "Select District",
+    "vehicleRegistration": "Vehicle Registration",
+    "driver": "Driver",
+    "selectVehicle": "Select Vehicle",
+    "selectDriver": "Select Driver",
+    "casualties": "Casualties",
+    "injuries": "Injuries",
+    "severity": "Severity",
+    "accidentDescription": "Accident Description",
+    "descriptionPlaceholder": "Describe what happened in detail...",
+    "vehicleDamage": "Vehicle Damage Description",
+    "roadCondition": "Road / Weather Conditions",
+    "selectCondition": "Select Condition",
+    "mapHint": "Click to pin accident location on map",
+    "evidenceImages": "Evidence Images"
+  },
+  "btn": {
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit Report"
+  } 
 }
