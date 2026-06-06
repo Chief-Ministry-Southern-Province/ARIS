@@ -284,12 +284,12 @@ export const hotspotLocations = [
 ];
 
 export const recentActivities = [
-  { id: 1, type: "new_case", message: "New accident reported: ARIS-2024-005", user: "Dilan Mendis", time: "2 hours ago", icon: "alert" },
-  { id: 2, type: "approval", message: "Case ARIS-2024-004 approved by Regional Director", user: "Chaminda Rathnayake", time: "4 hours ago", icon: "check" },
-  { id: 3, type: "upload", message: "Evidence uploaded for case ARIS-2024-001", user: "Ruwan Bandara", time: "6 hours ago", icon: "upload" },
-  { id: 4, type: "investigation", message: "Investigation completed for ARIS-2024-003", user: "Ruwan Bandara", time: "1 day ago", icon: "search" },
-  { id: 5, type: "pdf", message: "FR104(3) generated for ARIS-2024-002", user: "Saman Fernando", time: "1 day ago", icon: "file" },
-  { id: 6, type: "rejection", message: "Case ARIS-2024-006 requires additional documents", user: "Sunil Dissanayake", time: "2 days ago", icon: "x" },
+  { id: 1, type: "new_case", message: "New accident reported: ARIS-2024-005", user: "Dilan Mendis", time: "2 hours ago"},
+  { id: 2, type: "approval", message: "Case ARIS-2024-004 approved by Regional Director", user: "Chaminda Rathnayake", time: "4 hours ago" },
+  { id: 3, type: "upload", message: "Evidence uploaded for case ARIS-2024-001", user: "Ruwan Bandara", time: "6 hours ago" },
+  { id: 4, type: "investigation", message: "Investigation completed for ARIS-2024-003", user: "Ruwan Bandara", time: "1 day ago" },
+  { id: 5, type: "pdf", message: "FR104(3) generated for ARIS-2024-002", user: "Saman Fernando", time: "1 day ago" },
+  { id: 6, type: "rejection", message: "Case ARIS-2024-006 requires additional documents", user: "Sunil Dissanayake", time: "2 days ago" },
 ];
 
 export const approvalWorkflowSteps = [

@@ -1,6 +1,9 @@
 import { DashboardStats } from "@/components/organisms/Dashboard/DashboardStats";
 import { AccidentTrendChart } from "@/components/organisms/Dashboard/AccidentTrendChart";
 import { RecentCasesTable } from "@/components/organisms/Dashboard/RecentCasesTable";
+import { HotspotMapCard } from "@/components/organisms/Dashboard/HotspotMap";
+import { VehicleRisks } from "@/components/organisms/Dashboard/VehicleRisks";
+import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
 
 import { t } from "i18next";
 import { AlertTriangle } from "lucide-react";
@@ -35,6 +38,12 @@ export default function DashboardPage() {
       />
 
       <AccidentTrendChart />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <VehicleRisks />
+        <HotspotMapCard />
+        <RecentActivities />
+      </div>
 
       <RecentCasesTable />
     </div>
