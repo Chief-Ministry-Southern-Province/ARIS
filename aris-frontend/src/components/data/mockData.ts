@@ -112,7 +112,8 @@ export const mockUsers = [
 
 export const mockCases = [
   {
-    id: "ARIS-2024-001",
+    id:1,
+    case_id: "ARIS-2024-001",
     title: "Vehicle Collision - Colombo Road",
     date: "2024-03-15",
     time: "09:45",
@@ -130,7 +131,8 @@ export const mockCases = [
     lng: 79.8612,
   },
   {
-    id: "ARIS-2024-002",
+    id: 2,
+    case_id: "ARIS-2024-002",
     title: "Single Vehicle Accident - Highway",
     date: "2024-03-12",
     time: "14:20",
@@ -148,7 +150,8 @@ export const mockCases = [
     lng: 80.0007,
   },
   {
-    id: "ARIS-2024-003",
+    id: 3,
+    case_id: "ARIS-2024-003",
     title: "Parking Lot Damage",
     date: "2024-03-10",
     time: "11:00",
@@ -166,7 +169,8 @@ export const mockCases = [
     lng: 79.8645,
   },
   {
-    id: "ARIS-2024-004",
+    id: 4,
+    case_id: "ARIS-2024-004",
     title: "Rear-End Collision",
     date: "2024-03-08",
     time: "16:30",
@@ -184,7 +188,8 @@ export const mockCases = [
     lng: 79.8644,
   },
   {
-    id: "ARIS-2024-005",
+    id: 5,
+    case_id: "ARIS-2024-005",
     title: "Pedestrian Incident",
     date: "2024-03-05",
     time: "08:15",
@@ -202,7 +207,8 @@ export const mockCases = [
     lng: 80.6337,
   },
   {
-    id: "ARIS-2024-006",
+    id: 6,
+    case_id: "ARIS-2024-006",
     title: "Vehicle Fire - Ambulance",
     date: "2024-02-28",
     time: "22:10",

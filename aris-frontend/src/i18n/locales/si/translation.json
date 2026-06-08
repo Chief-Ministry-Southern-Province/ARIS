@@ -72,5 +72,69 @@
     "next": "ඊළඟ",
     "previous": "කලින්",
     "submit": "වාර්තාව යැවීම"
-  } 
+  } ,
+  "caseManagement": {
+    "title": "නඩු කළමනාකරණය",
+    "casesFound": "නඩු සොයා ගන්නා ලදී",
+    "search": "සොයන්න",
+
+    "table": {
+      "caseId": "නඩු අංකය",
+      "incident": "සිදුවීම",
+      "institution": "ආයතනය",
+      "date": "දිනය",
+      "actions": "ක්‍රියා"
+    },
+
+    "empty": {
+      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන නඩු නොමැත"
+    },
+
+    "pagination": {
+      "showing": "පෙන්වන්නේ",
+      "of": "අතුරින්",
+      "cases": "නඩු",
+      "previous": "පෙර",
+      "next": "ඊළඟ"
+    },
+
+    "tabs": {
+      "details": "විස්තර",
+      "timeline": "කාලරේඛාව",
+      "actions": "ක්‍රියා"
+    },
+
+    "details": {
+      "dateTime": "දිනය සහ වේලාව",
+      "location": "ස්ථානය",
+      "vehicle": "වාහනය",
+      "driver": "රියදුරු",
+      "institution": "ආයතනය",
+      "investigator": "විමර්ශන නිලධාරියා",
+      "description": "විස්තරය",
+      "estimatedLoss": "ඇස්තමේන්තුගත අලාභය",
+      "casualties": "හානියට පත් පුද්ගලයන්",
+      "persons": "දෙනා"
+    },
+
+    "actionButtons": {
+      "viewEvidence": "සාක්ෂි බලන්න",
+      "generateFR104_3": "FR104(3) ජනනය කරන්න",
+      "generateFR104_4": "FR104(4) ජනනය කරන්න",
+      "generateFR109": "FR109 ජනනය කරන්න",
+      "viewFR104_3": "FR104(3) බලන්න",
+      "viewFR104_4": "FR104(4) බලන්න",
+      "viewFR109": "FR109 බලන්න",
+      "assignInvestigator": "විමර්ශකයෙකු පත් කරන්න",
+      "forwardApproval": "අනුමැතිය සඳහා යොමු කරන්න"
+    },
+
+    "timeline": {
+      "accidentReported": "අනතුර වාර්තා කරන ලදී",
+      "reportApproved": "වාර්තාව සමාලෝචනය කර අනුමත කරන ලදී",
+      "investigationInitiated": "විමර්ශනය ආරම්භ කරන ලදී. පොලිස් වාර්තාව ලබා ගන්නා ලදී.",
+      "fieldInvestigationStarted": "ක්ෂේත්‍ර විමර්ශනය ආරම්භ කරන ලදී",
+      "evidenceCollected": "සාක්ෂි එකතු කර උඩුගත කරන ලදී"
+    }
+  }
 }

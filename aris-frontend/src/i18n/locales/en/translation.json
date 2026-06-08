@@ -73,5 +73,69 @@
     "next": "Next",
     "previous": "Previous",
     "submit": "Submit Report"
+  },
+  "caseManagement": {
+    "title": "Case Management",
+    "casesFound": "cases found",
+    "search": "Search",
+
+    "table": {
+      "caseId": "Case ID",
+      "incident": "Incident",
+      "institution": "Institution",
+      "date": "Date",
+      "actions": "Actions"
+    },
+
+    "empty": {
+      "noCases": "No cases found matching your criteria"
+    },
+
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "cases": "cases",
+      "previous": "Previous",
+      "next": "Next"
+    },
+
+    "tabs": {
+      "details": "Details",
+      "timeline": "Timeline",
+      "actions": "Actions"
+    },
+
+    "details": {
+      "dateTime": "Date & Time",
+      "location": "Location",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "institution": "Institution",
+      "investigator": "Investigator",
+      "description": "Description",
+      "estimatedLoss": "Estimated Loss",
+      "casualties": "Casualties",
+      "persons": "persons"
+    },
+
+    "actionButtons": {
+      "viewEvidence": "View Evidence",
+      "generateFR104_3": "Generate FR104(3)",
+      "generateFR104_4": "Generate FR104(4)",
+      "generateFR109": "Generate FR109",
+      "viewFR104_3": "View FR104(3)",
+      "viewFR104_4": "View FR104(4)",
+      "viewFR109": "View FR109",
+      "assignInvestigator": "Assign Investigator",
+      "forwardApproval": "Forward for Approval"
+    },
+
+    "timeline": {
+      "accidentReported": "Accident reported",
+      "reportApproved": "Report reviewed and approved",
+      "investigationInitiated": "Investigation initiated. Police report obtained.",
+      "fieldInvestigationStarted": "Field investigation started",
+      "evidenceCollected": "Evidence collected and uploaded"
+    }
   } 
 }
