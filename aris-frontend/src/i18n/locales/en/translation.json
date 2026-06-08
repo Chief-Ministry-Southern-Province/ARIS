@@ -72,7 +72,10 @@
   "btn": {
     "next": "Next",
     "previous": "Previous",
-    "submit": "Submit Report"
+    "submit": "Submit Report",
+    "saveDraft": "Save Draft",
+    "print": "Print",
+    "finalize": "Finalize"
   },
   "caseManagement": {
     "title": "Case Management",
@@ -139,7 +142,9 @@
     }
   },
   "fr104_3": {
-    "title": "FR 104 (3) - Report of Loss",
+    "title": "PRELIMINARY REPORT OF LOSSES UNDER F.R. 104 (3)",
+    "referenceNo": "Ref. No.",
+    "formNo": "F.R. 104 (3)",
     "subtitle": "Report of Losses of Government Property",
 
     "department": "Department / Corporation",
