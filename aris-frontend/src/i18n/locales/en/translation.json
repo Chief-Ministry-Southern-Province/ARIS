@@ -137,5 +137,48 @@
       "fieldInvestigationStarted": "Field investigation started",
       "evidenceCollected": "Evidence collected and uploaded"
     }
+  },
+  "fr104_3": {
+    "title": "FR 104 (3) - Report of Loss",
+    "subtitle": "Report of Losses of Government Property",
+
+    "department": "Department / Corporation",
+    "date": "Date",
+    "place": "Place",
+    "loss": "Loss",
+
+    "natureOfLoss": "Nature of Loss",
+
+    "itemsLost": "Description of Items Lost",
+    "description": "Description",
+    "quantity": "Quantity",
+    "unit": "Unit of Measurement",
+    "value": "Value",
+    "action": "Action",
+    "addItem": "Add Item",
+    "removeItem": "Remove",
+
+    "causeOfLoss": "Cause of Loss",
+
+    "officersResponsible": "Officers Responsible",
+    "officerName": "Officer Name",
+    "designation": "Designation",
+    "addOfficer": "Add Officer",
+    "removeOfficer": "Remove",
+
+    "policeStation": "Police Station",
+    "dateReported": "Date Reported",
+
+    "investigation": "Nature of investigation being carried Out",
+
+    "securityArrangements": "Arrangements made for the security of the books, records, etc.",
+
+    "preventionArrangements": "Arrangements made for the prevention of the further losses",
+
+    "headOfDepartment": "Head of Department",
+
+    "approval": "Approval",
+
+    "submit": "Submit Report"
   } 
 }

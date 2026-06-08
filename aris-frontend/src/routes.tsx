@@ -10,7 +10,7 @@ import { CaseManagement } from "@/components/pages/CaseManagement";
 import DashboardPage from "@/components/pages/DashboardPage";
 
 // New pages
-// import FR104_3GeneratePage from "@/components/pages/FR104_3GeneratePage";
+import FR104_3Form from "./components/pages/forms/FR104_3Form";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -63,10 +63,10 @@ export const router = createBrowserRouter([
       },
 
       // Generate Forms
-      // {
-      //   path: "cases/:caseId/fr104-3/generate",
-      //   element: <FR104_3GeneratePage />,
-      // },
+      {
+        path: "cases/:caseId/fr104-3/generate",
+        element: <FR104_3Form />,
+      },
 
       // {
       //   path: "cases/:caseId/fr104-4/generate",

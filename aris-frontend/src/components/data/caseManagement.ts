@@ -1,9 +1,6 @@
 import { User, CheckCircle, FileText, Eye,  } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
-const { t } = useTranslation();
-
-export const getAction = (caseItem_id: number) => {
+export const getAction = (caseItem_id: number,t: any) => {
   return [
   {
     label: t("caseManagement.actionButtons.viewEvidence"),

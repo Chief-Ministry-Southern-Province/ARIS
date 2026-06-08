@@ -19,7 +19,7 @@ const CaseDetailTab = ({ id, onClose }: { id: number; onClose: () => void }) => 
   { date: "2024-03-18 15:00", user: "Ruwan Bandara", role: "Investigation Officer", action: "Evidence collected and uploaded", type: "evidence" },
 ];
 
-const actions = getAction(caseItem.id);
+const actions = getAction(caseItem.id,t);
 
 
   return (

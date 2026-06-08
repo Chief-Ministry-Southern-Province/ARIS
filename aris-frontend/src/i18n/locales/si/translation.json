@@ -136,5 +136,48 @@
       "fieldInvestigationStarted": "ක්ෂේත්‍ර විමර්ශනය ආරම්භ කරන ලදී",
       "evidenceCollected": "සාක්ෂි එකතු කර උඩුගත කරන ලදී"
     }
-  }
+  },
+    "fr104_3": {
+      "title": "FR 104 (3) - අලාභ වාර්තාව",
+      "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
+
+      "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+      "date": "දිනය",
+      "place": "ස්ථානය",
+      "loss": "අලාභය",
+
+      "natureOfLoss": "අලාභයේ ස්වභාවය",
+
+      "itemsLost": "අහිමි වූ භාණ්ඩ",
+      "description": "විස්තරය",
+      "quantity": "ප්‍රමාණය",
+      "unit": "මිනුම් ඒකකය", 
+      "value": "වටිනාකම",
+      "action": "ක්‍රියාව",
+      "addItem": "භාණ්ඩයක් එක් කරන්න",
+      "removeItem": "ඉවත් කරන්න",
+
+      "causeOfLoss": "අලාභයට හේතුව",
+
+      "officersResponsible": "වගකිව යුතු නිලධාරීන්",
+      "officerName": "නිලධාරියාගේ නම",
+      "designation": "තනතුර",
+      "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+      "removeOfficer": "ඉවත් කරන්න",
+
+      "policeStation": "පොලිස් ස්ථානය",
+      "dateReported": "වාර්තා කළ දිනය",
+
+      "investigation": "පවත්වාගෙන යන විමර්ශනයේ ස්වභාවය",
+
+      "securityArrangements": "පොත්, වාර්තා, ආදී දේවල් ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+      "preventionArrangements": "අලාභ වාර්තාව ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+      "headOfDepartment": "දෙපාර්තමේන්තු ප්‍රධානියා",
+
+      "approval": "අනුමැතිය",
+
+      "submit": "වාර්තාව ඉදිරිපත් කරන්න"
+    }
 }
