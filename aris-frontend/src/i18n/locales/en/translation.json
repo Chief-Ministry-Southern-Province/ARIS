@@ -333,5 +333,17 @@
       "m": "Part M",
       "n": "Part N"
     }
+  },
+  "digitalSignature": {
+    "searchOfficer": "Search Officer",
+    "signatureAvailable": "Signature Available",
+    "signatureMissing": "No Signature",
+    "signaturePreview": "Signature Preview",
+    "drawSignature": "Draw Signature",
+    "updateSignature": "Update Signature",
+    "removeSignature": "Remove Signature",
+    "uploadSignature": "Upload Signature",
+    "saveSignature": "Save Signature",
+    "clear": "Clear"
   }
 }

@@ -332,5 +332,17 @@
       "m": "M කොටස",
       "n": "N කොටස"
     }
+  },
+  "digitalSignature": {
+    "searchOfficer": "නිලධාරියා සොයන්න",
+    "signatureAvailable": "අත්සන ලියාපදිංචි කර ඇත",
+    "signatureMissing": "අත්සන ලියාපදිංචි කර නොමැත",
+    "signaturePreview": "අත්සන පෙරදසුන",
+    "drawSignature": "අත්සන අඳින්න",
+    "updateSignature": "අත්සන යාවත්කාලීන කරන්න",
+    "removeSignature": "අත්සන ඉවත් කරන්න",
+    "uploadSignature": "අත්සන උඩුගත කරන්න",
+    "saveSignature": "අත්සන සුරකින්න",
+    "clear": "පිරිසිදු කරන්න"
   }
 }
