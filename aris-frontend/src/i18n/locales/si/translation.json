@@ -200,15 +200,18 @@
       "recoveryInformation": "අයකර ගැනීමේ තොරතුරු",
       "insuranceInformation": "රක්ෂණ තොරතුරු",
       "boardOfInquiry": "විමර්ශන මණ්ඩලය",
-      "recommendations": "නිර්දේශ",
-      "approval": "අනුමැතිය"
+      "recommendations": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "approval": "අනුමැතිය",
+      "legalAction": "ගත් නීතිමය ක්‍රියාමාර්ග පිළිබඳ විස්තර"
     },
     "generalInformation": {
       "referenceNo": "යොමු අංකය",
       "ministry": "අමාත්‍යාංශය / දෙපාර්තමේන්තුව",
       "lossDate": "අලාභ දිනය",
       "lossTime": "අලාභ වූ වේලාව",
-      "location": "ස්ථානය"
+      "location": "ස්ථානය",
+      "preliminaryReportRefNo": "ප්‍රරම්භක වාර්තාව - යොමු අංකය",
+      "preliminaryReportDate": "ප්‍රරම්භක වාර්තා දිනය"
     },
 
     "lossDetails": {
@@ -245,9 +248,16 @@
       "station": "පොලිස් ස්ථානය",
       "caseNumber": "නඩු අංකය",
       "officerName": "නිලධාරියාගේ නම",
-      "reportDate": "වාර්තා දිනය"
+      "reportDate": "වාර්තා දිනය",
+      "attachReport": "පොලිස් වාර්තාවේ සාරාංශය අමුණන්න." 
     },
-
+    "legalAction": {
+      "courtName": "අධිකරණයේ නම",
+      "caseNo": "නඩු අංකය",
+      "courtOrder": "අධිකරණ නියෝගය",
+      "courtOrderSummary": "අධිකරණ නියෝගයේ සාරාංශය",
+      "attachOrder": "අධිකරණ නියෝගයේ පිටපත අමුණන්න"
+    },
     "investigation": {
       "findings": "විමර්ශන සොයාගැනීම්"
     },
@@ -255,13 +265,14 @@
     "recovery": {
       "officer": "නිලධාරියාගේ නම",
       "amount": "අයකරගත යුතු මුදල",
-      "method": "අයකර ගැනීමේ ක්‍රමය"
+      "method": "අයකර ගැනීමේ ක්‍රමය",
+      "addItem": "එක් කරන්න"
     },
 
     "insurance": {
-      "policyNo": "රක්ෂණ අංකය",
-      "company": "රක්ෂණ සමාගම",
-      "amountInsured": "රක්ෂණ මුදල",
+      "recoverableAmountWords": "රක්ෂණයෙන් / ඇපයෙන් අයකරගත හැකි මුදල (වචන වලින්)",
+      "policyNo": "ඔප්පු අංකය",
+      "amountInsured": "රක්ෂණය කර ඇති මුදල",
       "amountRecoverable": "අයකරගත හැකි මුදල"
     },
 
@@ -273,7 +284,9 @@
     },
 
     "recommendations": {
-      "label": "මණ්ඩල නිර්දේශ"
+      "title": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "label": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "attachReport": "මණ්ඩල වාර්තාවේ පිටපත අමුණන්න"
     },
 
     "approval": {
@@ -294,6 +307,11 @@
       "addBoardMember": "මණ්ඩල සාමාජිකයෙකු එක් කරන්න",
       "removeBoardMember": "සාමාජිකයා ඉවත් කරන්න"
     },
+    "preventiveActions": {
+      "title": "අනාගත වැළැක්වීමේ ක්‍රියාමාර්ග",
+      "label": "අනාගතයේදී සමාන අලාභයන් සිදුවීම වැළැක්වීම සඳහා ගෙන ඇති හෝ ගැනීමට යෝජිත පියවර",
+      "placeholder": "අනාගතයේදී සමාන අලාභයන් වැළැක්වීම සඳහා ගෙන ඇති හෝ යෝජිත ක්‍රියාමාර්ග සඳහන් කරන්න."
+    },
 
     "parts": {
       "a": "A කොටස",
@@ -307,7 +325,9 @@
       "i": "I කොටස",
       "j": "J කොටස",
       "k": "K කොටස",
-      "l": "L කොටස"
+      "l": "L කොටස",
+      "m": "M කොටස",
+      "n": "N කොටස"
     }
   }
 }

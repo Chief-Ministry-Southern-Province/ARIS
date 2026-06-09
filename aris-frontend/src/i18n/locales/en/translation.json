@@ -200,8 +200,9 @@
       "recoveryInformation": "Recovery Information",
       "insuranceInformation": "Insurance Information",
       "boardOfInquiry": "Board of Inquiry",
-      "recommendations": "Recommendations",
-      "approval": "Approval & Certification"
+      "recommendations": "Recommendations of the Board of Inquiry",
+      "approval": "Approval & Certification",
+      "legalAction": "Details of Legal Action Taken"
     },
 
     "generalInformation": {
@@ -209,7 +210,9 @@
       "ministry": "Ministry / Department",
       "lossDate": "Date of Loss",
       "lossTime": "Time of Loss",
-      "location": "Location"
+      "location": "Location",
+      "preliminaryReportRefNo": "Preliminary Report Ref. No.",
+      "preliminaryReportDate": "Preliminary Report Date"
     },
 
     "lossDetails": {
@@ -246,9 +249,16 @@
       "station": "Police Station",
       "caseNumber": "Case Number",
       "officerName": "Officer Name",
-      "reportDate": "Report Date"
+      "reportDate": "Report Date",
+      "attachReport": "Attach Summary of Police Report"
     },
-
+    "legalAction": {
+      "courtName": "Name of Court",
+      "caseNo": "Case No.",
+      "courtOrder": "Order of Court",
+      "courtOrderSummary": "Summary of Court Order",
+      "attachOrder": "Annex a Copy of the Court Order"
+    },
     "investigation": {
       "findings": "Investigation Findings"
     },
@@ -256,14 +266,17 @@
     "recovery": {
       "officer": "Officer Name",
       "amount": "Amount Recoverable",
-      "method": "Recovery Method"
+      "method": "Recovery Method",
+      "addItem": "Add Item",
+      "remove": "Remove"
     },
 
     "insurance": {
       "policyNo": "Policy Number",
       "company": "Insurance Company",
       "amountInsured": "Amount Insured",
-      "amountRecoverable": "Amount Recoverable"
+      "amountRecoverable": "Amount Recoverable",
+      "recoverableAmountWords": "Amount Recoverable from Insurance / Guarantee (Amount in Words)"
     },
 
     "board": {
@@ -271,10 +284,6 @@
       "designation": "Designation",
       "addMember": "Add Board Member",
       "removeMember": "Remove Member"
-    },
-
-    "recommendations": {
-      "label": "Board Recommendations"
     },
 
     "approval": {
@@ -295,19 +304,31 @@
       "addBoardMember": "Add Board Member",
       "removeBoardMember": "Remove Board Member"
     },
+    "recommendations": {
+      "title": "Recommendations of the Board of Inquiry",
+      "label": "Recommendations of the Board of Inquiry",
+      "attachReport": "Annex Copy of Board Report"
+    },
+    "preventiveActions": {
+      "title": "Preventive Actions",
+      "label": "Steps taken or proposed to be taken to prevent similar losses in the future",
+      "placeholder": "Describe the steps taken or proposed to prevent similar losses in the future."
+    },
     "parts": {
-      "a": "A කොටස",
-      "b": "B කොටස",
-      "c": "C කොටස",
-      "d": "D කොටස",
-      "e": "E කොටස",
-      "f": "F කොටස",
-      "g": "G කොටස",
-      "h": "H කොටස",
-      "i": "I කොටස",
-      "j": "J කොටස",
-      "k": "K කොටස",
-      "l": "L කොටස"
+      "a": "Part A",
+      "b": "Part B",
+      "c": "Part C",
+      "d": "Part D",
+      "e": "Part E",
+      "f": "Part F",
+      "g": "Part G",
+      "h": "Part H",
+      "i": "Part I",
+      "j": "Part J",
+      "k": "Part K",
+      "l": "Part L",
+      "m": "Part M",
+      "n": "Part N"
     }
   }
 }

@@ -7,28 +7,39 @@ export const initialFormData: FR104_4FormData = {
   lossTime: "",
   location: "",
 
+  preliminaryReportRefNo: "",
+  preliminaryReportDate: "",
+
   lossDetails: "",
   circumstances: "",
   causeOfLoss: "",
 
-  policeStation: "",
-  caseNumber: "",
-  officerName: "",
-  reportDate: "",
+  policeReportFile: null,
+
+  // Legal Action
+  courtName: "",
+  courtCaseNo: "",
+  courtOrderSummary: "",
+  courtOrderFile: null,
 
   investigation: "",
 
-  recoveryOfficer: "",
-  recoveryAmount: "",
-  recoveryMethod: "",
+  recoveries: [
+    {
+      officerName: "",
+      amountRecoverable: "",
+      recoveryMethod: "",
+    },
+  ],
 
   policyNo: "",
-  insuranceCompany: "",
+  insuranceRecoverableAmountWords: "",
   amountInsured: "",
   amountRecoverable: "",
 
   recommendations: "",
   preventiveActions: "",
+  boardReportFile: null,
 
   preparedBy: "",
   preparedDesignation: "",

@@ -36,36 +36,38 @@ export default function GeneralInformationSection({
         />
       </FormField>
 
-      <FormField label={t("fr104_4.generalInformation.lossDate")}>
+      <FormField
+        label={t(
+          "fr104_4.generalInformation.preliminaryReportRefNo"
+        )}
+      >
+        <InputField
+          value={formData.preliminaryReportRefNo}
+          onChange={(e) =>
+            handleChange(
+              "preliminaryReportRefNo",
+              e.target.value
+            )
+          }
+        />
+      </FormField>
+
+      <FormField
+        label={t(
+          "fr104_4.generalInformation.preliminaryReportDate"
+        )}
+      >
         <InputField
           type="date"
-          value={formData.lossDate}
+          value={formData.preliminaryReportDate}
           onChange={(e) =>
-            handleChange("lossDate", e.target.value)
+            handleChange(
+              "preliminaryReportDate",
+              e.target.value
+            )
           }
         />
       </FormField>
-
-      <FormField label={t("fr104_4.generalInformation.lossTime")}>
-        <InputField
-          type="time"
-          value={formData.lossTime}
-          onChange={(e) =>
-            handleChange("lossTime", e.target.value)
-          }
-        />
-      </FormField>
-
-      <div className="md:col-span-2">
-        <FormField label={t("fr104_4.generalInformation.location")} required>
-          <InputField
-            value={formData.location}
-            onChange={(e) =>
-              handleChange("location", e.target.value)
-            }
-          />
-        </FormField>
-      </div>
 
     </div>
   );

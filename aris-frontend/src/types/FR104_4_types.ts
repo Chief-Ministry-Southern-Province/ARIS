@@ -20,6 +20,12 @@ export interface BoardMember {
   designation: string;
 }
 
+export interface RecoveryRecord {
+  officerName: string;
+  amountRecoverable: string;
+  recoveryMethod: string;
+}
+
 export interface FR104_4FormData {
   // General Information
   referenceNo: string;
@@ -28,33 +34,36 @@ export interface FR104_4FormData {
   lossTime: string;
   location: string;
 
+  // Preliminary Report
+  preliminaryReportRefNo: string;
+  preliminaryReportDate: string;
+
   // Loss Details
   lossDetails: string;
   circumstances: string;
   causeOfLoss: string;
 
   // Police Information
-  policeStation: string;
-  caseNumber: string;
-  officerName: string;
-  reportDate: string;
+  policeReportFile: File | null;
+
+  // Legal Action
+  courtName: string;
+  courtCaseNo: string;
+  courtOrderSummary: string;
+  courtOrderFile: File | null;
 
   // Investigation
   investigation: string;
 
-  // Recovery
-  recoveryOfficer: string;
-  recoveryAmount: string;
-  recoveryMethod: string;
-
   // Insurance
+  insuranceRecoverableAmountWords: string;
   policyNo: string;
-  insuranceCompany: string;
   amountInsured: string;
   amountRecoverable: string;
 
   // Recommendations
   recommendations: string;
+  boardReportFile: File | null;
   preventiveActions: string;
 
   // Approval
@@ -63,8 +72,9 @@ export interface FR104_4FormData {
   approvedBy: string;
   approvalDate: string;
 
-  // Dynamic Tables
+  // Dynamic Collections
   lostItems: LostItem[];
   officers: Officer[];
   boardMembers: BoardMember[];
+  recoveries: RecoveryRecord[];
 }

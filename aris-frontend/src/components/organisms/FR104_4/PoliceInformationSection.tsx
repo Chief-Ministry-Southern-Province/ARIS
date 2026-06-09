@@ -1,59 +1,49 @@
 import { FormField } from "@/components/molecules/FormField";
+import { TextAreaField } from "@/components/atoms/TextAreaField";
 import { InputField } from "@/components/atoms/InputField";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import { useTranslation } from "react-i18next";
 
 interface Props {
   formData: FR104_4FormData;
-  handleChange: (field: keyof FR104_4FormData, value: string) => void;
+  handleChange: (
+    field: keyof FR104_4FormData,
+    value: any
+  ) => void;
 }
 
 export default function PoliceInformationSection({
   formData,
   handleChange,
 }: Props) {
-
   const { t } = useTranslation();
 
   return (
-    <div className="grid md:grid-cols-2 gap-4">
+    <div className="space-y-6">
 
-      <FormField label={t("fr104_4.police.station")}>
+
+      <FormField
+        label={t(
+          "fr104_4.police.attachReport"
+        )}
+      >
         <InputField
-          value={formData.policeStation}
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
           onChange={(e) =>
-            handleChange("policeStation", e.target.value)
+            handleChange(
+              "policeReportFile",
+              e.target.files?.[0] || null
+            )
           }
         />
       </FormField>
 
-      <FormField label={t("fr104_4.police.caseNumber")}>
-        <InputField
-          value={formData.caseNumber}
-          onChange={(e) =>
-            handleChange("caseNumber", e.target.value)
-          }
-        />
-      </FormField>
-
-      <FormField label={t("fr104_4.police.officerName")}>
-        <InputField
-          value={formData.officerName}
-          onChange={(e) =>
-            handleChange("officerName", e.target.value)
-          }
-        />
-      </FormField>
-
-      <FormField label={t("fr104_4.police.reportDate")}>
-        <InputField
-          type="date"
-          value={formData.reportDate}
-          onChange={(e) =>
-            handleChange("reportDate", e.target.value)
-          }
-        />
-      </FormField>
+      {formData.policeReportFile && (
+        <p className="text-sm text-green-600">
+          {formData.policeReportFile.name}
+        </p>
+      )}
 
     </div>
   );

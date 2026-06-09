@@ -2,49 +2,145 @@ import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import { useTranslation } from "react-i18next";
+import { Plus, Trash2 } from "lucide-react";
 
 interface Props {
   formData: FR104_4FormData;
-  handleChange: (field: keyof FR104_4FormData, value: string) => void;
+  setFormData: React.Dispatch<
+    React.SetStateAction<FR104_4FormData>
+  >;
 }
 
 export default function RecoveryInformationSection({
   formData,
-  handleChange,
+  setFormData,
 }: Props) {
-
   const { t } = useTranslation();
 
+  const addRecovery = () => {
+    setFormData((prev) => ({
+      ...prev,
+      recoveries: [
+        ...prev.recoveries,
+        {
+          officerName: "",
+          amountRecoverable: "",
+          recoveryMethod: "",
+        },
+      ],
+    }));
+  };
+
+  const updateRecovery = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
+    const updated = [...formData.recoveries];
+
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      recoveries: updated,
+    }));
+  };
+
+  const removeRecovery = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      recoveries: prev.recoveries.filter(
+        (_, i) => i !== index
+      ),
+    }));
+  };
+
   return (
-    <div className="grid md:grid-cols-3 gap-4">
+    <div className="space-y-4">
 
-      <FormField label={t("fr104_4.recovery.officer")}>
-        <InputField
-          value={formData.recoveryOfficer}
-          onChange={(e) =>
-            handleChange("recoveryOfficer", e.target.value)
-          }
-        />
-      </FormField>
+      {formData.recoveries.map(
+        (recovery, index) => (
+          <div
+            key={index}
+            className="border rounded-xl p-4 bg-gray-50"
+          >
+            <div className="grid md:grid-cols-3 gap-4">
 
-      <FormField label={t("fr104_4.recovery.amount")}>
-        <InputField
-          type="number"
-          value={formData.recoveryAmount}
-          onChange={(e) =>
-            handleChange("recoveryAmount", e.target.value)
-          }
-        />
-      </FormField>
+              <FormField
+                label={t("fr104_4.recovery.officer")}
+              >
+                <InputField
+                  value={recovery.officerName}
+                  onChange={(e) =>
+                    updateRecovery(
+                      index,
+                      "officerName",
+                      e.target.value
+                    )
+                  }
+                />
+              </FormField>
 
-      <FormField label={t("fr104_4.recovery.method")}>
-        <InputField
-          value={formData.recoveryMethod}
-          onChange={(e) =>
-            handleChange("recoveryMethod", e.target.value)
-          }
-        />
-      </FormField>
+              <FormField
+                label={t("fr104_4.recovery.amount")}
+              >
+                <InputField
+                  type="number"
+                  value={
+                    recovery.amountRecoverable
+                  }
+                  onChange={(e) =>
+                    updateRecovery(
+                      index,
+                      "amountRecoverable",
+                      e.target.value
+                    )
+                  }
+                />
+              </FormField>
+
+              <FormField
+                label={t("fr104_4.recovery.method")}
+              >
+                <InputField
+                  value={recovery.recoveryMethod}
+                  onChange={(e) =>
+                    updateRecovery(
+                      index,
+                      "recoveryMethod",
+                      e.target.value
+                    )
+                  }
+                />
+              </FormField>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                removeRecovery(index)
+              }
+              className="mt-4 text-red-500 flex items-center gap-2"
+            >
+              <Trash2 size={16} />
+              {t("fr104_4.buttons.remove")}
+            </button>
+          </div>
+        )
+      )}
+
+      <button
+        type="button"
+        onClick={addRecovery}
+        className="flex items-center gap-2 text-blue-700"
+      >
+        <Plus size={16} />
+        {t("fr104_4.recovery.addItem")}
+      </button>
 
     </div>
   );

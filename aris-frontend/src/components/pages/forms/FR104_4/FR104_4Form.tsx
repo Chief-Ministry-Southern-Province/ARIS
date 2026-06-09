@@ -12,6 +12,8 @@ import InsuranceInformationSection from "@/components/organisms/FR104_4/Insuranc
 import BoardOfInquirySection from "@/components/organisms/FR104_4/BoardOfInquirySection";
 import RecommendationsSection from "@/components/organisms/FR104_4/RecommendationsSection";
 import ApprovalSection from "@/components/organisms/FR104_4/ApprovalSection";
+import LegalActionSection from "@/components/organisms/FR104_4/LegalActionSection";
+import PreventiveActionsSection from "@/components/organisms/FR104_4/PreventiveActionsSection";
 import { FormCard } from "@/components/molecules/FormCard";
 import { useTranslation } from "react-i18next";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
@@ -101,26 +103,6 @@ export default function FR104_4Form() {
 
         <FormCard
           part={t("fr104_4.parts.d")}
-          title={t("fr104_4.sections.lostItems")}
-        >
-          <LostItemsSection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.e")}
-          title={t("fr104_4.sections.responsibleOfficers")}
-        >
-          <OfficersResponsibleSection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.f")}
           title={t("fr104_4.sections.policeInformation")}
         >
           <PoliceInformationSection
@@ -130,7 +112,37 @@ export default function FR104_4Form() {
         </FormCard>
 
         <FormCard
+          part={t("fr104_4.parts.e")}
+          title={t("fr104_4.sections.lostItems")}
+        >
+          <LostItemsSection
+            formData={formData}
+            setFormData={setFormData}
+          />
+        </FormCard>
+
+        <FormCard
+          part={t("fr104_4.parts.f")}
+          title={t("fr104_4.sections.responsibleOfficers")}
+        >
+          <OfficersResponsibleSection
+            formData={formData}
+            setFormData={setFormData}
+          />
+        </FormCard>
+
+        <FormCard
           part={t("fr104_4.parts.g")}
+          title={t("fr104_4.sections.legalAction")}
+        >
+          <LegalActionSection
+            formData={formData}
+            handleChange={handleChange}
+          />
+        </FormCard>
+
+        <FormCard
+          part={t("fr104_4.parts.h")}
           title={t("fr104_4.sections.investigation")}
         >
           <InvestigationSection
@@ -140,17 +152,17 @@ export default function FR104_4Form() {
         </FormCard>
 
         <FormCard
-          part={t("fr104_4.parts.h")}
+          part={t("fr104_4.parts.i")}
           title={t("fr104_4.sections.recoveryInformation")}
         >
           <RecoveryInformationSection
             formData={formData}
-            handleChange={handleChange}
+            setFormData={setFormData}
           />
         </FormCard>
 
         <FormCard
-          part={t("fr104_4.parts.i")}
+          part={t("fr104_4.parts.j")}
           title={t("fr104_4.sections.insuranceInformation")}
         >
           <InsuranceInformationSection
@@ -160,7 +172,7 @@ export default function FR104_4Form() {
         </FormCard>
 
         <FormCard
-          part={t("fr104_4.parts.j")}
+          part={t("fr104_4.parts.k")}
           title={t("fr104_4.sections.boardOfInquiry")}
         >
           <BoardOfInquirySection
@@ -170,17 +182,26 @@ export default function FR104_4Form() {
         </FormCard>
 
         <FormCard
-          part={t("fr104_4.parts.k")}
+          part={t("fr104_4.parts.l")}
           title={t("fr104_4.sections.recommendations")}
         >
           <RecommendationsSection
+            handleChange={handleChange}
+          />
+        </FormCard>
+
+        <FormCard
+          part={t("fr104_4.parts.m")}
+          title={t("fr104_4.preventiveActions.title")}
+        >
+          <PreventiveActionsSection
             formData={formData}
             handleChange={handleChange}
           />
         </FormCard>
 
         <FormCard
-          part={t("fr104_4.parts.l")}
+          part={t("fr104_4.parts.n")}
           title={t("fr104_4.sections.approval")}
         >
           <ApprovalSection
