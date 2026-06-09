@@ -26,8 +26,18 @@ export interface FR104_3Data {
   securityArrangements: string;
   preventionArrangements: string;
 
-  headOfDepartment: string;
-  approvalDate: string;
+   // Approval Workflow
+  preparedByUserId: "",
+  preparedSignature: null,
+  preparedDate: "",
+
+  headUserId: "",
+  headSignature: null,
+  headApprovalDate: "",
+
+  secretaryUserId: "",
+  secretarySignature: null,
+  secretaryApprovalDate: "",
 
   items: LostItem[];
   officers: Officer[];

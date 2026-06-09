@@ -1,32 +1,28 @@
 import { useState } from "react";
 
-import GeneralInformationSection from "@/components/organisms/FR104_4/GeneralInformationSection";
-import LossDetailsSection from "@/components/organisms/FR104_4/LossDetailsSection";
-import CauseOfLossSection from "@/components/organisms/FR104_4/CauseOfLossSection";
-import LostItemsSection from "@/components/organisms/FR104_4/LostItemSection";
-import OfficersResponsibleSection from "@/components/organisms/FR104_4/OfficersResponsibleSection";
-import PoliceInformationSection from "@/components/organisms/FR104_4/PoliceInformationSection";
-import InvestigationSection from "@/components/organisms/FR104_4/InvestigationSection";
-import RecoveryInformationSection from "@/components/organisms/FR104_4/RecoveryInformationSection";
-import InsuranceInformationSection from "@/components/organisms/FR104_4/InsuranceInformationSection";
-import BoardOfInquirySection from "@/components/organisms/FR104_4/BoardOfInquirySection";
-import RecommendationsSection from "@/components/organisms/FR104_4/RecommendationsSection";
-import ApprovalSection from "@/components/organisms/FR104_4/ApprovalSection";
-import LegalActionSection from "@/components/organisms/FR104_4/LegalActionSection";
-import PreventiveActionsSection from "@/components/organisms/FR104_4/PreventiveActionsSection";
+import GeneralInformationSection from "@/components/organisms/Forms/FR104_4/GeneralInformationSection";
+import LossDetailsSection from "@/components/organisms/Forms/FR104_4/LossDetailsSection";
+import CauseOfLossSection from "@/components/organisms/Forms/FR104_4/CauseOfLossSection";
+import LostItemsSection from "@/components/organisms/Forms/FR104_4/LostItemSection";
+import OfficersResponsibleSection from "@/components/organisms/Forms/FR104_4/OfficersResponsibleSection";
+import PoliceInformationSection from "@/components/organisms/Forms/FR104_4/PoliceInformationSection";
+import InvestigationSection from "@/components/organisms/Forms/FR104_4/InvestigationSection";
+import RecoveryInformationSection from "@/components/organisms/Forms/FR104_4/RecoveryInformationSection";
+import InsuranceInformationSection from "@/components/organisms/Forms/FR104_4/InsuranceInformationSection";
+import BoardOfInquirySection from "@/components/organisms/Forms/FR104_4/BoardOfInquirySection";
+import RecommendationsSection from "@/components/organisms/Forms/FR104_4/RecommendationsSection";
+import ApprovalSection from "@/components/organisms/Forms/ApprovalSection";
+import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalActionSection";
+import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { FormCard } from "@/components/molecules/FormCard";
 import { useTranslation } from "react-i18next";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
+import {Printer,Save, CheckCircle} from "lucide-react";
 import {initialFormData} from "./initialFormData";
 import { users } from "@/components/data/mockData";
+import type { User } from "@/components/data/mockData";
 
-interface User {
-  id: string;
-  name: string;
-  designation: string;
-  role: "OFFICER" | "HEAD" | "SECRETARY";
-  signatureUrl?: string;
-}
+
 
 export default function FR104_4Form() {
 
@@ -225,22 +221,46 @@ export default function FR104_4Form() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="px-5 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="
+              px-5 py-2.5
+              border border-slate-300
+              rounded-lg
+              hover:bg-slate-50
+              flex items-center gap-2
+              text-slate-700
+            "
           >
+            <Printer size={18} />
             Print
           </button>
 
           <button
             type="button"
-            className="px-5 py-2.5 border border-slate-300 rounded-lg hover:bg-slate-50"
+            className="
+              px-5 py-2.5
+              border border-slate-300
+              rounded-lg
+              hover:bg-slate-50
+              flex items-center gap-2
+              text-slate-700
+            "
           >
+            <Save size={18} />
             Save Draft
           </button>
 
           <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-800 text-white rounded-lg hover:bg-blue-900"
+            className="
+              px-6 py-2.5
+              bg-blue-800
+              text-white
+              rounded-lg
+              hover:bg-blue-900
+              flex items-center gap-2
+            "
           >
+            <CheckCircle size={18} />
             Submit
           </button>
 
