@@ -317,3 +317,33 @@ export const mockApprovalHistory = [
   { step: 4, role: "Investigation Officer", user: "Ruwan Bandara", action: "In Progress", comment: "Field investigation ongoing", date: "2024-03-17 11:00", status: "in_progress" },
   { step: 5, role: "Medical Superintendent", user: "Dr. Priya Jayawardena", action: "Pending", comment: "", date: "", status: "pending" },
 ];
+export interface User {
+  id: string;
+  name: string;
+  designation: string;
+  role: "OFFICER" | "HEAD" | "SECRETARY";
+  signatureUrl?: string;
+}
+export const users: User[] = [
+  {
+    id: "1",
+    name: "Nimal Perera",
+    designation: "Accountant",
+    role: "OFFICER",
+    signatureUrl: "/signatures/nimal.png"
+  },
+  {
+    id: "2",
+    name: "Kasun Silva",
+    designation: "Director",
+    role: "HEAD",
+    signatureUrl: "/signatures/kasun.png"
+  },
+  {
+    id: "3",
+    name: "Thilina Fernando",
+    designation: "Secretary",
+    role: "SECRETARY",
+    signatureUrl: "/signatures/thilina.png"
+  },
+];

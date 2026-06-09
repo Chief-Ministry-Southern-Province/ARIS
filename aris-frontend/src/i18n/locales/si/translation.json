@@ -290,10 +290,13 @@
     },
 
     "approval": {
-      "preparedBy": "සකස් කළේ",
-      "preparedDesignation": "තනතුර",
-      "approvedBy": "අනුමත කළේ",
-      "approvalDate": "අනුමත කළ දිනය"
+      "preparedSection": "සකස් කළ නිලධාරියා",
+      "headSection": "දෙපාර්තමේන්තු ප්‍රධානියා / සභාපති",
+      "secretarySection": "ලේකම් / බලයලත් නිලධාරියා",
+      "name": "නම",
+      "designation": "තනතුර",
+      "date": "දිනය",
+      "signature": "අත්සන"
     },
 
     "buttons": {

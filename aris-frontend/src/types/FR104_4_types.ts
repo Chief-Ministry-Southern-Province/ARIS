@@ -52,10 +52,7 @@ export interface FR104_4FormData {
   courtOrderSummary: string;
   courtOrderFile: File | null;
 
-  // Investigation
-  investigation: string;
-
-  // Insurance
+  // Insurance Information
   insuranceRecoverableAmountWords: string;
   policyNo: string;
   amountInsured: string;
@@ -64,13 +61,22 @@ export interface FR104_4FormData {
   // Recommendations
   recommendations: string;
   boardReportFile: File | null;
+
+  // Preventive Actions
   preventiveActions: string;
 
-  // Approval
-  preparedBy: string;
-  preparedDesignation: string;
-  approvedBy: string;
-  approvalDate: string;
+  // Approval Workflow
+  preparedByUserId: string;
+  preparedSignature: string | null;
+  preparedDate: string;
+
+  headUserId: string;
+  headSignature: string | null;
+  headApprovalDate: string;
+
+  secretaryUserId: string;
+  secretarySignature: string | null;
+  secretaryApprovalDate: string;
 
   // Dynamic Collections
   lostItems: LostItem[];

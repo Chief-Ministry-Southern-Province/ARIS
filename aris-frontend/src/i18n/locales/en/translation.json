@@ -287,10 +287,13 @@
     },
 
     "approval": {
-      "preparedBy": "Prepared By",
-      "preparedDesignation": "Designation",
-      "approvedBy": "Approved By",
-      "approvalDate": "Approval Date"
+      "preparedSection": "Prepared By",
+      "headSection": "Head of Department / Chairman",
+      "secretarySection": "Secretary / Authorized Officer",
+      "name": "Name",
+      "designation": "Designation",
+      "date": "Date",
+      "signature": "Signature"
     },
 
     "buttons": {

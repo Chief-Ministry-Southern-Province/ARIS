@@ -17,12 +17,20 @@ import PreventiveActionsSection from "@/components/organisms/FR104_4/PreventiveA
 import { FormCard } from "@/components/molecules/FormCard";
 import { useTranslation } from "react-i18next";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
-
-
 import {initialFormData} from "./initialFormData";
+import { users } from "@/components/data/mockData";
+
+interface User {
+  id: string;
+  name: string;
+  designation: string;
+  role: "OFFICER" | "HEAD" | "SECRETARY";
+  signatureUrl?: string;
+}
 
 export default function FR104_4Form() {
 
+  const currentUser: User = users[0]; 
   const { t } = useTranslation();
 
   const [formData, setFormData] =
@@ -31,12 +39,12 @@ export default function FR104_4Form() {
     );
 
   const handleChange = (
-    field: keyof FR104_4FormData,
-    value: any
+    field: string,
+    value: string | File | null
   ) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: value as unknown as string,
     }));
   };
 
@@ -205,8 +213,9 @@ export default function FR104_4Form() {
           title={t("fr104_4.sections.approval")}
         >
           <ApprovalSection
-            formData={formData}
-            handleChange={handleChange}
+             formData={formData}
+             handleChange={handleChange} 
+             currentUser={currentUser}  
           />
         </FormCard>
 
