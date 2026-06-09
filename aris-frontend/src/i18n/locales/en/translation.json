@@ -185,5 +185,129 @@
     "approval": "Approval",
 
     "submit": "Submit Report"
-  } 
+  } ,
+   "fr104_4": {
+    "title": "FINAL REPORT OF LOSSES UNDER F. R. 104 (4)",
+    "subtitle": "Negligence & Recovery Assessment",
+    "sections": {
+      "generalInformation": "General Information",
+      "lossDetails": "Loss Details",
+      "causeOfLoss": "Cause of Loss",
+      "lostItems": "Lost Items",
+      "officersResponsible": "Officers Responsible",
+      "policeInformation": "Police Information",
+      "investigation": "Investigation Findings",
+      "recoveryInformation": "Recovery Information",
+      "insuranceInformation": "Insurance Information",
+      "boardOfInquiry": "Board of Inquiry",
+      "recommendations": "Recommendations",
+      "approval": "Approval & Certification"
+    },
+
+    "generalInformation": {
+      "referenceNo": "Reference Number",
+      "ministry": "Ministry / Department",
+      "lossDate": "Date of Loss",
+      "lossTime": "Time of Loss",
+      "location": "Location"
+    },
+
+    "lossDetails": {
+      "particulars": "Particulars of Loss",
+      "circumstances": "Circumstances under which the Loss Occurred"
+    },
+
+    "causeOfLoss": {
+      "label": "Negligence, Delay, Omissions or Other Causes"
+    },
+
+    "lostItems": {
+      "description": "Description",
+      "unit": "Unit",
+      "quantity": "Quantity",
+      "estimatedCost": "Estimated Cost",
+      "replacementCost": "Replacement Cost",
+      "originalCost": "Original Cost",
+      "addItem": "Add Item",
+      "remove": "Remove"
+    },
+
+    "officers": {
+      "name": "Officer Name",
+      "designation": "Designation",
+      "responsibility": "Nature of Responsibility",
+      "disciplinaryAction": "Disciplinary Action Taken",
+      "punishment": "Punishment Details",
+      "addOfficer": "Add Officer",
+      "removeOfficer": "Remove Officer"
+    },
+
+    "police": {
+      "station": "Police Station",
+      "caseNumber": "Case Number",
+      "officerName": "Officer Name",
+      "reportDate": "Report Date"
+    },
+
+    "investigation": {
+      "findings": "Investigation Findings"
+    },
+
+    "recovery": {
+      "officer": "Officer Name",
+      "amount": "Amount Recoverable",
+      "method": "Recovery Method"
+    },
+
+    "insurance": {
+      "policyNo": "Policy Number",
+      "company": "Insurance Company",
+      "amountInsured": "Amount Insured",
+      "amountRecoverable": "Amount Recoverable"
+    },
+
+    "board": {
+      "memberName": "Member Name",
+      "designation": "Designation",
+      "addMember": "Add Board Member",
+      "removeMember": "Remove Member"
+    },
+
+    "recommendations": {
+      "label": "Board Recommendations"
+    },
+
+    "approval": {
+      "preparedBy": "Prepared By",
+      "preparedDesignation": "Designation",
+      "approvedBy": "Approved By",
+      "approvalDate": "Approval Date"
+    },
+
+    "buttons": {
+      "print": "Print",
+      "saveDraft": "Save Draft",
+      "submit": "Submit",
+      "remove": "Remove",
+      "addLostItem": "Add Lost Item",
+      "addOfficer": "Add Officer",
+      "removeOfficer": "Remove Officer",
+      "addBoardMember": "Add Board Member",
+      "removeBoardMember": "Remove Board Member"
+    },
+    "parts": {
+      "a": "A කොටස",
+      "b": "B කොටස",
+      "c": "C කොටස",
+      "d": "D කොටස",
+      "e": "E කොටස",
+      "f": "F කොටස",
+      "g": "G කොටස",
+      "h": "H කොටස",
+      "i": "I කොටස",
+      "j": "J කොටස",
+      "k": "K කොටස",
+      "l": "L කොටස"
+    }
+  }
 }

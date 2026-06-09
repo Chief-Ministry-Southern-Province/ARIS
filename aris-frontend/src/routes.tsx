@@ -11,6 +11,7 @@ import DashboardPage from "@/components/pages/DashboardPage";
 
 // New pages
 import FR104_3Form from "./components/pages/forms/FR104_3Form";
+import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -68,10 +69,10 @@ export const router = createBrowserRouter([
         element: <FR104_3Form />,
       },
 
-      // {
-      //   path: "cases/:caseId/fr104-4/generate",
-      //   element: <FR104_4GeneratePage />,
-      // },
+      {
+        path: "cases/:caseId/fr104-4/generate",
+        element: <FR104_4Form />,
+      },
 
       // {
       //   path: "cases/:caseId/fr109/generate",

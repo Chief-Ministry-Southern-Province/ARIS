@@ -140,49 +140,174 @@
       "evidenceCollected": "සාක්ෂි එකතු කර උඩුගත කරන ලදී"
     }
   },
-    "fr104_3": {
-      "title": "මු. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාරම්භක වාර්තාව",
-      "referenceNo": "යොමු අංකය",
-      "formNo": "මු. රෙ. 104 (3)",
-      "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
+  "fr104_3": {
+    "title": "මු. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාරම්භක වාර්තාව",
+    "referenceNo": "යොමු අංකය",
+    "formNo": "මු. රෙ. 104 (3)",
+    "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
 
-      "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
-      "date": "දිනය",
-      "place": "ස්ථානය",
-      "loss": "අලාභය",
+    "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+    "date": "දිනය",
+    "place": "ස්ථානය",
+    "loss": "අලාභය",
 
-      "natureOfLoss": "අලාභයේ ස්වභාවය",
+    "natureOfLoss": "අලාභයේ ස්වභාවය",
 
-      "itemsLost": "අහිමි වූ භාණ්ඩ",
-      "description": "විස්තරය",
-      "quantity": "ප්‍රමාණය",
-      "unit": "මිනුම් ඒකකය", 
-      "value": "වටිනාකම",
-      "action": "ක්‍රියාව",
-      "addItem": "භාණ්ඩයක් එක් කරන්න",
-      "removeItem": "ඉවත් කරන්න",
+    "itemsLost": "අහිමි වූ භාණ්ඩ",
+    "description": "විස්තරය",
+    "quantity": "ප්‍රමාණය",
+    "unit": "මිනුම් ඒකකය", 
+    "value": "වටිනාකම",
+    "action": "ක්‍රියාව",
+    "addItem": "භාණ්ඩයක් එක් කරන්න",
+    "removeItem": "ඉවත් කරන්න",
 
+    "causeOfLoss": "අලාභයට හේතුව",
+
+    "officersResponsible": "වගකිව යුතු නිලධාරීන්",
+    "officerName": "නිලධාරියාගේ නම",
+    "designation": "තනතුර",
+    "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+    "removeOfficer": "ඉවත් කරන්න",
+
+    "policeStation": "පොලිස් ස්ථානය",
+    "dateReported": "වාර්තා කළ දිනය",
+
+    "investigation": "පවත්වාගෙන යන විමර්ශනයේ ස්වභාවය",
+
+    "securityArrangements": "පොත්, වාර්තා, ආදී දේවල් ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+    "preventionArrangements": "අලාභ වාර්තාව ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+    "headOfDepartment": "දෙපාර්තමේන්තු ප්‍රධානියා",
+
+    "approval": "අනුමැතිය",
+
+    "submit": "වාර්තාව ඉදිරිපත් කරන්න"
+  },
+  "fr104_4": {
+    "title": "මු. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ අවසාන වාර්තාව",
+    "subtitle": "නොසැලකිල්ල හා අයකර ගැනීමේ තක්සේරුව",
+
+    "sections": {
+      "generalInformation": "සාමාන්‍ය තොරතුරු",
+      "lossDetails": "අලාභ පිළිබඳ විස්තර",
       "causeOfLoss": "අලාභයට හේතුව",
+      "lostItems": "අහිමි වූ භාණ්ඩ",
+      "responsibleOfficers": "වගකිව යුතු නිලධාරීන්",
+      "policeInformation": "පොලිස් තොරතුරු",
+      "investigation": "විමර්ශන සොයාගැනීම්",
+      "recoveryInformation": "අයකර ගැනීමේ තොරතුරු",
+      "insuranceInformation": "රක්ෂණ තොරතුරු",
+      "boardOfInquiry": "විමර්ශන මණ්ඩලය",
+      "recommendations": "නිර්දේශ",
+      "approval": "අනුමැතිය"
+    },
+    "generalInformation": {
+      "referenceNo": "යොමු අංකය",
+      "ministry": "අමාත්‍යාංශය / දෙපාර්තමේන්තුව",
+      "lossDate": "අලාභ දිනය",
+      "lossTime": "අලාභ වූ වේලාව",
+      "location": "ස්ථානය"
+    },
 
-      "officersResponsible": "වගකිව යුතු නිලධාරීන්",
-      "officerName": "නිලධාරියාගේ නම",
+    "lossDetails": {
+      "particulars": "අලාභය පිළිබඳ විස්තර",
+      "circumstances": "අලාභය සිදුවූ ආකාරය"
+    },
+
+    "causeOfLoss": {
+      "label": "නොසැලකිල්ල, ප්‍රමාදය, අතපසුකිරීම් හෝ වෙනත් හේතු"
+    },
+
+    "lostItems": {
+      "description": "විස්තරය",
+      "unit": "ඒකකය",
+      "quantity": "ප්‍රමාණය",
+      "estimatedCost": "ඇස්තමේන්තුගත වටිනාකම",
+      "replacementCost": "ප්‍රතිස්ථාපන වටිනාකම",
+      "originalCost": "මුල් වටිනාකම",
+      "addItem": "භාණ්ඩයක් එක් කරන්න",
+      "remove": "ඉවත් කරන්න"
+    },
+
+    "officers": {
+      "name": "නිලධාරියාගේ නම",
       "designation": "තනතුර",
+      "responsibility": "වගකීමේ ස්වභාවය",
+      "disciplinaryAction": "ගත් විනය ක්‍රියාමාර්ග",
+      "punishment": "දඬුවම් විස්තර",
       "addOfficer": "නිලධාරියෙකු එක් කරන්න",
-      "removeOfficer": "ඉවත් කරන්න",
+      "removeOfficer": "නිලධාරියා ඉවත් කරන්න"
+    },
 
-      "policeStation": "පොලිස් ස්ථානය",
-      "dateReported": "වාර්තා කළ දිනය",
+    "police": {
+      "station": "පොලිස් ස්ථානය",
+      "caseNumber": "නඩු අංකය",
+      "officerName": "නිලධාරියාගේ නම",
+      "reportDate": "වාර්තා දිනය"
+    },
 
-      "investigation": "පවත්වාගෙන යන විමර්ශනයේ ස්වභාවය",
+    "investigation": {
+      "findings": "විමර්ශන සොයාගැනීම්"
+    },
 
-      "securityArrangements": "පොත්, වාර්තා, ආදී දේවල් ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+    "recovery": {
+      "officer": "නිලධාරියාගේ නම",
+      "amount": "අයකරගත යුතු මුදල",
+      "method": "අයකර ගැනීමේ ක්‍රමය"
+    },
 
-      "preventionArrangements": "අලාභ වාර්තාව ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+    "insurance": {
+      "policyNo": "රක්ෂණ අංකය",
+      "company": "රක්ෂණ සමාගම",
+      "amountInsured": "රක්ෂණ මුදල",
+      "amountRecoverable": "අයකරගත හැකි මුදල"
+    },
 
-      "headOfDepartment": "දෙපාර්තමේන්තු ප්‍රධානියා",
+    "board": {
+      "memberName": "සාමාජිකයාගේ නම",
+      "designation": "තනතුර",
+      "addMember": "මණ්ඩල සාමාජිකයෙකු එක් කරන්න",
+      "removeMember": "සාමාජිකයා ඉවත් කරන්න"
+    },
 
-      "approval": "අනුමැතිය",
+    "recommendations": {
+      "label": "මණ්ඩල නිර්දේශ"
+    },
 
-      "submit": "වාර්තාව ඉදිරිපත් කරන්න"
+    "approval": {
+      "preparedBy": "සකස් කළේ",
+      "preparedDesignation": "තනතුර",
+      "approvedBy": "අනුමත කළේ",
+      "approvalDate": "අනුමත කළ දිනය"
+    },
+
+    "buttons": {
+      "print": "මුද්‍රණය",
+      "saveDraft": "කෙටුම්පත සුරකින්න",
+      "submit": "ඉදිරිපත් කරන්න",
+      "remove": "ඉවත් කරන්න",
+      "addLostItem": "අලාභ වූ භාණ්ඩයක් එක් කරන්න",
+      "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+      "removeOfficer": "නිලධාරියෙකු ඉවත් කරන්න",
+      "addBoardMember": "මණ්ඩල සාමාජිකයෙකු එක් කරන්න",
+      "removeBoardMember": "සාමාජිකයා ඉවත් කරන්න"
+    },
+
+    "parts": {
+      "a": "A කොටස",
+      "b": "B කොටස",
+      "c": "C කොටස",
+      "d": "D කොටස",
+      "e": "E කොටස",
+      "f": "F කොටස",
+      "g": "G කොටස",
+      "h": "H කොටස",
+      "i": "I කොටස",
+      "j": "J කොටස",
+      "k": "K කොටස",
+      "l": "L කොටස"
     }
+  }
 }
