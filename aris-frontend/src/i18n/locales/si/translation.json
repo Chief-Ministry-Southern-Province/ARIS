@@ -334,6 +334,8 @@
     }
   },
   "digitalSignature": {
+    "title": "ඩිජිටල් අත්සන්",
+    "description": "නිලධාරීන්ගේ ඩිජිටල් අත්සන් කළමනාකරණය",
     "searchOfficer": "නිලධාරියා සොයන්න",
     "signatureAvailable": "අත්සන ලියාපදිංචි කර ඇත",
     "signatureMissing": "අත්සන ලියාපදිංචි කර නොමැත",

@@ -335,6 +335,10 @@
     }
   },
   "digitalSignature": {
+    "title": "Digital Signature",
+    "description": "Management of Digital Signatures for Officers",
+    "digitalSignature": "Digital Signature",
+    "search": "Search",
     "searchOfficer": "Search Officer",
     "signatureAvailable": "Signature Available",
     "signatureMissing": "No Signature",

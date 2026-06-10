@@ -1,17 +1,16 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import UserSearchPanel from "@/components/organisms/Signature/UserSearchPanel";
-import UserList from "@/components/organisms/Signature/UserList";
 import SignatureDetails from "@/components/organisms/Signature/SignatureDetails";
 import SignaturePreview from "@/components/organisms/Signature/SignaturePreview";
 import SignatureActions from "@/components/organisms/Signature/SignatureActions";
 import SignatureCanvas from "@/components/organisms/Signature/SignatureCanvas";
-import SignatureStats from "@/components/organisms/Signature/SignatureStats";
-
 import { mockUsers } from "../data/mockData";
 
-import type {SignatureMap, Signatory} from "@/types/signature.type";
+import type {
+  SignatureMap,
+  Signatory,
+} from "@/types/signature.type";
 
 const signatories: Signatory[] = mockUsers.filter(
   (user) => user.role !== "Driver"
@@ -19,9 +18,6 @@ const signatories: Signatory[] = mockUsers.filter(
 
 export default function DigitalSignatures() {
   const { t } = useTranslation();
-
-  const [searchTerm, setSearchTerm] =
-    useState("");
 
   const [drawMode, setDrawMode] =
     useState(false);
@@ -35,34 +31,13 @@ export default function DigitalSignatures() {
       U003: "sig_saman",
     });
 
-  const filteredUsers = useMemo(() => {
-    return signatories.filter(
-      (user) =>
-        user.name
-          .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          ) ||
-        user.role
-          .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          )
-    );
-  }, [searchTerm]);
-
-  const selectedUserData =
+  const selectedOfficer =
     signatories.find(
       (user) => user.id === selectedUser
-    );
+    ) ?? signatories[0];
 
-  if (!selectedUserData) {
-    return (
-      <div className="p-6">
-        No users found
-      </div>
-    );
-  }
+  const hasSignature =
+    !!signatures[selectedUser];
 
   const handleSaveSignature = (
     signature: string
@@ -99,71 +74,58 @@ export default function DigitalSignatures() {
         </p>
       </div>
 
-      {/* Content */}
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Panel */}
+      <div className="space-y-4">
+        {/* Officer Selector */}
 
         <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <UserSearchPanel
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t("digitalSignature.searchOfficer")}
+          </label>
 
-          <UserList
-            users={filteredUsers}
-            selectedUser={selectedUser}
-            signatures={signatures}
-            onSelect={setSelectedUser}
-          />
+          <select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            className="
+              w-full
+              px-3 py-2.5
+              border border-gray-300
+              rounded-lg
+              focus:outline-none
+              focus:ring-2
+              focus:ring-blue-500
+            "
+          >
+            {signatories.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.role})
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Right Panel */}
+        <SignatureDetails
+          user={selectedOfficer}
+          hasSignature={hasSignature}
+        />
 
-        <div className="lg:col-span-3 space-y-4">
-          <SignatureDetails
-            user={selectedUserData}
-            hasSignature={
-              !!signatures[selectedUser]
-            }
+        <SignaturePreview
+          user={selectedOfficer}
+          signature={signatures[selectedUser]}
+        />
+
+        <SignatureActions
+          hasSignature={hasSignature}
+          drawMode={drawMode}
+          onDrawToggle={() => setDrawMode((prev) => !prev)}
+          onRemove={handleRemoveSignature}
+        />
+
+        {drawMode && (
+          <SignatureCanvas
+            onSave={handleSaveSignature}
+            onCancel={() => setDrawMode(false)}
           />
-
-          <SignaturePreview
-            user={selectedUserData}
-            signature={
-              signatures[selectedUser]
-            }
-          />
-
-          <SignatureActions
-            hasSignature={
-              !!signatures[selectedUser]
-            }
-            drawMode={drawMode}
-            onDrawToggle={() =>
-              setDrawMode((prev) => !prev)
-            }
-            onRemove={
-              handleRemoveSignature
-            }
-          />
-
-          {drawMode && (
-            <SignatureCanvas
-              onSave={
-                handleSaveSignature
-              }
-              onCancel={() =>
-                setDrawMode(false)
-              }
-            />
-          )}
-
-          <SignatureStats
-            users={signatories}
-            signatures={signatures}
-          />
-        </div>
+        )}
       </div>
     </div>
   );
