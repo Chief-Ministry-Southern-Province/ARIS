@@ -8,7 +8,7 @@ interface Props {
   formData: FR104_4FormData;
   handleChange: (
     field: keyof FR104_4FormData,
-    value: any
+    value: string | File | null
   ) => void;
 }
 

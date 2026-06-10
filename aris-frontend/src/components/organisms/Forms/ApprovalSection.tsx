@@ -1,5 +1,12 @@
 import { Button } from "@/components/atoms/Button";
 import { useTranslation } from "react-i18next";
+import type {FR104_3Data} from "@/types/form_104_3_types";
+
+import type {FR104_4FormData} from "@/types/FR104_4_types";
+
+type ApprovalFormData =
+  | FR104_3Data
+  | FR104_4FormData;
 
 interface User {
   id: string;
@@ -11,8 +18,11 @@ interface User {
 
 interface Props {
   currentUser: User;
-  formData: any;
-  handleChange: (field: string, value: any) => void;
+  formData: ApprovalFormData;
+  handleChange: (
+    field: string,
+    value: string | null
+  ) => void;
 }
 
 export default function ApprovalSection({
@@ -28,7 +38,7 @@ export default function ApprovalSection({
   ) => {
     handleChange(
       signatureField,
-      currentUser.signatureUrl
+      currentUser.signatureUrl ?? null
     );
 
     handleChange(

@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 interface Props {
   formData: FR104_4FormData;
-  handleChange: (field: keyof FR104_4FormData, value: any) => void;
+  handleChange: (field: keyof FR104_4FormData, value: string) => void;
 }
 
 export default function CauseOfLossSection({

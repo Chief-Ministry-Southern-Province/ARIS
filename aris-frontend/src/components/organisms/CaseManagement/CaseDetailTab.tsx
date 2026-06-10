@@ -1,5 +1,5 @@
 import { mockCases } from "../../data/mockData";
-import { Calendar, MapPin, Car, User, CheckCircle, AlertCircle, FileText, Clock, Eye, X } from "lucide-react";
+import { Calendar, MapPin, Car, User, CheckCircle, AlertCircle, FileText, Clock, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -1,6 +1,7 @@
 import { User, CheckCircle, FileText, Eye,  } from "lucide-react";
+import type { TFunction } from "i18next";
 
-export const getAction = (caseItem_id: number,t: any) => {
+export const getAction = (caseItem_id: number,t: TFunction) => {
   return [
   {
     label: t("caseManagement.actionButtons.viewEvidence"),

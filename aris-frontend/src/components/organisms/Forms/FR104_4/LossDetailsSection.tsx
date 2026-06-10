@@ -6,7 +6,7 @@ import { InputField } from "@/components/atoms/InputField";
 
 interface Props {
   formData: FR104_4FormData;
-  handleChange: (field: keyof FR104_4FormData, value: any) => void;
+  handleChange: (field: keyof FR104_4FormData, value: string) => void;
 }
 
 export default function LossDetailsSection({

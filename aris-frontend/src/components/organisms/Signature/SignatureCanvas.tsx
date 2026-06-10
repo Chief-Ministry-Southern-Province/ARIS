@@ -9,6 +9,7 @@ export default function SignatureCanvas({
   onSave,
   onCancel,
 }: SignatureCanvasProps) {
+  
   const { t } = useTranslation();
 
   const {
@@ -23,7 +24,7 @@ export default function SignatureCanvas({
 
   useEffect(() => {
     initializeCanvas();
-  }, []);
+  }, [initializeCanvas]);
 
   const handleSave = () => {
     const signature = saveCanvas();

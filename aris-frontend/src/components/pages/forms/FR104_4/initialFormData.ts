@@ -8,6 +8,8 @@ export const initialFormData: FR104_4FormData = {
   lossTime: "",
   location: "",
 
+  investigation: "",
+
   // Preliminary Report
   preliminaryReportRefNo: "",
   preliminaryReportDate: "",
@@ -40,14 +42,20 @@ export const initialFormData: FR104_4FormData = {
   preventiveActions: "",
 
   // Approval Workflow
+  preparedBy: "",
+  preparedDesignation: "",
   preparedByUserId: "",
   preparedSignature: null,
   preparedDate: "",
 
+  headName: "",
+  headDesignation: "",
   headUserId: "",
   headSignature: null,
   headApprovalDate: "",
 
+  secretaryName: "",
+  secretaryDesignation: "",
   secretaryUserId: "",
   secretarySignature: null,
   secretaryApprovalDate: "",

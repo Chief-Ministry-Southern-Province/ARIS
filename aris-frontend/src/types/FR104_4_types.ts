@@ -34,6 +34,8 @@ export interface FR104_4FormData {
   lossTime: string;
   location: string;
 
+  investigation: string;
+
   // Preliminary Report
   preliminaryReportRefNo: string;
   preliminaryReportDate: string;
@@ -66,17 +68,24 @@ export interface FR104_4FormData {
   preventiveActions: string;
 
   // Approval Workflow
-  preparedByUserId: string;
-  preparedSignature: string | null;
-  preparedDate: string;
+  preparedBy: string;
+  preparedDesignation: string
+  preparedByUserId: "",
+  preparedSignature: null,
+  preparedDate: "",
 
-  headUserId: string;
-  headSignature: string | null;
-  headApprovalDate: string;
+  headName: string;
+  headDesignation: string;
+  headUserId: "",
+  headSignature: null,
+  headApprovalDate: "",
 
-  secretaryUserId: string;
-  secretarySignature: string | null;
-  secretaryApprovalDate: string;
+  secretaryName: string;
+  secretaryDesignation: string;
+  secretaryUserId: "",
+  secretarySignature: null,
+  secretaryApprovalDate: "",
+
 
   // Dynamic Collections
   lostItems: LostItem[];

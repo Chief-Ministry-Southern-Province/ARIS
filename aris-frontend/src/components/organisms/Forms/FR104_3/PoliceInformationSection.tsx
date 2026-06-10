@@ -1,9 +1,10 @@
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import { useTranslation } from "react-i18next";
+import type {FR104_3Data} from "@/types/form_104_3_types";
 
 interface Props {
-  formData: any;
+  formData: FR104_3Data;
   handleChange: (
     field: string,
     value: string

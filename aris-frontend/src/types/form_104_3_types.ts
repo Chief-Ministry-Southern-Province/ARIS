@@ -27,14 +27,20 @@ export interface FR104_3Data {
   preventionArrangements: string;
 
    // Approval Workflow
+  preparedBy: string;
+  preparedDesignation: string
   preparedByUserId: "",
   preparedSignature: null,
   preparedDate: "",
 
+  headName: string;
+  headDesignation: string;
   headUserId: "",
   headSignature: null,
   headApprovalDate: "",
 
+  secretaryName: string;
+  secretaryDesignation: string;
   secretaryUserId: "",
   secretarySignature: null,
   secretaryApprovalDate: "",

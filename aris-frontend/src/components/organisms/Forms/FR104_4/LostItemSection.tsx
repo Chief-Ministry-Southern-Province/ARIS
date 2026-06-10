@@ -158,7 +158,7 @@ export default function LostItemsSection({
           </div>
 
           <button
-            type={t("fr104_4.buttons.remove") as any}
+            type={t("fr104_4.buttons.remove") as "button"}
             onClick={() => removeItem(index)}
             className="mt-4 text-red-500 flex items-center gap-2"
           >
