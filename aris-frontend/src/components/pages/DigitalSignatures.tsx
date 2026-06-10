@@ -22,8 +22,7 @@ export default function DigitalSignatures() {
   const [drawMode, setDrawMode] =
     useState(false);
 
-  const [selectedUser, setSelectedUser] =
-    useState(signatories[0]?.id ?? "");
+  const selectedUser = signatories[0]?.id ?? "";
 
   const [signatures, setSignatures] =
     useState<SignatureMap>({
@@ -75,34 +74,7 @@ export default function DigitalSignatures() {
       </div>
 
       <div className="space-y-4">
-        {/* Officer Selector */}
-
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t("digitalSignature.searchOfficer")}
-          </label>
-
-          <select
-            value={selectedUser}
-            onChange={(e) => setSelectedUser(e.target.value)}
-            className="
-              w-full
-              px-3 py-2.5
-              border border-gray-300
-              rounded-lg
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-            "
-          >
-            {signatories.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name} ({user.role})
-              </option>
-            ))}
-          </select>
-        </div>
-
+        
         <SignatureDetails
           user={selectedOfficer}
           hasSignature={hasSignature}
@@ -127,6 +99,7 @@ export default function DigitalSignatures() {
           />
         )}
       </div>
+      
     </div>
   );
 }
