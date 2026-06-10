@@ -385,5 +385,119 @@
     "document": "ලේඛනය",
     "statement": "ප්‍රකාශය",
     "police": "පොලිස් වාර්තාව"
+  },
+  "adminPanel": {
+    "title": "පරිපාලන පැනලය",
+    "subtitle": "පද්ධති පරිපාලනය සහ වින්‍යාසය",
+
+    "tabs": {
+      "users": "පරිශීලකයින්",
+      "roles": "භූමිකා සහ අවසර",
+      "institutions": "ආයතන",
+      "vehicles": "වාහන",
+      "workflow": "කාර්ය ප්‍රවාහ නීති",
+      "notifications": "දැනුම්දීම්",
+      "audit": "විගණන ලොග්"
+    },
+
+    "users": {
+      "searchPlaceholder": "පරිශීලකයින් සොයන්න...",
+      "addUser": "පරිශීලකයෙකු එක් කරන්න",
+      "user": "පරිශීලකයා",
+      "username": "පරිශීලක නාමය",
+      "role": "භූමිකාව",
+      "institution": "ආයතනය",
+      "status": "තත්ත්වය",
+      "actions": "ක්‍රියාමාර්ග",
+      "active": "සක්‍රීය",
+      "edit": "සංස්කරණය",
+      "delete": "මකන්න"
+    },
+
+    "roles": {
+      "title": "භූමිකා සහ අවසර"
+    },
+
+    "institutions": {
+      "searchPlaceholder": "ආයතන සොයන්න...",
+      "addInstitution": "ආයතනයක් එක් කරන්න",
+      "district": "දිස්ත්‍රික්කය",
+      "director": "අධ්‍යක්ෂ",
+      "edit": "සංස්කරණය",
+      "viewCases": "නඩු බලන්න"
+    },
+
+    "vehicles": {
+      "searchPlaceholder": "වාහන සොයන්න...",
+      "registerVehicle": "වාහනය ලියාපදිංචි කරන්න",
+      "registrationNumber": "ලියාපදිංචි අංකය",
+      "type": "වර්ගය",
+      "makeYear": "නිෂ්පාදකයා සහ වර්ෂය",
+      "institution": "ආයතනය",
+      "incidents": "සිදුවීම්",
+      "status": "තත්ත්වය",
+      "active": "සක්‍රීය",
+      "underRepair": "අලුත්වැඩියාවේ",
+      "inactive": "අක්‍රීය"
+    },
+
+    "workflow": {
+      "description": "අනතුරු නඩු සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
+      "appliesTo": "අදාළ වන්නේ",
+
+      "rules": {
+        "autoEscalate": "පැය 48ක් තුළ ක්‍රියාමාර්ගයක් නොමැති නම් ස්වයංක්‍රීයව උත්සන්න කරන්න",
+        "smsNotification": "නව පොරොත්තු නඩුවක් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
+        "mandatoryComment": "ප්‍රතික්ෂේප කිරීමේදී අනිවාර්ය අදහසක් එක් කිරීම අවශ්‍ය වේ",
+        "skipInvestigation": "සුළු නඩු සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
+        "autoForward": "අමාත්‍යාංශ ලේකම් අනුමැතියෙන් පසු CAO වෙත ස්වයංක්‍රීයව යොමු කරන්න",
+        "boardInquiry": "රු. මිලියන 1ට වැඩි පාඩු සඳහා පරීක්ෂණ මණ්ඩලයක් අවශ්‍ය වේ"
+      }
+    },
+
+    "notifications": {
+      "addRule": "නීතියක් එක් කරන්න",
+      "to": "වෙත",
+      "via": "හරහා",
+
+      "triggers": {
+        "newAccidentReport": "නව අනතුරු වාර්තාව",
+        "approvalRequired": "අනුමැතිය අවශ්‍යයි",
+        "caseOverdue": "නඩුව ප්‍රමාද වී ඇත (දින 7)",
+        "investigationComplete": "විමර්ශනය සම්පූර්ණයි",
+        "pdfGenerated": "PDF වාර්තාව ජනනය කරන ලදී"
+      }
+    },
+
+    "audit": {
+      "searchPlaceholder": "විගණන ලොග් සොයන්න...",
+      "exportCsv": "CSV ලෙස අපනයනය කරන්න",
+      "time": "වේලාව",
+      "user": "පරිශීලකයා",
+      "action": "ක්‍රියාව",
+      "resource": "සම්පත",
+      "ipAddress": "IP ලිපිනය",
+      "status": "තත්ත්වය",
+      "success": "සාර්ථකයි",
+      "failed": "අසාර්ථකයි"
+    },
+
+    "auditActions": {
+      "userCreated": "පරිශීලකයා නිර්මාණය කරන ලදී",
+      "caseUpdated": "නඩුව යාවත්කාලීන කරන ලදී",
+      "evidenceUpload": "සාක්ෂි උඩුගත කරන ලදී",
+      "loginFailed": "පිවිසුම අසාර්ථක විය",
+      "caseApproved": "නඩුව අනුමත කරන ලදී",
+      "pdfGenerated": "PDF ජනනය කරන ලදී",
+      "vehicleAdded": "වාහනය එක් කරන ලදී"
+    },
+
+    "notificationChannels": {
+      "email": "විද්‍යුත් තැපෑල",
+      "sms": "SMS",
+      "system": "පද්ධතිය",
+      "emailSms": "විද්‍යුත් තැපෑල + SMS",
+      "emailSystem": "විද්‍යුත් තැපෑල + පද්ධතිය"
+    }
   }
 }

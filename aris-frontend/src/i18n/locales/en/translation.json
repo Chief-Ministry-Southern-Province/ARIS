@@ -388,5 +388,119 @@
     "document": "Document",
     "statement": "Statement",
     "police": "Police Report"
+  },
+   "adminPanel": {
+    "title": "Admin Panel",
+    "subtitle": "System administration and configuration",
+
+    "tabs": {
+      "users": "Users",
+      "roles": "Roles & Permissions",
+      "institutions": "Institutions",
+      "vehicles": "Vehicles",
+      "workflow": "Workflow Rules",
+      "notifications": "Notifications",
+      "audit": "Audit Logs"
+    },
+
+    "users": {
+      "searchPlaceholder": "Search users...",
+      "addUser": "Add User",
+      "user": "User",
+      "username": "Username",
+      "role": "Role",
+      "institution": "Institution",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+
+    "roles": {
+      "title": "Roles & Permissions"
+    },
+
+    "institutions": {
+      "searchPlaceholder": "Search institutions...",
+      "addInstitution": "Add Institution",
+      "district": "District",
+      "director": "Director",
+      "edit": "Edit",
+      "viewCases": "View Cases"
+    },
+
+    "vehicles": {
+      "searchPlaceholder": "Search vehicles...",
+      "registerVehicle": "Register Vehicle",
+      "registrationNumber": "Reg. No.",
+      "type": "Type",
+      "makeYear": "Make & Year",
+      "institution": "Institution",
+      "incidents": "Incidents",
+      "status": "Status",
+      "active": "Active",
+      "underRepair": "Under Repair",
+      "inactive": "Inactive"
+    },
+
+    "workflow": {
+      "description": "Configure the approval chain and escalation rules for accident cases.",
+      "appliesTo": "Applies to",
+
+      "rules": {
+        "autoEscalate": "Auto-escalate if no action within 48h",
+        "smsNotification": "SMS notification to approver on new pending case",
+        "mandatoryComment": "Require mandatory comment for rejection",
+        "skipInvestigation": "Skip Investigation Officer for minor cases (<LKR 50K)",
+        "autoForward": "Auto-forward to CAO after Ministry Secretary approval",
+        "boardInquiry": "Require Board of Inquiry for losses >LKR 1M"
+      }
+    },
+
+    "notifications": {
+      "addRule": "Add Rule",
+      "to": "To",
+      "via": "via",
+
+      "triggers": {
+        "newAccidentReport": "New Accident Report",
+        "approvalRequired": "Approval Required",
+        "caseOverdue": "Case Overdue (7 days)",
+        "investigationComplete": "Investigation Complete",
+        "pdfGenerated": "PDF Report Generated"
+      }
+    },
+
+    "audit": {
+      "searchPlaceholder": "Search audit logs...",
+      "exportCsv": "Export CSV",
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "resource": "Resource",
+      "ipAddress": "IP Address",
+      "status": "Status",
+      "success": "Success",
+      "failed": "Failed"
+    },
+
+    "auditActions": {
+      "userCreated": "User Created",
+      "caseUpdated": "Case Updated",
+      "evidenceUpload": "Evidence Upload",
+      "loginFailed": "Login Failed",
+      "caseApproved": "Case Approved",
+      "pdfGenerated": "PDF Generated",
+      "vehicleAdded": "Vehicle Added"
+    },
+
+    "notificationChannels": {
+      "email": "Email",
+      "sms": "SMS",
+      "system": "System",
+      "emailSms": "Email + SMS",
+      "emailSystem": "Email + System"
+    }
   }
 }

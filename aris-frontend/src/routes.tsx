@@ -8,6 +8,7 @@ import InvestigationPage from "@/components/pages/InvestigationPage";
 import EvidencePage from "@/components/pages/EvidencePage";
 import { CaseManagement } from "@/components/pages/CaseManagement";
 import DashboardPage from "@/components/pages/DashboardPage";
+import AdminPanel from "@/components/pages/AdminPanel";
 
 // New pages
 import FR104_3Form from "./components/pages/forms/FR104_3Form";
@@ -51,6 +52,11 @@ export const router = createBrowserRouter([
       {
         path: "evidence",
         element: <EvidencePage />,
+      },
+
+      {
+        path: "admin",
+        element: <AdminPanel />,
       },
 
       {
