@@ -3,7 +3,7 @@ import { Upload, Image, Shield, Download, Eye, Trash, Search } from "lucide-reac
 import { mockEvidence } from "../../components/data/mockEvidence";
 import type { EvidenceType } from "@/types/evidence.type";
 import { useTranslation } from "react-i18next";
-
+import EvidencePreviewModal from "@/components/organisms/Evidence/EvidencePreviewModal";
 
 const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string; bg: string; label: string }> = {
   photo: { icon: Image, color: "text-blue-600", bg: "bg-blue-50", label: "Photos" },
@@ -13,6 +13,8 @@ const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string;
 function EvidencePage() {
 
   const { t }= useTranslation();
+
+  const [previewItem, setPreviewItem] = useState<any>(null);
 
   const [activeType, setActiveType] = useState<EvidenceType | "all">("all");
   const [search, setSearch] = useState("");
@@ -146,8 +148,12 @@ function EvidencePage() {
                 </div>
                 <div className="text-xs text-blue-600 font-mono mt-1">{ev.caseId}</div>
                 <div className="flex gap-2 mt-3 pt-3 border-t border-gray-50">
-                  <button className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors">
-                    <Eye className="w-3.5 h-3.5" />Preview
+                  <button
+                    onClick={() => setPreviewItem(ev)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    Preview
                   </button>
                   <button className="flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-600 transition-colors">
                     <Download className="w-3.5 h-3.5" />Download
@@ -168,6 +174,11 @@ function EvidencePage() {
           <p className="text-gray-400">{t("evidenceManagement.noEvidenceFound")}</p>
         </div>
       )}
+
+      <EvidencePreviewModal
+        evidence={previewItem}
+        onClose={() => setPreviewItem(null)}
+      />
 
     </div>
   );
