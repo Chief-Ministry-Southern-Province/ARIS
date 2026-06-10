@@ -349,5 +349,44 @@
     "uploadSignature": "Upload Signature",
     "saveSignature": "Save Signature",
     "clear": "Clear"
+  },
+  "evidenceManagement": {
+    "title": "Evidence Management",
+    "subtitle": "Manage case evidence, documents and reports",
+
+    "uploadEvidence": "Upload Evidence",
+    "upload": "Upload",
+    "cancel": "Cancel",
+
+    "evidenceType": "Evidence Type",
+    "caseReference": "Case Reference",
+    "description": "Description",
+
+    "dragDrop": "Drag & drop files here",
+    "clickBrowse": "or click to browse",
+    "maxFileSize": "Max file size: 200MB",
+
+    "allEvidence": "All Evidence",
+
+    "photos": "Photos",
+    "videos": "Videos",
+    "documents": "Documents",
+    "statements": "Statements",
+    "policeReports": "Police Reports",
+
+    "search": "Search",
+    "allCases": "All Cases",
+
+    "preview": "Preview",
+    "download": "Download",
+    "delete": "Delete",
+
+    "noEvidenceFound": "No evidence found",
+
+    "photo": "Photo",
+    "video": "Video",
+    "document": "Document",
+    "statement": "Statement",
+    "police": "Police Report"
   }
 }

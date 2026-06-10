@@ -346,5 +346,44 @@
     "uploadSignature": "අත්සන උඩුගත කරන්න",
     "saveSignature": "අත්සන සුරකින්න",
     "clear": "පිරිසිදු කරන්න"
+  },
+  "evidenceManagement": {
+    "title": "සාක්ෂි කළමනාකරණය",
+    "subtitle": "නඩු සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
+
+    "uploadEvidence": "සාක්ෂි උඩුගත කරන්න",
+    "upload": "උඩුගත කරන්න",
+    "cancel": "අවලංගු කරන්න",
+
+    "evidenceType": "සාක්ෂි වර්ගය",
+    "caseReference": "නඩු යොමුව",
+    "description": "විස්තරය",
+
+    "dragDrop": "ගොනු මෙතනට ඇද දමන්න",
+    "clickBrowse": "හෝ ගොනු තෝරා ගැනීමට ක්ලික් කරන්න",
+    "maxFileSize": "උපරිම ගොනු ප්‍රමාණය: 200MB",
+
+    "allEvidence": "සියලු සාක්ෂි",
+
+    "photos": "ඡායාරූප",
+    "videos": "වීඩියෝ",
+    "documents": "ලේඛන",
+    "statements": "ප්‍රකාශ",
+    "policeReports": "පොලිස් වාර්තා",
+
+    "search": "සොයන්න",
+    "allCases": "සියලු නඩු",
+
+    "preview": "පෙරදසුන",
+    "download": "බාගත කරන්න",
+    "delete": "මකන්න",
+
+    "noEvidenceFound": "සාක්ෂි හමු නොවීය",
+
+    "photo": "ඡායාරූපය",
+    "video": "වීඩියෝව",
+    "document": "ලේඛනය",
+    "statement": "ප්‍රකාශය",
+    "police": "පොලිස් වාර්තාව"
   }
 }
