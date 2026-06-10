@@ -1,7 +1,8 @@
 import { X, Image, Shield } from "lucide-react";
+import type { Evidence } from "@/types/evidence.type";
 
 interface Props {
-  evidence: any;
+  evidence: Evidence;
   onClose: () => void;
 }
 

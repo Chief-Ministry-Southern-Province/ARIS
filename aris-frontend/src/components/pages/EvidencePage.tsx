@@ -4,6 +4,7 @@ import { mockEvidence } from "../../components/data/mockEvidence";
 import type { EvidenceType } from "@/types/evidence.type";
 import { useTranslation } from "react-i18next";
 import EvidencePreviewModal from "@/components/organisms/Evidence/EvidencePreviewModal";
+import type { Evidence } from "@/types/evidence.type";
 
 const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string; bg: string; label: string }> = {
   photo: { icon: Image, color: "text-blue-600", bg: "bg-blue-50", label: "Photos" },
@@ -14,7 +15,7 @@ function EvidencePage() {
 
   const { t }= useTranslation();
 
-  const [previewItem, setPreviewItem] = useState<any>(null);
+  const [previewItem, setPreviewItem] = useState<Evidence | null>(null);
 
   const [activeType, setActiveType] = useState<EvidenceType | "all">("all");
   const [search, setSearch] = useState("");
@@ -175,10 +176,12 @@ function EvidencePage() {
         </div>
       )}
 
-      <EvidencePreviewModal
-        evidence={previewItem}
-        onClose={() => setPreviewItem(null)}
-      />
+      {previewItem && (
+        <EvidencePreviewModal
+          evidence={previewItem}
+          onClose={() => setPreviewItem(null)}
+        />
+      )}
 
     </div>
   );
