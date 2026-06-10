@@ -1,7 +1,13 @@
 import { Search, Plus } from "lucide-react";
 import { mockInstitutions } from "../../data/mockData";
+import { useState } from "react";
+import AddInstitutionForm from "@/components/pages/forms/common/AddInstitutionForm";
+import Modal from "@/components/molecules/Modal";
 
 const InstitutionTab = () => {
+
+  const [showAddInstitution, setShowAddInstitution] = useState(false);
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
@@ -10,7 +16,9 @@ const InstitutionTab = () => {
           <input type="text" placeholder="Search institutions..."
             className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90" style={{ background: "#1E40AF" }}>
+        <button 
+         onClick={() => setShowAddInstitution(true)} 
+         className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90" style={{ background: "#1E40AF" }}>
           <Plus className="w-4 h-4" />Add Institution
         </button>
       </div>
@@ -35,6 +43,13 @@ const InstitutionTab = () => {
           </div>
         ))}
       </div>
+      
+      {showAddInstitution && (
+        <Modal onClose={() => setShowAddInstitution(false)}>
+          <AddInstitutionForm />
+        </Modal>
+      )}
+
     </div>
   )
 }

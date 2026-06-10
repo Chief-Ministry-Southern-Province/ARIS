@@ -1,7 +1,13 @@
 import { Search, Plus, Edit2 } from "lucide-react";
 import { mockVehicles } from "../../data/mockData";
+import AddVehicleForm from "@/components/pages/forms/common/AddVehicleForm";
+import Modal from "@/components/molecules/Modal";
+import { useState } from "react";
 
 const VehicleTab = () => {
+
+  const [showAddVehicle, setShowAddVehicle] = useState(false);
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
@@ -10,7 +16,9 @@ const VehicleTab = () => {
           <input type="text" placeholder="Search vehicles..."
             className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90" style={{ background: "#1E40AF" }}>
+        <button
+         onClick={() => setShowAddVehicle(true)}
+         className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90" style={{ background: "#1E40AF" }}>
           <Plus className="w-4 h-4" />Register Vehicle
         </button>
       </div>
@@ -46,6 +54,11 @@ const VehicleTab = () => {
           </tbody>
         </table>
       </div>
+      {showAddVehicle && (
+        <Modal onClose={() => setShowAddVehicle(false)}>
+          <AddVehicleForm />
+        </Modal>
+      )}
     </div>
   )
 }

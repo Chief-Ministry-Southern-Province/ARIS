@@ -1,10 +1,12 @@
 import { Search, Plus, Edit2, Trash2 } from "lucide-react";
 import { mockUsers } from "../../data/mockData";
 import { useState } from "react";
+import AddUserForm from "@/components/pages/forms/common/AddUserForm";
+import Modal from "@/components/molecules/Modal";
 import { useTranslation } from "react-i18next";
 
 const UserTab = () => {
-  
+  const [showAddUser, setShowAddUser] = useState(false);
   const {t} = useTranslation();
   const [search, setSearch] = useState("");
 
@@ -25,8 +27,13 @@ const UserTab = () => {
             value={search} onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90" style={{ background: "#1E40AF" }}>
-          <Plus className="w-4 h-4" />{t("adminPanel.users.addUser")}
+        <button
+          onClick={() => setShowAddUser(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90"
+          style={{ background: "#1E40AF" }}
+        >
+          <Plus className="w-4 h-4" />
+          {t("adminPanel.users.addUser")}
         </button>
       </div>
 
@@ -74,6 +81,11 @@ const UserTab = () => {
         </table>
       </div>
 
+      {showAddUser && (
+        <Modal onClose={() => setShowAddUser(false)}>
+          <AddUserForm />
+        </Modal>
+      )}
     </div>
   )
 }

@@ -11,7 +11,7 @@ import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
 
 // New pages
-import FR104_3Form from "./components/pages/forms/FR104_3Form";
+import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
