@@ -228,12 +228,11 @@ export const mockCases = [
 ];
 
 export const mockVehicles = [
-  { id: "V001", regNo: "WP-CAB-1234", type: "Ambulance", make: "Toyota HiAce", year: 2019, institution: "Colombo General Hospital", status: "Active", incidents: 3 },
-  { id: "V002", regNo: "WP-KH-5678", type: "Transport Van", make: "Nissan Urvan", year: 2017, institution: "Kalutara District Hospital", status: "Active", incidents: 1 },
-  { id: "V003", regNo: "WP-CAE-9012", type: "Hospital Van", make: "Mitsubishi L300", year: 2016, institution: "National Hospital Colombo", status: "Under Repair", incidents: 4 },
-  { id: "V004", regNo: "WP-CAF-3456", type: "Staff Vehicle", make: "Toyota Prius", year: 2020, institution: "De Zoysa Hospital", status: "Active", incidents: 2 },
-  { id: "V005", regNo: "CP-CAA-7890", type: "Ambulance", make: "Isuzu NKR", year: 2018, institution: "Kandy Teaching Hospital", status: "Active", incidents: 5 },
-  { id: "V006", regNo: "WP-CAG-2345", type: "Ambulance", make: "Toyota HiAce", year: 2015, institution: "Wattala Base Hospital", status: "Written Off", incidents: 6 },
+  { id: "V001", regNo: "WP-CAB-1234", type: "Ambulance", make: "Toyota HiAce", year: 2019, institution: "Colombo General Hospital", status: "Active", incidents: 3, driver: { name: "Kamal Perera", avatar: "KP" } },
+  { id: "V002", regNo: "WP-KH-5678", type: "Transport Van", make: "Nissan Urvan", year: 2017, institution: "Kalutara District Hospital", status: "Active", incidents: 1, driver: { name: "Sunil Silva", avatar: "SS" } },
+  { id: "V003", regNo: "WP-CAE-9012", type: "Hospital Van", make: "Mitsubishi L300", year: 2016, institution: "National Hospital Colombo", status: "Under Repair", incidents: 4, driver: { name: "Rajitha Fernando", avatar: "RF" } },
+  { id: "V004", regNo: "WP-CAF-3456", type: "Staff Vehicle", make: "Toyota Prius", year: 2020, institution: "De Zoysa Hospital", status: "Active", incidents: 2, driver: { name: "Nimal Jayasinghe", avatar: "NJ" } },
+  { id: "V005", regNo: "CP-CAA-7890", type: "Ambulance", make: "Isuzu NKR", year: 2018, institution: "Kandy Teaching Hospital", status: "Active", incidents: 5, driver: { name: "Dilan Mendis", avatar: "DM" } },
 ];
 
 export const mockInstitutions = [
@@ -347,3 +346,9 @@ export const users: User[] = [
     signatureUrl: "/signatures/thilina.png"
   },
 ];
+
+export const driver = [
+  { id: 1, name: "John Silva" },
+  { id: 2, name: "Kasun Perera" },
+  { id: 3, name: "Nimal Fernando" },
+]

@@ -24,7 +24,7 @@ export default function SignatureCanvas({
 
   useEffect(() => {
     initializeCanvas();
-  }, [initializeCanvas]);
+  }, []);
 
   const handleSave = () => {
     const signature = saveCanvas();
