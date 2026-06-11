@@ -14,6 +14,7 @@ import AdminPanel from "@/components/pages/AdminPanel";
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
+import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -79,6 +80,11 @@ export const router = createBrowserRouter([
       {
         path: "cases/:caseId/fr104-4/generate",
         element: <FR104_4Form />,
+      },
+
+      {
+        path: "cases/:caseId/approval-workflow",
+        element: <ApprovalWorkflow />,
       },
 
       // {

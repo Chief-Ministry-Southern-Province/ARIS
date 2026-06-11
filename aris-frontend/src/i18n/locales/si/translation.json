@@ -499,5 +499,46 @@
       "emailSms": "විද්‍යුත් තැපෑල + SMS",
       "emailSystem": "විද්‍යුත් තැපෑල + පද්ධතිය"
     }
+  },
+  "approvalWorkflow": {
+    "title": "අනුමත කිරීමේ ක්‍රියාවලිය",
+    "subtitle": "බහු මට්ටමේ අනුමත කිරීමේ දාම කළමනාකරණය",
+
+    "selectCase": "නඩුව තෝරන්න",
+
+    "approvalChain": "අනුමත කිරීමේ දාමය",
+    "approvalHistory": "අනුමත කිරීමේ ඉතිහාසය",
+
+    "approved": "අනුමතයි",
+    "inProgress": "ක්‍රියාත්මක වේ",
+    "pending": "අපේක්ෂිතයි",
+    "rejected": "ප්‍රතික්ෂේපයි",
+
+    "act": "ක්‍රියා කරන්න",
+    "review": "සමාලෝචනය",
+
+    "approvalDecision": "අනුමත තීරණය",
+    "comments": "අදහස්",
+    "commentsPlaceholder": "ඔබගේ අදහස් මෙහි ඇතුළත් කරන්න...",
+
+    "approve": "අනුමත කරන්න",
+    "reject": "ප්‍රතික්ෂේප කරන්න",
+    "requestChanges": "වෙනස්කම් ඉල්ලන්න",
+
+    "cancel": "අවලංගු කරන්න",
+    "submitChanges": "වෙනස්කම් ඉල්ලන්න",
+
+    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන නඩු",
+
+    "investigationOfficerReview": "විමර්ශන නිලධාරි සමාලෝචනය",
+    "administrativeOfficerReview": "පරිපාලන නිලධාරි සමාලෝචනය",
+
+    "workflowSteps": {
+      "reportingOfficer": "වාර්තා කරන නිලධාරියා",
+      "investigationOfficer": "විමර්ශන නිලධාරියා",
+      "administrativeOfficer": "පරිපාලන නිලධාරියා",
+      "superintendent": "අධිකාරිවරයා",
+      "director": "අධ්‍යක්ෂවරයා"
+    }
   }
 }

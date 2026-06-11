@@ -1,3 +1,5 @@
+import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
+
 export const translations = {
   en: {
     appName: "Accident Reporting & Investigation System",
@@ -297,7 +299,8 @@ export const recentActivities = [
   { id: 6, type: "rejection", message: "Case ARIS-2024-006 requires additional documents", user: "Sunil Dissanayake", time: "2 days ago" },
 ];
 
-export const approvalWorkflowSteps = [
+
+export const approvalWorkflowSteps : approvalWorkflowStep[] = [
   { step: 1, role: "Driver", title: "Initial Report", description: "Driver submits accident report" },
   { step: 2, role: "Development Officer", title: "DO Review", description: "Development Officer reviews and validates report" },
   { step: 3, role: "Administrative Officer", title: "AO Verification", description: "Administrative Officer verifies details and initiates investigation" },

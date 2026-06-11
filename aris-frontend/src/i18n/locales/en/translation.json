@@ -502,5 +502,46 @@
       "emailSms": "Email + SMS",
       "emailSystem": "Email + System"
     }
+  },
+   "approvalWorkflow": {
+    "title": "Approval Workflow",
+    "subtitle": "Multi-level approval chain management",
+
+    "selectCase": "Select Case",
+
+    "approvalChain": "Approval Chain",
+    "approvalHistory": "Approval History",
+
+    "approved": "Approved",
+    "inProgress": "In Progress",
+    "pending": "Pending",
+    "rejected": "Rejected",
+
+    "act": "Act",
+    "review": "Review",
+
+    "approvalDecision": "Approval Decision",
+    "comments": "Comments",
+    "commentsPlaceholder": "Add your comments here...",
+
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestChanges": "Request Changes",
+
+    "cancel": "Cancel",
+    "submitChanges": "Request Changes",
+
+    "casesAwaitingAction": "Cases Awaiting Your Action",
+
+    "investigationOfficerReview": "Investigation Officer Review",
+    "administrativeOfficerReview": "Administrative Officer Review",
+
+    "workflowSteps": {
+      "reportingOfficer": "Reporting Officer",
+      "investigationOfficer": "Investigation Officer",
+      "administrativeOfficer": "Administrative Officer",
+      "superintendent": "Superintendent",
+      "director": "Director"
+    }
   }
 }

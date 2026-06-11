@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Search, Filter, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, Filter, Eye, Workflow } from "lucide-react";
 import { mockCases } from "../../components/data/mockData";
 import CaseDetailTab from "@/components/organisms/CaseManagement/CaseDetailTab";
 import { useTranslation } from "react-i18next";
 
 export function CaseManagement() {
+  
   const { t } = useTranslation();
+
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
   const [selectedCase, setSelectedCase] =
@@ -137,6 +141,7 @@ export function CaseManagement() {
 
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-1">
+                      {/* View */}
                       <button
                         onClick={() =>
                           setSelectedCase(c)
@@ -145,6 +150,19 @@ export function CaseManagement() {
                         title="View"
                       >
                         <Eye className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* Approval Workflow */}
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/cases/${c.id}/approval-workflow`
+                          )
+                        }
+                        className="p-1.5 rounded hover:bg-green-50 text-green-600 transition-colors"
+                        title="Approval Workflow"
+                      >
+                        <Workflow className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </td>

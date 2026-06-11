@@ -4,7 +4,6 @@ import {
   FolderOpen,
   FileSearch,
   FileText,
-  CheckSquare,
   PenTool,
   BarChart2,
   Settings,
@@ -64,12 +63,6 @@ export const navItems = [
         path: "/forms/fr109",
       },
     ],
-  },
-  {
-    id: "approval",
-    path: "/approval",
-    icon: CheckSquare,
-    label: "nav.approvalWorkflow",
   },
   {
     id: "signatures",
