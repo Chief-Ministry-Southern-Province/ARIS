@@ -1,0 +1,569 @@
+{
+  "nav": {
+    "dashboard": "ප්‍රධාන පුවරුව",
+    "reportAccident": "අනතුරු වාර්තා කිරීම",
+    "caseManagement": "නඩු කළමනාකරණය",
+    "evidence": "සාක්ෂි",
+    "investigation": "විමර්ශනය",
+    "governmentForms": "රජයේ ආකෘති",
+    "fr104_3": "FR 104(3) — අලාභ ප්‍රකාශය",
+    "fr104_4": "FR 104(4) — අයකර ගැනීමේ ආකෘතිය",
+    "fr109": "FR 109 — භාණ්ඩාගාර ආකෘතිය",
+    "approvalWorkflow": "අනුමත කිරීමේ ක්‍රියාවලිය",
+    "digitalSignatures": "ඩිජිටල් අත්සන්",
+    "analytics": "විශ්ලේෂණ",
+    "adminPanel": "පරිපාලන පැනලය"
+  },
+  "app": {
+    "name": "අනතුරු වාර්තා පද්ධතිය",
+    "title": "අනතුරු වාර්තා කිරීමේ හා විමර්ශන පද්ධතිය",
+    "subtitle": "ශ්‍රී ලංකා රජය — සෞඛ්‍ය අමාත්‍යාංශය"
+  },
+  "common": {
+    "logout": "ඉවත් වන්න"
+  },
+  "notifications": {
+    "title": "දැනුම්දීම්"
+  },
+  "dashboard": {
+    "title": "ප්‍රධාන පුවරුව",
+    "reportIncident": "නව අනතුරු වාර්තාව",
+    "totalIncidents": "මුළු සිදුවීම්",
+    "openInvestigations": "විවෘත පරීක්ෂණ",
+    "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
+    "completedCases": "සම්පූර්ණ කළ නඩු",
+    "totalLosses": "මුළු අලාභ",
+    "recoveries": "යළිලැබීම්",
+    "accidentTrends": "අනතුරු ප්‍රවණතා",
+    "lossCategories": "අලාභ කාණ්ඩ",
+    "recentCases": "අලුත් නඩු",
+    "vehicleRisk": "වාහන අවදානම්",
+    "locationRisks": "ස්ථානයේ අවදානම්",
+    "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
+    "recentActivities": "අලුත් ක්‍රියාකාරකම්"
+  },
+  "report": {
+    "title": "නව අනතුරු වාර්තාව",
+    "subtitle": "අනතුරු වාර්තාව ඉදිරිපත් කිරීමට සියලු පියවර සම්පූර්ණ කරන්න",
+    "incidentDetails": "සිදුවීමේ විස්තර",
+    "accidentDate": "අනතුරු දිනය",
+    "accidentTime": "අනතුරු වේලාව",
+    "exactLocation": "නිශ්චිත ස්ථානය",
+    "locationPlaceholder": "ස්ථාන විස්තරය ඇතුළත් කරන්න",
+    "province": "පළාත",
+    "district": "දිස්ත්‍රික්කය",
+    "selectProvince": "පළාත තෝරන්න",
+    "vehicleRegistration": "වාහන ලියාපදිංචි අංකය",
+    "driver": "රියදුරා",
+    "selectVehicle": "වාහනය තෝරන්න",
+    "selectDriver": "රියදුරා තෝරන්න",
+    "casualties": "මරණ",
+    "injuries": "තුවාල",
+    "severity": "බරපතලකම",
+    "accidentDescription": "අනතුරේ විස්තරය",
+    "descriptionPlaceholder": "සිදු වූ දේ විස්තරාත්මකව ලියන්න...",
+    "vehicleDamage": "වාහන හානි විස්තරය",
+    "roadCondition": "මාර්ග / කාලගුණ තත්ත්ව",
+    "selectCondition": "තත්ත්වය තෝරන්න",
+    "mapHint": "සිතියමේ අනතුරු ස්ථානය සලකුණු කිරීමට ක්ලික් කරන්න",
+    "evidenceImages": "සාක්ෂි පින්තූර"
+  },
+  "btn": {
+    "next": "ඊළඟ",
+    "previous": "කලින්",
+    "submit": "වාර්තාව යැවීම",
+    "saveDraft": "කෙටුම්පත සුරකින්න",
+    "print": "මුද්‍රණය",
+    "finalize": "අවසන් කරන්න"
+  } ,
+    "login": {
+    "login": "පිවිසෙන්න",
+    "username_placeholder": "ඔබගේ පරිශීලක නාමය ඇතුලත් කරන්න",
+    "password_placeholder": "ඔබගේ මුරපදය ඇතුලත් කරන්න",
+    "usernameRequired": "කරුණාකර ඔබගේ පරිශීලක නාමය ඇතුළත් කරන්න",
+    "passwordRequired": "කරුණාකර ඔබගේ මුරපදය ඇතුළත් කරන්න",
+    "loginFailed": "පිවිසීම අසාර්ථක විය",
+    "username": "පරිශීලක නාමය",
+    "password": "මුරපදය",
+    "rememberMe": "මතක තබා ගන්න",
+    "forgotPassword": "මුරපදය අමතකද?",
+    "signInSubtitle": "ඔබගේ රජයේ ගිණුමට පිවිසෙන්න",
+    "enterUsername": "පරිශීලක නාමය ඇතුලත් කරන්න",
+    "enterPassword": "මුරපදය ඇතුලත් කරන්න",
+    "signingIn": "පිවිසෙමින්...",
+    "governmentPortal": "රජයේ ඩිජිටල් සේවා ද්වාරය",
+    "secureAccess": "රජයේ පද්ධති වෙත ආරක්ෂිත ප්‍රවේශය",
+    "demoAccounts": "උදාහරණ ගිණුම්",
+    "role": "භූමිකාව",
+    "credentials": "අක්තපත්‍ර",
+    "copyright": "ශ්‍රී ලංකා රජය © 2026",
+    "version": "අනුවාදය",
+    "securityNotice": "රජයේ සයිබර් ආරක්ෂක රාමුව මගින් ආරක්ෂා කර ඇත",
+    "welcome": "නැවත සාදරයෙන් පිළිගනිමු"
+  },
+  "caseManagement": {
+    "title": "නඩු කළමනාකරණය",
+    "casesFound": "නඩු සොයා ගන්නා ලදී",
+    "search": "සොයන්න",
+
+    "table": {
+      "caseId": "නඩු අංකය",
+      "incident": "සිදුවීම",
+      "institution": "ආයතනය",
+      "date": "දිනය",
+      "actions": "ක්‍රියා"
+    },
+
+    "empty": {
+      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන නඩු නොමැත"
+    },
+
+    "pagination": {
+      "showing": "පෙන්වන්නේ",
+      "of": "අතුරින්",
+      "cases": "නඩු",
+      "previous": "පෙර",
+      "next": "ඊළඟ"
+    },
+
+    "tabs": {
+      "details": "විස්තර",
+      "timeline": "කාලරේඛාව",
+      "actions": "ක්‍රියා"
+    },
+
+    "details": {
+      "dateTime": "දිනය සහ වේලාව",
+      "location": "ස්ථානය",
+      "vehicle": "වාහනය",
+      "driver": "රියදුරු",
+      "institution": "ආයතනය",
+      "investigator": "විමර්ශන නිලධාරියා",
+      "description": "විස්තරය",
+      "estimatedLoss": "ඇස්තමේන්තුගත අලාභය",
+      "casualties": "හානියට පත් පුද්ගලයන්",
+      "persons": "දෙනා"
+    },
+
+    "actionButtons": {
+      "viewEvidence": "සාක්ෂි බලන්න",
+      "generateFR104_3": "FR104(3) ජනනය කරන්න",
+      "generateFR104_4": "FR104(4) ජනනය කරන්න",
+      "generateFR109": "FR109 ජනනය කරන්න",
+      "viewFR104_3": "FR104(3) බලන්න",
+      "viewFR104_4": "FR104(4) බලන්න",
+      "viewFR109": "FR109 බලන්න",
+      "assignInvestigator": "විමර්ශකයෙකු පත් කරන්න",
+      "forwardApproval": "අනුමැතිය සඳහා යොමු කරන්න"
+    },
+
+    "timeline": {
+      "accidentReported": "අනතුර වාර්තා කරන ලදී",
+      "reportApproved": "වාර්තාව සමාලෝචනය කර අනුමත කරන ලදී",
+      "investigationInitiated": "විමර්ශනය ආරම්භ කරන ලදී. පොලිස් වාර්තාව ලබා ගන්නා ලදී.",
+      "fieldInvestigationStarted": "ක්ෂේත්‍ර විමර්ශනය ආරම්භ කරන ලදී",
+      "evidenceCollected": "සාක්ෂි එකතු කර උඩුගත කරන ලදී"
+    }
+  },
+  "fr104_3": {
+    "title": "මු. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාරම්භක වාර්තාව",
+    "referenceNo": "යොමු අංකය",
+    "formNo": "මු. රෙ. 104 (3)",
+    "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
+
+    "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+    "date": "දිනය",
+    "place": "ස්ථානය",
+    "loss": "අලාභය",
+
+    "natureOfLoss": "අලාභයේ ස්වභාවය",
+
+    "itemsLost": "අහිමි වූ භාණ්ඩ",
+    "description": "විස්තරය",
+    "quantity": "ප්‍රමාණය",
+    "unit": "මිනුම් ඒකකය", 
+    "value": "වටිනාකම",
+    "action": "ක්‍රියාව",
+    "addItem": "භාණ්ඩයක් එක් කරන්න",
+    "removeItem": "ඉවත් කරන්න",
+
+    "causeOfLoss": "අලාභයට හේතුව",
+
+    "officersResponsible": "වගකිව යුතු නිලධාරීන්",
+    "officerName": "නිලධාරියාගේ නම",
+    "designation": "තනතුර",
+    "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+    "removeOfficer": "ඉවත් කරන්න",
+
+    "policeStation": "පොලිස් ස්ථානය",
+    "dateReported": "වාර්තා කළ දිනය",
+
+    "investigation": "පවත්වාගෙන යන විමර්ශනයේ ස්වභාවය",
+
+    "securityArrangements": "පොත්, වාර්තා, ආදී දේවල් ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+    "preventionArrangements": "අලාභ වාර්තාව ආරක්ෂා කිරීම සඳහා ගත් විධිවිධාන",
+
+    "headOfDepartment": "දෙපාර්තමේන්තු ප්‍රධානියා",
+
+    "approval": "අනුමැතිය",
+
+    "submit": "වාර්තාව ඉදිරිපත් කරන්න"
+  },
+  "fr104_4": {
+    "title": "මු. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ අවසාන වාර්තාව",
+    "subtitle": "නොසැලකිල්ල හා අයකර ගැනීමේ තක්සේරුව",
+
+    "sections": {
+      "generalInformation": "සාමාන්‍ය තොරතුරු",
+      "lossDetails": "අලාභ පිළිබඳ විස්තර",
+      "causeOfLoss": "අලාභයට හේතුව",
+      "lostItems": "අහිමි වූ භාණ්ඩ",
+      "responsibleOfficers": "වගකිව යුතු නිලධාරීන්",
+      "policeInformation": "පොලිස් තොරතුරු",
+      "investigation": "විමර්ශන සොයාගැනීම්",
+      "recoveryInformation": "අයකර ගැනීමේ තොරතුරු",
+      "insuranceInformation": "රක්ෂණ තොරතුරු",
+      "boardOfInquiry": "විමර්ශන මණ්ඩලය",
+      "recommendations": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "approval": "අනුමැතිය",
+      "legalAction": "ගත් නීතිමය ක්‍රියාමාර්ග පිළිබඳ විස්තර"
+    },
+    "generalInformation": {
+      "referenceNo": "යොමු අංකය",
+      "ministry": "අමාත්‍යාංශය / දෙපාර්තමේන්තුව",
+      "lossDate": "අලාභ දිනය",
+      "lossTime": "අලාභ වූ වේලාව",
+      "location": "ස්ථානය",
+      "preliminaryReportRefNo": "ප්‍රරම්භක වාර්තාව - යොමු අංකය",
+      "preliminaryReportDate": "ප්‍රරම්භක වාර්තා දිනය"
+    },
+
+    "lossDetails": {
+      "particulars": "අලාභය පිළිබඳ විස්තර",
+      "circumstances": "අලාභය සිදුවූ ආකාරය"
+    },
+
+    "causeOfLoss": {
+      "label": "නොසැලකිල්ල, ප්‍රමාදය, අතපසුකිරීම් හෝ වෙනත් හේතු"
+    },
+
+    "lostItems": {
+      "description": "විස්තරය",
+      "unit": "ඒකකය",
+      "quantity": "ප්‍රමාණය",
+      "estimatedCost": "ඇස්තමේන්තුගත වටිනාකම",
+      "replacementCost": "ප්‍රතිස්ථාපන වටිනාකම",
+      "originalCost": "මුල් වටිනාකම",
+      "addItem": "භාණ්ඩයක් එක් කරන්න",
+      "remove": "ඉවත් කරන්න"
+    },
+
+    "officers": {
+      "name": "නිලධාරියාගේ නම",
+      "designation": "තනතුර",
+      "responsibility": "වගකීමේ ස්වභාවය",
+      "disciplinaryAction": "ගත් විනය ක්‍රියාමාර්ග",
+      "punishment": "දඬුවම් විස්තර",
+      "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+      "removeOfficer": "නිලධාරියා ඉවත් කරන්න"
+    },
+
+    "police": {
+      "station": "පොලිස් ස්ථානය",
+      "caseNumber": "නඩු අංකය",
+      "officerName": "නිලධාරියාගේ නම",
+      "reportDate": "වාර්තා දිනය",
+      "attachReport": "පොලිස් වාර්තාවේ සාරාංශය අමුණන්න." 
+    },
+    "legalAction": {
+      "courtName": "අධිකරණයේ නම",
+      "caseNo": "නඩු අංකය",
+      "courtOrder": "අධිකරණ නියෝගය",
+      "courtOrderSummary": "අධිකරණ නියෝගයේ සාරාංශය",
+      "attachOrder": "අධිකරණ නියෝගයේ පිටපත අමුණන්න"
+    },
+    "investigation": {
+      "findings": "විමර්ශන සොයාගැනීම්"
+    },
+
+    "recovery": {
+      "officer": "නිලධාරියාගේ නම",
+      "amount": "අයකරගත යුතු මුදල",
+      "method": "අයකර ගැනීමේ ක්‍රමය",
+      "addItem": "එක් කරන්න"
+    },
+
+    "insurance": {
+      "recoverableAmountWords": "රක්ෂණයෙන් / ඇපයෙන් අයකරගත හැකි මුදල (වචන වලින්)",
+      "policyNo": "ඔප්පු අංකය",
+      "amountInsured": "රක්ෂණය කර ඇති මුදල",
+      "amountRecoverable": "අයකරගත හැකි මුදල"
+    },
+
+    "board": {
+      "memberName": "සාමාජිකයාගේ නම",
+      "designation": "තනතුර",
+      "addMember": "මණ්ඩල සාමාජිකයෙකු එක් කරන්න",
+      "removeMember": "සාමාජිකයා ඉවත් කරන්න"
+    },
+
+    "recommendations": {
+      "title": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "label": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
+      "attachReport": "මණ්ඩල වාර්තාවේ පිටපත අමුණන්න"
+    },
+
+    "approval": {
+      "preparedSection": "සකස් කළ නිලධාරියා",
+      "headSection": "දෙපාර්තමේන්තු ප්‍රධානියා / සභාපති",
+      "secretarySection": "ලේකම් / බලයලත් නිලධාරියා",
+      "name": "නම",
+      "designation": "තනතුර",
+      "date": "දිනය",
+      "signature": "අත්සන"
+    },
+
+    "buttons": {
+      "print": "මුද්‍රණය",
+      "saveDraft": "කෙටුම්පත සුරකින්න",
+      "submit": "ඉදිරිපත් කරන්න",
+      "remove": "ඉවත් කරන්න",
+      "addLostItem": "අලාභ වූ භාණ්ඩයක් එක් කරන්න",
+      "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+      "removeOfficer": "නිලධාරියෙකු ඉවත් කරන්න",
+      "addBoardMember": "මණ්ඩල සාමාජිකයෙකු එක් කරන්න",
+      "removeBoardMember": "සාමාජිකයා ඉවත් කරන්න"
+    },
+    "preventiveActions": {
+      "title": "අනාගත වැළැක්වීමේ ක්‍රියාමාර්ග",
+      "label": "අනාගතයේදී සමාන අලාභයන් සිදුවීම වැළැක්වීම සඳහා ගෙන ඇති හෝ ගැනීමට යෝජිත පියවර",
+      "placeholder": "අනාගතයේදී සමාන අලාභයන් වැළැක්වීම සඳහා ගෙන ඇති හෝ යෝජිත ක්‍රියාමාර්ග සඳහන් කරන්න."
+    },
+
+    "parts": {
+      "a": "A කොටස",
+      "b": "B කොටස",
+      "c": "C කොටස",
+      "d": "D කොටස",
+      "e": "E කොටස",
+      "f": "F කොටස",
+      "g": "G කොටස",
+      "h": "H කොටස",
+      "i": "I කොටස",
+      "j": "J කොටස",
+      "k": "K කොටස",
+      "l": "L කොටස",
+      "m": "M කොටස",
+      "n": "N කොටස"
+    }
+  },
+  "digitalSignature": {
+    "title": "ඩිජිටල් අත්සන්",
+    "description": "නිලධාරීන්ගේ ඩිජිටල් අත්සන් කළමනාකරණය",
+    "searchOfficer": "නිලධාරියා සොයන්න",
+    "signatureAvailable": "අත්සන ලියාපදිංචි කර ඇත",
+    "signatureMissing": "අත්සන ලියාපදිංචි කර නොමැත",
+    "signaturePreview": "අත්සන පෙරදසුන",
+    "drawSignature": "අත්සන අඳින්න",
+    "updateSignature": "අත්සන යාවත්කාලීන කරන්න",
+    "removeSignature": "අත්සන ඉවත් කරන්න",
+    "uploadSignature": "අත්සන උඩුගත කරන්න",
+    "saveSignature": "අත්සන සුරකින්න",
+    "clear": "පිරිසිදු කරන්න"
+  },
+  "evidenceManagement": {
+    "title": "සාක්ෂි කළමනාකරණය",
+    "subtitle": "නඩු සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
+
+    "uploadEvidence": "සාක්ෂි උඩුගත කරන්න",
+    "upload": "උඩුගත කරන්න",
+    "cancel": "අවලංගු කරන්න",
+
+    "evidenceType": "සාක්ෂි වර්ගය",
+    "caseReference": "නඩු යොමුව",
+    "description": "විස්තරය",
+
+    "dragDrop": "ගොනු මෙතනට ඇද දමන්න",
+    "clickBrowse": "හෝ ගොනු තෝරා ගැනීමට ක්ලික් කරන්න",
+    "maxFileSize": "උපරිම ගොනු ප්‍රමාණය: 200MB",
+
+    "allEvidence": "සියලු සාක්ෂි",
+
+    "photos": "ඡායාරූප",
+    "videos": "වීඩියෝ",
+    "documents": "ලේඛන",
+    "statements": "ප්‍රකාශ",
+    "policeReports": "පොලිස් වාර්තා",
+
+    "search": "සොයන්න",
+    "allCases": "සියලු නඩු",
+
+    "preview": "පෙරදසුන",
+    "download": "බාගත කරන්න",
+    "delete": "මකන්න",
+
+    "noEvidenceFound": "සාක්ෂි හමු නොවීය",
+
+    "photo": "ඡායාරූපය",
+    "video": "වීඩියෝව",
+    "document": "ලේඛනය",
+    "statement": "ප්‍රකාශය",
+    "police": "පොලිස් වාර්තාව"
+  },
+  "adminPanel": {
+    "title": "පරිපාලන පැනලය",
+    "subtitle": "පද්ධති පරිපාලනය සහ වින්‍යාසය",
+
+    "tabs": {
+      "users": "පරිශීලකයින්",
+      "roles": "භූමිකා සහ අවසර",
+      "institutions": "ආයතන",
+      "vehicles": "වාහන",
+      "workflow": "කාර්ය ප්‍රවාහ නීති",
+      "notifications": "දැනුම්දීම්",
+      "audit": "විගණන ලොග්"
+    },
+
+    "users": {
+      "searchPlaceholder": "පරිශීලකයින් සොයන්න...",
+      "addUser": "පරිශීලකයෙකු එක් කරන්න",
+      "user": "පරිශීලකයා",
+      "username": "පරිශීලක නාමය",
+      "role": "භූමිකාව",
+      "institution": "ආයතනය",
+      "status": "තත්ත්වය",
+      "actions": "ක්‍රියාමාර්ග",
+      "active": "සක්‍රීය",
+      "edit": "සංස්කරණය",
+      "delete": "මකන්න"
+    },
+
+    "roles": {
+      "title": "භූමිකා සහ අවසර"
+    },
+
+    "institutions": {
+      "searchPlaceholder": "ආයතන සොයන්න...",
+      "addInstitution": "ආයතනයක් එක් කරන්න",
+      "district": "දිස්ත්‍රික්කය",
+      "director": "අධ්‍යක්ෂ",
+      "edit": "සංස්කරණය",
+      "viewCases": "නඩු බලන්න"
+    },
+
+    "vehicles": {
+      "searchPlaceholder": "වාහන සොයන්න...",
+      "registerVehicle": "වාහනය ලියාපදිංචි කරන්න",
+      "registrationNumber": "ලියාපදිංචි අංකය",
+      "type": "වර්ගය",
+      "makeYear": "නිෂ්පාදකයා සහ වර්ෂය",
+      "institution": "ආයතනය",
+      "incidents": "සිදුවීම්",
+      "status": "තත්ත්වය",
+      "active": "සක්‍රීය",
+      "underRepair": "අලුත්වැඩියාවේ",
+      "inactive": "අක්‍රීය"
+    },
+
+    "workflow": {
+      "description": "අනතුරු නඩු සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
+      "appliesTo": "අදාළ වන්නේ",
+
+      "rules": {
+        "autoEscalate": "පැය 48ක් තුළ ක්‍රියාමාර්ගයක් නොමැති නම් ස්වයංක්‍රීයව උත්සන්න කරන්න",
+        "smsNotification": "නව පොරොත්තු නඩුවක් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
+        "mandatoryComment": "ප්‍රතික්ෂේප කිරීමේදී අනිවාර්ය අදහසක් එක් කිරීම අවශ්‍ය වේ",
+        "skipInvestigation": "සුළු නඩු සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
+        "autoForward": "අමාත්‍යාංශ ලේකම් අනුමැතියෙන් පසු CAO වෙත ස්වයංක්‍රීයව යොමු කරන්න",
+        "boardInquiry": "රු. මිලියන 1ට වැඩි පාඩු සඳහා පරීක්ෂණ මණ්ඩලයක් අවශ්‍ය වේ"
+      }
+    },
+
+    "notifications": {
+      "addRule": "නීතියක් එක් කරන්න",
+      "to": "වෙත",
+      "via": "හරහා",
+
+      "triggers": {
+        "newAccidentReport": "නව අනතුරු වාර්තාව",
+        "approvalRequired": "අනුමැතිය අවශ්‍යයි",
+        "caseOverdue": "නඩුව ප්‍රමාද වී ඇත (දින 7)",
+        "investigationComplete": "විමර්ශනය සම්පූර්ණයි",
+        "pdfGenerated": "PDF වාර්තාව ජනනය කරන ලදී"
+      }
+    },
+
+    "audit": {
+      "searchPlaceholder": "විගණන ලොග් සොයන්න...",
+      "exportCsv": "CSV ලෙස අපනයනය කරන්න",
+      "time": "වේලාව",
+      "user": "පරිශීලකයා",
+      "action": "ක්‍රියාව",
+      "resource": "සම්පත",
+      "ipAddress": "IP ලිපිනය",
+      "status": "තත්ත්වය",
+      "success": "සාර්ථකයි",
+      "failed": "අසාර්ථකයි"
+    },
+
+    "auditActions": {
+      "userCreated": "පරිශීලකයා නිර්මාණය කරන ලදී",
+      "caseUpdated": "නඩුව යාවත්කාලීන කරන ලදී",
+      "evidenceUpload": "සාක්ෂි උඩුගත කරන ලදී",
+      "loginFailed": "පිවිසුම අසාර්ථක විය",
+      "caseApproved": "නඩුව අනුමත කරන ලදී",
+      "pdfGenerated": "PDF ජනනය කරන ලදී",
+      "vehicleAdded": "වාහනය එක් කරන ලදී"
+    },
+
+    "notificationChannels": {
+      "email": "විද්‍යුත් තැපෑල",
+      "sms": "SMS",
+      "system": "පද්ධතිය",
+      "emailSms": "විද්‍යුත් තැපෑල + SMS",
+      "emailSystem": "විද්‍යුත් තැපෑල + පද්ධතිය"
+    }
+  },
+  "approvalWorkflow": {
+    "title": "අනුමත කිරීමේ ක්‍රියාවලිය",
+    "subtitle": "බහු මට්ටමේ අනුමත කිරීමේ දාම කළමනාකරණය",
+
+    "selectCase": "නඩුව තෝරන්න",
+
+    "approvalChain": "අනුමත කිරීමේ දාමය",
+    "approvalHistory": "අනුමත කිරීමේ ඉතිහාසය",
+
+    "approved": "අනුමතයි",
+    "inProgress": "ක්‍රියාත්මක වේ",
+    "pending": "අපේක්ෂිතයි",
+    "rejected": "ප්‍රතික්ෂේපයි",
+
+    "act": "ක්‍රියා කරන්න",
+    "review": "සමාලෝචනය",
+
+    "approvalDecision": "අනුමත තීරණය",
+    "comments": "අදහස්",
+    "commentsPlaceholder": "ඔබගේ අදහස් මෙහි ඇතුළත් කරන්න...",
+
+    "approve": "අනුමත කරන්න",
+    "reject": "ප්‍රතික්ෂේප කරන්න",
+    "requestChanges": "වෙනස්කම් ඉල්ලන්න",
+
+    "cancel": "අවලංගු කරන්න",
+    "submitChanges": "වෙනස්කම් ඉල්ලන්න",
+
+    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන නඩු",
+
+    "investigationOfficerReview": "විමර්ශන නිලධාරි සමාලෝචනය",
+    "administrativeOfficerReview": "පරිපාලන නිලධාරි සමාලෝචනය",
+
+    "workflowSteps": {
+      "reportingOfficer": "වාර්තා කරන නිලධාරියා",
+      "investigationOfficer": "විමර්ශන නිලධාරියා",
+      "administrativeOfficer": "පරිපාලන නිලධාරියා",
+      "superintendent": "අධිකාරිවරයා",
+      "director": "අධ්‍යක්ෂවරයා"
+    }
+  }
+}
