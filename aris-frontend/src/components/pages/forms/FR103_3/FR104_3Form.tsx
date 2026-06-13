@@ -21,32 +21,44 @@ const FR104_3Form = () => {
 
   const { t } = useTranslation();
 
+
   const [formData, setFormData] = useState<FR104_3Data>({
     department: "",
     date: "",
     place: "",
     loss: "",
+
     natureOfLoss: "",
     causeOfLoss: "",
+
     policeStation: "",
     policeReportDate: "",
+
     investigation: "",
     securityArrangements: "",
     preventionArrangements: "",
-   
+
+    // Approval Workflow
+    preparedBy: "",
+    preparedDesignation: "",
     preparedByUserId: "",
     preparedSignature: null,
     preparedDate: "",
 
+    headName: "",
+    headDesignation: "",
     headUserId: "",
     headSignature: null,
     headApprovalDate: "",
 
+    secretaryName: "",
+    secretaryDesignation: "",
     secretaryUserId: "",
     secretarySignature: null,
     secretaryApprovalDate: "",
+
     items: [],
-    officers: [],
+    officers:[]
   });
   const addItem = () => {
     setFormData((prev) => ({
@@ -125,10 +137,10 @@ const FR104_3Form = () => {
     }));
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | null) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field as keyof FR104_3Data]: value as any,
     }));
   };
 
