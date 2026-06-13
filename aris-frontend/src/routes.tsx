@@ -2,13 +2,14 @@ import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "@/components/templates/RootLayout/RootLayout";
 
-import Login from "@/components/pages/Login";
+import Login from "@/components/pages/auth/Login";
 import ReportPage from "@/components/pages/ReportPage";
 import InvestigationPage from "@/components/pages/InvestigationPage";
 import EvidencePage from "@/components/pages/EvidencePage";
 import { CaseManagement } from "@/components/pages/CaseManagement";
 import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
+import ForgotPassword from "@/components/pages/auth/ForgotPassword";
 
 // New pages
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
 
   {
     path: "/",
