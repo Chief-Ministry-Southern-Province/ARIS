@@ -140,7 +140,7 @@ const FR104_3Form = () => {
   const handleChange = (field: string, value: string | null) => {
     setFormData((prev) => ({
       ...prev,
-      [field as keyof FR104_3Data]: value as any,
+      [field as keyof FR104_3Data]: value as string,
     }));
   };
 
