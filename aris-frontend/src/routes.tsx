@@ -11,11 +11,11 @@ import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
 import ForgotPassword from "@/components/pages/auth/ForgotPassword";
 
-// New pages
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
+import CaseDetails from "@/components/pages/CaseDetails";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -74,6 +74,12 @@ export const router = createBrowserRouter([
       {
         path: "cases/:caseId/evidence",
         element: <EvidencePage />,
+      },
+
+      // Case Details
+      {
+        path: "cases/:caseId/details",
+        element: <CaseDetails />,
       },
 
       // Generate Forms

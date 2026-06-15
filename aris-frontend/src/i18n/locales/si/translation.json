@@ -565,5 +565,12 @@
       "superintendent": "අධිකාරිවරයා",
       "director": "අධ්‍යක්ෂවරයා"
     }
+  },
+  "caseDetails": {
+    "tabs": {
+      "details": "විස්තර",
+      "actions": "ක්‍රියාමාර්ග",
+      "workflow": "කාර්ය ප්‍රවාහය"
+    }
   }
 }

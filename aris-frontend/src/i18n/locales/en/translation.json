@@ -568,5 +568,14 @@
       "superintendent": "Superintendent",
       "director": "Director"
     }
+  },
+  "caseDetails": {
+    "title": "Case Details",
+    "subtitle": "View and manage case information, actions and workflow",
+    "tabs": {
+      "details": "Details",
+      "actions": "Actions",
+      "workflow": "Workflow"
+    }
   }
 }
