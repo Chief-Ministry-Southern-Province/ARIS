@@ -20,6 +20,9 @@
     "subtitle": "Government of Sri Lanka — Ministry of Health"
   },
   "common": {
+    "download": "Download",
+    "view": "View",
+    "preview": "Preview",
     "logout": "Sign Out"
   },
   "login": {
@@ -575,7 +578,8 @@
     "tabs": {
       "details": "Details",
       "actions": "Actions",
-      "workflow": "Workflow"
+      "workflow": "Workflow",
+      "evidence": "Evidence"
     }
   }
 }

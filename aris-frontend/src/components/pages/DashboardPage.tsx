@@ -4,6 +4,7 @@ import { RecentCasesTable } from "@/components/organisms/Dashboard/RecentCasesTa
 import { HotspotMapCard } from "@/components/organisms/Dashboard/HotspotMap";
 import { VehicleRisks } from "@/components/organisms/Dashboard/VehicleRisks";
 import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
+import AwaitingCases from "../organisms/workflow/AwaitingCases";
 
 import { t } from "i18next";
 import { AlertTriangle } from "lucide-react";
@@ -46,6 +47,7 @@ export default function DashboardPage() {
       </div>
 
       <RecentCasesTable />
+      <AwaitingCases />
     </div>
   );
 }

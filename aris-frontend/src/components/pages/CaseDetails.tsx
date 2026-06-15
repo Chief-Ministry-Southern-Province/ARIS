@@ -2,14 +2,16 @@ import { useState } from "react";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import DetailsTab from "@/components/organisms/CaseManagement/DetailsTab";
 import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
+import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
 import { useTranslation } from "react-i18next";
 
-import {FileText,ClipboardCheck,GitBranch} from "lucide-react";
+import {FileText,ClipboardCheck,GitBranch, Files} from "lucide-react";
  
 const caseDetailsTabs = [
     {id: "Details",icon: FileText,label: "Details",i18n: "caseDetails.tabs.details"},
     {id: "Action",icon: ClipboardCheck,label: "Actions",i18n: "caseDetails.tabs.actions"},
     {id: "Workflow",icon: GitBranch,label: "Workflow",i18n: "caseDetails.tabs.workflow"},
+    {id: "Evidence",icon: Files,label: "Evidence",i18n: "caseDetails.tabs.evidence"},
 ];
 
 function CaseDetails() {
@@ -51,6 +53,11 @@ function CaseDetails() {
           {/* case workflow */}
           {activeTab === "Workflow" && (
             <ApprovalWorkflow />
+          )}
+
+          {/* case evidence */}
+          {activeTab === "Evidence" && (
+            <EvidenceTab/>
           )}
 
         </div>

@@ -1,15 +1,8 @@
-import { ClipboardCheck, FileSearch, CheckCircle, FileText, Eye,UserPlus } from "lucide-react";
+import { ClipboardCheck, FileSearch, CheckCircle, FileText,UserPlus } from "lucide-react";
 import type { TFunction } from "i18next";
 
 export const getAction = (caseItem_id: number, t: TFunction) => {
   return [
-    {
-      label: t("caseManagement.actionButtons.viewEvidence"),
-      icon: Eye,
-      color:
-        "border-blue-200 text-blue-700 bg-blue-50/50 hover:bg-blue-50",
-      path: `/cases/${caseItem_id}/evidence`,
-    },
 
     {
       label: t("caseManagement.actionButtons.generateFR104_3"),
