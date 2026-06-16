@@ -3,15 +3,17 @@ import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import DetailsTab from "@/components/organisms/CaseManagement/DetailsTab";
 import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
 import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
+import InvestigationTeamTab from "@/components/organisms/CaseManagement/InvestigationTeamTab";
 import { useTranslation } from "react-i18next";
 
-import {FileText,ClipboardCheck,GitBranch, Files} from "lucide-react";
+import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck} from "lucide-react";
  
 const caseDetailsTabs = [
     {id: "Details",icon: FileText,label: "Details",i18n: "caseDetails.tabs.details"},
     {id: "Action",icon: ClipboardCheck,label: "Actions",i18n: "caseDetails.tabs.actions"},
     {id: "Workflow",icon: GitBranch,label: "Workflow",i18n: "caseDetails.tabs.workflow"},
     {id: "Evidence",icon: Files,label: "Evidence",i18n: "caseDetails.tabs.evidence"},
+    {id: "InvestigationTeam",icon: ShieldCheck,label: "Investigation Team",i18n: "caseDetails.tabs.investigationTeam"},
 ];
 
 function CaseDetails() {
@@ -58,6 +60,11 @@ function CaseDetails() {
           {/* case evidence */}
           {activeTab === "Evidence" && (
             <EvidenceTab/>
+          )}
+
+          {/* investigation team */}
+          {activeTab === "InvestigationTeam" && (
+            <InvestigationTeamTab />
           )}
 
         </div>

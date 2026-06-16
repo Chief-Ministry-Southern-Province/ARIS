@@ -4,7 +4,6 @@ import {
   Home,
   LogOut,
   ChevronRight,
-  ChevronDown,
   X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -28,8 +27,8 @@ export function Sidebar({
   const [collapsed, setCollapsed] =
     useState(false);
 
-  const [formsOpen, setFormsOpen] =
-    useState(false);
+  // const [formsOpen, setFormsOpen] =
+  //   useState(false);
 
   return (
     <>
@@ -132,79 +131,79 @@ export function Sidebar({
 
         <nav className="flex-1 overflow-y-auto hide-scrollbar p-3 space-y-1">
           {navItems.map((item) => {
-            if (item.children) {
-              return (
-                <div key={item.id}>
-                  <button
-                    onClick={() =>
-                      setFormsOpen(
-                        !formsOpen
-                      )
-                    }
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sidebar-accent transition-colors"
-                  >
-                    <item.icon size={18} />
+            // if (item.children) {
+            //   return (
+            //     <div key={item.id}>
+            //       <button
+            //         onClick={() =>
+            //           setFormsOpen(
+            //             !formsOpen
+            //           )
+            //         }
+            //         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-sidebar-accent transition-colors"
+            //       >
+            //         <item.icon size={18} />
 
-                    {!collapsed && (
-                      <>
-                        <span className="flex-1 text-left">
-                          {t(
-                            item.label
-                          )}
-                        </span>
+            //         {!collapsed && (
+            //           <>
+            //             <span className="flex-1 text-left">
+            //               {t(
+            //                 item.label
+            //               )}
+            //             </span>
 
-                        <ChevronDown
-                          size={16}
-                          className={
-                            formsOpen
-                              ? "rotate-180"
-                              : ""
-                          }
-                        />
-                      </>
-                    )}
-                  </button>
+            //             <ChevronDown
+            //               size={16}
+            //               className={
+            //                 formsOpen
+            //                   ? "rotate-180"
+            //                   : ""
+            //               }
+            //             />
+            //           </>
+            //         )}
+            //       </button>
 
-                  {!collapsed &&
-                    formsOpen && (
-                      <div className="ml-5 mt-1 border-l border-sidebar-border pl-3 space-y-1">
-                        {item.children.map(
-                          (
-                            child
-                          ) => (
-                            <NavLink
-                              key={
-                                child.id
-                              }
-                              to={
-                                child.path
-                              }
-                              onClick={() =>
-                                setMobileOpen(
-                                  false
-                                )
-                              }
-                              className={({
-                                isActive,
-                              }) =>
-                                `block px-3 py-2 rounded-lg text-sm transition-colors ${
-                                  isActive
-                                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                                    : "hover:bg-sidebar-accent"
-                                }`
-                              }
-                            >
-                              {t(
-                                child.label
-                              )}
-                            </NavLink>
-                          )
-                        )}
-                      </div>
-                    )}
-                </div>
-              );
-            }
+            //       {!collapsed &&
+            //         formsOpen && (
+            //           <div className="ml-5 mt-1 border-l border-sidebar-border pl-3 space-y-1">
+            //             {item.children.map(
+            //               (
+            //                 child
+            //               ) => (
+            //                 <NavLink
+            //                   key={
+            //                     child.id
+            //                   }
+            //                   to={
+            //                     child.path
+            //                   }
+            //                   onClick={() =>
+            //                     setMobileOpen(
+            //                       false
+            //                     )
+            //                   }
+            //                   className={({
+            //                     isActive,
+            //                   }) =>
+            //                     `block px-3 py-2 rounded-lg text-sm transition-colors ${
+            //                       isActive
+            //                         ? "bg-sidebar-primary text-sidebar-primary-foreground"
+            //                         : "hover:bg-sidebar-accent"
+            //                     }`
+            //                   }
+            //                 >
+            //                   {t(
+            //                     child.label
+            //                   )}
+            //                 </NavLink>
+            //               )
+            //             )}
+            //           </div>
+            //         )}
+            //     </div>
+            //   );
+            // }
 
             return (
               <NavLink

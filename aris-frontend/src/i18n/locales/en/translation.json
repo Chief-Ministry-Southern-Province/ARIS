@@ -579,7 +579,8 @@
       "details": "Details",
       "actions": "Actions",
       "workflow": "Workflow",
-      "evidence": "Evidence"
+      "evidence": "Evidence",
+      "investigationTeam": "Investigation Team"
     }
   }
 }
