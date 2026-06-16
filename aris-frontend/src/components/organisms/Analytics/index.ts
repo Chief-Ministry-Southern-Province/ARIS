@@ -1,12 +1,2 @@
 export { default, AnalyticsSkeleton } from "../../pages/Analytics";
-export { Header }                     from "./Header";
-export { KpiGrid }                    from "./KpiGrid";
-export { AccidentFrequencyChart }     from "./AccidentFrequencyChart";
-export { CostAnalysisChart }          from "./CostAnalysisChart";
-export { RecoveryAnalysisChart }      from "./RecoveryAnalysisChart";
-export { LossDistributionChart }      from "./LossDistributionChart";
-export { HighRiskVehiclesChart }      from "./HighRiskVehiclesChart";
-export { RepeatIncidentsTable }       from "./RepeatIncidentsTable";
-export { InstitutionComparisonChart } from "./InstitutionComparisonChart";
-export { GISHotspotsTable }           from "./GISHotspotsTable";
 export { Card, SectionTitle, tooltipStyle, GOV_COLORS } from "./shared";
