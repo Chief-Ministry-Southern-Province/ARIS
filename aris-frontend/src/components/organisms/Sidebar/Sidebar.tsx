@@ -51,11 +51,14 @@ export function Sidebar({
         }`}
         style={{
           width: collapsed ? 72 : 260,
+          background: "linear-gradient(180deg, #0F2460 0%, #1E3A8A 40%, #1E40AF 100%)",
+          boxShadow: "4px 0 24px rgba(30,64,175,0.18)"
         }}
       >
         {/* Header */}
 
-        <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border shrink-0">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border shrink-0"
+        >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-sidebar-primary/20 border border-sidebar-primary/30 flex items-center justify-center">
               <Shield className="text-sidebar-primary" />
@@ -67,7 +70,7 @@ export function Sidebar({
                   ARIS
                 </h2>
 
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-white/80">
                   {t("app.name")}
                 </p>
               </div>
@@ -107,7 +110,7 @@ export function Sidebar({
         {/* Ministry Badge */}
 
         {!collapsed && (
-          <div className="mx-3 mt-3 p-3 rounded-xl bg-sidebar-accent shrink-0">
+          <div className="mx-3 mt-3 p-3 rounded-xl bg-sidebar-primary/20 border border-sidebar-primary/30 shrink-0">
             <div className="flex gap-2">
               <Home
                 size={16}
@@ -119,7 +122,7 @@ export function Sidebar({
                   Ministry of Health
                 </p>
 
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-white/80">
                   Government of Sri Lanka
                 </p>
               </div>
@@ -252,18 +255,18 @@ export function Sidebar({
         {/* Footer */}
 
         {!collapsed && (
-          <div className="p-3 border-t border-sidebar-border shrink-0">
-            <div className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-accent">
+          <div className="p-3 border-t border-sidebar-border shrink-0 bg-sidebar-primary/20 border ">
+            <div className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-primary/20 border border-sidebar-primary/30">
               <div className="w-8 h-8 rounded-full bg-warning text-black flex items-center justify-center font-bold">
                 A
               </div>
 
-              <div className="min-w-0">
+              <div className="min-w-0 ">
                 <p className="text-xs font-semibold truncate">
                   Admin User
                 </p>
 
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="text-xs text-white/80 truncate">
                   System Administrator
                 </p>
               </div>

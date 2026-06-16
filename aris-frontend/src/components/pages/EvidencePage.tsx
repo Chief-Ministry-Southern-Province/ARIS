@@ -5,6 +5,7 @@ import type { EvidenceType } from "@/types/evidence.type";
 import { useTranslation } from "react-i18next";
 import EvidencePreviewModal from "@/components/organisms/Evidence/EvidencePreviewModal";
 import type { Evidence } from "@/types/evidence.type";
+import {FolderOpen} from "lucide-react";
 
 const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string; bg: string; label: string }> = {
   photo: { icon: Image, color: "text-blue-600", bg: "bg-blue-50", label: "Photos" },
@@ -31,12 +32,25 @@ function EvidencePage() {
     ...acc, [t]: mockEvidence.filter(e => e.type === t).length
   }), {} as Record<string, number>);
 
+  
+
   return (
     <div className="p-6 space-y-5">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-gray-900">{t("evidenceManagement.title")}</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{t("evidenceManagement.subtitle")}</p>
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+            <FolderOpen className="h-6 w-6 text-blue-700" />
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {t("evidenceManagement.title")}
+            </h1>
+
+            <p className="text-sm text-gray-500 mt-0.5">
+              {filtered.length} evidence items found
+            </p>
+          </div>
         </div>
       </div>
 

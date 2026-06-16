@@ -7,26 +7,48 @@ import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
 import AwaitingCases from "../organisms/workflow/AwaitingCases";
 
 import { t } from "i18next";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle,LayoutDashboard } from "lucide-react";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
 
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-xl font-bold text-foreground">
-            {t("dashboard.title")}
-          </h1>
-        </div>
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                <LayoutDashboard className="h-6 w-6 text-blue-700" />
+              </div>
 
-        <button
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-all shadow-sm hover:shadow-md
-          "
-        >
-          <AlertTriangle className="w-4 h-4" />
-          {t("dashboard.reportIncident")}
-        </button>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">
+                  {t("dashboard.title")}
+                </h1>
+
+                <p className="text-sm text-slate-500">
+                  Fleet Management Dashboard
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button
+            className="
+              inline-flex items-center gap-2
+              px-5 py-3
+              rounded-xl
+              bg-blue-800
+              text-white
+              text-sm font-semibold
+              hover:bg-blue-900
+              transition-all
+            "
+          >
+            <AlertTriangle className="h-4 w-4" />
+            {t("dashboard.reportIncident")}
+          </button>
+        </div>
       </div>
 
       <DashboardStats

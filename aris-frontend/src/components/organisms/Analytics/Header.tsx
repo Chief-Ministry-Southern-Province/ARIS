@@ -15,8 +15,8 @@ export default function Header({ period, onPeriodChange }: HeaderProps) {
         <div className="flex items-center gap-2 mb-1">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-gray-900">{t("evidenceManagement.title")}</h1>
-              <p className="text-sm text-gray-500 mt-0.5">{t("evidenceManagement.subtitle")}</p>
+              <h1 className="text-gray-900">{t("analytics.title")}</h1>
+              <p className="text-sm text-gray-500 mt-0.5">{t("analytics.subtitle")}</p>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@ export default function Header({ period, onPeriodChange }: HeaderProps) {
           onChange={(e) => onPeriodChange(e.target.value)}
           className="px-3 py-2 text-sm focus:outline-none rounded-sm"
           style={{
-            background: "#24508A",
+            background: "#115fdc",
             border: "1px solid #3A6AAA",
             color: "#E8F0F9",
           }}
@@ -39,7 +39,7 @@ export default function Header({ period, onPeriodChange }: HeaderProps) {
         <button
           className="flex items-center gap-2 px-3 py-2 text-sm rounded-sm transition-colors"
           style={{
-            background: "#24508A",
+            background: "#115fdc",
             border: "1px solid #3A6AAA",
             color: "#E8F0F9",
           }}
