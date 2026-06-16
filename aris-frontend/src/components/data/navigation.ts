@@ -4,7 +4,8 @@ import {
   FolderOpen,
   BarChart2,
   Settings,
-  FileSearch
+  FileSearch,
+  Bell
 } from "lucide-react";
 
 export const navItems = [
@@ -72,6 +73,11 @@ export const navItems = [
     path: "/analytics",
     icon: BarChart2,
     label: "nav.analytics",
+  },
+  { id: "notifications",
+    path: "/notifications",
+    icon: Bell,
+    label: "nav.notifications",
   },
   {
     id: "admin",

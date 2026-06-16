@@ -12,7 +12,8 @@
     "approvalWorkflow": "අනුමත කිරීමේ ක්‍රියාවලිය",
     "digitalSignatures": "ඩිජිටල් අත්සන්",
     "analytics": "විශ්ලේෂණ",
-    "adminPanel": "පරිපාලන පැනලය"
+    "adminPanel": "පරිපාලන පැනලය",
+    "notifications": "දැනුම්දීම්"
   },
   "app": {
     "name": "අනතුරු වාර්තා පද්ධතිය",
@@ -21,9 +22,6 @@
   },
   "common": {
     "logout": "ඉවත් වන්න"
-  },
-  "notifications": {
-    "title": "දැනුම්දීම්"
   },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",
@@ -484,7 +482,13 @@
       "addRule": "නීතියක් එක් කරන්න",
       "to": "වෙත",
       "via": "හරහා",
-
+      "title": "දැනුම්දීම්",
+      "subtitle": "පද්ධති දැනුම්දීම් සහ යාවත්කාලීන බැලීම",
+      "markAllRead": "සියල්ල කියවූ ලෙස සලකන්න",
+      "total": "මුළු දැනුම්දීම්",
+      "unread": "නොකියවූ",
+      "read": "කියවූ",
+      "view": "බලන්න",
       "triggers": {
         "newAccidentReport": "නව අනතුරු වාර්තාව",
         "approvalRequired": "අනුමැතිය අවශ්‍යයි",

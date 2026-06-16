@@ -12,7 +12,8 @@
     "approvalWorkflow": "Approval Workflow",
     "digitalSignatures": "Digital Signatures",
     "analytics": "Analytics",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "notifications": "Notifications"
   },
   "app": {
     "name": "Accident Reporting System",
@@ -137,6 +138,7 @@
     },
 
     "details": {
+      "caseId": "Case ID",
       "dateTime": "Date & Time",
       "location": "Location",
       "vehicle": "Vehicle",
@@ -497,7 +499,14 @@
         "caseOverdue": "Case Overdue (7 days)",
         "investigationComplete": "Investigation Complete",
         "pdfGenerated": "PDF Report Generated"
-      }
+      },
+      "title": "Notifications",
+      "subtitle": "View system alerts and updates",
+      "markAllRead": "Mark All as Read",
+      "total": "Total Notifications",
+      "unread": "Unread",
+      "read": "Read",
+      "view": "View"
     },
 
     "audit": {

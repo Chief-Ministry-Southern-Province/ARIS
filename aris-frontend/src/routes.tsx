@@ -10,6 +10,7 @@ import { CaseManagement } from "@/components/pages/CaseManagement";
 import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
 import ForgotPassword from "@/components/pages/auth/ForgotPassword";
+import Notifications from "@/components/pages/Notifications";
 
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
       {
         path: "cases/:caseId/approval-workflow",
         element: <ApprovalWorkflow />,
+      },
+      {
+        path: "notifications",
+        element: <Notifications />,
       },
 
       // {
