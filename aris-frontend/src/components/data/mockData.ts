@@ -355,3 +355,30 @@ export const driver = [
   { id: 2, name: "Kasun Perera" },
   { id: 3, name: "Nimal Fernando" },
 ]
+
+export const notifications = [
+  {
+    id: 1,
+    title: "New Accident Report Submitted",
+    description:
+      "Case ARIS-2025-001 has been reported and awaits review.",
+    time: "5 minutes ago",
+    color: "bg-red-500",
+  },
+  {
+    id: 2,
+    title: "Approval Pending",
+    description:
+      "FR104(3) for Case ARIS-2025-004 requires your approval.",
+    time: "30 minutes ago",
+    color: "bg-yellow-500",
+  },
+  {
+    id: 3,
+    title: "Investigator Assigned",
+    description:
+      "You have been assigned as Investigation Officer for Case ARIS-2025-007.",
+    time: "1 hour ago",
+    color: "bg-blue-500",
+  },
+];

@@ -10,12 +10,13 @@ import { CaseManagement } from "@/components/pages/CaseManagement";
 import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
 import ForgotPassword from "@/components/pages/auth/ForgotPassword";
+import Notifications from "@/components/pages/Notifications";
 
-// New pages
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
+import CaseDetails from "@/components/pages/CaseDetails";
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -76,6 +77,12 @@ export const router = createBrowserRouter([
         element: <EvidencePage />,
       },
 
+      // Case Details
+      {
+        path: "cases/:caseId/details",
+        element: <CaseDetails />,
+      },
+
       // Generate Forms
       {
         path: "cases/:caseId/fr104-3/generate",
@@ -90,6 +97,10 @@ export const router = createBrowserRouter([
       {
         path: "cases/:caseId/approval-workflow",
         element: <ApprovalWorkflow />,
+      },
+      {
+        path: "notifications",
+        element: <Notifications />,
       },
 
       // {

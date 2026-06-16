@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Filter, Eye, Workflow } from "lucide-react";
 import { mockCases } from "../../components/data/mockData";
-import CaseDetailTab from "@/components/organisms/CaseManagement/CaseDetailTab";
 import { useTranslation } from "react-i18next";
 
 export function CaseManagement() {
@@ -12,8 +11,6 @@ export function CaseManagement() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
-  const [selectedCase, setSelectedCase] =
-    useState<typeof mockCases[0] | null>(null);
 
   const filtered = mockCases.filter((c) => {
     const matchSearch =
@@ -143,8 +140,10 @@ export function CaseManagement() {
                     <div className="flex items-center gap-1">
                       {/* View */}
                       <button
-                        onClick={() =>
-                          setSelectedCase(c)
+                         onClick={() =>
+                          navigate(
+                            `/cases/${c.id}/details`
+                          )
                         }
                         className="p-1.5 rounded hover:bg-blue-50 text-blue-600 transition-colors"
                         title="View"
@@ -222,14 +221,6 @@ export function CaseManagement() {
         </div>
       </div>
 
-      {selectedCase && (
-        <CaseDetailTab
-          id={selectedCase.id}
-          onClose={() =>
-            setSelectedCase(null)
-          }
-        />
-      )}
     </div>
   );
 }
