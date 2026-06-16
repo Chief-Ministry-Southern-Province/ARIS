@@ -11,6 +11,7 @@ export default function RootLayout() {
   return (
     <div
       className="flex h-screen overflow-hidden bg-background"
+      style={{ background: "#F0F3F7" }}
     >
       <Sidebar
         mobileOpen={sidebarOpen}

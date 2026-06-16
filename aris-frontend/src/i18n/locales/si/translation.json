@@ -576,5 +576,55 @@
       "actions": "ක්‍රියාමාර්ග",
       "workflow": "කාර්ය ප්‍රවාහය"
     }
+  },
+   "analytics": {
+    "title": "විශ්ලේෂණ",
+    "description": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
+    "refresh": "නවතම දත්ත ලබා ගන්න",
+
+    "kpi": {
+      "accidentFrequencyMonthly": "අනතුරු සංඛ්‍යාතය (මාසික)",
+      "highRiskVehicles": "ඉහළ අවදානම් වාහන",
+      "totalCostImpact": "මුළු පිරිවැය බලපෑම",
+      "recoveryRate": "යථාප්‍රාප්ති අනුපාතය"
+    },
+
+    "charts": {
+      "accidentFrequencyTrend": "අනතුරු සංඛ්‍යාත ප්‍රවණතාව",
+      "costAnalysis": "පිරිවැය විශ්ලේෂණය",
+      "recoveryAnalysis": "යළිලැබීම් විශ්ලේෂණය",
+      "lossDistribution": "අලාභ බෙදාහැරීම",
+      "repeatIncidentsDriverAnalysis": "නැවත සිදුවීම් — රියදුරු විශ්ලේෂණය",
+      "institutionComparison": "ආයතන සංසන්දනය",
+      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්"
+    },
+
+    "legend": {
+      "accidents": "අනතුරු",
+      "totalLoss": "මුළු අලාභය",
+      "recovered": "අයකරගත් මුදල",
+      "insurance": "රක්ෂණ",
+      "disciplinary": "විනය ක්‍රියාමාර්ග",
+      "other": "වෙනත්",
+      "lossesLKR": "අලාභ (රු.)"
+    },
+
+    "table": {
+      "location": "ස්ථානය",
+      "coordinates": "ඛණ්ඩාංක",
+      "incidents": "සිදුවීම්",
+      "severity": "බරපතලත්වය",
+      "riskTrend": "අවදානම් ප්‍රවණතාව"
+    },
+
+    "severity": {
+      "high": "ඉහළ",
+      "medium": "මධ්‍යම",
+      "low": "අඩු"
+    },
+
+    "trend": {
+      "increasing": "වැඩිවෙමින් පවතී"
+    }
   }
 }
