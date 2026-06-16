@@ -1,4 +1,4 @@
-// Shared primitives used by all analytics chart components
+/* eslint-disable react-refresh/only-export-components */
 
 export const tooltipStyle = {
   backgroundColor: "#fff",

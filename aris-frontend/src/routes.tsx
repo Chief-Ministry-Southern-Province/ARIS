@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "@/components/templates/RootLayout/RootLayout";
@@ -20,6 +22,7 @@ import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
 
 import { lazy, Suspense } from "react";
+import LazyChart from "@/utils/LazyChart";
 
 const Analytics = lazy(() => import("@/components/pages/Analytics"));
 
@@ -148,7 +151,9 @@ export const router = createBrowserRouter([
         path: "analytics",
         element: (
           <Suspense fallback={<AnalyticsSkeleton />}>
-            <Analytics />
+            <LazyChart>
+              <Analytics />
+            </LazyChart>
           </Suspense>
         ),
       },
