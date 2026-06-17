@@ -1,4 +1,4 @@
-export type EvidenceType = "photo" | "police";
+export type EvidenceType = "photo" | "police" | "recommendation" | "courtOrder";
 
 export type Evidence = {
   id: string;

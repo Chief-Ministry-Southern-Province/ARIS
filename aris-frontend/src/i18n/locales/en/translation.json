@@ -403,6 +403,8 @@
     "documents": "Documents",
     "statements": "Statements",
     "policeReports": "Police Reports",
+    "recommendation": "Board Recommendations of Inquiry",
+    "courtOrder": "Court Orders",
 
     "search": "Search",
     "allCases": "All Cases",

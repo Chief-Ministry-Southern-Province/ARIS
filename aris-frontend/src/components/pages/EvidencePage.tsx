@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Upload, Image, Shield, Download, Eye, Trash, Search } from "lucide-react";
+import { Upload, Image, Shield, Download, Eye, Trash, Search, ClipboardCheck, Scale } from "lucide-react";
 import { mockEvidence } from "../../components/data/mockEvidence";
 import type { EvidenceType } from "@/types/evidence.type";
 import { useTranslation } from "react-i18next";
@@ -8,9 +8,11 @@ import type { Evidence } from "@/types/evidence.type";
 import {FolderOpen} from "lucide-react";
 
 const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string; bg: string; label: string }> = {
-  photo: { icon: Image, color: "text-blue-600", bg: "bg-blue-50", label: "Photos" },
-  police: { icon: Shield, color: "text-red-600", bg: "bg-red-50", label: "Police Reports" },
-};
+  photo: {icon: Image,color: "text-blue-600",bg: "bg-blue-50",label: "Photos"},
+  police: {icon: Shield,color: "text-red-600",bg: "bg-red-50",label: "Police Reports"},
+  recommendation: {icon: ClipboardCheck,color: "text-green-600",bg: "bg-green-50",label: "Board Recommendations"},
+  courtOrder: {icon: Scale, color: "text-purple-600",bg: "bg-purple-50",label: "Court Orders"},
+}
 
 function EvidencePage() {
 
@@ -55,7 +57,7 @@ function EvidencePage() {
       </div>
 
       {/* Type filter cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
         <button
           onClick={() => setActiveType("all")}
           className={`p-4 rounded-2xl border transition-all text-left ${
