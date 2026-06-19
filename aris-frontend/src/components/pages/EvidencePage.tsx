@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { Upload, Image, Shield, Download, Eye, Trash, Search } from "lucide-react";
+import { Upload, Image, Shield, Download, Eye, Trash, Search, ClipboardCheck, Scale } from "lucide-react";
 import { mockEvidence } from "../../components/data/mockEvidence";
 import type { EvidenceType } from "@/types/evidence.type";
 import { useTranslation } from "react-i18next";
 import EvidencePreviewModal from "@/components/organisms/Evidence/EvidencePreviewModal";
 import type { Evidence } from "@/types/evidence.type";
+import {FolderOpen} from "lucide-react";
 
 const typeConfig: Record<EvidenceType, { icon: React.ElementType; color: string; bg: string; label: string }> = {
-  photo: { icon: Image, color: "text-blue-600", bg: "bg-blue-50", label: "Photos" },
-  police: { icon: Shield, color: "text-red-600", bg: "bg-red-50", label: "Police Reports" },
-};
+  photo: {icon: Image,color: "text-blue-600",bg: "bg-blue-50",label: "Photos"},
+  police: {icon: Shield,color: "text-red-600",bg: "bg-red-50",label: "Police Reports"},
+  recommendation: {icon: ClipboardCheck,color: "text-green-600",bg: "bg-green-50",label: "Board Recommendations"},
+  courtOrder: {icon: Scale, color: "text-purple-600",bg: "bg-purple-50",label: "Court Orders"},
+}
 
 function EvidencePage() {
 
@@ -31,17 +34,30 @@ function EvidencePage() {
     ...acc, [t]: mockEvidence.filter(e => e.type === t).length
   }), {} as Record<string, number>);
 
+  
+
   return (
     <div className="p-6 space-y-5">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-gray-900">{t("evidenceManagement.title")}</h1>
-          <p className="text-sm text-gray-500 mt-0.5">{t("evidenceManagement.subtitle")}</p>
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+            <FolderOpen className="h-6 w-6 text-blue-700" />
+          </div>
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {t("evidenceManagement.title")}
+            </h1>
+
+            <p className="text-sm text-gray-500 mt-0.5">
+              {filtered.length} evidence items found
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Type filter cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
         <button
           onClick={() => setActiveType("all")}
           className={`p-4 rounded-2xl border transition-all text-left ${

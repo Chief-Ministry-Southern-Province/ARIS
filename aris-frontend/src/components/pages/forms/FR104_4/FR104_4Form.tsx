@@ -21,13 +21,14 @@ import {Printer,Save, CheckCircle} from "lucide-react";
 import {initialFormData} from "./initialFormData";
 import { users } from "@/components/data/mockData";
 import type { User } from "@/components/data/mockData";
-
-
+import ActionModal from "@/components/organisms/Forms/ActionModel";
+import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 
 export default function FR104_4Form() {
 
   const currentUser: User = users[0]; 
   const { t } = useTranslation();
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
 
   const [formData, setFormData] =
     useState<FR104_4FormData>(
@@ -220,6 +221,22 @@ export default function FR104_4Form() {
 
           <button
             type="button"
+            onClick={() => setIsActionModalOpen(true)}
+            className="
+              px-6 py-2.5
+              bg-blue-800
+              text-white
+              rounded-lg
+              hover:bg-blue-900
+              flex items-center gap-2
+            "
+          >
+            <CheckCircle size={18} />
+            Approve
+          </button>
+
+          <button
+            type="button"
             onClick={() => window.print()}
             className="
               px-5 py-2.5
@@ -267,6 +284,20 @@ export default function FR104_4Form() {
         </div>
       </form>
     </div>
+    {isActionModalOpen && (
+      <ActionModal
+        step={"confirm" as unknown as approvalWorkflowStep}
+        t={t}
+        onClose={(action, comment) => {
+          setIsActionModalOpen(false);
+
+          console.log("Action:", action);
+          console.log("Comment:", comment);
+
+          // Handle approve/reject/submit here
+        }}
+      />
+    )}
   </div>
 );
 }

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Filter, Eye, Workflow } from "lucide-react";
+import { Search, Filter} from "lucide-react";
 import { mockCases } from "../../components/data/mockData";
 import { useTranslation } from "react-i18next";
+import { FolderSearch } from "lucide-react";
 
 export function CaseManagement() {
   
@@ -31,15 +32,20 @@ export function CaseManagement() {
     <div className="p-6 space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-gray-900">
-            {t("caseManagement.title")}
-          </h1>
+        <div className="flex items-center gap-3">
+          <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+            <FolderSearch className="h-6 w-6 text-blue-700" />
+          </div>
 
-          <p className="text-sm text-gray-500 mt-0.5">
-            {filtered.length}{" "}
-            {t("caseManagement.casesFound")}
-          </p>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {t("caseManagement.title")}
+            </h1>
+
+            <p className="text-sm text-gray-500 mt-0.5">
+              {filtered.length} {t("caseManagement.casesFound")}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -98,11 +104,11 @@ export function CaseManagement() {
                   )}
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                {/* <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   {t(
                     "caseManagement.table.actions"
                   )}
-                </th>
+                </th> */}
               </tr>
             </thead>
 
@@ -110,7 +116,8 @@ export function CaseManagement() {
               {filtered.map((c) => (
                 <tr
                   key={c.id}
-                  className="hover:bg-blue-50/30 transition-colors"
+                  className="hover:bg-blue-50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/cases/${c.id}/details`)}
                 >
                   <td className="px-5 py-3">
                     <span className="font-mono text-xs font-semibold text-blue-700">
@@ -136,9 +143,9 @@ export function CaseManagement() {
                     {c.date}
                   </td>
 
-                  <td className="px-5 py-3">
+                  {/* <td className="px-5 py-3">
                     <div className="flex items-center gap-1">
-                      {/* View */}
+                      
                       <button
                          onClick={() =>
                           navigate(
@@ -150,8 +157,6 @@ export function CaseManagement() {
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </button>
-
-                      {/* Approval Workflow */}
                       <button
                         onClick={() =>
                           navigate(
@@ -164,7 +169,7 @@ export function CaseManagement() {
                         <Workflow className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

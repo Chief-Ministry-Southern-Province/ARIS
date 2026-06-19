@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createBrowserRouter } from "react-router-dom";
 
 import RootLayout from "@/components/templates/RootLayout/RootLayout";
@@ -11,12 +13,19 @@ import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
 import ForgotPassword from "@/components/pages/auth/ForgotPassword";
 import Notifications from "@/components/pages/Notifications";
+import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
+
+import { lazy, Suspense } from "react";
+import LazyChart from "@/utils/LazyChart";
+
+const Analytics = lazy(() => import("@/components/pages/Analytics"));
+
 // import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
 // import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
 
@@ -137,6 +146,16 @@ export const router = createBrowserRouter([
       {
         path: "signatures",
         element: <DigitalSignatures />,
+      },
+      {
+        path: "analytics",
+        element: (
+          <Suspense fallback={<AnalyticsSkeleton />}>
+            <LazyChart>
+              <Analytics />
+            </LazyChart>
+          </Suspense>
+        ),
       },
     ],
   },

@@ -403,6 +403,8 @@
     "documents": "Documents",
     "statements": "Statements",
     "policeReports": "Police Reports",
+    "recommendation": "Board Recommendations of Inquiry",
+    "courtOrder": "Court Orders",
 
     "search": "Search",
     "allCases": "All Cases",
@@ -591,5 +593,57 @@
       "evidence": "Evidence",
       "investigationTeam": "Investigation Team"
     }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Comprehensive accident analytics and insights",
+    "description": "Comprehensive accident analytics and insights",
+    "refresh": "Refresh",
+
+    "kpi": {
+      "accidentFrequencyMonthly": "Accident Frequency (Monthly)",
+      "highRiskVehicles": "High Risk Vehicles",
+      "totalCostImpact": "Total Cost Impact",
+      "recoveryRate": "Recovery Rate"
+    },
+
+    "charts": {
+      "accidentFrequencyTrend": "Accident Frequency Trend",
+      "costAnalysis": "Cost Analysis",
+      "recoveryAnalysis": "Recovery Analysis",
+      "lossDistribution": "Loss Distribution",
+      "repeatIncidentsDriverAnalysis": "Repeat Incidents — Driver Analysis",
+      "institutionComparison": "Institution Comparison",
+      "gisAccidentHotspots": "GIS Accident Hotspots"
+    },
+
+    "legend": {
+      "accidents": "Accidents",
+      "totalLoss": "Total Loss",
+      "recovered": "Recovered",
+      "insurance": "Insurance",
+      "disciplinary": "Disciplinary",
+      "other": "Other",
+      "lossesLKR": "Losses (LKR)"
+    },
+
+    "table": {
+      "location": "Location",
+      "coordinates": "Coordinates",
+      "incidents": "Incidents",
+      "severity": "Severity",
+      "riskTrend": "Risk Trend"
+    },
+
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+
+    "trend": {
+      "increasing": "Increasing"
+    }
   }
+  
 }
