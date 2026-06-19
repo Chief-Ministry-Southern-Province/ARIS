@@ -9,7 +9,7 @@ import '@/i18n'
 // virtual module "virtual:pwa-register" has no type declarations.
 (async () => {
   try {
-    // @ts-ignore
+    // @ts-expect-error: temporary fix for build compatibility
     const { registerSW } = await import('virtual:pwa-register');
     registerSW({ immediate: true });
   } catch (e) {

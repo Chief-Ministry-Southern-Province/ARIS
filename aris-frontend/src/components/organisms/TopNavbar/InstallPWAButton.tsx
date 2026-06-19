@@ -1,41 +1,45 @@
 import { useEffect, useState } from "react";
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 export default function InstallPWAButton() {
-  const [prompt, setPrompt] = useState<any>(null);
+  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-  const handler = (e: Event) => {
-    console.log("beforeinstallprompt fired");
-    e.preventDefault();
-    setPrompt(e);
-  };
+    const handler = (e: Event) => {
+      const beforeInstallPromptEvent = e as BeforeInstallPromptEvent;
+      alert("PWA EVENT FIRED");
+      e.preventDefault();
+      setPrompt(beforeInstallPromptEvent);
+    };
 
-  window.addEventListener(
-    "beforeinstallprompt",
-    handler as EventListener
-  );
+    window.addEventListener("beforeinstallprompt", handler);
 
-  return () => {
-    window.removeEventListener(
-      "beforeinstallprompt",
-      handler as EventListener
-    );
-  };
-}, []);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   const install = async () => {
     if (!prompt) return;
 
     prompt.prompt();
-    await prompt.userChoice;
-    setPrompt(null);
+
+    const result = await prompt.userChoice;
+
+    console.log(result);
   };
 
-  if (!prompt) return null;
-
   return (
-    <button onClick={install} className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90">
-      Install ARIS
+    <button
+      disabled={!prompt}
+      onClick={install}
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+    >
+      {prompt
+        ? "Install ARIS"
+        : "PWA Ready"}
     </button>
   );
 }
