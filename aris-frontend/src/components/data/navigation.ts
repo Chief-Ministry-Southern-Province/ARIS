@@ -11,7 +11,7 @@ import {
 export const navItems = [
   {
     id: "dashboard",
-    path: "/",
+    path: "/dashboard",
     icon: LayoutDashboard,
     label: "nav.dashboard",
   },

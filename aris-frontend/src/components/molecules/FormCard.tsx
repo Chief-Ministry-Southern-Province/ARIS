@@ -13,7 +13,7 @@ export const FormCard = ({
 }: FormCardProps) => {
   return (
     <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-4">
+      <div className="bg-linear-to-r from-blue-900 to-blue-800 px-6 py-4">
         <div className="flex items-center gap-3">
           <span className="bg-white text-blue-800 px-3 py-1 rounded-full text-xs font-bold">
             {part}

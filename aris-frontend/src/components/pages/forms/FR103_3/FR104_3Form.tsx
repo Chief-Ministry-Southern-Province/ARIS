@@ -325,72 +325,44 @@ const FR104_3Form = () => {
         </div>
 
         {/* Sticky Action Bar */}
-        <div className="sticky bottom-0 bg-white border border-slate-200 rounded-2xl shadow-md px-6 py-4 flex justify-end gap-4">
+        <div className="sticky bottom-0 bg-whiteborder-t border-slate-200 shadow-lg p-4">
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
+            {/* Submit */}
+            <button
+              type="submit"
+              className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
+              <CheckCircle size={18} />
+              Submit
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setIsActionModalOpen(true)}
-            className="
-              px-6 py-2.5
-              bg-blue-800
-              text-white
-              rounded-lg
-              hover:bg-blue-900
-              flex items-center gap-2
-            "
-          >
-            <CheckCircle size={18} />
-            Approve
-          </button>
+            {/* Approve */}
+            <button
+              type="button"
+              onClick={() => setIsActionModalOpen(true)}
+              className="  order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
+              <CheckCircle size={18} />
+              Approve
+            </button>
 
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="
-              px-5 py-2.5
-              border border-slate-300
-              rounded-lg
-              hover:bg-slate-50
-              flex items-center gap-2
-              text-slate-700
-            "
-          >
-            <Printer size={18} />
-            Print
-          </button>
+            {/* Save Draft */}
+            <button
+              type="button"
+              className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
+            >
+              <Save size={18} />
+              Save Draft
+            </button>
 
-          <button
-            type="button"
-            className="
-              px-5 py-2.5
-              border border-slate-300
-              rounded-lg
-              hover:bg-slate-50
-              flex items-center gap-2
-              text-slate-700
-            "
-          >
-            <Save size={18} />
-            Save Draft
-          </button>
-
-          <button
-            type="submit"
-            className="
-              px-6 py-2.5
-              bg-blue-800
-              text-white
-              rounded-lg
-              hover:bg-blue-900
-              flex items-center gap-2
-            "
-          >
-            <CheckCircle size={18} />
-            Submit
-          </button>
-
+            {/* Print */}
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="order-4 sm:order-1 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 " >
+              <Printer size={18} />
+              Print
+            </button>
+          </div>
         </div>
-
       </div>
       {isActionModalOpen && (
         <ActionModal

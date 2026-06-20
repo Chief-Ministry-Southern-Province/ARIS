@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "@/components/molecules/LanguageSwitcher";
 import { navItems } from "@/components/data/navigation";
 import NotificationDropdown from "@/components/organisms/Notification/NotificationDropdown";
+import UserMenu from "@/components/organisms/TopNavbar/UserMenu";
 
 interface TopNavbarProps {
   userName: string;
@@ -121,21 +122,11 @@ export function TopNavbar({
           </div>
 
           {/* User Info */}
-          <div className="flex items-center gap-2 border-l border-border pl-2 sm:pl-3">
-            <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-xs sm:text-sm">
-              {userAvatar}
-            </div>
-
-            <div className="hidden md:block">
-              <p className="text-xs font-semibold">
-                {userName}
-              </p>
-
-              <p className="text-xs text-muted-foreground">
-                {userRole}
-              </p>
-            </div>
-          </div>
+          <UserMenu 
+            userName={userName}
+            userRole={userRole}
+            userAvatar={userAvatar}
+          />
         </div>
       </div>
 

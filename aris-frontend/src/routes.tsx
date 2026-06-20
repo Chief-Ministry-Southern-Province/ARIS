@@ -5,150 +5,229 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "@/components/templates/RootLayout/RootLayout";
 
 import Login from "@/components/pages/auth/Login";
+import ForgotPassword from "@/components/pages/auth/ForgotPassword";
+import ChangePassword from "@/components/pages/auth/ChangePassword";
+import MyProfile from "@/components/pages/auth/MyProfile";
+
+import DashboardPage from "@/components/pages/DashboardPage";
 import ReportPage from "@/components/pages/ReportPage";
 import InvestigationPage from "@/components/pages/InvestigationPage";
 import EvidencePage from "@/components/pages/EvidencePage";
 import { CaseManagement } from "@/components/pages/CaseManagement";
-import DashboardPage from "@/components/pages/DashboardPage";
 import AdminPanel from "@/components/pages/AdminPanel";
-import ForgotPassword from "@/components/pages/auth/ForgotPassword";
 import Notifications from "@/components/pages/Notifications";
-import { AnalyticsSkeleton } from "@/components/pages/Analytics";
-
-import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
-import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
+import VehicleDetails from "@/components/pages/VehicleDetails";
+
+import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
+import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 
 import { lazy, Suspense } from "react";
 import LazyChart from "@/utils/LazyChart";
+import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 
 const Analytics = lazy(() => import("@/components/pages/Analytics"));
 
-// import FR104_4GeneratePage from "@/components/pages/FR104_4GeneratePage";
-// import FR109GeneratePage from "@/components/pages/FR109GeneratePage";
-
-// import FR104_3ViewPage from "@/components/pages/FR104_3ViewPage";
-// import FR104_4ViewPage from "@/components/pages/FR104_4ViewPage";
-// import FR109ViewPage from "@/components/pages/FR109ViewPage";
-
-// import AssignInvestigatorPage from "@/components/pages/AssignInvestigatorPage";
-// import ForwardApprovalPage from "@/components/pages/ForwardApprovalPage";
-
 export const router = createBrowserRouter([
+  
+  {
+    path: "/",
+    element: <Login />,
+  },
+
   {
     path: "/login",
     element: <Login />,
   },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />,
-    },
 
   {
-    path: "/",
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+
+  {
+    path: "/dashboard",
     element: <RootLayout />,
     children: [
       {
         index: true,
         element: <DashboardPage />,
       },
+    ],
+  },
 
+  {
+    path: "/report",
+    element: <RootLayout />,
+    children: [
       {
-        path: "report",
+        index: true,
         element: <ReportPage />,
       },
+    ],
+  },
 
+  {
+    path: "/investigation",
+    element: <RootLayout />,
+    children: [
       {
-        path: "investigation",
+        index: true,
         element: <InvestigationPage />,
       },
+    ],
+  },
 
+  {
+    path: "/evidence",
+    element: <RootLayout />,
+    children: [
       {
-        path: "evidence",
+        index: true,
         element: <EvidencePage />,
       },
+    ],
+  },
 
+  {
+    path: "/admin",
+    element: <RootLayout />,
+    children: [
       {
-        path: "admin",
+        index: true,
         element: <AdminPanel />,
       },
+    ],
+  },
 
+  {
+    path: "/cases",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases",
-        element: <CaseManagement  />,
+        index: true,
+        element: <CaseManagement />,
       },
+    ],
+  },
 
-      // View Evidence
+  {
+    path: "/cases/:caseId/evidence",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases/:caseId/evidence",
+        index: true,
         element: <EvidencePage />,
       },
+    ],
+  },
 
-      // Case Details
+  {
+    path: "/cases/:caseId/details",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases/:caseId/details",
+        index: true,
         element: <CaseDetails />,
       },
+    ],
+  },
 
-      // Generate Forms
+  {
+    path: "/cases/:caseId/fr104-3/generate",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases/:caseId/fr104-3/generate",
+        index: true,
         element: <FR104_3Form />,
       },
+    ],
+  },
 
+  {
+    path: "/cases/:caseId/fr104-4/generate",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases/:caseId/fr104-4/generate",
+        index: true,
         element: <FR104_4Form />,
       },
+    ],
+  },
 
+  {
+    path: "/cases/:caseId/approval-workflow",
+    element: <RootLayout />,
+    children: [
       {
-        path: "cases/:caseId/approval-workflow",
+        index: true,
         element: <ApprovalWorkflow />,
       },
+    ],
+  },
+
+  {
+    path: "/notifications",
+    element: <RootLayout />,
+    children: [
       {
-        path: "notifications",
+        index: true,
         element: <Notifications />,
       },
+    ],
+  },
 
-      // {
-      //   path: "cases/:caseId/fr109/generate",
-      //   element: <FR109GeneratePage />,
-      // },
-
-      // // View Forms
-      // {
-      //   path: "cases/:caseId/fr104-3/view",
-      //   element: <FR104_3ViewPage />,
-      // },
-
-      // {
-      //   path: "cases/:caseId/fr104-4/view",
-      //   element: <FR104_4ViewPage />,
-      // },
-
-      // {
-      //   path: "cases/:caseId/fr109/view",
-      //   element: <FR109ViewPage />,
-      // },
-
-      // // Workflow
-      // {
-      //   path: "cases/:caseId/assign-investigator",
-      //   element: <AssignInvestigatorPage />,
-      // },
-
-      // {
-      //   path: "cases/:caseId/forward-approval",
-      //   element: <ForwardApprovalPage />,
-      // },
+  {
+    path: "/profile",
+    element: <RootLayout />,
+    children: [
       {
-        path: "signatures",
+        index: true,
+        element: <MyProfile />,
+      },
+    ],
+  },
+
+  {
+    path: "/change-password",
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
+        element: <ChangePassword />,
+      },
+    ],
+  },
+
+  {
+    path: "/signatures",
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
         element: <DigitalSignatures />,
       },
+    ],
+  },
+  {
+    path: "/vehicles/:vehicleId/details",
+    element: <RootLayout />,
+    children: [
       {
-        path: "analytics",
+        index: true,
+        element: <VehicleDetails />,
+      },
+    ],
+  },
+
+  {
+    path: "/analytics",
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
         element: (
           <Suspense fallback={<AnalyticsSkeleton />}>
             <LazyChart>

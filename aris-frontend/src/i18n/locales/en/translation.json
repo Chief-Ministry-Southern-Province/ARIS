@@ -116,6 +116,7 @@
       "incident": "Incident",
       "institution": "Institution",
       "date": "Date",
+      "status": "Status",
       "actions": "Actions"
     },
 
