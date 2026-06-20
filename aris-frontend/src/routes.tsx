@@ -20,6 +20,8 @@ import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
+import ChangePassword from "@/components/pages/auth/ChangePassword";
+import MyProfile from "@/components/pages/auth/MyProfile";
 
 import { lazy, Suspense } from "react";
 import LazyChart from "@/utils/LazyChart";
@@ -110,6 +112,14 @@ export const router = createBrowserRouter([
       {
         path: "notifications",
         element: <Notifications />,
+      },
+      {
+        path: "change-password",
+        element: <ChangePassword />,
+      },
+      {
+        path: "profile",
+        element: <MyProfile />,
       },
 
       // {
