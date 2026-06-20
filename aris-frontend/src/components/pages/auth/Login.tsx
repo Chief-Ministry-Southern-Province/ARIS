@@ -53,7 +53,7 @@ function Login() {
         password,
       });
 
-      // navigate("/dashboard");
+      navigate("/dashboard");
     } catch {
       setError(t("login.loginFailed"));
     } finally {
@@ -295,6 +295,7 @@ function Login() {
                   type="submit"
                   disabled={loading}
                   className="w-full py-3.5 rounded-xl text-white font-semibold bg-linear-to-r from-blue-800 to-blue-600 hover:shadow-xl hover:scale-[1.01] transition-all disabled:opacity-70"
+
                 >
                   {loading
                     ? t("login.signingIn")
