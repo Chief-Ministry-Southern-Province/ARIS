@@ -19,6 +19,7 @@ import Notifications from "@/components/pages/Notifications";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
+import VehicleDetails from "@/components/pages/VehicleDetails";
 
 import FR104_3Form from "./components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "./components/pages/forms/FR104_4/FR104_4Form";
@@ -207,6 +208,16 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <DigitalSignatures />,
+      },
+    ],
+  },
+  {
+    path: "/vehicles/:vehicleId/details",
+    element: <RootLayout />,
+    children: [
+      {
+        index: true,
+        element: <VehicleDetails />,
       },
     ],
   },

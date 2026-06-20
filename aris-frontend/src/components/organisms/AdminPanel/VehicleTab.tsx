@@ -1,5 +1,6 @@
-import { Search, Plus, Edit2, Trash2 } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { mockVehicles } from "../../data/mockData";
 import AddVehicleForm from "@/components/pages/forms/common/AddVehicleForm";
@@ -7,7 +8,8 @@ import Modal from "@/components/molecules/Modal";
 
 const VehicleTab = () => {
   const [showAddVehicle, setShowAddVehicle] = useState(false);
-  
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -112,14 +114,21 @@ const VehicleTab = () => {
 
                 <td className="px-4 py-3">
                   <button
-                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors"
+                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
+                    title="View Vehicle"
+                    onClick={() => navigate(`/vehicles/${vehicle.id}/details`)}
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button
+                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
                     title="Edit Vehicle"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
 
                   <button
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
+                    className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
                     title="Delete Vehicle"
                   >
                     <Trash2 className="w-4 h-4" />
