@@ -47,7 +47,7 @@ const DetailsTab = ({ id }: { id: number }) => {
   return (
     <div className="space-y-6">
       {/* Summary Banner */}
-      <div className="bg-linear-to-r from-blue-600 to-blue-700 rounded-2xl p-5 text-white">
+      <div className="bg-linear-to-r from-blue-900 to-blue-800 rounded-2xl p-5 text-white">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <p className="text-blue-100 text-sm">

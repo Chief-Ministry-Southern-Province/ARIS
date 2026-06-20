@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, Filter} from "lucide-react";
 import { mockCases } from "../../components/data/mockData";
 import { useTranslation } from "react-i18next";
-import { FolderSearch } from "lucide-react";
+import { FolderSearch , Download} from "lucide-react";
 
 export function CaseManagement() {
   
@@ -11,7 +11,30 @@ export function CaseManagement() {
 
   const navigate = useNavigate();
 
+  const statusBadgeColors: Record<string, string> = {
+    "Pending Approval": "bg-yellow-100 text-yellow-800",
+    "Under Investigation": "bg-blue-100 text-blue-800",
+    "Approved": "bg-green-100 text-green-800",
+    "Rejected": "bg-red-100 text-red-800",
+    "Completed": "bg-gray-100 text-gray-800",
+    "Draft": "bg-gray-100 text-gray-800",
+    "In Progress": "bg-blue-100 text-blue-800",
+  };
+
+  const years = [
+    "all",
+    ...Array.from(
+      new Set(
+        mockCases.map((c) =>
+          new Date(c.date).getFullYear().toString()
+        )
+      )
+    ).sort((a, b) => Number(b) - Number(a)),
+  ];
+
   const [search, setSearch] = useState("");
+  const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
   const filtered = mockCases.filter((c) => {
     const matchSearch =
@@ -25,7 +48,20 @@ export function CaseManagement() {
         .toLowerCase()
         .includes(search.toLowerCase());
 
-    return matchSearch;
+    const matchYear =
+      selectedYear === "all" ||
+      new Date(c.date).getFullYear().toString() ===
+        selectedYear;
+
+    const matchStatus =
+      selectedStatus === "all" ||
+      c.status === selectedStatus;
+
+    return (
+      matchSearch &&
+      matchYear &&
+      matchStatus
+    );
   });
 
   return (
@@ -49,17 +85,17 @@ export function CaseManagement() {
         </div>
       </div>
 
-      {/* Search */}
+      {/* filters */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
         <div className="flex flex-wrap gap-3 items-center">
-          <div className="relative flex-1 min-w-48">
+
+          {/* Search */}
+          <div className="relative flex-1 min-w-56">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
 
             <input
               type="text"
-              placeholder={`${t(
-                "caseManagement.search"
-              )}...`}
+              placeholder={`${t("caseManagement.search")}...`}
               value={search}
               onChange={(e) =>
                 setSearch(e.target.value)
@@ -68,8 +104,73 @@ export function CaseManagement() {
             />
           </div>
 
+          {/* Year Filter */}
+          <select
+            value={selectedYear}
+            onChange={(e) =>
+              setSelectedYear(e.target.value)
+            }
+            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">
+              All Years
+            </option>
+
+            {years
+              .filter((y) => y !== "all")
+              .map((year) => (
+                <option
+                  key={year}
+                  value={year}
+                >
+                  {year}
+                </option>
+              ))}
+          </select>
+
+          {/* Status Filter */}
+          <select
+            value={selectedStatus}
+            onChange={(e) =>
+              setSelectedStatus(e.target.value)
+            }
+            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">
+              All Status
+            </option>
+
+            <option value="Pending">
+              Pending
+            </option>
+
+            <option value="Under Investigation">
+              Under Investigation
+            </option>
+
+            <option value="Approved">
+              Approved
+            </option>
+
+            <option value="Rejected">
+              Rejected
+            </option>
+          </select>
+
+          <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
+            <Filter className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-blue-700">
+              {filtered.length} Results
+            </span>
+          </div>
+          
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
+            <button
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
           </div>
         </div>
       </div>
@@ -101,6 +202,12 @@ export function CaseManagement() {
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   {t(
                     "caseManagement.table.date"
+                  )}
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  {t(
+                    "caseManagement.table.status"
                   )}
                 </th>
 
@@ -141,6 +248,18 @@ export function CaseManagement() {
 
                   <td className="px-5 py-3 text-xs text-gray-500 whitespace-nowrap">
                     {c.date}
+                  </td>
+
+                  <td className="px-5 py-3 text-xs text-gray-600">
+                    {statusBadgeColors[c.status] ? (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[c.status]}`}
+                      >
+                        {c.status}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500">{c.status}</span>
+                    )}
                   </td>
 
                   {/* <td className="px-5 py-3">
