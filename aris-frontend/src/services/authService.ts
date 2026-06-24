@@ -40,18 +40,18 @@ export const sendOtp = async (nic: string) => {
   return response.data;
 }
 
-export const verifyOtp = async (nic: string,otp: string) => {
+export const verifyOtp = async (mobile: string,otp: string) => {
   return api.post("/forgot-password/verify-otp", {
-    nic,
+    mobile,
     otp,
   });
 };
 
-export const resetPassword = async (nic: string,otp: string,password: string) => {
+export const resetPassword = async (mobile: string,otp: string,password: string,password_confirmation: string) => {
   return api.post("/forgot-password/reset-password", {
-    nic,
+    mobile,
     otp,
     password,
-    password_confirmation: password,
+    password_confirmation,
   });
 };

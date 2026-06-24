@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, logout,changePassword } from "@/services/authService";
+import { login, logout,changePassword,sendOtp,verifyOtp,resetPassword} from "@/services/authService";
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -106,6 +106,104 @@ export const useChangePassword = () => {
 
   return {
     changePasswordUser,
+    loading,
+    error,
+  };
+};
+
+
+
+export const useSendOtp = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const sendOtpUser = async (nic: string) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await sendOtp(nic);
+
+      return response;
+      
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Send OTP failed";    
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    sendOtpUser,
+    loading,
+    error,
+  };
+};
+
+export const useVerifyOtp = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const verifyOtpUser = async (mobile: string, otp: string) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await verifyOtp(mobile, otp);
+
+      return response;
+      
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Verify OTP failed";    
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    verifyOtpUser,
+    loading,
+    error,
+  };
+};
+
+export const useResetPassword = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const resetPasswordUser = async (mobile: string, otp: string, new_password: string, new_password_confirmation: string) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await resetPassword(mobile, otp, new_password, new_password_confirmation);
+
+      return response;
+      
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Reset password failed";    
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    resetPasswordUser,
     loading,
     error,
   };
