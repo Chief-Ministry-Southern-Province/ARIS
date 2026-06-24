@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "@/services/authService";
+import { login, logout } from "@/services/authService";
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -45,4 +45,36 @@ export const useLogin = () => {
     loading,
     error,
   };
+};
+
+export const useLogout = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const logoutUser = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      await logout();
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Logout failed";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+    
+  }
+  return{
+      logoutUser,
+      loading,
+      error
+    }
 };

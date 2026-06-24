@@ -3,6 +3,7 @@ import {Shield,Eye,EyeOff,Globe,Lock,User,AlertCircle,CheckCircle} from "lucide-
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {useLogin} from "@/hooks/useAuth"
+import { toast } from "react-toastify";
 
 function Login() {
 
@@ -27,9 +28,11 @@ function Login() {
     e.preventDefault();
     try {
       await loginUser(username, password, rememberMe);
+      toast.success("Login successful");
       navigate("/dashboard");
     } catch (err: unknown) {
       console.log(err);
+      toast.error("Invalid username or password");
     }
   };
 
