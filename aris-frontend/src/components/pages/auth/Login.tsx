@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {Shield,Eye,EyeOff,Globe,Lock,User,AlertCircle,CheckCircle} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import {useLogin} from "@/hooks/useAuth"
+import { toast } from "react-toastify";
 
 function Login() {
 
@@ -14,50 +16,23 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(Boolean(savedUsername));
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [capsLock, setCapsLock] = useState(false);
 
   const onLanguageChange = (lang: "en" | "si") => {
     i18n.changeLanguage(lang);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const {loginUser,loading,error} = useLogin();
+
+ const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    setError("");
-
-    if (!username.trim()) {
-      setError(t("login.usernameRequired"));
-      return;
-    }
-
-    if (!password.trim()) {
-      setError(t("login.passwordRequired"));
-      return;
-    }
-
     try {
-      setLoading(true);
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedUsername", username);
-      } else {
-        localStorage.removeItem("rememberedUsername");
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log({
-        username,
-        password,
-      });
-
+      await loginUser(username, password, rememberMe);
+      toast.success("Login successful");
       navigate("/dashboard");
-    } catch {
-      setError(t("login.loginFailed"));
-    } finally {
-      setLoading(false);
+    } catch (err: unknown) {
+      console.log(err);
+      toast.error("Invalid username or password");
     }
   };
 

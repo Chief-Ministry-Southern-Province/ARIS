@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, KeyRound, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLogout } from "@/hooks/useAuth";
 
 interface UserMenuProps {
   userName: string;
@@ -37,8 +38,10 @@ export default function UserMenu({
     };
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const { logoutUser } = useLogout();
+
+  const handleLogout = async () => {
+    await logoutUser();
     navigate("/login");
   };
 

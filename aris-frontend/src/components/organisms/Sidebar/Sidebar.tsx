@@ -1,15 +1,12 @@
 import { useState } from "react";
-import {
-  Shield,
-  Home,
-  LogOut,
-  ChevronRight,
-  X,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import {Shield, Home, LogOut, ChevronRight, X,} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {swalConfirm} from "@/utils/swal";
 
 import { navItems } from "../../data/navigation";
+import {useLogout} from "@/hooks/useAuth"
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -24,8 +21,24 @@ export function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation();
 
+  const navigate = useNavigate();
+
   const [collapsed, setCollapsed] =
     useState(false);
+
+  const {logoutUser} = useLogout();
+
+  const handleLogout = async () => {
+    const isConfirmed = await swalConfirm(
+      "Logout",
+      "Are you sure you want to logout?"
+    );
+
+    if (isConfirmed) {
+      await logoutUser();
+      navigate("/login");
+    }
+  };
 
   // const [formsOpen, setFormsOpen] =
   //   useState(false);
@@ -272,7 +285,9 @@ export function Sidebar({
               </div>
             </div>
 
-            <button className="mt-2 w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors">
+            <button className="mt-2 w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors"
+            onClick={() => {handleLogout()}}
+            >
               <LogOut size={16} />
 
               {t("common.logout")}
