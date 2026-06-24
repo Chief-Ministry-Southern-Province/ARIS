@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, logout } from "@/services/authService";
+import { login, logout,changePassword } from "@/services/authService";
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -77,4 +77,36 @@ export const useLogout = () => {
       loading,
       error
     }
+};
+export const useChangePassword = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const changePasswordUser = async (current_password: string, new_password: string, new_password_confirmation: string) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await changePassword(current_password, new_password, new_password_confirmation);
+
+      return response;
+      
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Change password failed";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    changePasswordUser,
+    loading,
+    error,
+  };
 };

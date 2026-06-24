@@ -20,10 +20,13 @@ export const logout = async () => {
   return response.data;
 }
 
-export const changePassword = async (current_password: string, new_password: string) => {
+
+
+export const changePassword = async (current_password: string, new_password: string, new_password_confirmation: string) => {
   const response = await api.post("/change-password", {
     current_password,
-    new_password
+    new_password,
+    new_password_confirmation
   });
 
   return response.data;
