@@ -10,8 +10,8 @@
       public function __construct()
       {
           $this->twilio = new Client(
-              env('TWILIO_SID'),
-              env('TWILIO_AUTH_TOKEN')
+              config('services.twilio.sid'),
+              config('services.twilio.token')
           );
       }
 
@@ -22,7 +22,7 @@
           $this->twilio->messages->create(
               $mobile,
               [
-                  'from' => env('TWILIO_PHONE_NUMBER'),
+                  'from' => config('services.twilio.from'),
                   'body' => "Your ARIS verification code is: {$otp}",
               ]
           );
