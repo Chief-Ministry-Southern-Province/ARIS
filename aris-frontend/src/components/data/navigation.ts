@@ -1,23 +1,35 @@
 import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,} from "lucide-react";
 
+export const FULL_ACCESS_ROLES = [
+  "system_admin",
+  "subject_officer",
+  "administrative_officer",
+  "medical_superintendent",
+  "regional_director",
+  "provincial_director",
+  "deputy_director",
+  "secretary",
+  "assistant_secretary",
+  "senior_assistant_secretary",
+];
+
+export const REPORT_ROLES = [
+  "subject_officer",
+  "driver",
+];
+
+export const NOTIFICATION_ROLES = [
+  ...FULL_ACCESS_ROLES,
+  "driver",
+];
+
 export const navItems = [
   {
     id: "dashboard",
     path: "/dashboard",
     icon: LayoutDashboard,
     label: "nav.dashboard",
-    roles: [
-      "system_admin",
-      "subject_officer",
-      "administrative_officer",
-      "medical_superintendent",
-      "regional_director",
-      "provincial_director",
-      "deputy_director",
-      "secretary",
-      "assistant_secretary",
-      "senior_assistant_secretary",
-    ],
+    roles: FULL_ACCESS_ROLES,
   },
 
   {
@@ -25,10 +37,7 @@ export const navItems = [
     path: "/report",
     icon: AlertTriangle,
     label: "nav.reportAccident",
-    roles: [
-      "driver",
-      "subject_officer",
-    ],
+    roles: REPORT_ROLES,
   },
 
   {
@@ -36,18 +45,7 @@ export const navItems = [
     path: "/cases",
     icon: FolderOpen,
     label: "nav.caseManagement",
-    roles: [
-      "system_admin",
-      "subject_officer",
-      "administrative_officer",
-      "medical_superintendent",
-      "regional_director",
-      "provincial_director",
-      "deputy_director",
-      "secretary",
-      "assistant_secretary",
-      "senior_assistant_secretary",
-    ],
+    roles: FULL_ACCESS_ROLES,
   },
 
   {
@@ -55,11 +53,7 @@ export const navItems = [
     path: "/evidence",
     icon: FileSearch,
     label: "nav.evidence",
-    roles: [
-      "system_admin",
-      "subject_officer",
-      "administrative_officer",
-    ],
+    roles: FULL_ACCESS_ROLES,
   },
 
   {
@@ -67,12 +61,7 @@ export const navItems = [
     path: "/analytics",
     icon: BarChart2,
     label: "nav.analytics",
-    roles: [
-      "system_admin",
-      "provincial_director",
-      "regional_director",
-      "secretary",
-    ],
+    roles: FULL_ACCESS_ROLES,
   },
 
   {
@@ -80,19 +69,7 @@ export const navItems = [
     path: "/notifications",
     icon: Bell,
     label: "nav.notifications",
-    roles: [
-      "system_admin",
-      "driver",
-      "subject_officer",
-      "administrative_officer",
-      "medical_superintendent",
-      "regional_director",
-      "provincial_director",
-      "deputy_director",
-      "secretary",
-      "assistant_secretary",
-      "senior_assistant_secretary",
-    ],
+    roles: NOTIFICATION_ROLES,
   },
 
   {
@@ -100,9 +77,6 @@ export const navItems = [
     path: "/admin",
     icon: Settings,
     label: "nav.adminPanel",
-    roles: [
-      "system_admin",
-      
-    ],
+    roles: FULL_ACCESS_ROLES,
   },
 ];
