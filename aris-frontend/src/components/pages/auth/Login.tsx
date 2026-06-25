@@ -4,8 +4,11 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {useLogin} from "@/hooks/useAuth"
 import { toast } from "react-toastify";
+import {useAuth} from "@/context/auth/AuthContext";
 
 function Login() {
+
+  const {user} = useAuth();
 
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -25,12 +28,19 @@ function Login() {
   const {loginUser,loading,error} = useLogin();
 
  const handleLogin = async (e: React.FormEvent) => {
+  
     e.preventDefault();
+    
     try {
-      await loginUser(username, password, rememberMe);
+
+      const response = await loginUser(username, password, rememberMe);
+      user(response.token, response.role);
+
       toast.success("Login successful");
+
       navigate("/dashboard");
-    } catch (err: unknown) {
+    } 
+    catch (err: unknown) {
       console.log(err);
       toast.error("Invalid username or password");
     }
