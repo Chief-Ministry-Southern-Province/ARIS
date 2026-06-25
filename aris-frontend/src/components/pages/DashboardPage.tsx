@@ -5,11 +5,17 @@ import { HotspotMapCard } from "@/components/organisms/Dashboard/HotspotMap";
 import { VehicleRisks } from "@/components/organisms/Dashboard/VehicleRisks";
 import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
 import AwaitingCases from "../organisms/workflow/AwaitingCases";
+import { useAuth } from "@/context/auth/AuthContext";
 
 import { t } from "i18next";
 import { AlertTriangle,LayoutDashboard } from "lucide-react";
 
 export default function DashboardPage() {
+
+  const { token, role } = useAuth();
+
+  console.log("Token:", token);
+  console.log("Role:", role);
   return (
     <div className="space-y-6">
 
