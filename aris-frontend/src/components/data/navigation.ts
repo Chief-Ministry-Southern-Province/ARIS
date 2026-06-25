@@ -1,7 +1,6 @@
 import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,} from "lucide-react";
 
 export const FULL_ACCESS_ROLES = [
-  "system_admin",
   "subject_officer",
   "administrative_officer",
   "medical_superintendent",
@@ -77,6 +76,6 @@ export const navItems = [
     path: "/admin",
     icon: Settings,
     label: "nav.adminPanel",
-    roles: FULL_ACCESS_ROLES,
+    roles: [...FULL_ACCESS_ROLES, "system_admin"],
   },
 ];

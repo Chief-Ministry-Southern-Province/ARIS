@@ -100,7 +100,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/admin",
         <AdminPanel />,
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES, "system_admin"],
       ),
 
       protectedPage(
