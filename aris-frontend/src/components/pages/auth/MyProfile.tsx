@@ -1,21 +1,64 @@
-import { Building2, Mail, Phone, Shield, User } from "lucide-react";
+import { Building2, Phone, Shield, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getProfile } from "@/services/authService";
+import { useEffect, useState } from "react";
+import type { ProfileResponse } from "@/types/User.type";
 
 export default function MyProfile() {
   const navigate = useNavigate();
 
-  const user = {
-    name: "Thilina Lakshan",
-    email: "thilina@example.com",
-    phone: "+94 71 234 5678",
-    role: "System Administrator",
-    institution: "Southern Provincial Department of Health Services",
-    avatar: "TL",
-  };
+  const [profile, setProfile] = useState<ProfileResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        setProfile(response);
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        Loading profile...
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center py-20 text-red-500">
+        Failed to load profile
+      </div>
+    );
+  }
+
+  const user = profile.user;
+
+  const avatar =
+    user.name
+      ?.split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "U";
+
+  const role =
+    profile.role[0]
+      ?.replace(/_/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase()) || "N/A";
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold">My Profile</h1>
         <p className="text-muted-foreground">
@@ -25,21 +68,19 @@ export default function MyProfile() {
 
       {/* Profile Card */}
       <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center gap-6">
-          {/* Avatar */}
-          <div className="h-24 w-24 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-3xl font-bold">
-            {user.avatar}
+        <div className="flex flex-col gap-6 md:flex-row md:items-center">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground">
+            {avatar}
           </div>
 
-          {/* Basic Info */}
           <div className="flex-1">
             <h2 className="text-xl font-semibold">{user.name}</h2>
-            <p className="text-muted-foreground">{user.role}</p>
+            <p className="text-muted-foreground">{role}</p>
           </div>
 
           <button
             onClick={() => navigate("/change-password")}
-            className="rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:opacity-90 transition"
+            className="rounded-lg bg-primary px-4 py-2 text-primary-foreground transition hover:opacity-90"
           >
             Change Password
           </button>
@@ -62,15 +103,15 @@ export default function MyProfile() {
             />
 
             <ProfileItem
-              icon={<Mail size={18} />}
-              label="Email Address"
-              value={user.email}
+              icon={<Phone size={18} />}
+              label="NIC"
+              value={user.nic}
             />
 
             <ProfileItem
               icon={<Phone size={18} />}
-              label="Phone Number"
-              value={user.phone}
+              label="Mobile Number"
+              value={user.mobile}
             />
           </div>
         </div>
@@ -85,13 +126,19 @@ export default function MyProfile() {
             <ProfileItem
               icon={<Shield size={18} />}
               label="Role"
-              value={user.role}
+              value={role}
             />
 
             <ProfileItem
               icon={<Building2 size={18} />}
               label="Institution"
-              value={user.institution}
+              value={user.institution?.name ?? "N/A"}
+            />
+
+            <ProfileItem
+              icon={<Building2 size={18} />}
+              label="Institution Type"
+              value={user.institution?.type ?? "N/A"}
             />
           </div>
         </div>

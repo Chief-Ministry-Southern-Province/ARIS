@@ -1,4 +1,5 @@
 import api from "./api";
+import type{ProfileResponse} from '../types/User.type';
 
 export const login = async (nic: string, password: string) => {
   const response = await api.post("/login", { 
@@ -9,7 +10,7 @@ export const login = async (nic: string, password: string) => {
   return response.data;
 };  
 
-export const getProfile = async () => {
+export const getProfile = async (): Promise<ProfileResponse> => {
   const response = await api.get("/profile");
   return response.data;
 }
