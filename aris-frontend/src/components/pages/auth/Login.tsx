@@ -38,7 +38,12 @@ function Login() {
 
       toast.success("Login successful");
 
-      navigate("/dashboard");
+      if( response.role.includes("driver") ) {
+        navigate("/report");
+      }else{
+        navigate("/dashboard");
+      }
+
     } 
     catch (err: unknown) {
       console.log(err);
