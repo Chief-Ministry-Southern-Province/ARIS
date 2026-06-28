@@ -37,7 +37,7 @@ return new class extends Migration
             $table->foreignId('parent_institution_id')
                 ->nullable()
                 ->constrained('institutions')
-                ->onDelete('cascade');
+                ->nullOnDelete('cascade');
 
             $table->boolean('direct_to_rdhs')
                 ->default(false);

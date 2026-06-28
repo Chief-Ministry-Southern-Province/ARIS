@@ -31,7 +31,6 @@ class User extends Authenticatable
         'mobile',
         'signature_path',
         'institution_id',
-        'password',
     ];
 
     protected $hidden = [
@@ -42,5 +41,15 @@ class User extends Authenticatable
     public function institution()
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function hasInstitution(): bool
+    {
+        return !is_null($this->institution_id);
+    }
+
+    public function isSystemAdmin(): bool
+    {
+        return $this->hasRole('system_admin');
     }
 }
