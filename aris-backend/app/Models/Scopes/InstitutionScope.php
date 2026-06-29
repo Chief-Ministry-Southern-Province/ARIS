@@ -5,6 +5,7 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use App\Services\InstitutionService;
 
 class InstitutionScope implements Scope
 {
@@ -19,15 +20,15 @@ class InstitutionScope implements Scope
 
         $user = auth()->user();
 
-        if ($user->hasRole('system_admin')) {
+        if ($user->isSystemAdmin()) {
             return;
         }
 
-        
+         $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
 
         $builder->where(
-            $model->getTable().'.institution_id',
-            $user->institution_id
+            $model->qualifyColumn('institution_id'),
+            $institutionIds
         );
     }
 }

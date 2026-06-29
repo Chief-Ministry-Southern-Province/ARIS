@@ -89,10 +89,10 @@
             return [];
           }
 
-          return array_merge(
+          return array_unique(array_merge(
             [$user->institution_id],
             $this->descendantIds($user->institution)
-        );
+        ));
       }
 
       /**
