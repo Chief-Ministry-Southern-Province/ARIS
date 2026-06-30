@@ -36,7 +36,7 @@
        */
       public function children(Institution $institution)
       {
-          return $institution->childInstitutions;
+          return $institution->childInstitutions->get();
       }
 
       /**
@@ -89,10 +89,10 @@
             return [];
           }
 
-          return array_unique(array_merge(
+          return array_values(array_unique(array_merge(
             [$user->institution_id],
             $this->descendantIds($user->institution)
-        ));
+        )));
       }
 
       /**
@@ -107,6 +107,14 @@
               $institution = $institution->parentInstitution;
           }
           return $institution;
+      }
+
+      public function canAccessInstitution(User $user, Institution $institution): bool
+      {
+          return in_array(
+              $institution->id,
+              $this->accessibleInstitutionIds($user)
+          );
       }
 
   }
