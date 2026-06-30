@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 use App\Models\Institution;
 use App\Http\Requests\Institution\StoreInstitutionRequest;
 use App\Http\Requests\Institution\UpdateInstitutionRequest;
+use App\Services\InstitutionManagementService;
 
 class InstitutionController extends Controller
 {
+
+    public function __construct(protected InstitutionManagementService $institutionManagementService){    
+    }
+       
+
     /**
      * Display a listing of the resource.
      */
@@ -27,9 +33,7 @@ class InstitutionController extends Controller
      */
     public function store(StoreInstitutionRequest $request)
     {
-        $validatedData = $request->validated();
-
-        $institution = Institution::create($validatedData);
+        $institution = $this->institutionManagementService->createInstitution($request->validated(), $request->user());
 
         return response()->json([
             'message' => 'Institution created successfully',
@@ -40,40 +44,24 @@ class InstitutionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Institution $institution)
     {
-        $institution = Institution::with([
-            'parentInstitution', 
-            'childInstitutions'
-            ])->find($id);
-
-        if (!$institution) {
-            return response()->json(['message' => 'Institution not found'], 404);
-        }
-
-        return response()->json($institution);
+        return response()->json(
+            $institution->load(
+                'parentInstitution',
+                'childInstitutions'
+            )
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateInstitutionRequest $request, string $id)
+    public function update(UpdateInstitutionRequest $request, Institution $institution)
     {
-        $institution = Institution::find($id);
-
-        if (!$institution) {
-            return response()->json(['message' => 'Institution not found'], 404);
-        }
-
         $validatedData = $request->validated();
 
-        $institution->update($validatedData);
-
-        return response()->json([
-            'message' => 'Institution updated successfully',
-            'institution' => $institution
-        ]);
-        $institution->update($validatedData);
+        $institution = $this->institutionManagementService->updateInstitution($institution, $validatedData, $request->user());
 
         return response()->json([
             'message' => 'Institution updated successfully',
@@ -84,15 +72,9 @@ class InstitutionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Institution $institution)
     {
-        $institution = Institution::find($id);
-
-        if (!$institution) {
-            return response()->json(['message' => 'Institution not found'], 404);
-        }
-
-        $institution->delete();
+        $this->institutionManagementService->deleteInstitution($institution, request()->user());
 
         return response()->json(['message' => 'Institution deleted successfully']);
     }
