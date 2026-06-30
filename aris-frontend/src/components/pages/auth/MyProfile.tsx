@@ -1,6 +1,6 @@
 import { Building2, Phone, Shield, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "@/services/authService";
+import { getProfile } from "@/services/auth.service";
 import { useEffect, useState } from "react";
 import type { ProfileResponse } from "@/types/User.type";
 

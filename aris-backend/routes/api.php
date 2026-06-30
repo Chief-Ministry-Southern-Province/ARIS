@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);
@@ -15,8 +16,10 @@ Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 've
 
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
-Route::middleware(['auth:sanctum', 'institution.assigned'])->group(function () {
 
+Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
+
+    // Protected routes for authenticated users with assigned institutions
     Route::get('/profile', [AuthController::class, 'profile']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -27,8 +30,8 @@ Route::middleware(['auth:sanctum', 'institution.assigned'])->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    // Protected routes for institutions with assigned users
     Route::apiResource('institutions', InstitutionController::class);
+
     
 });
-
-
