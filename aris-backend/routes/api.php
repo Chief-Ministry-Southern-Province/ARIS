@@ -15,7 +15,7 @@ Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 've
 
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'institution.assigned'])->group(function () {
 
     Route::get('/profile', [AuthController::class, 'profile']);
 
@@ -26,7 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
 
     Route::apiResource('users', UserController::class);
+
+    Route::apiResource('institutions', InstitutionController::class);
     
 });
 
-Route::apiResource('institutions', InstitutionController::class);
+

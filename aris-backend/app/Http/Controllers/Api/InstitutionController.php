@@ -21,6 +21,10 @@ class InstitutionController extends Controller
      */
     public function index()
     {
+        if (! $this->authorize('viewAny', Institution::class)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        
         $institutions = Institution::with('parentInstitution', 'childInstitutions')
             ->orderBy('name')
             ->get();
@@ -33,6 +37,10 @@ class InstitutionController extends Controller
      */
     public function store(StoreInstitutionRequest $request)
     {
+        if (! $this->authorize('create', Institution::class)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $institution = $this->institutionManagementService->createInstitution($request->validated(), $request->user());
 
         return response()->json([
@@ -46,6 +54,10 @@ class InstitutionController extends Controller
      */
     public function show(Institution $institution)
     {
+        if (! $this->authorize('view', $institution)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         return response()->json(
             $institution->load(
                 'parentInstitution',
@@ -59,6 +71,10 @@ class InstitutionController extends Controller
      */
     public function update(UpdateInstitutionRequest $request, Institution $institution)
     {
+        if (! $this->authorize('update', $institution)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $validatedData = $request->validated();
 
         $institution = $this->institutionManagementService->updateInstitution($institution, $validatedData, $request->user());
@@ -74,6 +90,10 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
+        if (! $this->authorize('delete', $institution)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $this->institutionManagementService->deleteInstitution($institution, request()->user());
 
         return response()->json(['message' => 'Institution deleted successfully']);
