@@ -6,10 +6,15 @@ import {useGetInstitutions} from "@/hooks/useInstitution"
 import type { Institution } from "@/types/Institution.type";
 import Loader from "@/components/atoms/Loader";
 import {formatInstitutionType} from "@/utils/formatInstitution";
+import EditInstitutionForm from "@/components/pages/forms/common/EditInstitutionForm";
+import ViewInstitutionForm from "@/components/pages/forms/common/ViewInstitutionForm";
 
 const InstitutionTab = () => {
 
   const [showAddInstitution, setShowAddInstitution] = useState(false);
+  const [showEditInstitution, setShowEditInstitution] = useState(false);
+  const [showViewInstitution, setShowViewInstitution] = useState(false);
+  const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
 
   const { institutions, loading, fetchInstitutions } = useGetInstitutions();
 
@@ -51,8 +56,29 @@ const InstitutionTab = () => {
               <div>Head of Institution: <span className="font-medium text-gray-700">{inst.head_of_institution}</span></div>
             </div>
             <div className="flex gap-2 mt-3">
-              <button className="flex-1 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50">Edit</button>
+
+              <button 
+                className="flex-1 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50"
+                onClick={() => {
+                  setShowEditInstitution(true);
+                  setSelectedInstitution(inst.id);
+                }}
+              >
+                Edit
+              </button>
+
+              <button 
+                className="flex-1 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50"
+                onClick={() => {
+                  setShowViewInstitution(true);
+                  setSelectedInstitution(inst.id);
+                }}
+              >
+                View
+              </button>
+
               <button className="flex-1 py-1.5 border border-blue-200 rounded text-xs text-blue-600 hover:bg-blue-50">View Cases</button>
+
             </div>
           </div>
         ))}
@@ -61,6 +87,18 @@ const InstitutionTab = () => {
       {showAddInstitution && (
         <Modal onClose={() => setShowAddInstitution(false)}>
           <AddInstitutionForm onSuccess={handleSuccess} />
+        </Modal>
+      )}
+
+      {showEditInstitution && (
+        <Modal onClose={() => setShowEditInstitution(false)}>
+          <EditInstitutionForm onSuccess={handleSuccess} institutionId={String(selectedInstitution)} />
+        </Modal>
+      )}
+
+      {showViewInstitution && (
+        <Modal onClose={() => setShowViewInstitution(false)}>
+          <ViewInstitutionForm institutionId={String(selectedInstitution)} />
         </Modal>
       )}
 

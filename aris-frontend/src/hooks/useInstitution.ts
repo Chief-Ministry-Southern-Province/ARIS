@@ -40,7 +40,7 @@ export const useGetInstitutionById = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [institution, setInstitution] = useState<Institution | null>(null);
+  const [institution, setInstitution] = useState<Institution>();
 
   const fetchInstitutionById = async (id: string) => {
     try {

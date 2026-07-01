@@ -461,7 +461,8 @@
       "director": "Director",
       "edit": "Edit",
       "viewCases": "View Cases",
-      "headOfInstitution": "Head of Institution"
+      "headOfInstitution": "Head of Institution",
+      "editInstitution": "Edit Institution"
     },
 
     "vehicles": {

@@ -31,7 +31,7 @@ class UpdateInstitutionRequest extends FormRequest
             'province' => 'nullable|string|max:255',
             'head_of_institution' => 'nullable|string|max:255',
             'parent_institution_id' => 'nullable|exists:institutions,id',
-            'direct_to_rdhs' => 'required|boolean',
+            'direct_to_rdhs' => 'boolean',
         ];
     }
 }

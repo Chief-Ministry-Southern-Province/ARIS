@@ -10,7 +10,6 @@ import {useLogout} from "@/hooks/useAuth"
 
 import { useAuth } from "@/context/auth/AuthContext";
 
-
 interface SidebarProps {
   mobileOpen: boolean;
   setMobileOpen: (
@@ -22,7 +21,7 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
   const { t } = useTranslation();
 
   const { role } = useAuth();
-  console.log("Role in sidebar:", role);
+  //console.log("Role in sidebar:", role);
   
   const filteredNavItems = navItems.filter((item) =>
     item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)))
@@ -36,14 +35,19 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
   const {logoutUser} = useLogout();
 
   const handleLogout = async () => {
+    
     const isConfirmed = await swalConfirm(
       "Logout",
       "Are you sure you want to logout?"
     );
 
-    if (isConfirmed) {
+    if (!isConfirmed) return;
+
+    try {
       await logoutUser();
-      navigate("/login");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error(error);
     }
   };
 
