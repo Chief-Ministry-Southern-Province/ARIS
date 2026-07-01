@@ -16,6 +16,8 @@ export const formatInstitutionType = (type: string): string => {
       return "PMCU";
     case "UNITS":
       return "Units";
+    case "OTHER":
+      return "Other";
     default:
       return type;
   }

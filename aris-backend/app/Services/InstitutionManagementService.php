@@ -165,4 +165,17 @@ class InstitutionManagementService
 
         return collect();
     }
+
+    public function getParentInstitutions(User $user)
+    {
+        if ($user->isSystemAdmin()) {
+            return Institution::whereNull('parent_institution_id')->get();
+        }
+
+        if ($user->hasRole('subject_officer')) {
+            return Institution::where('id', $user->institution_id)->get();
+        }
+
+        return collect();
+    }
 }

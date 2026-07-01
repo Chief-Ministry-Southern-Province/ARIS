@@ -28,4 +28,9 @@ export const deleteInstitution = async (id: number): Promise<void> => {
 export const getAllowedInstitutionTypes = async (): Promise<string[]> => {
   const response = await api.get("/institution-types");
   return response.data.types;
-}
+};
+
+export const getParentInstitutions = async (): Promise<Institution[]> => {
+  const response = await api.get("/parent-institutions");
+  return response.data;
+};

@@ -25,7 +25,8 @@ return new class extends Migration
                 'DIVISIONAL_HOSPITAL',
                 'MOH',
                 'PMCU',
-                'UNITS'
+                'UNITS',
+                'OTHER',
             ]);
 
             $table->string('address')->nullable();

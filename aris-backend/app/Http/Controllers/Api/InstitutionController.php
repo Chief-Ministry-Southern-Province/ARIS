@@ -102,4 +102,14 @@ class InstitutionController extends Controller
             'types' => $service->allowedInstitutionTypes($request->user())
         ]);
     }
+
+    public function getParentInstitutions(Request $request, InstitutionManagementService $service) {
+        if (! $this->authorize('viewAny', Institution::class)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $parentInstitutions = $service->getParentInstitutions($request->user());
+
+        return response()->json($parentInstitutions);
+    }
 }

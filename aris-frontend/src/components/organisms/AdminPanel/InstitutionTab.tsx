@@ -13,6 +13,11 @@ const InstitutionTab = () => {
 
   const { institutions, loading, fetchInstitutions } = useGetInstitutions();
 
+  const handleSuccess = async () => {
+      setShowAddInstitution(false);
+      await fetchInstitutions();
+  };
+
   useEffect(() => {
     fetchInstitutions();
   }, []);
@@ -32,7 +37,7 @@ const InstitutionTab = () => {
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {loading ? <Loader /> : institutions.map((inst: Institution) => (
+        {loading ?<div className="col-span-2"> <Loader /> </div> : institutions.map((inst: Institution) => (
           <div key={inst.id} className="p-4 border border-gray-200 rounded-xl hover:border-blue-200 transition-colors">
             <div className="flex items-start justify-between">
               <div>
@@ -43,7 +48,7 @@ const InstitutionTab = () => {
             </div>
             <div className="mt-3 text-xs text-gray-500 space-y-0.5">
               <div>District: <span className="font-medium text-gray-700">{inst.district}</span></div>
-              <div>Director: <span className="font-medium text-gray-700">{inst.head_of_institution}</span></div>
+              <div>Head of Institution: <span className="font-medium text-gray-700">{inst.head_of_institution}</span></div>
             </div>
             <div className="flex gap-2 mt-3">
               <button className="flex-1 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50">Edit</button>
@@ -55,7 +60,7 @@ const InstitutionTab = () => {
       
       {showAddInstitution && (
         <Modal onClose={() => setShowAddInstitution(false)}>
-          <AddInstitutionForm />
+          <AddInstitutionForm onSuccess={handleSuccess} />
         </Modal>
       )}
 
