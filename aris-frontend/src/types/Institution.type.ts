@@ -41,5 +41,14 @@ export interface createInstitutionRequest {
   direct_to_rdhs?: boolean;
 }
 
-export interface updateInstitutionRequest extends createInstitutionRequest
-{}
+export interface updateInstitutionRequest {
+  name: string;
+  type: InstitutionType;
+  address?: string | null;
+  contact_number?: string | null;
+  district?: string | null;
+  province?: string | null;
+  head_of_institution?: string | null;
+  parent_institution_id?: number | null;
+  direct_to_rdhs?: boolean;
+}

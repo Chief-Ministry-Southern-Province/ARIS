@@ -25,9 +25,7 @@ class InstitutionController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
         
-        $institutions = Institution::with('parentInstitution', 'childInstitutions')
-            ->orderBy('name')
-            ->get();
+        $institutions = $this->institutionManagementService->getVisibleInstitutions(request()->user());
 
         return response()->json($institutions);
     }

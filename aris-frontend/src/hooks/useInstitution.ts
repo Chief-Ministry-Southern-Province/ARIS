@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type{ Institution,createInstitutionRequest,updateInstitutionRequest } from "@/types/Institution.type";
-import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution } from "@/services/institution.Service"
+import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution } from "@/services/institution.service";
 
 export const useGetInstitutions = () => {
 

@@ -146,4 +146,20 @@ class InstitutionManagementService
 
         return (bool) $institution->delete();
     }
+
+    public function getVisibleInstitutions(User $user)
+    {
+        if ($user->isSystemAdmin()) {
+            return Institution::all();
+        }
+
+        if ($user->hasRole('subject_officer')) {
+            return Institution::where(
+                'parent_institution_id',
+                $user->institution_id
+            )->get();
+        }
+
+        return collect();
+    }
 }
