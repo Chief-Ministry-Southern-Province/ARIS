@@ -1,12 +1,21 @@
 import { Search, Plus } from "lucide-react";
-import { mockInstitutions } from "../../data/mockData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddInstitutionForm from "@/components/pages/forms/common/AddInstitutionForm";
 import Modal from "@/components/molecules/Modal";
+import {useGetInstitutions} from "@/hooks/useInstitution"
+import type { Institution } from "@/types/Institution.type";
+import Loader from "@/components/atoms/Loader";
+import {formatInstitutionType} from "@/utils/formatInstitution";
 
 const InstitutionTab = () => {
 
   const [showAddInstitution, setShowAddInstitution] = useState(false);
+
+  const { institutions, loading, fetchInstitutions } = useGetInstitutions();
+
+  useEffect(() => {
+    fetchInstitutions();
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -23,18 +32,18 @@ const InstitutionTab = () => {
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {mockInstitutions.map(inst => (
+        {loading ? <Loader /> : institutions.map((inst: Institution) => (
           <div key={inst.id} className="p-4 border border-gray-200 rounded-xl hover:border-blue-200 transition-colors">
             <div className="flex items-start justify-between">
               <div>
                 <div className="font-semibold text-gray-800 text-sm">{inst.name}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{inst.type}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{formatInstitutionType(inst.type)}</div>
               </div>
               <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">{inst.province}</span>
             </div>
             <div className="mt-3 text-xs text-gray-500 space-y-0.5">
               <div>District: <span className="font-medium text-gray-700">{inst.district}</span></div>
-              <div>Director: <span className="font-medium text-gray-700">{inst.director}</span></div>
+              <div>Director: <span className="font-medium text-gray-700">{inst.head_of_institution}</span></div>
             </div>
             <div className="flex gap-2 mt-3">
               <button className="flex-1 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50">Edit</button>

@@ -33,5 +33,5 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     // Protected routes for institutions with assigned users
     Route::apiResource('institutions', InstitutionController::class);
 
-    
+    Route::get('/institution-types', [InstitutionController::class, 'allowedTypes']);
 });

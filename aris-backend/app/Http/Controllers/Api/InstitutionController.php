@@ -96,4 +96,10 @@ class InstitutionController extends Controller
 
         return response()->json(['message' => 'Institution deleted successfully']);
     }
+
+    public function allowedTypes(InstitutionManagementService $service,Request $request) {
+        return response()->json([
+            'types' => $service->allowedInstitutionTypes($request->user())
+        ]);
+    }
 }

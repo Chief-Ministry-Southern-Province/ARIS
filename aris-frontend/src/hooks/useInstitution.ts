@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type{ Institution,createInstitutionRequest,updateInstitutionRequest } from "@/types/Institution.type";
-import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution } from "@/services/institution.service";
+import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution, getAllowedInstitutionTypes } from "@/services/institution.service";
 
 export const useGetInstitutions = () => {
 
@@ -159,6 +159,40 @@ export const useDeleteInstitution = () => {
 
   return {
     deleteInstitutionData,
+    loading,
+    error,
+  };
+};
+
+export const useGetAllowedInstitutionTypes = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [institutionTypes, setInstitutionTypes] = useState<string[]>([]);
+
+  const fetchAllowedInstitutionTypes = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getAllowedInstitutionTypes();
+      setInstitutionTypes(response);
+      return response;
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to fetch allowed institution types";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    fetchAllowedInstitutionTypes,
+    institutionTypes,
     loading,
     error,
   };

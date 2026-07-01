@@ -27,6 +27,7 @@ class InstitutionManagementService
                     'MOH',
                     'PMCU',
                     'UNITS',
+                    'OTHER',
                 ],
 
                 default => [],
@@ -58,6 +59,8 @@ class InstitutionManagementService
             'PMCU' => 'RDHS',
 
             'UNITS' => 'RDHS',
+
+            'OTHER' => 'RDHS',
 
             default => null,
         };

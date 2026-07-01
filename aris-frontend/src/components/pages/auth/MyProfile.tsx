@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getProfile } from "@/services/auth.service";
 import { useEffect, useState } from "react";
 import type { ProfileResponse } from "@/types/User.type";
+import Loader from "@/components/atoms/Loader";
 
 export default function MyProfile() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function MyProfile() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        Loading profile...
+        <Loader />
       </div>
     );
   }

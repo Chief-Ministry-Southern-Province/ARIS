@@ -6,7 +6,8 @@ export type InstitutionType =
   | "DIVISIONAL_HOSPITAL"
   | "MOH"
   | "PMCU"
-  | "UNITS";
+  | "UNITS"
+  | "OTHER";
 
 export interface Institution {
   id: number;

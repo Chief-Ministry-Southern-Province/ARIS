@@ -24,3 +24,8 @@ export const updateInstitution = async (id: number, institutionData: updateInsti
 export const deleteInstitution = async (id: number): Promise<void> => {
   await api.delete(`/institutions/${id}`);
 };
+
+export const getAllowedInstitutionTypes = async (): Promise<string[]> => {
+  const response = await api.get("/institution-types");
+  return response.data.types;
+}
