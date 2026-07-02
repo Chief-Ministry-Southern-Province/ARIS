@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Services\InstitutionService;
 
 class UserController extends Controller
 {
@@ -15,10 +16,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::with([
-            'institution',
-            'roles'
-        ])->get();
+         $this->authorize('viewAny', User::class);
+
+        $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds(auth()->user());
+
+        return User::with(['institution', 'roles'])
+            ->whereIn('institution_id', $institutionIds)
+            ->get();
     }
 
     /**
