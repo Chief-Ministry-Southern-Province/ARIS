@@ -30,6 +30,14 @@ export interface Institution {
   child_institutions?: Institution[];
 }
 
+export interface PaginatedInstitutionsResponse {
+  data: Institution[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface createInstitutionRequest {
   name: string;
   type: InstitutionType;

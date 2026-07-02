@@ -1,20 +1,32 @@
 import { useState } from "react";
-import type{ Institution,createInstitutionRequest,updateInstitutionRequest } from "@/types/Institution.type";
+import type{ Institution, PaginatedInstitutionsResponse,createInstitutionRequest,updateInstitutionRequest } from "@/types/Institution.type";
 import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution, getAllowedInstitutionTypes,getParentInstitutions } from "@/services/institution.service";
 
-export const useGetInstitutions = () => {
+export const useGetInstitutions = ({page,search}: {page: number;search: string;}) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const [pagination, setPagination] = useState<Pick<PaginatedInstitutionsResponse, "current_page" | "last_page" | "per_page" | "total">>({
+    current_page: 1,
+    last_page: 1,
+    per_page: 10,
+    total: 0,
+  });
 
   const fetchInstitutions = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await getInstitutions();
-      setInstitutions(response);
+      const response = await getInstitutions({page,search});
+      setInstitutions(response.data);
+      setPagination({
+        current_page: response.current_page,
+        last_page: response.last_page,
+        per_page: response.per_page,
+        total: response.total,
+      });
       return response;
     } catch (err: unknown) {
       const message =
@@ -31,6 +43,7 @@ export const useGetInstitutions = () => {
   return {
     fetchInstitutions,
     institutions,
+    pagination,
     loading,
     error,
   };

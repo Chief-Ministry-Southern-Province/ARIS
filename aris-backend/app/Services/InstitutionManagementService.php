@@ -148,17 +148,17 @@ class InstitutionManagementService
     public function getVisibleInstitutions(User $user)
     {
         if ($user->isSystemAdmin()) {
-            return Institution::all();
+            return Institution::query();
         }
 
         if ($user->hasRole('subject_officer')) {
             return Institution::where(
                 'parent_institution_id',
                 $user->institution_id
-            )->get();
+            );
         }
 
-        return collect();
+        return Institution::whereRaw('1 = 0');
     }
 
     public function getParentInstitutions(User $user)

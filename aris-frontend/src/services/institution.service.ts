@@ -1,8 +1,14 @@
 import api from "./api";
-import type { Institution,createInstitutionRequest,updateInstitutionRequest } from "../types/Institution.type";
+import type { Institution, PaginatedInstitutionsResponse,createInstitutionRequest,updateInstitutionRequest } from "../types/Institution.type";
 
-export const getInstitutions = async (): Promise<Institution[]> => {
-  const response = await api.get("/institutions");
+export const getInstitutions = async ({page,search}: {page: number;search: string;}): Promise<PaginatedInstitutionsResponse> => {
+  const response = await api.get("/institutions", {
+    params: {
+      page,
+      search,
+    },
+  });
+
   return response.data;
 };
 

@@ -19,13 +19,23 @@ class InstitutionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (! $this->authorize('viewAny', Institution::class)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-        
-        $institutions = $this->institutionManagementService->getVisibleInstitutions(request()->user());
+        $search = $request->query('search');
+
+        $query = $this->institutionManagementService
+            ->getVisibleInstitutions($request->user());
+
+        $query->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('district', 'LIKE', "%{$search}%")
+                ->orWhere('province', 'LIKE', "%{$search}%")
+                ->orWhere('type', 'LIKE', "%{$search}%");
+            });
+        });
+
+        $institutions = $query->paginate(10);
 
         return response()->json($institutions);
     }

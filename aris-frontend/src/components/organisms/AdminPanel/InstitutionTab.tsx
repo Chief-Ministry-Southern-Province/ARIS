@@ -18,8 +18,10 @@ const InstitutionTab = () => {
   const [showViewInstitution, setShowViewInstitution] = useState(false);
   const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
   //const { deleteInstitutionData } = useDeleteInstitution();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  const { institutions, loading, fetchInstitutions } = useGetInstitutions();
+  const { institutions, pagination, loading, fetchInstitutions } = useGetInstitutions({page, search});
 
   // const  handleDeleteInstitution = async (institutionId: string) => {
   //   const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
@@ -35,9 +37,19 @@ const InstitutionTab = () => {
       await fetchInstitutions();
   };
 
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
   useEffect(() => {
     fetchInstitutions();
-  }, []);
+}, [debouncedSearch, page]);
 
   return (
     <div className="space-y-4">
@@ -45,7 +57,13 @@ const InstitutionTab = () => {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input type="text" placeholder="Search institutions..."
-            className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+          />
         </div>
         <button 
          onClick={() => setShowAddInstitution(true)} 
@@ -110,6 +128,50 @@ const InstitutionTab = () => {
           </div>
         ))}
       </div>
+
+      {pagination.last_page > 1 && (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+          <div className="text-xs text-gray-500">
+            Page {pagination.current_page} of {pagination.last_page} · {pagination.total} total
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}
+              disabled={page === 1 || loading}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: pagination.last_page }, (_, index) => index + 1).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                onClick={() => setPage(pageNumber)}
+                disabled={loading}
+                className={`min-w-9 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed ${
+                  pageNumber === page
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setPage((currentPage) => Math.min(pagination.last_page, currentPage + 1))}
+              disabled={page === pagination.last_page || loading}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
       
       {showAddInstitution && (
         <Modal onClose={() => setShowAddInstitution(false)}>
