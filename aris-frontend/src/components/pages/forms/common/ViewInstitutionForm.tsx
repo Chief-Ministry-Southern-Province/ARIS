@@ -7,15 +7,20 @@ import { useEffect, useState } from "react";
 import { useGetInstitutionById } from "@/hooks/useInstitution";
 import Loader from "@/components/atoms/Loader";
 import type { Institution } from "@/types/Institution.type";
+import { formatInstitutionType } from "@/utils/formatInstitution";
+import { useGetParentInstitutions } from "@/hooks/useInstitution";
 
 const ViewInstitutionForm = ({ institutionId }: { institutionId: string }) => {
   
   const { t } = useTranslation();
   const { institution, fetchInstitutionById, loading: institutionLoading } = useGetInstitutionById();
 
+  const { parentInstitutions, fetchParentInstitutions, loading: parentInstitutionsLoading } = useGetParentInstitutions();
+
   const [institutionData, setInstitutionData] = useState<Partial<Institution>>({});
   useEffect(() => {
     fetchInstitutionById(institutionId);
+    fetchParentInstitutions();
   }, [institutionId]);
   useEffect(() => {
     if (institution) {
@@ -54,14 +59,14 @@ const ViewInstitutionForm = ({ institutionId }: { institutionId: string }) => {
             <FormField label="Institution Type" required>
               <InputField 
                 placeholder="DIVISIONAL_HOSPITAL" 
-                value={institutionData.type}
+                value={formatInstitutionType(institutionData.type ?? "DIVISIONAL_HOSPITAL")}
               />
             </FormField>
 
             <FormField label="Parent Institution" required>
              <InputField 
                 placeholder="National Hospital Galle" 
-                value={institutionData.parent_institution_id ? String(institutionData.parent_institution_id) : ""}
+                value={parentInstitutionsLoading ? "Loading..." : parentInstitutions.find(inst => inst.id === institutionData.parent_institution_id)?.name ?? "N/A"}
               />
             </FormField>
 
