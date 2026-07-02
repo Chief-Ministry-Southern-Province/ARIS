@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, logout,changePassword,sendOtp,verifyOtp,resetPassword} from "@/services/authService";
+import { login, logout,changePassword,sendOtp,verifyOtp,resetPassword} from "@/services/auth.service";
 
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ export const useLogin = () => {
       const response = await login(nic, password);
 
       localStorage.setItem("token", response.token);
+      localStorage.setItem("institutionType", response.institutionType ?? "");
 
       if (response.role) {
         localStorage.setItem(

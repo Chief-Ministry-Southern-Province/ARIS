@@ -3,10 +3,12 @@ import { useState } from "react";
 
 import { Sidebar } from "@/components/organisms/Sidebar/Sidebar";
 import { TopNavbar } from "@/components/organisms/TopNavbar/TopNavbar";
+import { useAuth } from "@/context/auth/AuthContext";
 
 export default function RootLayout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { role } = useAuth();
 
   return (
     <div
@@ -24,7 +26,7 @@ export default function RootLayout() {
       >
         <TopNavbar
           userName="Admin User"
-          userRole="System Administrator"
+          userRole={role[0]}
           userAvatar="A"
           onMenuClick={() =>
             setSidebarOpen(true)

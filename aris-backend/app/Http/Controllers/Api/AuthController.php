@@ -25,6 +25,7 @@ class AuthController extends Controller
                 'message' => 'Login successful',
                 'token' => $token,
                 'role' => $user->getRoleNames(),
+                'institutionType' => $user->institution->type ?? null,
             ]);
         }
 

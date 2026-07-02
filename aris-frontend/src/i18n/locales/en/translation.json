@@ -460,7 +460,9 @@
       "district": "District",
       "director": "Director",
       "edit": "Edit",
-      "viewCases": "View Cases"
+      "viewCases": "View Cases",
+      "headOfInstitution": "Head of Institution",
+      "editInstitution": "Edit Institution"
     },
 
     "vehicles": {

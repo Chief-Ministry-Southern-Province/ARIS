@@ -25,7 +25,8 @@ return new class extends Migration
                 'DIVISIONAL_HOSPITAL',
                 'MOH',
                 'PMCU',
-                'UNITS'
+                'UNITS',
+                'OTHER',
             ]);
 
             $table->string('address')->nullable();
@@ -37,7 +38,7 @@ return new class extends Migration
             $table->foreignId('parent_institution_id')
                 ->nullable()
                 ->constrained('institutions')
-                ->onDelete('cascade');
+                ->nullOnDelete('cascade');
 
             $table->boolean('direct_to_rdhs')
                 ->default(false);

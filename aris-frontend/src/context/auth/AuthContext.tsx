@@ -43,7 +43,7 @@ export const AuthProvider = ({
     <AuthContext.Provider
       value={{
         token,
-        role,
+        role: role.map((r) => r[0].toLowerCase() + r.slice(1)),
         user,
         logoutUser,
       }}

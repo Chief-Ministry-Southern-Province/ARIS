@@ -8,6 +8,8 @@ import {swalConfirm} from "@/utils/swal";
 import { navItems } from "../../data/navigation";
 import {useLogout} from "@/hooks/useAuth"
 
+import { useAuth } from "@/context/auth/AuthContext";
+
 interface SidebarProps {
   mobileOpen: boolean;
   setMobileOpen: (
@@ -15,11 +17,15 @@ interface SidebarProps {
   ) => void;
 }
 
-export function Sidebar({
-  mobileOpen,
-  setMobileOpen,
-}: SidebarProps) {
+export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
   const { t } = useTranslation();
+
+  const { role } = useAuth();
+  //console.log("Role in sidebar:", role);
+  
+  const filteredNavItems = navItems.filter((item) =>
+    item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)))
+  );
 
   const navigate = useNavigate();
 
@@ -29,14 +35,19 @@ export function Sidebar({
   const {logoutUser} = useLogout();
 
   const handleLogout = async () => {
+    
     const isConfirmed = await swalConfirm(
       "Logout",
       "Are you sure you want to logout?"
     );
 
-    if (isConfirmed) {
+    if (!isConfirmed) return;
+
+    try {
       await logoutUser();
-      navigate("/login");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -146,7 +157,7 @@ export function Sidebar({
         {/* Navigation */}
 
         <nav className="flex-1 overflow-y-auto hide-scrollbar p-3 space-y-1">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             // if (item.children) {
             //   return (
             //     <div key={item.id}>

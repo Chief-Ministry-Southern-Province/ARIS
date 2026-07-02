@@ -24,14 +24,14 @@ class StoreInstitutionRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:MINISTRY,PDHS,RDHS,BASE_HOSPITAL,DIVISIONAL_HOSPITAL,MOH,PMCU,UNITS',
+            'type' => 'required|string|in:MINISTRY,PDHS,RDHS,BASE_HOSPITAL,DIVISIONAL_HOSPITAL,MOH,PMCU,UNITS,OTHER',
             'address' => 'nullable|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'district' => 'nullable|string|max:255',
             'province' => 'nullable|string|max:255',
             'head_of_institution' => 'nullable|string|max:255',
             'parent_institution_id' => 'nullable|exists:institutions,id',
-            'direct_to_rdhs' => 'required|boolean',
+            'direct_to_rdhs' => 'boolean',
         ];
     }
 }

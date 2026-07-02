@@ -1,4 +1,4 @@
-import type{ InstitutionResponse } from './Institution.type';
+import type{ Institution } from './Institution.type';
 
 export interface RoleResponse {
   id: number;
@@ -17,7 +17,7 @@ export interface User {
   institution_id: number;
   created_at: string;
   updated_at: string;
-  institution: InstitutionResponse;
+  institution: Institution;
   roles: RoleResponse[];
 }
 
