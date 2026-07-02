@@ -28,7 +28,7 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
 
-    Route::apiResource('users', UserController::class);
+    
 
     // Protected routes for institutions with assigned users
     Route::apiResource('institutions', InstitutionController::class);
@@ -37,3 +37,5 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::get('/parent-institutions', [InstitutionController::class, 'getParentInstitutions']);
 });
+
+Route::apiResource('users', UserController::class);
