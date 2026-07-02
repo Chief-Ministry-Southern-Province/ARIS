@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import {formatInstitutionType} from "@/utils/formatInstitution";
 import { toast } from "react-toastify";
 
-const AddInstitutionForm = ({ onSuccess }: { onSuccess: () => void }) => {
+const AddInstitutionForm = ({ onSuccess, setShowAddInstitution }: { onSuccess: () => void, setShowAddInstitution: (show: boolean) => void }) => {
   
   const { t } = useTranslation();
   const { createNewInstitution } = useCreateInstitution();
@@ -185,7 +185,8 @@ const AddInstitutionForm = ({ onSuccess }: { onSuccess: () => void }) => {
       <div className="flex justify-end gap-3 mt-8">
         <button
           type="button"
-          className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+          className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+          onClick={() => setShowAddInstitution(false)}
         >
           Cancel
         </button>
@@ -193,7 +194,7 @@ const AddInstitutionForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-5 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="px-5 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer "
           onClick={() => handleCreateInstitution(institutionData)}
         >
           {isSubmitting && (

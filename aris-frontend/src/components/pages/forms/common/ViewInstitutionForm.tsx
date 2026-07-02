@@ -10,7 +10,7 @@ import type { Institution } from "@/types/Institution.type";
 import { formatInstitutionType } from "@/utils/formatInstitution";
 import { useGetParentInstitutions } from "@/hooks/useInstitution";
 
-const ViewInstitutionForm = ({ institutionId }: { institutionId: string }) => {
+const ViewInstitutionForm = ({ institutionId,setShowViewInstitution }: { institutionId: string, setShowViewInstitution: (show: boolean) => void }) => {
   
   const { t } = useTranslation();
   const { institution, fetchInstitutionById, loading: institutionLoading } = useGetInstitutionById();
@@ -121,7 +121,8 @@ const ViewInstitutionForm = ({ institutionId }: { institutionId: string }) => {
           <div className="flex justify-end gap-3 mt-8">
             <button
               type="button"
-              className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+              onClick={() => setShowViewInstitution(false)}
             >
               Cancel
             </button>

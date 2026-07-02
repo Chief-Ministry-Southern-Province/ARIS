@@ -130,11 +130,6 @@ class InstitutionManagementService
         if ($institution->childInstitutions()->exists()) {
             return false;
         }
-
-        if ($institution->users()->exists()) {
-            return false;
-        }
-
         return false;
     }
 

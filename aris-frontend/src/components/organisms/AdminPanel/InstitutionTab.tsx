@@ -8,6 +8,8 @@ import Loader from "@/components/atoms/Loader";
 import {formatInstitutionType} from "@/utils/formatInstitution";
 import EditInstitutionForm from "@/components/pages/forms/common/EditInstitutionForm";
 import ViewInstitutionForm from "@/components/pages/forms/common/ViewInstitutionForm";
+//import { Trash2 } from "lucide-react";
+//import {swalConfirm} from "@/utils/swal";
 
 const InstitutionTab = () => {
 
@@ -15,11 +17,21 @@ const InstitutionTab = () => {
   const [showEditInstitution, setShowEditInstitution] = useState(false);
   const [showViewInstitution, setShowViewInstitution] = useState(false);
   const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
+  //const { deleteInstitutionData } = useDeleteInstitution();
 
   const { institutions, loading, fetchInstitutions } = useGetInstitutions();
 
+  // const  handleDeleteInstitution = async (institutionId: string) => {
+  //   const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
+  //   if (confirmed) {
+  //     await deleteInstitutionData(institutionId);
+  //     await fetchInstitutions();
+  //   }
+  // };
+
   const handleSuccess = async () => {
       setShowAddInstitution(false);
+      setShowEditInstitution(false);
       await fetchInstitutions();
   };
 
@@ -45,11 +57,26 @@ const InstitutionTab = () => {
         {loading ?<div className="col-span-2"> <Loader /> </div> : institutions.map((inst: Institution) => (
           <div key={inst.id} className="p-4 border border-gray-200 rounded-xl hover:border-blue-200 transition-colors">
             <div className="flex items-start justify-between">
-              <div>
-                <div className="font-semibold text-gray-800 text-sm">{inst.name}</div>
-                <div className="text-xs text-gray-500 mt-0.5">{formatInstitutionType(inst.type)}</div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-semibold text-gray-800 truncate">
+                  {inst.name}
+                </h3>
+                <p className="mt-1 text-xs text-gray-500">
+                  {formatInstitutionType(inst.type)}
+                </p>
               </div>
-              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">{inst.province}</span>
+              <div className="ml-4 flex items-center gap-2">
+                <span className="rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 whitespace-nowrap">
+                  {inst.province}
+                </span>
+
+                {/* <button
+                  className="rounded border border-red-200 p-1.5 text-red-600 transition-colors hover:bg-red-50"
+                  onClick={() => handleDeleteInstitution(String(inst.id))}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button> */}
+              </div>
             </div>
             <div className="mt-3 text-xs text-gray-500 space-y-0.5">
               <div>District: <span className="font-medium text-gray-700">{inst.district}</span></div>
@@ -86,19 +113,19 @@ const InstitutionTab = () => {
       
       {showAddInstitution && (
         <Modal onClose={() => setShowAddInstitution(false)}>
-          <AddInstitutionForm onSuccess={handleSuccess} />
+          <AddInstitutionForm onSuccess={handleSuccess} setShowAddInstitution={setShowAddInstitution} />
         </Modal>
       )}
 
       {showEditInstitution && (
         <Modal onClose={() => setShowEditInstitution(false)}>
-          <EditInstitutionForm onSuccess={handleSuccess} institutionId={String(selectedInstitution)} />
+          <EditInstitutionForm onSuccess={handleSuccess} institutionId={String(selectedInstitution) } setShowEditInstitution={setShowEditInstitution} />
         </Modal>
       )}
 
       {showViewInstitution && (
         <Modal onClose={() => setShowViewInstitution(false)}>
-          <ViewInstitutionForm institutionId={String(selectedInstitution)} />
+          <ViewInstitutionForm institutionId={String(selectedInstitution)} setShowViewInstitution={setShowViewInstitution} />
         </Modal>
       )}
 

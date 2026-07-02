@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { useGetInstitutionById } from "@/hooks/useInstitution";
 import Loader from "@/components/atoms/Loader";
 
-const EditInstitutionForm = ({ onSuccess, institutionId }: { onSuccess: () => void; institutionId: string }) => {
+const EditInstitutionForm = ({ onSuccess, institutionId,setShowEditInstitution }: { onSuccess: () => void; institutionId: string, setShowEditInstitution: React.Dispatch<React.SetStateAction<boolean>> }) => {
   
   const { t } = useTranslation();
   const { updateInstitutionData } = useUpdateInstitution();
@@ -57,24 +57,13 @@ const EditInstitutionForm = ({ onSuccess, institutionId }: { onSuccess: () => vo
     try {
       setIsSubmitting(true);
 
-      console.log("Updating institution with data:", institutionData);
+      //console.log("Updating institution with data:", institutionData);
       const response = await updateInstitutionData(institutionId, institutionData);
 
       console.log("Institution updated:", response);
 
-      setInstitutionData({
-        name: "",
-        type: "DIVISIONAL_HOSPITAL",
-        province: "Southern",
-        district: "",
-        head_of_institution: "",
-        parent_institution_id: null,
-        contact_number: "",
-        address: ""
-      });
-
-      onSuccess();
       toast.success("Institution updated successfully.");
+      onSuccess();
     } catch (error) {
       const validationErrors = (error as { response?: { data?: { errors?: unknown } } })?.response?.data?.errors;
       toast.error("Validation errors occurred.");
@@ -210,7 +199,8 @@ const EditInstitutionForm = ({ onSuccess, institutionId }: { onSuccess: () => vo
           <div className="flex justify-end gap-3 mt-8">
             <button
               type="button"
-              className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+              onClick={() => setShowEditInstitution(false)}
             >
               Cancel
             </button>
@@ -218,7 +208,7 @@ const EditInstitutionForm = ({ onSuccess, institutionId }: { onSuccess: () => vo
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="px-5 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               onClick={() => handleEditInstitution(institutionData)}
             >
               {isSubmitting && (
