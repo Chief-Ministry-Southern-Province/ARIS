@@ -1,5 +1,5 @@
 import type{User,createUserRequest,updateUserRequest} from '../types/User.type';
-import {getAllUsers,createUser,updateUser,deleteUser} from '../services/user.service';
+import {getAllUsers,createUser,updateUser,deleteUser,getUserById} from '../services/user.service';
 import { useState } from 'react';
 
 export const useGetAllUsers = () => {
@@ -124,6 +124,40 @@ export const useDeleteUser = () => {
 
   return {
     deleteUserData,
+    loading,
+    error,
+  };
+};
+
+export const useGetUserById = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+
+  const fetchUserById = async (userId:number) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getUserById(userId);
+      setUser(response);
+      return response;
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to fetch user";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    fetchUserById,
+    user,
     loading,
     error,
   };

@@ -1,15 +1,19 @@
-import { Search, Plus, Edit2, Trash2 } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
-import AddUserForm from "@/components/pages/forms/common/AddUserForm";
+import AddUserForm from "@/components/pages/forms/common/user/AddUserForm";
 import Modal from "@/components/molecules/Modal";
 import { useTranslation } from "react-i18next";
 import { useGetAllUsers } from "@/hooks/useUser";
 import Loader from "@/components/atoms/Loader";
 import { formatRole } from "@/utils/formatRole";
 import { toast } from "react-toastify";
+import ViewUserForm from "@/components/pages/forms/common/user/ViewUserForm";
+import type { User } from "@/types/User.type";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
+  const [showViewUser, setShowViewUser] = useState(false);
+  const [viewingUser, setViewingUser] = useState<User | null>(null);
   const {t} = useTranslation();
   const [search, setSearch] = useState("");
 
@@ -19,6 +23,11 @@ const UserTab = () => {
     setShowAddUser(false);
     toast.success("User created successfully");
     await fetchAllUsers();
+  }
+
+  const onClose = () => {
+    setShowViewUser(false);
+    setViewingUser(null);
   }
 
   useEffect(() => {
@@ -74,6 +83,10 @@ const UserTab = () => {
                   <td className="px-4 py-3 text-xs text-gray-600">{user.institution.name}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
+                      <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600" onClick={() => {
+                        setViewingUser(user);
+                        setShowViewUser(true);
+                      }}><Eye className="w-3.5 h-3.5" /></button>
                       <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600"><Edit2 className="w-3.5 h-3.5" /></button>
                       <button className="p-1.5 rounded hover:bg-red-50 text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
@@ -87,6 +100,12 @@ const UserTab = () => {
       {showAddUser && (
         <Modal onClose={() => setShowAddUser(false)}>
           <AddUserForm onSuccess={onSuccess} />
+        </Modal>
+      )}
+
+      {showViewUser && (
+        <Modal onClose={onClose}>
+          <ViewUserForm onClose={onClose} userId={viewingUser?.id?.toString() ?? ""} />
         </Modal>
       )}
     </div>

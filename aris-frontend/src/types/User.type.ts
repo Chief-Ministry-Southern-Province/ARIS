@@ -37,6 +37,14 @@ export interface createUserRequest{
   role: string;
 }
 
+export interface viewUserResponse{
+  name: string;
+  nic: string;
+  mobile: string;
+  institution_id: number;
+  role: string;
+}
+
 export interface updateUserRequest{
   name: string;
   nic: string;

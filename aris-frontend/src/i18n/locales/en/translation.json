@@ -24,7 +24,9 @@
     "download": "Download",
     "view": "View",
     "preview": "Preview",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "close": "Close",
+    "cancel": "Cancel"
   },
   "login": {
     "login": "Sign In",
@@ -447,7 +449,9 @@
       "actions": "Actions",
       "active": "Active",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "viewUser": "View User",
+      "contactNumber": "Contact Number"
     },
 
     "roles": {

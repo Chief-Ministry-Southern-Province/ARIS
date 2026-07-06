@@ -39,18 +39,18 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         return User::with([
             'institution',
             'roles'
-        ])->findOrFail($id);
+        ])->findOrFail($user->id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $user = User::findOrFail($id);
         $user->update($request->validated());
@@ -62,8 +62,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user = User::findOrFail($id);
         $user->delete();
 
@@ -71,4 +73,5 @@ class UserController extends Controller
             'message' => 'User deleted successfully'
         ], 204);
     }
+    
 }
