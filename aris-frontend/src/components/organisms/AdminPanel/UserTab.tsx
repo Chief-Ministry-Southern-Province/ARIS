@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useGetAllUsers } from "@/hooks/useUser";
 import Loader from "@/components/atoms/Loader";
 import { formatRole } from "@/utils/formatRole";
+import { toast } from "react-toastify";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
@@ -14,11 +15,17 @@ const UserTab = () => {
 
   const { fetchAllUsers, users, loading } = useGetAllUsers();
 
+  const onSuccess = async () => {
+    setShowAddUser(false);
+    toast.success("User created successfully");
+    await fetchAllUsers();
+  }
+
   useEffect(() => {
     fetchAllUsers();
   }, []);
 
-  //console.log(users);
+  
 
   return (
     <div className="space-y-4">
@@ -79,7 +86,7 @@ const UserTab = () => {
 
       {showAddUser && (
         <Modal onClose={() => setShowAddUser(false)}>
-          <AddUserForm />
+          <AddUserForm onSuccess={onSuccess} />
         </Modal>
       )}
     </div>

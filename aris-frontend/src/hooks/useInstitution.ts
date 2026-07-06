@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type{ Institution, PaginatedInstitutionsResponse,createInstitutionRequest,updateInstitutionRequest } from "@/types/Institution.type";
-import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution, getAllowedInstitutionTypes,getParentInstitutions } from "@/services/institution.service";
+import {getInstitutions,getInstitutionById,createInstitution,updateInstitution,deleteInstitution, getAllowedInstitutionTypes,getParentInstitutions, getVisibleInstitutionsForUser } from "@/services/institution.service";
 
 export const useGetInstitutions = ({page,search}: {page: number;search: string;}) => {
 
@@ -240,6 +240,40 @@ export const useGetParentInstitutions = () => {
   return {
     fetchParentInstitutions,
     parentInstitutions,
+    loading,
+    error,
+  };
+};
+
+export const useGetVisibleInstitutionsForUser = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+
+  const fetchVisibleInstitutions = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getVisibleInstitutionsForUser();
+      setInstitutions(response);
+      return response;
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to fetch visible institutions";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    fetchVisibleInstitutions,
+    institutions,
     loading,
     error,
   };

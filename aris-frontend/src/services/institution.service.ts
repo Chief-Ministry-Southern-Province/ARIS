@@ -41,3 +41,8 @@ export const getParentInstitutions = async (): Promise<Institution[]> => {
   const response = await api.get("/parent-institutions");
   return response.data;
 };
+
+export const getVisibleInstitutionsForUser = async (): Promise<Institution[]> => {
+  const response = await api.get("/visible-institutions");
+  return response.data;
+};

@@ -53,7 +53,6 @@ export const useCreateUser = () => {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         "Failed to create user";
-
       setError(message);
       throw err;
     } finally {

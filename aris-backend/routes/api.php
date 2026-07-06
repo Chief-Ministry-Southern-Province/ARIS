@@ -36,5 +36,7 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/institution-types', [InstitutionController::class, 'allowedTypes']);
 
     Route::get('/parent-institutions', [InstitutionController::class, 'getParentInstitutions']);
+
+    Route::get('/visible-institutions', [InstitutionController::class, 'getVisibleInstitutionsForUser']);
 });
 

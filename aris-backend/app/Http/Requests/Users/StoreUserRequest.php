@@ -27,8 +27,8 @@ class StoreUserRequest extends FormRequest
             'nic' => 'required|string|max:20|unique:users',
             'mobile' => 'required|string|max:15',
             'institution_id' => 'required|exists:institutions,id',
-            'role'=> 'required|exists:roles,id',
-            'password' => 'required|string|min:8|confirmed',
+            'role'=> 'required|exists:roles,name',
+            'password' => 'required|string|min:8',
         ];
     }
 }

@@ -2,10 +2,13 @@ import { InputField } from "@/components/atoms/InputField";
 import { FormField } from "@/components/molecules/FormField";
 import { useTranslation } from "react-i18next";
 import type {createUserRequest} from "@/types/User.type"
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {selectRoleBaseOnUserInstitutionType,formatRole} from "@/utils/formatRole"
+import {useGetVisibleInstitutionsForUser} from "@/hooks/useInstitution"
+import {useCreateUser} from "@/hooks/useUser"
+import Loader from "@/components/atoms/Loader";
 
-export default function AddUserForm() {
+export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   const { t } = useTranslation();
   const roleList = selectRoleBaseOnUserInstitutionType();
 
@@ -18,16 +21,28 @@ export default function AddUserForm() {
     mobile: "",
   });
 
+  const [seePassword, setSeePassword] = useState(false);
+
+  const { fetchVisibleInstitutions,institutions,loading} = useGetVisibleInstitutionsForUser();
+
+  useEffect(() => {
+    fetchVisibleInstitutions();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setUser((prevUser) => ({ ...prevUser, [name]: value })); 
   };
 
+  const { createUserData,loading:createUserLoading,error:createUserError } = useCreateUser();
+
   const handleCreateUser = ()=>{
-    console.log(user);
+    if(createUserLoading) return <Loader text="Creating user..." />;
+    createUserData(user);
+    onSuccess();
   }
   
-
+  console.log(createUserError);
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
@@ -68,9 +83,11 @@ export default function AddUserForm() {
         >
           <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={handleInputChange} name="institution_id">
             <option value={0}>Select Institution</option>
-            <option value={1}>National Hospital Colombo</option>
-            <option value={2}>Teaching Hospital Kandy</option>
-            <option value={3}>Regional Health Office Galle</option>
+            {loading ? <option>Loading...</option> : institutions.map((institution) => (
+              <option key={institution.id} value={institution.id}>
+                {institution.name}
+              </option>
+            ))}
           </select>
         </FormField>
 
@@ -81,12 +98,21 @@ export default function AddUserForm() {
         </FormField>
 
         <FormField label="Password" required>
-          <InputField
-            type="password"
-            placeholder="********"
-            onChange={handleInputChange}
-            name="password"
-          />
+          <div className="relative">
+            <InputField
+              type={seePassword ? "text" : "password"}
+              placeholder="********"
+              onChange={handleInputChange}
+              name="password"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-2.5 text-gray-500"
+              onClick={() => setSeePassword(!seePassword)}
+            >
+              {seePassword ? "Hide" : "Show"}
+            </button>
+          </div>
         </FormField>
       </div>
 
