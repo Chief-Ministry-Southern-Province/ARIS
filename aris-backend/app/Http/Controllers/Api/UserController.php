@@ -52,7 +52,6 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $user->update($request->validated());
         $user->syncRoles($request->role);
 

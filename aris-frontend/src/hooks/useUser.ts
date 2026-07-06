@@ -84,7 +84,6 @@ export const useUpdateUser = () => {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         "Failed to update user";
-
       setError(message);
       throw err;
     } finally {

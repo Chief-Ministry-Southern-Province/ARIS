@@ -9,11 +9,15 @@ import { formatRole } from "@/utils/formatRole";
 import { toast } from "react-toastify";
 import ViewUserForm from "@/components/pages/forms/common/user/ViewUserForm";
 import type { User } from "@/types/User.type";
+import EditUserForm from "@/components/pages/forms/common/user/EditUserForm";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
   const [showViewUser, setShowViewUser] = useState(false);
   const [viewingUser, setViewingUser] = useState<User | null>(null);
+  const [showEditUser, setShowEditUser] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+
   const {t} = useTranslation();
   const [search, setSearch] = useState("");
 
@@ -22,6 +26,12 @@ const UserTab = () => {
   const onSuccess = async () => {
     setShowAddUser(false);
     toast.success("User created successfully");
+    await fetchAllUsers();
+  }
+
+  const onSuccessUpdate = async () => {
+    setShowEditUser(false);
+    toast.success("User updated successfully");
     await fetchAllUsers();
   }
 
@@ -83,12 +93,20 @@ const UserTab = () => {
                   <td className="px-4 py-3 text-xs text-gray-600">{user.institution.name}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600" onClick={() => {
+
+                      <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600 cursor-pointer" onClick={() => {
                         setViewingUser(user);
                         setShowViewUser(true);
                       }}><Eye className="w-3.5 h-3.5" /></button>
-                      <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600"><Edit2 className="w-3.5 h-3.5" /></button>
-                      <button className="p-1.5 rounded hover:bg-red-50 text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
+
+                      <button className="p-1.5 rounded hover:bg-blue-50 text-blue-600 cursor-pointer"
+                        onClick={() => {
+                          setEditingUser(user);
+                          setShowEditUser(true);
+                        }}
+                      ><Edit2 className="w-3.5 h-3.5" /></button>
+
+                      <button className="p-1.5 rounded hover:bg-red-50 text-red-500 cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
@@ -106,6 +124,12 @@ const UserTab = () => {
       {showViewUser && (
         <Modal onClose={onClose}>
           <ViewUserForm onClose={onClose} userId={viewingUser?.id?.toString() ?? ""} />
+        </Modal>
+      )}
+
+      {showEditUser && (
+        <Modal onClose={() => setShowEditUser(false)}>
+          <EditUserForm onClose={() => setShowEditUser(false)} userId={editingUser?.id?.toString() ?? ""} onSuccess={onSuccessUpdate} />
         </Modal>
       )}
     </div>

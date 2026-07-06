@@ -1,78 +1,141 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { InputField } from "@/components/atoms/InputField";
 import { FormField } from "@/components/molecules/FormField";
-import { useTranslation } from "react-i18next";
-import type {createUserRequest} from "@/types/User.type"
-import { useState,useEffect } from "react";
-import {selectRoleBaseOnUserInstitutionType,formatRole} from "@/utils/formatRole"
-import {useGetVisibleInstitutionsForUser} from "@/hooks/useInstitution"
-import {useCreateUser} from "@/hooks/useUser"
 import Loader from "@/components/atoms/Loader";
 
-export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
+import type { updateUserRequest } from "@/types/User.type";
+
+import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
+
+import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
+import { useGetUserById,useUpdateUser,} from "@/hooks/useUser";
+
+interface EditUserFormProps {
+  userId: string;
+  onSuccess: () => void;
+  onClose: () => void;
+}
+
+export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormProps) {
   const { t } = useTranslation();
+
   const roleList = selectRoleBaseOnUserInstitutionType();
 
-  const [user,setUser] = useState<createUserRequest>({
+  const [user, setUser] = useState<updateUserRequest>({
     name: "",
     nic: "",
     role: "",
     institution_id: 0,
-    password: "",
     mobile: "",
   });
 
-  const [seePassword, setSeePassword] = useState(false);
+  const {fetchVisibleInstitutions,institutions,loading: institutionLoading,} = useGetVisibleInstitutionsForUser();
 
-  const { fetchVisibleInstitutions,institutions,loading} = useGetVisibleInstitutionsForUser();
+  const {fetchUserById,user: userData,loading: userLoading,} = useGetUserById();
+
+  const {updateUserData,loading: updateLoading, } = useUpdateUser();
 
   useEffect(() => {
     fetchVisibleInstitutions();
-  }, []);
+    fetchUserById(Number(userId));
+  }, [userId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    if (!userData) return;
+
+    setUser({
+      name: userData.name,
+      nic: userData.nic,
+      mobile: userData.mobile,
+      role: userData.roles[0]?.name ?? "",
+      institution_id: userData.institution_id,
+    });
+  }, [userData]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value })); 
+
+    setUser((prev) => ({
+      ...prev,
+      [name]:
+        name === "institution_id"
+          ? Number(value)
+          : value,
+    }));
   };
 
-  const { createUserData,loading:createUserLoading,error:createUserError } = useCreateUser();
-
-  const handleCreateUser = ()=>{
-    if(createUserLoading) return <Loader text="Creating user..." />;
-    createUserData(user);
+  const handleUpdateUser = async () => {
+    await updateUserData(Number(userId), user);
     onSuccess();
+  };
+
+  if (userLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Loader />
+      </div>
+    );
   }
-  
-  console.log(createUserError);
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200">
-      <h2 className="text-lg font-semibold mb-6">
-        {t("adminPanel.users.addUser")}
+    <div className="bg-white rounded-xl border border-gray-200 p-6">
+
+      <h2 className="text-xl font-semibold mb-6">
+        {t("adminPanel.users.editUser")}
       </h2>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-5">
+
         <FormField
           label={t("adminPanel.users.user")}
           required
         >
-          <InputField placeholder="John Doe" onChange={handleInputChange} name="name" />
+          <InputField
+            name="name"
+            value={user.name}
+            onChange={handleInputChange}
+            placeholder="John Doe"
+          />
         </FormField>
 
         <FormField
           label="NIC"
           required
         >
-          <InputField placeholder="199912345678" onChange={handleInputChange} name="nic" />
+          <InputField
+            name="nic"
+            value={user.nic}
+            onChange={handleInputChange}
+            placeholder="200012345678"
+          />
         </FormField>
 
         <FormField
           label={t("adminPanel.users.role")}
           required
         >
-          <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={handleInputChange} name="role">
-            <option value="">Select Role</option>
+          <select
+            name="role"
+            value={user.role}
+            onChange={handleInputChange}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            <option value="">
+              {t("common.select")}
+            </option>
+
             {roleList.map((role) => (
-              <option key={role} value={role}>{formatRole(role)}</option>
+              <option
+                key={role}
+                value={role}
+              >
+                {formatRole(role)}
+              </option>
             ))}
           </select>
         </FormField>
@@ -81,52 +144,67 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
           label={t("adminPanel.users.institution")}
           required
         >
-          <select className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={handleInputChange} name="institution_id">
-            <option value={0}>Select Institution</option>
-            {loading ? <option>Loading...</option> : institutions.map((institution) => (
-              <option key={institution.id} value={institution.id}>
-                {institution.name}
-              </option>
-            ))}
+          <select
+            name="institution_id"
+            value={user.institution_id}
+            onChange={handleInputChange}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          >
+            <option value={0}>
+              {t("common.select")}
+            </option>
+
+            {institutionLoading ? (
+              <option>Loading...</option>
+            ) : (
+              institutions.map((institution) => (
+                <option
+                  key={institution.id}
+                  value={institution.id}
+                >
+                  {institution.name}
+                </option>
+              ))
+            )}
           </select>
         </FormField>
 
         <FormField
-          label="Contact Number"
+          label={t("adminPanel.users.contactNumber")}
         >
-          <InputField placeholder="0712345678" onChange={handleInputChange} name="mobile" />
+          <InputField
+            name="mobile"
+            value={user.mobile}
+            onChange={handleInputChange}
+            placeholder="0712345678"
+          />
         </FormField>
 
-        <FormField label="Password" required>
-          <div className="relative">
-            <InputField
-              type={seePassword ? "text" : "password"}
-              placeholder="********"
-              onChange={handleInputChange}
-              name="password"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-2.5 text-gray-500"
-              onClick={() => setSeePassword(!seePassword)}
-            >
-              {seePassword ? "Hide" : "Show"}
-            </button>
-          </div>
-        </FormField>
       </div>
 
-      <div className="flex justify-end gap-3 mt-6">
-        <button className="px-5 py-2 border border-gray-300 rounded-lg">
-          Cancel
-        </button>
+      <div className="flex justify-end gap-3 mt-8">
 
-        <button className="px-5 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
-          onClick={handleCreateUser}
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
         >
-          Create User
+          {t("common.cancel")}
         </button>
+
+        <button
+          type="button"
+          onClick={handleUpdateUser}
+          disabled={updateLoading}
+          className="px-5 py-2 rounded-lg bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-50"
+        >
+          {updateLoading
+            ? t("common.updating")
+            : t("adminPanel.users.updateUser")}
+        </button>
+
       </div>
+
     </div>
   );
 }

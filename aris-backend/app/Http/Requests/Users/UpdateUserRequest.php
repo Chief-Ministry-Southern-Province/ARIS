@@ -4,6 +4,7 @@ namespace App\Http\Requests\Users;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -24,10 +25,15 @@ class UpdateUserRequest extends FormRequest
     {
         return  [
             'name' => 'required|string|max:255',
-            'nic' => 'required|string|max:20|unique:users,nic,' . $this->route('id'),
+            'nic' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('users', 'nic')->ignore($this->route('user')),
+            ],
             'mobile' => 'required|string|max:15',
             'institution_id' => 'required|exists:institutions,id',
-            'role'=> 'required|exists:roles,id',
+            'role'=> 'required|exists:roles,name',
         ];
     }
 }
