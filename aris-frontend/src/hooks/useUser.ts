@@ -3,24 +3,31 @@ import {getAllUsers,createUser,updateUser,deleteUser,getUserById} from '../servi
 import { useState } from 'react';
 
 export const useGetAllUsers = () => {
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<User[]>([]);
 
-  const fetchAllUsers = async () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const fetchAllUsers = async (page: number = 1,search: string = "") => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await getAllUsers();
-      setUsers(response);
-      console.log(response);
+      const response = await getAllUsers(page,search);
+
+      setUsers(response.data);
+      setCurrentPage(response.current_page);
+      setLastPage(response.last_page);
+      setTotal(response.total);
+
       return response;
     } catch (err: unknown) {
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Failed to fetch users";
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to fetch users";
 
       setError(message);
       throw err;
@@ -32,6 +39,9 @@ export const useGetAllUsers = () => {
   return {
     fetchAllUsers,
     users,
+    currentPage,
+    lastPage,
+    total,
     loading,
     error,
   };

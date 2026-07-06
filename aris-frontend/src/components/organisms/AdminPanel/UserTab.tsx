@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import ViewUserForm from "@/components/pages/forms/common/user/ViewUserForm";
 import type { User } from "@/types/User.type";
 import EditUserForm from "@/components/pages/forms/common/user/EditUserForm";
+import Pagination from "@/components/molecules/Pagination";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
@@ -18,21 +19,23 @@ const UserTab = () => {
   const [showEditUser, setShowEditUser] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  const {t} = useTranslation();
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const { fetchAllUsers, users, loading } = useGetAllUsers();
+  const {t} = useTranslation();
+
+  const {fetchAllUsers,users,currentPage,lastPage,total,loading } = useGetAllUsers();
 
   const onSuccess = async () => {
     setShowAddUser(false);
     toast.success("User created successfully");
-    await fetchAllUsers();
+    await fetchAllUsers(page,search);
   }
 
   const onSuccessUpdate = async () => {
     setShowEditUser(false);
     toast.success("User updated successfully");
-    await fetchAllUsers();
+    await fetchAllUsers(page,search);
   }
 
   const onClose = () => {
@@ -41,8 +44,8 @@ const UserTab = () => {
   }
 
   useEffect(() => {
-    fetchAllUsers();
-  }, []);
+    fetchAllUsers(page,search);
+  }, [page,search]);
 
   
 
@@ -114,6 +117,17 @@ const UserTab = () => {
           </tbody>
         </table>}
       </div>
+
+      {lastPage > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          lastPage={lastPage}
+          total={total}
+          loading={loading}
+          itemName="users"
+          onPageChange={setPage}
+        />
+      )}
 
       {showAddUser && (
         <Modal onClose={() => setShowAddUser(false)}>

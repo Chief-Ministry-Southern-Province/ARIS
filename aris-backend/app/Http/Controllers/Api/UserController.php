@@ -14,17 +14,34 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-         $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
 
-        $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds(auth()->user());
+        $search = $request->query('search');
 
-        return User::with(['institution', 'roles'])
+        $institutionIds = app(InstitutionService::class)
+            ->accessibleInstitutionIds($request->user());
+
+        $users = User::with(['institution', 'roles'])
             ->whereIn('institution_id', $institutionIds)
-            ->get();
-    }
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('nic', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhereHas('institution', function ($institutionQuery) use ($search) {
+                        $institutionQuery->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('roles', function ($roleQuery) use ($search) {
+                        $roleQuery->where('name', 'LIKE', "%{$search}%");
+                    });
+                });
+            })
+            ->paginate(10);
 
+        return response()->json($users);
+    }
     /**
      * Store a newly created resource in storage.
      */
