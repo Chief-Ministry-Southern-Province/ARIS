@@ -82,12 +82,11 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
-        $user = User::findOrFail($id);
         $user->delete();
 
         return response()->json([
-            'message' => 'User deleted successfully'
-        ], 204);
+            'message' => 'User deleted successfully',
+        ]);
     }
     
 }

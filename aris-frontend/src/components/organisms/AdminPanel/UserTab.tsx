@@ -11,6 +11,8 @@ import ViewUserForm from "@/components/pages/forms/common/user/ViewUserForm";
 import type { User } from "@/types/User.type";
 import EditUserForm from "@/components/pages/forms/common/user/EditUserForm";
 import Pagination from "@/components/molecules/Pagination";
+import {useDeleteUser} from "@/hooks/useUser";
+import {swalConfirm} from "@/utils/swal";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
@@ -25,6 +27,16 @@ const UserTab = () => {
   const {t} = useTranslation();
 
   const {fetchAllUsers,users,currentPage,lastPage,total,loading } = useGetAllUsers();
+
+  const {deleteUserData} = useDeleteUser();
+
+  const handleDeleteUser = async (userId: string) => {
+    const confirmed = await swalConfirm(t("adminPanel.users.deleteConfirmationTitle"), t("adminPanel.users.deleteConfirmationText"));
+    if (confirmed) {
+      await deleteUserData(Number(userId));
+      await fetchAllUsers(page,search);
+    }
+  }
 
   const onSuccess = async () => {
     setShowAddUser(false);
@@ -42,6 +54,7 @@ const UserTab = () => {
     setShowViewUser(false);
     setViewingUser(null);
   }
+
 
   useEffect(() => {
     fetchAllUsers(page,search);
@@ -109,7 +122,9 @@ const UserTab = () => {
                         }}
                       ><Edit2 className="w-3.5 h-3.5" /></button>
 
-                      <button className="p-1.5 rounded hover:bg-red-50 text-red-500 cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button className="p-1.5 rounded hover:bg-red-50 text-red-500 cursor-pointer"
+                        onClick={() => handleDeleteUser(String(user.id))}
+                      ><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
