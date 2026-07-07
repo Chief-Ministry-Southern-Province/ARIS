@@ -8,6 +8,9 @@ import EditVehicleForm  from "@/components/pages/forms/common/vehicle/EditVehicl
 import {useGetVehicles} from "@/hooks/useVehicle";
 
 import ViewVehicleForm from "@/components/pages/forms/common/vehicle/ViewVehicleForm";
+import {useDeleteVehicle} from "@/hooks/useVehicle";
+import {swalConfirm} from "@/utils/swal";
+import {toast} from "react-toastify";
 
 import Loader from "@/components/atoms/Loader";
 import Pagination from "@/components/molecules/Pagination";
@@ -25,6 +28,17 @@ const VehicleTab = () => {
   const {vehicles, fetchVehicles, loading,lastPage, total} = useGetVehicles();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+
+  const { deleteVehicleData } = useDeleteVehicle();
+
+  const handleDeleteVehicle = async (vehicleId: number) => {
+    const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
+    if (confirmed) {
+      await deleteVehicleData(vehicleId);
+      toast.success("Vehicle deleted successfully");
+      await fetchVehicles({page, search});
+    }
+  }
 
   useEffect(() => {
     fetchVehicles({page, search});
@@ -193,6 +207,7 @@ const VehicleTab = () => {
                     <button
                       className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
                       title="Delete Vehicle"
+                      onClick={()=> handleDeleteVehicle(Number(vehicle.id))}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
