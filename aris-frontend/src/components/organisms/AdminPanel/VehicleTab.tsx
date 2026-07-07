@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { mockVehicles } from "../../data/mockData";
-import AddVehicleForm from "@/components/pages/forms/common/AddVehicleForm";
+import AddVehicleForm from "@/components/pages/forms/common/vehicle/AddVehicleForm";
 import Modal from "@/components/molecules/Modal";
 
 const VehicleTab = () => {

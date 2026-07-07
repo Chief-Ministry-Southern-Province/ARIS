@@ -16,22 +16,22 @@ trait BelongsToInstitution
         /**
          * Set the institution_id to the authenticated user's institution_id.
          */
-        static::creating(function ($model) {
+        // static::creating(function ($model) {
 
-            if (!auth()->check()) {
-                return;
-            }
+        //     if (!auth()->check()) {
+        //         return;
+        //     } 
 
-            $user = auth()->user();
+        //     $user = auth()->user();
 
-            if ($user->isSystemAdmin()) {
-                return;
-            }
+        //     if ($user->isSystemAdmin()) {
+        //         return;
+        //     }
 
-            if (empty($model->institution_id)) {
-                $model->institution_id = $user->institution_id;
-            }
+        //     if (empty($model->institution_id)) {
+        //         $model->institution_id = $user->institution_id;
+        //     }
 
-        });
+        // });
     }
 }

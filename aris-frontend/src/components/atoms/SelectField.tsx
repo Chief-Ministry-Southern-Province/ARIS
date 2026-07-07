@@ -1,5 +1,3 @@
-import React from "react";
-
 type Option = {
   value: string;
   label: string;
@@ -10,7 +8,7 @@ type SelectFieldProps =
     options: Option[];
   };
 
-export default function SelectField({
+export function SelectField({
   options,
   className = "",
   ...props

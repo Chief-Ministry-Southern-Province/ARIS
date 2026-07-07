@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Institution;
 
-use App\Traits\BelongsToInstitution;
+use App\Models\Traits\BelongsToInstitution;
 
 class Vehicle extends Model
 {

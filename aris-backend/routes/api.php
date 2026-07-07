@@ -38,5 +38,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/parent-institutions', [InstitutionController::class, 'getParentInstitutions']);
 
     Route::get('/visible-institutions', [InstitutionController::class, 'getVisibleInstitutionsForUser']);
+
+    // Protected routes for vehicles with assigned institutions
+    Route::apiResource('vehicles', \App\Http\Controllers\Api\VehicleController::class);
 });
 
