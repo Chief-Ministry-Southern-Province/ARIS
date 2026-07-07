@@ -10,6 +10,8 @@ import {useGetAvailableDrivers} from "@/hooks/useUser";
 
 import type {CreateVehicleRequest} from "@/types/vehicle.type";
 
+import {toast} from "react-toastify";
+
 type EditVehicleFormProps = {
   vehicleId: number;
   onSuccess?: () => void;
@@ -26,10 +28,10 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
   const {updateVehicleData, loading} = useUpdateVehicle();
 
-  const {fetchVisibleInstitutions,institutions,} = useGetVisibleInstitutionsForUser();
+  const {fetchVisibleInstitutions,institutions,loading: loadingInstitutions} = useGetVisibleInstitutionsForUser();
 
-  const {fetchAvailableDrivers,drivers} = useGetAvailableDrivers();
-  
+  const {fetchAvailableDrivers,drivers,loading: loadingDrivers} = useGetAvailableDrivers();
+
   useEffect(() => {
 
     fetchVehicle(vehicleId);
@@ -101,11 +103,10 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
       ...prev,
 
       [name]:
-        name === "institution_id"
-          ? Number(value)
-          : name === "value"
-          ? Number(value)
-          : name === "manufactured_year"
+        name === "institution_id" ||
+        name === "value" ||
+        name === "manufactured_year" ||
+        name === "driver_id"
           ? Number(value)
           : value,
     }));
@@ -126,7 +127,7 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
         values
       );
 
-      alert("Vehicle updated successfully.");
+      toast.success("Vehicle updated successfully.");
 
       onSuccess?.();
 
@@ -156,7 +157,7 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
       const errAny =  error as { response?: { status?: number; data?: { message?: string; errors?: Record<string, string[]> } } };
 
-      alert(
+      toast.error(
         errAny?.response?.data?.message ??
         "Something went wrong."
       );
@@ -182,7 +183,9 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
       <VehicleForm
         values={values}
         institutions={institutions}
+        institutionsLoading={loadingInstitutions}
         drivers={drivers}
+        driversLoading={loadingDrivers}
         errors={errors}
         onChange={handleChange}
       />

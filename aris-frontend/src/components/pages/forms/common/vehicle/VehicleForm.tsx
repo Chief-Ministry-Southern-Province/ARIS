@@ -11,7 +11,9 @@ import type { User } from "@/types/User.type";
 type VehicleFormProps = {
   values: CreateVehicleRequest;
   institutions: Institution[];
+  institutionsLoading: boolean;
   drivers: User[];
+  driversLoading: boolean;
   errors?: Record<string, string>;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -21,10 +23,13 @@ type VehicleFormProps = {
 export default function VehicleForm({
   values,
   institutions,
+  institutionsLoading,
   drivers,
+  driversLoading,
   errors = {},
   onChange,
 }: VehicleFormProps) {
+
   return (
     <div className="space-y-8">
       {/* Vehicle Registration */}
@@ -76,10 +81,15 @@ export default function VehicleForm({
               name="institution_id"
               value={values.institution_id?.toString() ?? ""}
               onChange={onChange}
-              options={institutions.map((institution) => ({
-                value: institution.id.toString(),
-                label: institution.name,
-              }))}
+              options={
+                institutionsLoading
+                  ? [{ value: "", label: "Loading institutions..." }]
+                  : institutions.map((institution) => ({
+                      value: institution.id.toString(),
+                      label: institution.name,
+                    }))
+              }
+              disabled={institutionsLoading}
             />
           </FormField>
         </div>
@@ -257,10 +267,15 @@ export default function VehicleForm({
               name="driver_id"
               value={values.driver_id?.toString() ?? ""}
               onChange={onChange}
-              options={drivers.map((driver) => ({
-                value: driver.id.toString(),
-                label: driver.name,
-              }))}
+              options={
+                driversLoading
+                  ? [{ value: "", label: "Loading drivers..." }]
+                  : drivers.map((driver) => ({
+                      value: driver.id.toString(),
+                      label: driver.name,
+                    }))
+              }
+              disabled={driversLoading}
             />
           </FormField>
         </div>

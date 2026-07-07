@@ -8,6 +8,7 @@ use App\Services\VehicleService;
 
 use App\Http\Requests\Vehicle\StoreVehicleRequest;
 use App\Http\Requests\Vehicle\UpdateVehicleRequest;
+use App\Models\Vehicle;
 
 class VehicleController extends Controller
 {
@@ -20,7 +21,7 @@ class VehicleController extends Controller
         $this->authorize('viewAny', Vehicle::class);
 
         return response()->json(
-            Vehicle::with('institution')
+            Vehicle::with([ 'institution', 'driver' ])
                 ->latest()
                 ->get()
         );
@@ -49,7 +50,7 @@ class VehicleController extends Controller
         $this->authorize('view', $vehicle);
 
         return response()->json(
-            $vehicle->load('institution')
+            $vehicle->load(['institution', 'driver'])
         );
     }
 

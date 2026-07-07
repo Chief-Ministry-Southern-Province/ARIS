@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
-
+use App\Http\Controllers\Api\VehicleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -42,6 +42,6 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/visible-institutions', [InstitutionController::class, 'getVisibleInstitutionsForUser']);
 
     // Protected routes for vehicles with assigned institutions
-    Route::apiResource('vehicles', \App\Http\Controllers\Api\VehicleController::class);
+    Route::apiResource('vehicles', VehicleController::class);
 });
 

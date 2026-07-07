@@ -1,9 +1,15 @@
-import { FormField } from "@/components/molecules/FormField";
-import type { Vehicle } from "@/types/vehicle.type";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
+import { FormField } from "@/components/molecules/FormField";
+
+import { useGetVehicle } from "@/hooks/useVehicle";
+import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
+import { useGetAvailableDrivers } from "@/hooks/useUser";
+
 type ViewVehicleFormProps = {
-  vehicle: Vehicle;
+  vehicleId: number;
+  onClose?: () => void;
 };
 
 type FieldValueProps = {
@@ -18,80 +24,104 @@ function FieldValue({ value }: FieldValueProps) {
   );
 }
 
-export default function ViewVehicleForm({
-  vehicle,
-}: ViewVehicleFormProps) {
+export default function ViewVehicleForm({vehicleId,onClose,}: ViewVehicleFormProps) {
   const { t } = useTranslation();
+
+  const { vehicle, fetchVehicle, loading: loadingVehicle } = useGetVehicle();
+
+  const { fetchVisibleInstitutions, institutions } =
+    useGetVisibleInstitutionsForUser();
+
+  const { fetchAvailableDrivers, drivers, loading: loadingDrivers } = useGetAvailableDrivers();
+
+  useEffect(() => {
+    fetchVehicle(vehicleId);
+    fetchVisibleInstitutions();
+    fetchAvailableDrivers();
+  }, [vehicleId]);
+
+  if (loadingVehicle || !vehicle) {
+    return (
+      <div className="flex justify-center p-10">
+        Loading vehicle...
+      </div>
+    );
+  }
+
+  const institutionName = institutions?.find(
+    (inst) => inst.id === vehicle.institution_id
+  )?.name;
+
+  const driverName = drivers?.find(
+    (driver) => driver.id === vehicle.driver_id
+  )?.name;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
       <h2 className="mb-6 text-lg font-semibold">
-        {t("adminPanel.vehicles.viewVehicle")}
+        View Vehicle Details
       </h2>
 
       <div className="grid gap-4 md:grid-cols-2">
         {/* Registration */}
 
-        <FormField label={t("adminPanel.vehicles.registrationNumber")}>
+        <FormField label='Registration Number'>
           <FieldValue value={vehicle.vehicle_number} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.registeredDate")}>
+        <FormField label='Registered Date'>
           <FieldValue value={vehicle.registered_date} />
         </FormField>
 
         {/* Vehicle */}
 
-        <FormField label={t("adminPanel.vehicles.type")}>
+        <FormField label='Vehicle Type'>
           <FieldValue value={vehicle.vehicle_type} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.brand")}>
+        <FormField label='Brand'>
           <FieldValue value={vehicle.brand} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.model")}>
+        <FormField label='Model'>
           <FieldValue value={vehicle.model} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.manufacturedYear")}>
+        <FormField label='Manufactured Year'>
           <FieldValue value={vehicle.manufactured_year} />
         </FormField>
 
         {/* Technical */}
 
-        <FormField label={t("adminPanel.vehicles.engineNumber")}>
+        <FormField label='Engine Number'>
           <FieldValue value={vehicle.engine_number} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.chassisNumber")}>
+        <FormField label='Chassis Number'>
           <FieldValue value={vehicle.chassis_number} />
         </FormField>
 
         {/* Insurance */}
 
-        <FormField label={t("adminPanel.vehicles.insuranceNumber")}>
+        <FormField label='Insurance Number'>
           <FieldValue value={vehicle.insurance_number} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.insuranceExpiry")}>
+        <FormField label='Insurance Expiry'>
           <FieldValue value={vehicle.insurance_expiry_date} />
         </FormField>
 
         {/* Ownership */}
 
-        {/* Uncomment if your Vehicle type includes institution */}
-        {/*
-        <FormField label={t("adminPanel.users.institution")}>
-          <FieldValue value={vehicle.institution?.name} />
+        <FormField label='Institution'>
+          <FieldValue value={institutionName ?? "-"} />
         </FormField>
-        */}
 
-        <FormField label={t("adminPanel.vehicles.registeredOwner")}>
+        <FormField label='Registered Owner'>
           <FieldValue value={vehicle.registered_owner} />
         </FormField>
 
-        <FormField label={t("adminPanel.vehicles.vehicleValue")}>
+        <FormField label='Vehicle Value'>
           <FieldValue
             value={
               vehicle.value
@@ -101,15 +131,21 @@ export default function ViewVehicleForm({
           />
         </FormField>
 
+        {/* Driver */}
+
+        <FormField label='Driver'>
+          <FieldValue value={loadingDrivers ? "Loading..." : driverName} />
+        </FormField>
+
         {/* Fuel */}
 
-        <FormField label={t("adminPanel.vehicles.fuelType")}>
+        <FormField label='Fuel Type'>
           <FieldValue value={vehicle.fuel_type} />
         </FormField>
 
         {/* Status */}
 
-        <FormField label={t("adminPanel.vehicles.status")}>
+        <FormField label='Status'>
           <div
             className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
               vehicle.status === "ACTIVE"
@@ -130,6 +166,7 @@ export default function ViewVehicleForm({
         <button
           type="button"
           className="rounded-lg bg-blue-700 px-5 py-2 text-white transition hover:bg-blue-800"
+          onClick={onClose}
         >
           {t("common.close")}
         </button>

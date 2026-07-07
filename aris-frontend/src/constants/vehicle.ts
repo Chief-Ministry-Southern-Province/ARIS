@@ -61,4 +61,6 @@ export const initialValues: CreateVehicleRequest = {
   status: "ACTIVE",
 
   institution_id: undefined,
+
+  driver_id: undefined,
 };

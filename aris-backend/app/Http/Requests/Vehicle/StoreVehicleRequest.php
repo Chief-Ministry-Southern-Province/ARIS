@@ -136,6 +136,11 @@ class StoreVehicleRequest extends FormRequest
                 'exists:institutions,id',
             ],
 
+            'driver_id' => [
+                'nullable',
+                'exists:users,id',
+            ],
+
         ];
     }
 

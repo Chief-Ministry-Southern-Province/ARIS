@@ -1,12 +1,12 @@
 import { useState } from "react";
-import type { Vehicle, CreateVehicleRequest, UpdateVehicleRequest } from "@/types/vehicle.type";
+import type {CreateVehicleRequest, UpdateVehicleRequest, VehicleResponse } from "@/types/vehicle.type";
 import { getVehicles, getVehicle, createVehicle, updateVehicle, deleteVehicle } from "@/services/vehicle.service";
 
 export const useGetVehicles = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [vehicles, setVehicles] = useState<VehicleResponse[]>([]);
 
   const fetchVehicles = async () => {
     try {
@@ -40,7 +40,7 @@ export const useGetVehicle = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [vehicle, setVehicle] = useState<Vehicle | null>(null);
+  const [vehicle, setVehicle] = useState<VehicleResponse | null>(null);
 
   const fetchVehicle = async (id: number) => {
     try {

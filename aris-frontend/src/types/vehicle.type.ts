@@ -1,3 +1,6 @@
+import type { Institution } from "./Institution.type";
+import type {User} from "./User.type";  
+
 export type VehicleType =
   | "CAR"
   | "VAN"
@@ -55,6 +58,44 @@ export interface Vehicle {
 
   created_at: string;
   updated_at: string;
+}
+
+export interface VehicleResponse {
+  id: number;
+
+  vehicle_number: string;
+  registered_date: string | null;
+
+  vehicle_type: VehicleType;
+
+  brand: string;
+  model: string;
+
+  manufactured_year: number;
+
+  engine_number: string;
+  chassis_number: string;
+
+  insurance_number: string;
+  insurance_expiry_date: string;
+
+  value: number | null;
+
+  registered_owner: string;
+
+  fuel_type: FuelType;
+
+  status: VehicleStatus;
+
+  institution_id: number;
+
+  driver_id: number | null;
+
+  created_at: string;
+  updated_at: string;
+
+  institution?: Institution;
+  driver?: User | null;
 }
 
 export interface CreateVehicleRequest {
@@ -121,4 +162,6 @@ export interface UpdateVehicleRequest {
   status?: VehicleStatus;
 
   institution_id?: number;
+
+  driver_id?: number;
 } 

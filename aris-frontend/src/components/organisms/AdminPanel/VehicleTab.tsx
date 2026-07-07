@@ -1,12 +1,15 @@
 import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-import { mockVehicles } from "../../data/mockData";
 import AddVehicleForm from "@/components/pages/forms/common/vehicle/AddVehicleForm";
 import Modal from "@/components/molecules/Modal";
 
 import EditVehicleForm  from "@/components/pages/forms/common/vehicle/EditVehicleForm";
+import {useGetVehicles} from "@/hooks/useVehicle";
+
+import ViewVehicleForm from "@/components/pages/forms/common/vehicle/ViewVehicleForm";
+
+import Loader from "@/components/atoms/Loader";
 
 const VehicleTab = () => {
 
@@ -15,7 +18,30 @@ const VehicleTab = () => {
   const [showEditVehicle, setShowEditVehicle] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<number | null>(null);
 
-  const navigate = useNavigate();
+  const [viewingVehicle, setViewingVehicle] = useState<number | null>(null);
+  const [showViewVehicle, setShowViewVehicle] = useState(false);
+  
+  const {vehicles, fetchVehicles, loading} = useGetVehicles();
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
+  const createOnSuccess = () => {
+    setShowAddVehicle(false);
+    fetchVehicles();
+  };
+
+  const updateOnSuccess = () => {
+    setShowEditVehicle(false);
+    setSelectedVehicle(null);
+    fetchVehicles();
+  }
+
+  const viewOnSuccess = () => {
+    setShowViewVehicle(false);
+    setViewingVehicle(null);
+  }
 
   return (
     <div className="space-y-4">
@@ -66,87 +92,109 @@ const VehicleTab = () => {
           </thead>
 
           <tbody className="divide-y divide-gray-50">
-            {mockVehicles.map((vehicle) => (
-              <tr
-                key={vehicle.id}
-                className="hover:bg-blue-50/20 transition-colors"
-              >
-                <td className="px-4 py-3 font-mono text-xs font-semibold text-blue-700">
-                  {vehicle.regNo}
-                </td>
-
-                <td className="px-4 py-3 text-xs text-gray-700">
-                  {vehicle.type}
-                </td>
-
-                <td className="px-4 py-3 text-xs text-gray-600">
-                  {vehicle.institution}
-                </td>
-
-                <td className="px-4 py-3 ">
-                  <span
-                    className={`font-bold text-sm items-center ${
-                      vehicle.incidents >= 5
-                        ? "text-red-600"
-                        : vehicle.incidents >= 3
-                        ? "text-orange-600"
-                        : "text-green-600"
-                    }`}
-                  >
-                    {vehicle.incidents}
-                  </span>
-                </td>
-
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={vehicle.driver.avatar}
-                      alt={vehicle.driver.name}
-                      className="w-7 h-7 rounded-full object-cover"
-                    />
-
-                    <div>
-                      <p className="text-xs font-medium text-gray-800">
-                        {vehicle.driver.name}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-
-                <td className="px-4 py-3">
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                    Active
-                  </span>
-                </td>
-
-                <td className="px-4 py-3">
-                  <button
-                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                    title="View Vehicle"
-                    onClick={() => navigate(`/vehicles/${vehicle.id}/details`)}
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button
-                    className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                    title="Edit Vehicle"
-                    onClick={() => {
-                      setSelectedVehicle(Number(vehicle.id));
-                      setShowEditVehicle(true);
-                    }}
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
-                    title="Delete Vehicle"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+            {loading ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8">
+                  <Loader text="loading vehicles..." />
                 </td>
               </tr>
-            ))}
+            ) : (
+              vehicles.map((vehicle) => (
+                <tr
+                  key={vehicle.id}
+                  className="hover:bg-blue-50/20 transition-colors"
+                >
+                  <td className="px-4 py-3 font-mono text-xs font-semibold text-blue-700">
+                    {vehicle.vehicle_number}
+                  </td>
+
+                  <td className="px-4 py-3 text-xs text-gray-700">
+                    {vehicle.vehicle_type}
+                  </td>
+
+                  <td className="px-4 py-3 text-xs text-gray-600">
+                    {vehicle.institution?.name}
+                  </td>
+
+                  <td className="px-4 py-3 ">
+                    {/* <span
+                      className={`font-bold text-sm items-center ${
+                        vehicle.incidents >= 5
+                          ? "text-red-600"
+                          : vehicle.incidents >= 3
+                          ? "text-orange-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {vehicle.incidents}
+                    </span> */}
+                    3
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={vehicle.driver?.name ? `https://ui-avatars.com/api/?name=${encodeURIComponent(vehicle.driver.name)}&background=1E40AF&color=fff` : "https://ui-avatars.com/api/?name=No+Driver&background=1E40AF&color=fff"}
+                        alt={vehicle.driver?.name}
+                        className="w-7 h-7 rounded-full object-cover"
+                      />
+
+                      <div>
+                        <p className="text-xs font-medium text-gray-800">
+                          {vehicle.driver?.name}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                        vehicle.status === "ACTIVE"
+                          ? "bg-green-100 text-green-700"
+                          : vehicle.status === "UNDER_MAINTENANCE"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : vehicle.status === "OUT_OF_SERVICE"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {vehicle.status.replace(/_/g, " ")}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <button
+                      className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
+                      title="View Vehicle"
+                      onClick={() => {
+                        setViewingVehicle(Number(vehicle.id));
+                        setShowViewVehicle(true);
+                      }}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button
+                      className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
+                      title="Edit Vehicle"
+                      onClick={() => {
+                        setSelectedVehicle(Number(vehicle.id));
+                        setShowEditVehicle(true);
+                      }}
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
+                      title="Delete Vehicle"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -155,7 +203,7 @@ const VehicleTab = () => {
       {showAddVehicle && (
         <Modal onClose={() => setShowAddVehicle(false)}>
           <div className="w-full max-w-5xl">
-            <AddVehicleForm />
+            <AddVehicleForm onSuccess={createOnSuccess} />
           </div>
         </Modal>
       )}
@@ -164,7 +212,16 @@ const VehicleTab = () => {
       {showEditVehicle && selectedVehicle !== null && (
         <Modal onClose={() => setShowEditVehicle(false)}>
           <div className="w-full max-w-5xl">
-            <EditVehicleForm vehicleId={Number(selectedVehicle)} />
+            <EditVehicleForm vehicleId={Number(selectedVehicle)} onSuccess={updateOnSuccess} />
+          </div>
+        </Modal>
+      )}
+
+      {/* View Vehicle Modal */}
+      {showViewVehicle && viewingVehicle !== null && (
+        <Modal onClose={() => setShowViewVehicle(false)}>
+          <div className="w-full max-w-5xl">
+            <ViewVehicleForm vehicleId={Number(viewingVehicle)} onClose={viewOnSuccess} />
           </div>
         </Modal>
       )}

@@ -140,6 +140,10 @@ class UpdateVehicleRequest extends FormRequest
                 'nullable',
                 'exists:institutions,id',
             ],
+            'driver_id' => [
+                'nullable',
+                'exists:users,id',
+            ],
 
         ];
     }

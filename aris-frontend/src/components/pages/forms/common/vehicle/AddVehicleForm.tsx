@@ -10,19 +10,17 @@ import {initialValues} from "@/constants/vehicle";
 
 import {useGetAvailableDrivers} from "@/hooks/useUser";
 
-export default function AddVehicleForm() {
+export default function AddVehicleForm({onSuccess}: {onSuccess: () => void}) {
 
   const [values, setValues] = useState<CreateVehicleRequest>(initialValues);
 
-  const [errors, setErrors] = useState<
-    Record<string, string>
-  >({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const {createVehicleData,loading,} = useCreateVehicle();
 
-  const {fetchVisibleInstitutions,institutions,} = useGetVisibleInstitutionsForUser();
+  const {fetchVisibleInstitutions,institutions,loading: loadingInstitutions} = useGetVisibleInstitutionsForUser();
 
-  const {fetchAvailableDrivers,drivers} = useGetAvailableDrivers();
+  const {fetchAvailableDrivers,drivers,loading: loadingDrivers} = useGetAvailableDrivers();
 
   useState(() => {
     fetchVisibleInstitutions();
@@ -47,6 +45,8 @@ export default function AddVehicleForm() {
           ? Number(value)
           : name === "manufactured_year"
           ? Number(value)
+          : name === "driver_id"
+          ? Number(value)
           : value,
     }));
   };
@@ -58,10 +58,11 @@ export default function AddVehicleForm() {
     try {
 
       setErrors({});
-
+      //console.log(values);
       await createVehicleData(values);
-
+      
       toast.success("Vehicle registered successfully.");
+      onSuccess();
 
       setValues(initialValues);
 
@@ -104,7 +105,9 @@ export default function AddVehicleForm() {
       <VehicleForm
         values={values}
         institutions={institutions}
+        institutionsLoading={loadingInstitutions}
         drivers = {drivers}
+        driversLoading={loadingDrivers}
         errors={errors}
         onChange={handleChange}
       />
