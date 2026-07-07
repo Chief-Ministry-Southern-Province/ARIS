@@ -30,6 +30,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::get('/available-drivers', [UserController::class, 'getAvailableDrivers']);
+
     // Protected routes for institutions with assigned users
     Route::apiResource('institutions', InstitutionController::class);
 

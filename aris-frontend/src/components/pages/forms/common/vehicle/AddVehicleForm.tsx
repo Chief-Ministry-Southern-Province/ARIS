@@ -8,9 +8,11 @@ import type { CreateVehicleRequest } from "@/types/vehicle.type";
 import { toast } from "react-toastify";
 import {initialValues} from "@/constants/vehicle";
 
+import {useGetAvailableDrivers} from "@/hooks/useUser";
+
 export default function AddVehicleForm() {
-  const [values, setValues] =
-    useState<CreateVehicleRequest>(initialValues);
+
+  const [values, setValues] = useState<CreateVehicleRequest>(initialValues);
 
   const [errors, setErrors] = useState<
     Record<string, string>
@@ -20,8 +22,11 @@ export default function AddVehicleForm() {
 
   const {fetchVisibleInstitutions,institutions,} = useGetVisibleInstitutionsForUser();
 
+  const {fetchAvailableDrivers,drivers} = useGetAvailableDrivers();
+
   useState(() => {
     fetchVisibleInstitutions();
+    fetchAvailableDrivers();
   });
 
   const handleChange = (
@@ -99,6 +104,7 @@ export default function AddVehicleForm() {
       <VehicleForm
         values={values}
         institutions={institutions}
+        drivers = {drivers}
         errors={errors}
         onChange={handleChange}
       />

@@ -6,6 +6,7 @@ import {useGetVehicle,useUpdateVehicle,} from "@/hooks/useVehicle";
 
 import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
 import { initialValues } from "@/constants/vehicle";
+import {useGetAvailableDrivers} from "@/hooks/useUser";
 
 import type {CreateVehicleRequest} from "@/types/vehicle.type";
 
@@ -26,6 +27,8 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
   const {updateVehicleData, loading} = useUpdateVehicle();
 
   const {fetchVisibleInstitutions,institutions,} = useGetVisibleInstitutionsForUser();
+
+  const {fetchAvailableDrivers,drivers} = useGetAvailableDrivers();
   
   useEffect(() => {
 
@@ -33,12 +36,14 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
     fetchVisibleInstitutions();
 
+    fetchAvailableDrivers();
+
   }, [vehicleId]);
 
   useEffect(() => {
 
     if (!vehicle) return;
-
+// eslint-disable-next-line react-hooks/set-state-in-effect
     setValues({
 
       vehicle_number: vehicle.vehicle_number,
@@ -78,6 +83,8 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
       institution_id:
         vehicle.institution_id,
+
+      driver_id: vehicle.driver_id ?? undefined,
     });
 
   }, [vehicle]);
@@ -123,31 +130,34 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
       onSuccess?.();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
 
-      if (error.response?.status === 422) {
+      if (error instanceof Object && "response" in error && (error as { response?: { status?: number; data?: { message?: string; errors?: Record<string, string[]> } } }).response?.status === 422) {
 
-        const validationErrors =
-          error.response.data.errors;
+        const validationErrorResponse = error as {
+          response?: { status?: number; data?: { message?: string; errors?: Record<string, string[]> } };
+        };
 
-        const formattedErrors:
-          Record<string, string> = {};
+        const errorsObj = validationErrorResponse.response?.data?.errors ?? {};
 
-        Object.keys(validationErrors)
-          .forEach((key) => {
+        const formattedErrors: Record<string, string> = {};
 
-            formattedErrors[key] =
-              validationErrors[key][0];
-
-          });
+        Object.keys(errorsObj).forEach((key) => {
+          const messages = errorsObj[key];
+          if (Array.isArray(messages) && messages.length > 0) {
+            formattedErrors[key] = messages[0];
+          }
+        });
 
         setErrors(formattedErrors);
 
         return;
       }
 
+      const errAny =  error as { response?: { status?: number; data?: { message?: string; errors?: Record<string, string[]> } } };
+
       alert(
-        error.response?.data?.message ??
+        errAny?.response?.data?.message ??
         "Something went wrong."
       );
 
@@ -172,6 +182,7 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
       <VehicleForm
         values={values}
         institutions={institutions}
+        drivers={drivers}
         errors={errors}
         onChange={handleChange}
       />

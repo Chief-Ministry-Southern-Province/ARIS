@@ -29,10 +29,16 @@ class Vehicle extends Model
         'fuel_type',
         'status',
         'institution_id',
+        'driver_id'
     ];
 
     public function institution()
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
     }
 }

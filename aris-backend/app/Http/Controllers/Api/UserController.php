@@ -88,5 +88,17 @@ class UserController extends Controller
             'message' => 'User deleted successfully',
         ]);
     }
+
+    public function getAvailableDrivers(Request $request)
+    {
+       return User::role('driver')
+        ->whereIn(
+            'institution_id',
+            app(InstitutionService::class)
+                ->accessibleInstitutionIds($request->user())
+        )
+        ->orderBy('name')
+        ->get();
+    }
     
 }

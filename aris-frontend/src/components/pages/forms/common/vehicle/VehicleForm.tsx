@@ -5,15 +5,13 @@ import { FormField } from "@/components/molecules/FormField";
 import type { CreateVehicleRequest } from "@/types/vehicle.type";
 import type { Institution } from "@/types/Institution.type";
 
-import {
-  VEHICLE_TYPES,
-  FUEL_TYPES,
-  VEHICLE_STATUS,
-} from "@/constants/vehicle";
+import {VEHICLE_TYPES, FUEL_TYPES,VEHICLE_STATUS,} from "@/constants/vehicle";
+import type { User } from "@/types/User.type";
 
 type VehicleFormProps = {
   values: CreateVehicleRequest;
   institutions: Institution[];
+  drivers: User[];
   errors?: Record<string, string>;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -23,6 +21,7 @@ type VehicleFormProps = {
 export default function VehicleForm({
   values,
   institutions,
+  drivers,
   errors = {},
   onChange,
 }: VehicleFormProps) {
@@ -243,6 +242,25 @@ export default function VehicleForm({
               value={values.status}
               onChange={onChange}
               options={VEHICLE_STATUS}
+            />
+          </FormField>
+        </div>
+      </div>
+
+      {/* Driver Assignment */}
+      <div className="rounded-xl border border-gray-200 bg-white p-6">
+        <h2 className="mb-6 text-lg font-semibold">Driver Assignment</h2>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField label="Assigned Driver" error={errors.driver_id}>
+            <SelectField
+              name="driver_id"
+              value={values.driver_id?.toString() ?? ""}
+              onChange={onChange}
+              options={drivers.map((driver) => ({
+                value: driver.id.toString(),
+                label: driver.name,
+              }))}
             />
           </FormField>
         </div>

@@ -51,6 +51,8 @@ export interface Vehicle {
 
   institution_id: number;
 
+  driver_id: number | null;
+
   created_at: string;
   updated_at: string;
 }
@@ -61,6 +63,8 @@ export interface CreateVehicleRequest {
   registered_date?: string;
 
   vehicle_type: VehicleType;
+
+  driver_id?: number;
 
   brand: string;
 

@@ -30,3 +30,8 @@ export const getUserById = async (userId: number): Promise<User> => {
   const response = await api.get(`/users/${userId}`);
   return response.data;
 };
+
+export const getAvailableDrivers = async (): Promise<User[]> => {
+  const response = await api.get("/available-drivers");
+  return response.data;
+}

@@ -1,5 +1,5 @@
 import type{User,createUserRequest,updateUserRequest} from '../types/User.type';
-import {getAllUsers,createUser,updateUser,deleteUser,getUserById} from '../services/user.service';
+import {getAllUsers,createUser,updateUser,deleteUser,getUserById,getAvailableDrivers} from '../services/user.service';
 import { useState } from 'react';
 
 export const useGetAllUsers = () => {
@@ -167,6 +167,40 @@ export const useGetUserById = () => {
   return {
     fetchUserById,
     user,
+    loading,
+    error,
+  };
+};
+
+export const useGetAvailableDrivers = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [drivers, setDrivers] = useState<User[]>([]);
+
+  const fetchAvailableDrivers = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getAvailableDrivers();
+      setDrivers(response);
+      return response;
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to fetch available drivers";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    fetchAvailableDrivers,
+    drivers,
     loading,
     error,
   };
