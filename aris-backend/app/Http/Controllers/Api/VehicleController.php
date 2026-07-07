@@ -16,15 +16,36 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->authorize('viewAny', Vehicle::class);
+        $search = $request->search;
 
-        return response()->json(
-            Vehicle::with([ 'institution', 'driver' ])
-                ->latest()
-                ->get()
-        );
+        $vehicles = Vehicle::query()
+
+            ->with([
+                'institution',
+                'driver',
+            ])
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->where(function ($q) use ($search) {
+
+                    $q->where('vehicle_number', 'like', "%{$search}%")
+
+                        ->orWhere('brand', 'like', "%{$search}%")
+
+                        ->orWhere('model', 'like', "%{$search}%");
+
+                });
+
+            })
+
+            ->latest()
+
+            ->paginate(10);
+
+        return response()->json($vehicles);
     }
 
     /**

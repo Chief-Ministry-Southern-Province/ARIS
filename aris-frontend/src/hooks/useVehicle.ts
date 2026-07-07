@@ -7,14 +7,22 @@ export const useGetVehicles = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [vehicles, setVehicles] = useState<VehicleResponse[]>([]);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
-  const fetchVehicles = async () => {
+  const fetchVehicles = async ({page,search}: {page: number; search?: string}) => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await getVehicles();
-      setVehicles(response);
+      const response = await getVehicles(page, search);
+      // response is a paginated response; extract list and pagination info
+      setVehicles(response.data);
+      setCurrentPage(response.current_page ?? 1);
+      setLastPage(response.last_page ?? 1);
+      setTotal(response.total ?? response.data.length ?? 0);
       return response;
     } catch (err: unknown) {
       const message =
@@ -33,6 +41,12 @@ export const useGetVehicles = () => {
     vehicles,
     loading,
     error,
+    currentPage,
+    setCurrentPage,
+    lastPage,
+    setLastPage,
+    total,
+    setTotal
   };
 };
 

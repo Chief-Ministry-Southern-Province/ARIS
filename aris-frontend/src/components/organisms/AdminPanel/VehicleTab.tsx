@@ -10,6 +10,7 @@ import {useGetVehicles} from "@/hooks/useVehicle";
 import ViewVehicleForm from "@/components/pages/forms/common/vehicle/ViewVehicleForm";
 
 import Loader from "@/components/atoms/Loader";
+import Pagination from "@/components/molecules/Pagination";
 
 const VehicleTab = () => {
 
@@ -21,21 +22,23 @@ const VehicleTab = () => {
   const [viewingVehicle, setViewingVehicle] = useState<number | null>(null);
   const [showViewVehicle, setShowViewVehicle] = useState(false);
   
-  const {vehicles, fetchVehicles, loading} = useGetVehicles();
+  const {vehicles, fetchVehicles, loading,lastPage, total} = useGetVehicles();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchVehicles();
-  }, []);
+    fetchVehicles({page, search});
+  }, [page, search]);
 
   const createOnSuccess = () => {
     setShowAddVehicle(false);
-    fetchVehicles();
+    fetchVehicles({page, search});
   };
 
   const updateOnSuccess = () => {
     setShowEditVehicle(false);
     setSelectedVehicle(null);
-    fetchVehicles();
+    fetchVehicles({page, search});
   }
 
   const viewOnSuccess = () => {
@@ -53,6 +56,8 @@ const VehicleTab = () => {
           <input
             type="text"
             placeholder="Search vehicles..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -197,6 +202,12 @@ const VehicleTab = () => {
             )}
           </tbody>
         </table>
+        <Pagination
+          currentPage={page}
+          lastPage={lastPage}
+          total={total}
+          onPageChange={(page) => setPage(page)}
+        />
       </div>
 
       {/* Register Vehicle Modal */}
