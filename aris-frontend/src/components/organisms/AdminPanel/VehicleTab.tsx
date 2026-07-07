@@ -6,8 +6,15 @@ import { mockVehicles } from "../../data/mockData";
 import AddVehicleForm from "@/components/pages/forms/common/vehicle/AddVehicleForm";
 import Modal from "@/components/molecules/Modal";
 
+import EditVehicleForm  from "@/components/pages/forms/common/vehicle/EditVehicleForm";
+
 const VehicleTab = () => {
+
   const [showAddVehicle, setShowAddVehicle] = useState(false);
+
+  const [showEditVehicle, setShowEditVehicle] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<number | null>(null);
+
   const navigate = useNavigate();
 
   return (
@@ -123,6 +130,10 @@ const VehicleTab = () => {
                   <button
                     className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
                     title="Edit Vehicle"
+                    onClick={() => {
+                      setSelectedVehicle(Number(vehicle.id));
+                      setShowEditVehicle(true);
+                    }}
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -145,6 +156,15 @@ const VehicleTab = () => {
         <Modal onClose={() => setShowAddVehicle(false)}>
           <div className="w-full max-w-5xl">
             <AddVehicleForm />
+          </div>
+        </Modal>
+      )}
+
+      {/* Edit Vehicle Modal */}
+      {showEditVehicle && selectedVehicle !== null && (
+        <Modal onClose={() => setShowEditVehicle(false)}>
+          <div className="w-full max-w-5xl">
+            <EditVehicleForm vehicleId={Number(selectedVehicle)} />
           </div>
         </Modal>
       )}
