@@ -7,17 +7,19 @@ import { InputField } from "@/components/atoms/InputField";
 import { SelectField } from "@/components/atoms/SelectField";
 import { TextAreaField } from "../atoms/TextAreaField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
-import { provinces } from "@/components/data/province";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
 import { useCreateAccident } from "@/hooks/useAccident";
 import { useGetVehicles } from "@/hooks/useVehicle";
 import type { CreateAccidentRequest } from "@/types/accident.type";
-
+import { SRI_LANKA_PROVINCES, DISTRICTS_BY_PROVINCE } from "@/constants/sriLankaLocations";
 const ReportPage = () => {
+
   const { t } = useTranslation();
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
   const { createAccidentData, loading: submitting, error: submitError } = useCreateAccident();
   const { fetchVehicles, vehicles } = useGetVehicles();
+
+  const [districts, setDistricts] = useState<string[]>([]);
 
   // Fetch vehicles on mount
   useEffect(() => {
@@ -44,6 +46,18 @@ const ReportPage = () => {
     longitude: "",
     evidenceImages: [] as File[]
   });
+
+  useEffect(() => {
+    if (form.province) {
+      setDistricts(DISTRICTS_BY_PROVINCE[form.province as keyof typeof DISTRICTS_BY_PROVINCE] ?? []);
+    } else {
+      setDistricts([]);
+    }
+  }, [form.province]);
+
+  useEffect(() => {
+    fetchVehicles({ page: 1, search: "" });
+  }, []);
 
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -108,7 +122,6 @@ const ReportPage = () => {
 
     try {
       await createAccidentData(payload);
-
       setSuccessMessage("Accident report submitted successfully!");
 
       // Reset form
@@ -220,7 +233,7 @@ const ReportPage = () => {
             <SelectField
               value={form.province}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)}
-              options={provinces.map((province) => ({
+              options={SRI_LANKA_PROVINCES.map((province) => ({
                 value: province,
                 label: province
               }))}
@@ -228,11 +241,13 @@ const ReportPage = () => {
           </FormField>
 
           <FormField label={t("report.district")}>
-            <InputField
-              type="text"
-              placeholder={t("report.district")}
+            <SelectField
               value={form.district}
-              onChange={(e) => update("district", e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("district", e.target.value)}
+              options={districts.map((district) => ({
+                value: district,
+                label: district
+              }))}
             />
           </FormField>
         </div>
