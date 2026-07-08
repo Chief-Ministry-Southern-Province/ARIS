@@ -8,6 +8,9 @@ use App\Models\Institution;
 
 use App\Models\Traits\BelongsToInstitution;
 
+use App\Models\User;
+use App\Models\Accident;
+
 class Vehicle extends Model
 {
     use HasFactory;
@@ -40,5 +43,10 @@ class Vehicle extends Model
     public function driver()
     {
         return $this->belongsTo(User::class, 'driver_id');
+    }
+
+    public function accidents()
+    {
+        return $this->hasMany(Accident::class);
     }
 }
