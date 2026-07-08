@@ -1,3 +1,5 @@
+import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
+
 export const translations = {
   en: {
     appName: "Accident Reporting & Investigation System",
@@ -112,7 +114,8 @@ export const mockUsers = [
 
 export const mockCases = [
   {
-    id: "ARIS-2024-001",
+    id:1,
+    case_id: "ARIS-2024-001",
     title: "Vehicle Collision - Colombo Road",
     date: "2024-03-15",
     time: "09:45",
@@ -130,7 +133,8 @@ export const mockCases = [
     lng: 79.8612,
   },
   {
-    id: "ARIS-2024-002",
+    id: 2,
+    case_id: "ARIS-2024-002",
     title: "Single Vehicle Accident - Highway",
     date: "2024-03-12",
     time: "14:20",
@@ -148,7 +152,8 @@ export const mockCases = [
     lng: 80.0007,
   },
   {
-    id: "ARIS-2024-003",
+    id: 3,
+    case_id: "ARIS-2024-003",
     title: "Parking Lot Damage",
     date: "2024-03-10",
     time: "11:00",
@@ -166,7 +171,8 @@ export const mockCases = [
     lng: 79.8645,
   },
   {
-    id: "ARIS-2024-004",
+    id: 4,
+    case_id: "ARIS-2024-004",
     title: "Rear-End Collision",
     date: "2024-03-08",
     time: "16:30",
@@ -184,7 +190,8 @@ export const mockCases = [
     lng: 79.8644,
   },
   {
-    id: "ARIS-2024-005",
+    id: 5,
+    case_id: "ARIS-2024-005",
     title: "Pedestrian Incident",
     date: "2024-03-05",
     time: "08:15",
@@ -202,7 +209,8 @@ export const mockCases = [
     lng: 80.6337,
   },
   {
-    id: "ARIS-2024-006",
+    id: 6,
+    case_id: "ARIS-2024-006",
     title: "Vehicle Fire - Ambulance",
     date: "2024-02-28",
     time: "22:10",
@@ -222,12 +230,11 @@ export const mockCases = [
 ];
 
 export const mockVehicles = [
-  { id: "V001", regNo: "WP-CAB-1234", type: "Ambulance", make: "Toyota HiAce", year: 2019, institution: "Colombo General Hospital", status: "Active", incidents: 3 },
-  { id: "V002", regNo: "WP-KH-5678", type: "Transport Van", make: "Nissan Urvan", year: 2017, institution: "Kalutara District Hospital", status: "Active", incidents: 1 },
-  { id: "V003", regNo: "WP-CAE-9012", type: "Hospital Van", make: "Mitsubishi L300", year: 2016, institution: "National Hospital Colombo", status: "Under Repair", incidents: 4 },
-  { id: "V004", regNo: "WP-CAF-3456", type: "Staff Vehicle", make: "Toyota Prius", year: 2020, institution: "De Zoysa Hospital", status: "Active", incidents: 2 },
-  { id: "V005", regNo: "CP-CAA-7890", type: "Ambulance", make: "Isuzu NKR", year: 2018, institution: "Kandy Teaching Hospital", status: "Active", incidents: 5 },
-  { id: "V006", regNo: "WP-CAG-2345", type: "Ambulance", make: "Toyota HiAce", year: 2015, institution: "Wattala Base Hospital", status: "Written Off", incidents: 6 },
+  { id: "V001", regNo: "WP-CAB-1234", type: "Ambulance", make: "Toyota HiAce", year: 2019, institution: "Colombo General Hospital", status: "Active", incidents: 3, driver: { name: "Kamal Perera", avatar: "KP" } },
+  { id: "V002", regNo: "WP-KH-5678", type: "Transport Van", make: "Nissan Urvan", year: 2017, institution: "Kalutara District Hospital", status: "Active", incidents: 1, driver: { name: "Sunil Silva", avatar: "SS" } },
+  { id: "V003", regNo: "WP-CAE-9012", type: "Hospital Van", make: "Mitsubishi L300", year: 2016, institution: "National Hospital Colombo", status: "Under Repair", incidents: 4, driver: { name: "Rajitha Fernando", avatar: "RF" } },
+  { id: "V004", regNo: "WP-CAF-3456", type: "Staff Vehicle", make: "Toyota Prius", year: 2020, institution: "De Zoysa Hospital", status: "Active", incidents: 2, driver: { name: "Nimal Jayasinghe", avatar: "NJ" } },
+  { id: "V005", regNo: "CP-CAA-7890", type: "Ambulance", make: "Isuzu NKR", year: 2018, institution: "Kandy Teaching Hospital", status: "Active", incidents: 5, driver: { name: "Dilan Mendis", avatar: "DM" } },
 ];
 
 export const mockInstitutions = [
@@ -292,7 +299,8 @@ export const recentActivities = [
   { id: 6, type: "rejection", message: "Case ARIS-2024-006 requires additional documents", user: "Sunil Dissanayake", time: "2 days ago" },
 ];
 
-export const approvalWorkflowSteps = [
+
+export const approvalWorkflowSteps : approvalWorkflowStep[] = [
   { step: 1, role: "Driver", title: "Initial Report", description: "Driver submits accident report" },
   { step: 2, role: "Development Officer", title: "DO Review", description: "Development Officer reviews and validates report" },
   { step: 3, role: "Administrative Officer", title: "AO Verification", description: "Administrative Officer verifies details and initiates investigation" },
@@ -310,4 +318,67 @@ export const mockApprovalHistory = [
   { step: 3, role: "Administrative Officer", user: "Saman Fernando", action: "Approved", comment: "Investigation initiated. Police report obtained.", date: "2024-03-16 09:00", status: "approved" },
   { step: 4, role: "Investigation Officer", user: "Ruwan Bandara", action: "In Progress", comment: "Field investigation ongoing", date: "2024-03-17 11:00", status: "in_progress" },
   { step: 5, role: "Medical Superintendent", user: "Dr. Priya Jayawardena", action: "Pending", comment: "", date: "", status: "pending" },
+];
+export interface User {
+  id: string;
+  name: string;
+  designation: string;
+  role: "OFFICER" | "HEAD" | "SECRETARY";
+  signatureUrl?: string;
+}
+export const users: User[] = [
+  {
+    id: "1",
+    name: "Nimal Perera",
+    designation: "Accountant",
+    role: "OFFICER",
+    signatureUrl: "/signatures/nimal.png"
+  },
+  {
+    id: "2",
+    name: "Kasun Silva",
+    designation: "Director",
+    role: "HEAD",
+    signatureUrl: "/signatures/kasun.png"
+  },
+  {
+    id: "3",
+    name: "Thilina Fernando",
+    designation: "Secretary",
+    role: "SECRETARY",
+    signatureUrl: "/signatures/thilina.png"
+  },
+];
+
+export const driver = [
+  { id: 1, name: "John Silva" },
+  { id: 2, name: "Kasun Perera" },
+  { id: 3, name: "Nimal Fernando" },
+]
+
+export const notifications = [
+  {
+    id: 1,
+    title: "New Accident Report Submitted",
+    description:
+      "Case ARIS-2025-001 has been reported and awaits review.",
+    time: "5 minutes ago",
+    color: "bg-red-500",
+  },
+  {
+    id: 2,
+    title: "Approval Pending",
+    description:
+      "FR104(3) for Case ARIS-2025-004 requires your approval.",
+    time: "30 minutes ago",
+    color: "bg-yellow-500",
+  },
+  {
+    id: 3,
+    title: "Investigator Assigned",
+    description:
+      "You have been assigned as Investigation Officer for Case ARIS-2025-007.",
+    time: "1 hour ago",
+    color: "bg-blue-500",
+  },
 ];

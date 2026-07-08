@@ -1,0 +1,44 @@
+name: React CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'aris-frontend/**'
+
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'aris-frontend/**'
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: aris-frontend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: aris-frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build Project
+        run: npm run build

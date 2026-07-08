@@ -12,7 +12,8 @@
     "approvalWorkflow": "Approval Workflow",
     "digitalSignatures": "Digital Signatures",
     "analytics": "Analytics",
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "notifications": "Notifications"
   },
   "app": {
     "name": "Accident Reporting System",
@@ -20,7 +21,35 @@
     "subtitle": "Government of Sri Lanka — Ministry of Health"
   },
   "common": {
+    "download": "Download",
+    "view": "View",
+    "preview": "Preview",
     "logout": "Sign Out"
+  },
+  "login": {
+    "login": "Sign In",
+    "username_placeholder": "Enter your username",
+    "password_placeholder": "Enter your password",
+    "usernameRequired": "Please enter your username",
+    "passwordRequired": "Please enter your password",
+    "loginFailed": "Login failed",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember Me",
+    "forgotPassword": "Forgot Password?",
+    "signInSubtitle": "Sign in to your government account",
+    "enterUsername": "Enter your username",
+    "enterPassword": "Enter your password",
+    "signingIn": "Signing In...",
+    "governmentPortal": "Government Digital Services Portal",
+    "secureAccess": "Secure access to government systems",
+    "demoAccounts": "Demo Accounts",
+    "role": "Role",
+    "credentials": "Credentials",
+    "copyright": "Government of Sri Lanka © 2026",
+    "version": "Version",
+    "securityNotice": "Protected by Government Cyber Security Framework",
+    "welcome": "Welcome Back"
   },
   "notifications": {
     "title": "Notifications"
@@ -72,6 +101,552 @@
   "btn": {
     "next": "Next",
     "previous": "Previous",
+    "submit": "Submit Report",
+    "saveDraft": "Save Draft",
+    "print": "Print",
+    "finalize": "Finalize"
+  },
+  "caseManagement": {
+    "title": "Case Management",
+    "casesFound": "cases found",
+    "search": "Search",
+
+    "table": {
+      "caseId": "Case ID",
+      "incident": "Incident",
+      "institution": "Institution",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+
+    "empty": {
+      "noCases": "No cases found matching your criteria"
+    },
+
+    "pagination": {
+      "showing": "Showing",
+      "of": "of",
+      "cases": "cases",
+      "previous": "Previous",
+      "next": "Next"
+    },
+
+    "tabs": {
+      "details": "Details",
+      "timeline": "Timeline",
+      "actions": "Actions"
+    },
+
+    "details": {
+      "caseId": "Case ID",
+      "dateTime": "Date & Time",
+      "location": "Location",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "institution": "Institution",
+      "investigator": "Investigator",
+      "description": "Description",
+      "estimatedLoss": "Estimated Loss",
+      "casualties": "Casualties",
+      "persons": "persons"
+    },
+
+    "actionButtons": {
+      "viewEvidence": "View Evidence",
+      "generateFR104_3": "Generate FR104(3)",
+      "generateFR104_4": "Generate FR104(4)",
+      "generateFR109": "Generate FR109",
+      "viewFR104_3": "View FR104(3)",
+      "viewFR104_4": "View FR104(4)",
+      "viewFR109": "View FR109",
+      "assignInvestigator": "Assign Investigator",
+      "forwardApproval": "Forward for Approval"
+    },
+
+    "timeline": {
+      "accidentReported": "Accident reported",
+      "reportApproved": "Report reviewed and approved",
+      "investigationInitiated": "Investigation initiated. Police report obtained.",
+      "fieldInvestigationStarted": "Field investigation started",
+      "evidenceCollected": "Evidence collected and uploaded"
+    }
+  },
+  "fr104_3": {
+    "title": "PRELIMINARY REPORT OF LOSSES UNDER F.R. 104 (3)",
+    "referenceNo": "Ref. No.",
+    "formNo": "F.R. 104 (3)",
+    "subtitle": "Report of Losses of Government Property",
+
+    "department": "Department / Corporation",
+    "date": "Date",
+    "place": "Place",
+    "loss": "Loss",
+
+    "natureOfLoss": "Nature of Loss",
+
+    "itemsLost": "Description of Items Lost",
+    "description": "Description",
+    "quantity": "Quantity",
+    "unit": "Unit of Measurement",
+    "value": "Value",
+    "action": "Action",
+    "addItem": "Add Item",
+    "removeItem": "Remove",
+
+    "causeOfLoss": "Cause of Loss",
+
+    "officersResponsible": "Officers Responsible",
+    "officerName": "Officer Name",
+    "designation": "Designation",
+    "addOfficer": "Add Officer",
+    "removeOfficer": "Remove",
+
+    "policeStation": "Police Station",
+    "dateReported": "Date Reported",
+
+    "investigation": "Nature of investigation being carried Out",
+
+    "securityArrangements": "Arrangements made for the security of the books, records, etc.",
+
+    "preventionArrangements": "Arrangements made for the prevention of the further losses",
+
+    "headOfDepartment": "Head of Department",
+
+    "approval": "Approval",
+
     "submit": "Submit Report"
-  } 
+  } ,
+   "fr104_4": {
+    "title": "FINAL REPORT OF LOSSES UNDER F. R. 104 (4)",
+    "subtitle": "Negligence & Recovery Assessment",
+    "sections": {
+      "generalInformation": "General Information",
+      "lossDetails": "Loss Details",
+      "causeOfLoss": "Cause of Loss",
+      "lostItems": "Lost Items",
+      "officersResponsible": "Officers Responsible",
+      "policeInformation": "Police Information",
+      "investigation": "Investigation Findings",
+      "recoveryInformation": "Recovery Information",
+      "insuranceInformation": "Insurance Information",
+      "boardOfInquiry": "Board of Inquiry",
+      "recommendations": "Recommendations of the Board of Inquiry",
+      "approval": "Approval & Certification",
+      "legalAction": "Details of Legal Action Taken"
+    },
+
+    "generalInformation": {
+      "referenceNo": "Reference Number",
+      "ministry": "Ministry / Department",
+      "lossDate": "Date of Loss",
+      "lossTime": "Time of Loss",
+      "location": "Location",
+      "preliminaryReportRefNo": "Preliminary Report Ref. No.",
+      "preliminaryReportDate": "Preliminary Report Date"
+    },
+
+    "lossDetails": {
+      "particulars": "Particulars of Loss",
+      "circumstances": "Circumstances under which the Loss Occurred"
+    },
+
+    "causeOfLoss": {
+      "label": "Negligence, Delay, Omissions or Other Causes"
+    },
+
+    "lostItems": {
+      "description": "Description",
+      "unit": "Unit",
+      "quantity": "Quantity",
+      "estimatedCost": "Estimated Cost",
+      "replacementCost": "Replacement Cost",
+      "originalCost": "Original Cost",
+      "addItem": "Add Item",
+      "remove": "Remove"
+    },
+
+    "officers": {
+      "name": "Officer Name",
+      "designation": "Designation",
+      "responsibility": "Nature of Responsibility",
+      "disciplinaryAction": "Disciplinary Action Taken",
+      "punishment": "Punishment Details",
+      "addOfficer": "Add Officer",
+      "removeOfficer": "Remove Officer"
+    },
+
+    "police": {
+      "station": "Police Station",
+      "caseNumber": "Case Number",
+      "officerName": "Officer Name",
+      "reportDate": "Report Date",
+      "attachReport": "Attach Summary of Police Report"
+    },
+    "legalAction": {
+      "courtName": "Name of Court",
+      "caseNo": "Case No.",
+      "courtOrder": "Order of Court",
+      "courtOrderSummary": "Summary of Court Order",
+      "attachOrder": "Annex a Copy of the Court Order"
+    },
+    "investigation": {
+      "findings": "Investigation Findings"
+    },
+
+    "recovery": {
+      "officer": "Officer Name",
+      "amount": "Amount Recoverable",
+      "method": "Recovery Method",
+      "addItem": "Add Item",
+      "remove": "Remove"
+    },
+
+    "insurance": {
+      "policyNo": "Policy Number",
+      "company": "Insurance Company",
+      "amountInsured": "Amount Insured",
+      "amountRecoverable": "Amount Recoverable",
+      "recoverableAmountWords": "Amount Recoverable from Insurance / Guarantee (Amount in Words)"
+    },
+
+    "board": {
+      "memberName": "Member Name",
+      "designation": "Designation",
+      "addMember": "Add Board Member",
+      "removeMember": "Remove Member"
+    },
+
+    "approval": {
+      "preparedSection": "Prepared By",
+      "headSection": "Head of Department / Chairman",
+      "secretarySection": "Secretary / Authorized Officer",
+      "name": "Name",
+      "designation": "Designation",
+      "date": "Date",
+      "signature": "Signature"
+    },
+
+    "buttons": {
+      "print": "Print",
+      "saveDraft": "Save Draft",
+      "submit": "Submit",
+      "remove": "Remove",
+      "addLostItem": "Add Lost Item",
+      "addOfficer": "Add Officer",
+      "removeOfficer": "Remove Officer",
+      "addBoardMember": "Add Board Member",
+      "removeBoardMember": "Remove Board Member"
+    },
+    "recommendations": {
+      "title": "Recommendations of the Board of Inquiry",
+      "label": "Recommendations of the Board of Inquiry",
+      "attachReport": "Annex Copy of Board Report"
+    },
+    "preventiveActions": {
+      "title": "Preventive Actions",
+      "label": "Steps taken or proposed to be taken to prevent similar losses in the future",
+      "placeholder": "Describe the steps taken or proposed to prevent similar losses in the future."
+    },
+    "parts": {
+      "a": "Part A",
+      "b": "Part B",
+      "c": "Part C",
+      "d": "Part D",
+      "e": "Part E",
+      "f": "Part F",
+      "g": "Part G",
+      "h": "Part H",
+      "i": "Part I",
+      "j": "Part J",
+      "k": "Part K",
+      "l": "Part L",
+      "m": "Part M",
+      "n": "Part N"
+    }
+  },
+  "digitalSignature": {
+    "title": "Digital Signature",
+    "description": "Management of Digital Signatures for Officers",
+    "digitalSignature": "Digital Signature",
+    "search": "Search",
+    "searchOfficer": "Search Officer",
+    "signatureAvailable": "Signature Available",
+    "signatureMissing": "No Signature",
+    "signaturePreview": "Signature Preview",
+    "drawSignature": "Draw Signature",
+    "updateSignature": "Update Signature",
+    "removeSignature": "Remove Signature",
+    "uploadSignature": "Upload Signature",
+    "saveSignature": "Save Signature",
+    "clear": "Clear"
+  },
+  "evidenceManagement": {
+    "title": "Evidence Management",
+    "subtitle": "Manage case evidence, documents and reports",
+
+    "uploadEvidence": "Upload Evidence",
+    "upload": "Upload",
+    "cancel": "Cancel",
+
+    "evidenceType": "Evidence Type",
+    "caseReference": "Case Reference",
+    "description": "Description",
+
+    "dragDrop": "Drag & drop files here",
+    "clickBrowse": "or click to browse",
+    "maxFileSize": "Max file size: 200MB",
+
+    "allEvidence": "All Evidence",
+
+    "photos": "Photos",
+    "videos": "Videos",
+    "documents": "Documents",
+    "statements": "Statements",
+    "policeReports": "Police Reports",
+    "recommendation": "Board Recommendations of Inquiry",
+    "courtOrder": "Court Orders",
+
+    "search": "Search",
+    "allCases": "All Cases",
+
+    "preview": "Preview",
+    "download": "Download",
+    "delete": "Delete",
+
+    "noEvidenceFound": "No evidence found",
+
+    "photo": "Photo",
+    "video": "Video",
+    "document": "Document",
+    "statement": "Statement",
+    "police": "Police Report"
+  },
+   "adminPanel": {
+    "title": "Admin Panel",
+    "subtitle": "System administration and configuration",
+
+    "tabs": {
+      "users": "Users",
+      "roles": "Roles & Permissions",
+      "institutions": "Institutions",
+      "vehicles": "Vehicles",
+      "workflow": "Workflow Rules",
+      "notifications": "Notifications",
+      "audit": "Audit Logs"
+    },
+
+    "users": {
+      "searchPlaceholder": "Search users...",
+      "addUser": "Add User",
+      "user": "User",
+      "username": "Username",
+      "role": "Role",
+      "institution": "Institution",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+
+    "roles": {
+      "title": "Roles & Permissions"
+    },
+
+    "institutions": {
+      "searchPlaceholder": "Search institutions...",
+      "addInstitution": "Add Institution",
+      "district": "District",
+      "director": "Director",
+      "edit": "Edit",
+      "viewCases": "View Cases",
+      "headOfInstitution": "Head of Institution",
+      "editInstitution": "Edit Institution"
+    },
+
+    "vehicles": {
+      "searchPlaceholder": "Search vehicles...",
+      "registerVehicle": "Register Vehicle",
+      "registrationNumber": "Reg. No.",
+      "type": "Type",
+      "makeYear": "Make & Year",
+      "institution": "Institution",
+      "incidents": "Incidents",
+      "status": "Status",
+      "active": "Active",
+      "underRepair": "Under Repair",
+      "inactive": "Inactive"
+    },
+
+    "workflow": {
+      "description": "Configure the approval chain and escalation rules for accident cases.",
+      "appliesTo": "Applies to",
+
+      "rules": {
+        "autoEscalate": "Auto-escalate if no action within 48h",
+        "smsNotification": "SMS notification to approver on new pending case",
+        "mandatoryComment": "Require mandatory comment for rejection",
+        "skipInvestigation": "Skip Investigation Officer for minor cases (<LKR 50K)",
+        "autoForward": "Auto-forward to CAO after Ministry Secretary approval",
+        "boardInquiry": "Require Board of Inquiry for losses >LKR 1M"
+      }
+    },
+
+    "notifications": {
+      "addRule": "Add Rule",
+      "to": "To",
+      "via": "via",
+
+      "triggers": {
+        "newAccidentReport": "New Accident Report",
+        "approvalRequired": "Approval Required",
+        "caseOverdue": "Case Overdue (7 days)",
+        "investigationComplete": "Investigation Complete",
+        "pdfGenerated": "PDF Report Generated"
+      },
+      "title": "Notifications",
+      "subtitle": "View system alerts and updates",
+      "markAllRead": "Mark All as Read",
+      "total": "Total Notifications",
+      "unread": "Unread",
+      "read": "Read",
+      "view": "View"
+    },
+
+    "audit": {
+      "searchPlaceholder": "Search audit logs...",
+      "exportCsv": "Export CSV",
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "resource": "Resource",
+      "ipAddress": "IP Address",
+      "status": "Status",
+      "success": "Success",
+      "failed": "Failed"
+    },
+
+    "auditActions": {
+      "userCreated": "User Created",
+      "caseUpdated": "Case Updated",
+      "evidenceUpload": "Evidence Upload",
+      "loginFailed": "Login Failed",
+      "caseApproved": "Case Approved",
+      "pdfGenerated": "PDF Generated",
+      "vehicleAdded": "Vehicle Added"
+    },
+
+    "notificationChannels": {
+      "email": "Email",
+      "sms": "SMS",
+      "system": "System",
+      "emailSms": "Email + SMS",
+      "emailSystem": "Email + System"
+    }
+  },
+   "approvalWorkflow": {
+    "title": "Approval Workflow",
+    "subtitle": "Multi-level approval chain management",
+
+    "selectCase": "Select Case",
+
+    "approvalChain": "Approval Chain",
+    "approvalHistory": "Approval History",
+
+    "approved": "Approved",
+    "inProgress": "In Progress",
+    "pending": "Pending",
+    "rejected": "Rejected",
+
+    "act": "Act",
+    "review": "Review",
+
+    "approvalDecision": "Approval Decision",
+    "comments": "Comments",
+    "commentsPlaceholder": "Add your comments here...",
+
+    "approve": "Approve",
+    "reject": "Reject",
+    "requestChanges": "Request Changes",
+
+    "cancel": "Cancel",
+    "submitChanges": "Request Changes",
+
+    "casesAwaitingAction": "Cases Awaiting Your Action",
+
+    "investigationOfficerReview": "Investigation Officer Review",
+    "administrativeOfficerReview": "Administrative Officer Review",
+
+    "workflowSteps": {
+      "reportingOfficer": "Reporting Officer",
+      "investigationOfficer": "Investigation Officer",
+      "administrativeOfficer": "Administrative Officer",
+      "superintendent": "Superintendent",
+      "director": "Director"
+    }
+  },
+  "caseDetails": {
+    "title": "Case Details",
+    "subtitle": "View and manage case information, actions and workflow",
+    "tabs": {
+      "details": "Details",
+      "actions": "Actions",
+      "workflow": "Workflow",
+      "evidence": "Evidence",
+      "investigationTeam": "Investigation Team"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Comprehensive accident analytics and insights",
+    "description": "Comprehensive accident analytics and insights",
+    "refresh": "Refresh",
+
+    "kpi": {
+      "accidentFrequencyMonthly": "Accident Frequency (Monthly)",
+      "highRiskVehicles": "High Risk Vehicles",
+      "totalCostImpact": "Total Cost Impact",
+      "recoveryRate": "Recovery Rate"
+    },
+
+    "charts": {
+      "accidentFrequencyTrend": "Accident Frequency Trend",
+      "costAnalysis": "Cost Analysis",
+      "recoveryAnalysis": "Recovery Analysis",
+      "lossDistribution": "Loss Distribution",
+      "repeatIncidentsDriverAnalysis": "Repeat Incidents — Driver Analysis",
+      "institutionComparison": "Institution Comparison",
+      "gisAccidentHotspots": "GIS Accident Hotspots"
+    },
+
+    "legend": {
+      "accidents": "Accidents",
+      "totalLoss": "Total Loss",
+      "recovered": "Recovered",
+      "insurance": "Insurance",
+      "disciplinary": "Disciplinary",
+      "other": "Other",
+      "lossesLKR": "Losses (LKR)"
+    },
+
+    "table": {
+      "location": "Location",
+      "coordinates": "Coordinates",
+      "incidents": "Incidents",
+      "severity": "Severity",
+      "riskTrend": "Risk Trend"
+    },
+
+    "severity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+
+    "trend": {
+      "increasing": "Increasing"
+    }
+  }
+  
 }
