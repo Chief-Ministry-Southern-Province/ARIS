@@ -6,6 +6,7 @@ import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
 import InvestigationTeamTab from "@/components/organisms/CaseManagement/InvestigationTeamTab";
 import { useTranslation } from "react-i18next";
 
+import { useParams } from "react-router-dom";
 import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck} from "lucide-react";
  
 const caseDetailsTabs = [
@@ -18,7 +19,9 @@ const caseDetailsTabs = [
 
 function CaseDetails() {
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
+  const { caseId } = useParams<{ caseId: string }>();
+  const numericId = Number(caseId);
 
   const [activeTab, setActiveTab] = useState("Details");
 
@@ -44,12 +47,12 @@ function CaseDetails() {
         <div className="p-5">
           {/* case details */}
           {activeTab === "Details" && (
-            <DetailsTab id={1} />
+            <DetailsTab id={numericId} />
           )}
 
           {/* case actions */}
           {activeTab === "Action" && (
-            <CaseActionTab id={1} />
+            <CaseActionTab id={numericId} />
           )}
 
           {/* case workflow */}

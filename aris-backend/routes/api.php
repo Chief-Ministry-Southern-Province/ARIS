@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\VehicleController;
+use App\Http\Controllers\Api\AccidentController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -43,5 +44,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     // Protected routes for vehicles with assigned institutions
     Route::apiResource('vehicles', VehicleController::class);
+
+    // Protected routes for accidents
+    Route::apiResource('accidents', AccidentController::class);
 });
 

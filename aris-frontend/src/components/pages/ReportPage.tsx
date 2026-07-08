@@ -1,40 +1,51 @@
-import { AlertCircle, MapPin } from "lucide-react";
-import { mockUsers, mockVehicles } from "../data/mockData";
+import { AlertCircle, MapPin, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
-import  SelectField  from "@/components/atoms/SelectField ";
+import { SelectField } from "@/components/atoms/SelectField";
 import { TextAreaField } from "../atoms/TextAreaField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
-import {provinces} from "@/components/data/province";
+import { provinces } from "@/components/data/province";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
+import { useCreateAccident } from "@/hooks/useAccident";
+import { useGetVehicles } from "@/hooks/useVehicle";
+import type { CreateAccidentRequest } from "@/types/accident.type";
 
 const ReportPage = () => {
   const { t } = useTranslation();
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
+  const { createAccidentData, loading: submitting, error: submitError } = useCreateAccident();
+  const { fetchVehicles, vehicles } = useGetVehicles();
 
- 
+  // Fetch vehicles on mount
+  useEffect(() => {
+    fetchVehicles({ page: 1, search: "" });
+  }, []);
+
   const [form, setForm] = useState({
     date: "",
     time: "",
     location: "",
     province: "",
     district: "",
-    vehicle: "",
-    driver: "",
-    casualties: "",
-    injuries: "",
-    casualties_type: "",
+    vehicle_id: "",
+    driver_id: "",
+    fatality_count: "",
+    injury_count: "",
+    severity: "",
     description: "",
     vehicleDamage: "",
-    roadCondition: "",
+    road_condition: "",
+    weather_condition: "",
     mapLocation: "",
     latitude: "",
     longitude: "",
     evidenceImages: [] as File[]
   });
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   function update(field: string, value: string) {
     setForm((prev) => ({
@@ -42,6 +53,21 @@ const ReportPage = () => {
       [field]: value,
     }));
   }
+
+  // Auto-select driver when vehicle is selected
+  const handleVehicleChange = (vehicleId: string) => {
+    update("vehicle_id", vehicleId);
+
+    const selectedVehicle = vehicles.find(
+      (v) => v.id === Number(vehicleId)
+    );
+
+    if (selectedVehicle?.driver_id) {
+      update("driver_id", String(selectedVehicle.driver_id));
+    } else {
+      update("driver_id", "");
+    }
+  };
 
   const handleGetLocation = async () => {
     try {
@@ -58,13 +84,57 @@ const ReportPage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Accident Report:", form);
+  const handleSubmit = async () => {
+    setSuccessMessage("");
 
-    alert("Report submitted successfully!");
+    const payload: CreateAccidentRequest = {
+      vehicle_id: Number(form.vehicle_id),
+      driver_id: form.driver_id ? Number(form.driver_id) : null,
+      accident_date: form.date,
+      accident_time: form.time,
+      severity: form.severity as CreateAccidentRequest["severity"],
+      province: form.province,
+      district: form.district,
+      location: form.location,
+      latitude: form.latitude ? Number(form.latitude) : null,
+      longitude: form.longitude ? Number(form.longitude) : null,
+      injury_count: form.injury_count ? Number(form.injury_count) : 0,
+      fatality_count: form.fatality_count ? Number(form.fatality_count) : 0,
+      road_condition: form.road_condition as CreateAccidentRequest["road_condition"],
+      weather_condition: form.weather_condition as CreateAccidentRequest["weather_condition"],
+      description: form.description || null,
+      vehicle_damage: form.vehicleDamage || null,
+    };
 
-    // TODO:
-    // API call here
+    try {
+      await createAccidentData(payload);
+
+      setSuccessMessage("Accident report submitted successfully!");
+
+      // Reset form
+      setForm({
+        date: "",
+        time: "",
+        location: "",
+        province: "",
+        district: "",
+        vehicle_id: "",
+        driver_id: "",
+        fatality_count: "",
+        injury_count: "",
+        severity: "",
+        description: "",
+        vehicleDamage: "",
+        road_condition: "",
+        weather_condition: "",
+        mapLocation: "",
+        latitude: "",
+        longitude: "",
+        evidenceImages: [],
+      });
+    } catch {
+      // error is handled by the hook
+    }
   };
 
   return (
@@ -88,8 +158,22 @@ const ReportPage = () => {
         </div>
       </div>
 
+      {/* Success Message */}
+      {successMessage && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-green-700 text-sm font-medium">
+          {successMessage}
+        </div>
+      )}
+
+      {/* Error Message */}
+      {submitError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-medium">
+          {submitError}
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-6">
-          {/* Date & Time */}
+        {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
           <FormField label={t("report.accidentDate")} required>
             <InputField
@@ -135,17 +219,12 @@ const ReportPage = () => {
           <FormField label={t("report.province")}>
             <SelectField
               value={form.province}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)} options={[]}            >
-              <option value="">
-                {t("report.selectProvince")}
-              </option>
-
-              {provinces.map((province) => (
-                <option key={province} value={province}>
-                  {province}
-                </option>
-              ))}
-            </SelectField>
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)}
+              options={provinces.map((province) => ({
+                value: province,
+                label: province
+              }))}
+            />
           </FormField>
 
           <FormField label={t("report.district")}>
@@ -183,58 +262,37 @@ const ReportPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField label={t("report.vehicleRegistration")} required>
             <SelectField
-              value={form.vehicle}
-              onChange={(e) => update("vehicle", e.target.value)}
-              options={[]}
-            >
-              <option value="">
-                {t("report.selectVehicle")}
-              </option>
-
-              {mockVehicles.map((vehicle) => (
-                <option
-                  key={vehicle.id}
-                  value={vehicle.regNo}
-                >
-                  {vehicle.regNo} — {vehicle.make}
-                </option>
-              ))}
-            </SelectField>
+              value={form.vehicle_id}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => handleVehicleChange(e.target.value)}
+              options={vehicles.map((vehicle) => ({
+                value: String(vehicle.id),
+                label: `${vehicle.vehicle_number} — ${vehicle.brand} ${vehicle.model}`
+              }))}
+            />
           </FormField>
 
-          <FormField label={t("report.driver")} required>
-            <SelectField
-              value={form.driver}
-              onChange={(e) => update("driver", e.target.value)}
-              options={[]}
-            >
-              <option value="">
-                {t("report.selectDriver")}
-              </option>
-
-              {mockUsers
-                .filter((user) => user.role === "Driver")
-                .map((user) => (
-                  <option
-                    key={user.id}
-                    value={user.name}
-                  >
-                    {user.name}
-                  </option>
-                ))}
-            </SelectField>
+          <FormField label={t("report.driver")}>
+            <InputField
+              type="text"
+              value={
+                form.driver_id
+                  ? vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`
+                  : "No driver assigned"
+              }
+              disabled
+            />
           </FormField>
         </div>
 
-        {/* Casualties */}
+        {/* Casualties & Severity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField label={t("report.casualties")}>
             <InputField
               type="number"
               min="0"
-              value={form.casualties}
+              value={form.fatality_count}
               onChange={(e) =>
-                update("casualties", e.target.value)
+                update("fatality_count", e.target.value)
               }
             />
           </FormField>
@@ -243,35 +301,28 @@ const ReportPage = () => {
             <InputField
               type="number"
               min="0"
-              value={form.injuries}
+              value={form.injury_count}
               onChange={(e) =>
-                update("injuries", e.target.value)
+                update("injury_count", e.target.value)
               }
             />
           </FormField>
 
-          <FormField label={t("report.severity")}>
+          <FormField label={t("report.severity")} required>
             <SelectField
-              value={form.casualties_type}
-              onChange={(e) => update("casualties_type", e.target.value)} options={[]}            >
-              {["None", "Minor", "Serious", "Fatal"].map(
-                (severity) => (
-                  <option
-                    key={severity}
-                    value={severity}
-                  >
-                    {severity}
-                  </option>
-                )
-              )}
-            </SelectField>
+              value={form.severity}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("severity", e.target.value)}
+              options={["MINOR", "MAJOR", "FATAL"].map((severity) => ({
+                value: severity,
+                label: severity.charAt(0) + severity.slice(1).toLowerCase()
+              }))}
+            />
           </FormField>
         </div>
 
         {/* Description */}
         <FormField
           label={t("report.accidentDescription")}
-          required
         >
           <TextAreaField
             rows={4}
@@ -285,44 +336,55 @@ const ReportPage = () => {
           />
         </FormField>
 
-        {/* Damage & Road Conditions */}
+        {/* Road Condition & Weather Condition */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t("report.vehicleDamage")}>
-            <TextAreaField
-              rows={2}
-              value={form.vehicleDamage}
-              onChange={(e) =>
-                update("vehicleDamage", e.target.value)
-              }
+          <FormField label={t("report.roadCondition")} required>
+            <SelectField
+              value={form.road_condition}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("road_condition", e.target.value)}
+              options={[
+                "DRY",
+                "WET",
+                "FLOODED",
+                "GRAVEL",
+                "UNDER_CONSTRUCTION",
+                "OTHER"
+              ].map((condition) => ({
+                value: condition,
+                label: condition.replace(/_/g, " ").charAt(0) + condition.replace(/_/g, " ").slice(1).toLowerCase()
+              }))}
             />
           </FormField>
 
-          <FormField label={t("report.roadCondition")}>
+          <FormField label="Weather Condition" required>
             <SelectField
-              value={form.roadCondition}
-              onChange={(e) => update("roadCondition", e.target.value)} options={[]}            >
-              <option value="">
-                Select condition
-              </option>
-
-              {[
-                "Dry & Clear",
-                "Wet",
-                "Night",
-                "Foggy",
-                "Heavy Rain",
-                "Road Works",
-              ].map((condition) => (
-                <option
-                  key={condition}
-                  value={condition}
-                >
-                  {condition}
-                </option>
-              ))}
-            </SelectField>
+              value={form.weather_condition}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("weather_condition", e.target.value)}
+              options={[
+                "SUNNY",
+                "RAINY",
+                "CLOUDY",
+                "FOGGY",
+                "WINDY",
+                "OTHER"
+              ].map((weather) => ({
+                value: weather,
+                label: weather.charAt(0) + weather.slice(1).toLowerCase()
+              }))}
+            />
           </FormField>
         </div>
+
+        {/* Vehicle Damage */}
+        <FormField label={t("report.vehicleDamage")}>
+          <TextAreaField
+            rows={2}
+            value={form.vehicleDamage}
+            onChange={(e) =>
+              update("vehicleDamage", e.target.value)
+            }
+          />
+        </FormField>
 
         {/* Evidence Images */}
         <FormField label={t("report.evidenceImages")}>
@@ -338,8 +400,15 @@ const ReportPage = () => {
 
         {/* Submit */}
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>
-            {t("btn.submit")}
+          <Button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Submitting...
+              </span>
+            ) : (
+              t("btn.submit")
+            )}
           </Button>
         </div>
       </div>

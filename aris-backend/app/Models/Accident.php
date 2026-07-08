@@ -52,6 +52,10 @@ class Accident extends Model
         'weather_condition',
 
         'status',
+
+        'description',
+
+        'vehicle_damage',
     ];
 
     protected $casts = [

@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Accident;
 use App\Models\User;
+use App\Services\InstitutionService;
 use Illuminate\Auth\Access\Response;
 
 class AccidentPolicy
@@ -13,7 +14,7 @@ class AccidentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isSystemAdmin() || $user->hasRole('subject_officer');
     }
 
     /**
@@ -21,7 +22,8 @@ class AccidentPolicy
      */
     public function view(User $user, Accident $accident): bool
     {
-        return false;
+        return app(InstitutionService::class)
+            ->canAccessInstitution($user, $accident->institution);
     }
 
     /**
@@ -29,7 +31,7 @@ class AccidentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isSystemAdmin() || $user->hasRole('subject_officer');
     }
 
     /**
@@ -37,7 +39,8 @@ class AccidentPolicy
      */
     public function update(User $user, Accident $accident): bool
     {
-        return false;
+        return app(InstitutionService::class)
+            ->canAccessInstitution($user, $accident->institution);
     }
 
     /**
@@ -45,7 +48,7 @@ class AccidentPolicy
      */
     public function delete(User $user, Accident $accident): bool
     {
-        return false;
+        return $user->isSystemAdmin() || $user->hasRole('subject_officer');
     }
 
     /**

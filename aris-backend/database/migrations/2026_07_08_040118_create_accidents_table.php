@@ -83,6 +83,10 @@ return new class extends Migration
                 'CLOSED',
             ])->default('REPORTED');
 
+            $table->text('description')->nullable();
+
+            $table->text('vehicle_damage')->nullable();
+
             $table->timestamps();
         });
     }
