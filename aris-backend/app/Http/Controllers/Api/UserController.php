@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Services\InstitutionService;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -47,7 +48,12 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
+        $data = $request->validated();
+
+        $data['password'] = Hash::make($data['password']);
+
+        $user = User::create($data);
+
         $user->assignRole($request->role);
 
         return response()->json($user, 201);
