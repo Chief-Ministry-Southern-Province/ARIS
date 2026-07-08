@@ -155,7 +155,7 @@ class InstitutionManagementService
             return Institution::where(
                 'parent_institution_id',
                 $user->institution_id
-            );
+            )->orWhere('id',$user->institution_id);
         }
 
         return Institution::whereRaw('1 = 0');
@@ -173,4 +173,6 @@ class InstitutionManagementService
 
         return collect();
     }
+
+  
 }

@@ -43,6 +43,11 @@ class User extends Authenticatable
         return $this->belongsTo(Institution::class);
     }
 
+    public function vehicle()
+    {
+        return $this->hasOne(Vehicle::class, 'driver_id');
+    }
+
     public function hasInstitution(): bool
     {
         return !is_null($this->institution_id);

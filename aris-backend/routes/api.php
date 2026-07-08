@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
-
+use App\Http\Controllers\Api\VehicleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -30,10 +30,18 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::apiResource('users', UserController::class);
 
+    Route::get('/available-drivers', [UserController::class, 'getAvailableDrivers']);
+
     // Protected routes for institutions with assigned users
     Route::apiResource('institutions', InstitutionController::class);
 
     Route::get('/institution-types', [InstitutionController::class, 'allowedTypes']);
 
     Route::get('/parent-institutions', [InstitutionController::class, 'getParentInstitutions']);
+
+    Route::get('/visible-institutions', [InstitutionController::class, 'getVisibleInstitutionsForUser']);
+
+    // Protected routes for vehicles with assigned institutions
+    Route::apiResource('vehicles', VehicleController::class);
 });
+

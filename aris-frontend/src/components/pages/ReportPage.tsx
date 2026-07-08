@@ -5,7 +5,7 @@ import { type ChangeEvent, useState } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
-import { SelectField } from "@/components/atoms/SelectField ";
+import  SelectField  from "@/components/atoms/SelectField ";
 import { TextAreaField } from "../atoms/TextAreaField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
 import {provinces} from "@/components/data/province";
@@ -135,10 +135,7 @@ const ReportPage = () => {
           <FormField label={t("report.province")}>
             <SelectField
               value={form.province}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  update("province", e.target.value)
-                }
-            >
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)} options={[]}            >
               <option value="">
                 {t("report.selectProvince")}
               </option>
@@ -188,6 +185,7 @@ const ReportPage = () => {
             <SelectField
               value={form.vehicle}
               onChange={(e) => update("vehicle", e.target.value)}
+              options={[]}
             >
               <option value="">
                 {t("report.selectVehicle")}
@@ -208,6 +206,7 @@ const ReportPage = () => {
             <SelectField
               value={form.driver}
               onChange={(e) => update("driver", e.target.value)}
+              options={[]}
             >
               <option value="">
                 {t("report.selectDriver")}
@@ -254,10 +253,7 @@ const ReportPage = () => {
           <FormField label={t("report.severity")}>
             <SelectField
               value={form.casualties_type}
-              onChange={(e) =>
-                update("casualties_type", e.target.value)
-              }
-            >
+              onChange={(e) => update("casualties_type", e.target.value)} options={[]}            >
               {["None", "Minor", "Serious", "Fatal"].map(
                 (severity) => (
                   <option
@@ -304,10 +300,7 @@ const ReportPage = () => {
           <FormField label={t("report.roadCondition")}>
             <SelectField
               value={form.roadCondition}
-              onChange={(e) =>
-                update("roadCondition", e.target.value)
-              }
-            >
+              onChange={(e) => update("roadCondition", e.target.value)} options={[]}            >
               <option value="">
                 Select condition
               </option>

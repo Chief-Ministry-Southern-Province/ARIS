@@ -7,20 +7,41 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Services\InstitutionService;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::with([
-            'institution',
-            'roles'
-        ])->get();
-    }
+        $this->authorize('viewAny', User::class);
 
+        $search = $request->query('search');
+
+        $institutionIds = app(InstitutionService::class)
+            ->accessibleInstitutionIds($request->user());
+
+        $users = User::with(['institution', 'roles'])
+            ->whereIn('institution_id', $institutionIds)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('nic', 'LIKE', "%{$search}%")
+                    ->orWhere('mobile', 'LIKE', "%{$search}%")
+                    ->orWhereHas('institution', function ($institutionQuery) use ($search) {
+                        $institutionQuery->where('name', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('roles', function ($roleQuery) use ($search) {
+                        $roleQuery->where('name', 'LIKE', "%{$search}%");
+                    });
+                });
+            })
+            ->paginate(10);
+
+        return response()->json($users);
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -35,20 +56,19 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         return User::with([
             'institution',
             'roles'
-        ])->findOrFail($id);
+        ])->findOrFail($user->id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $user->update($request->validated());
         $user->syncRoles($request->role);
 
@@ -58,13 +78,27 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
+        $this->authorize('delete', $user);
+
         $user->delete();
 
         return response()->json([
-            'message' => 'User deleted successfully'
-        ], 204);
+            'message' => 'User deleted successfully',
+        ]);
     }
+
+    public function getAvailableDrivers(Request $request)
+    {
+       return User::role('driver')
+        ->whereIn(
+            'institution_id',
+            app(InstitutionService::class)
+                ->accessibleInstitutionIds($request->user())
+        )
+        ->orderBy('name')
+        ->get();
+    }
+    
 }

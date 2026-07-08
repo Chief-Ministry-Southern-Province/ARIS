@@ -122,4 +122,13 @@ class InstitutionController extends Controller
 
         return response()->json($parentInstitutions);
     }
+
+      public function getVisibleInstitutionsForUser(InstitutionManagementService $service,Request $request)
+    {
+        if(! $this->authorize('viewAny', Institution::class)) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return  $service->getVisibleInstitutions($request->user())->get();
+    }
 }

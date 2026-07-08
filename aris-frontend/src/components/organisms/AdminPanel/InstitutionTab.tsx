@@ -1,13 +1,13 @@
 import { Search, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import AddInstitutionForm from "@/components/pages/forms/common/AddInstitutionForm";
+import AddInstitutionForm from "@/components/pages/forms/common/institution/AddInstitutionForm";
 import Modal from "@/components/molecules/Modal";
 import {useGetInstitutions} from "@/hooks/useInstitution"
 import type { Institution } from "@/types/Institution.type";
 import Loader from "@/components/atoms/Loader";
 import {formatInstitutionType} from "@/utils/formatInstitution";
-import EditInstitutionForm from "@/components/pages/forms/common/EditInstitutionForm";
-import ViewInstitutionForm from "@/components/pages/forms/common/ViewInstitutionForm";
+import EditInstitutionForm from "@/components/pages/forms/common/institution/EditInstitutionForm";
+import ViewInstitutionForm from "@/components/pages/forms/common/institution/ViewInstitutionForm";
 //import { Trash2 } from "lucide-react";
 //import {swalConfirm} from "@/utils/swal";
 
