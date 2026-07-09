@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.tsx'
 import { ThemeProvider } from './context/ThemeContext'
 import '@/i18n'
+import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "./lib/leaflet";
 import {AuthProvider} from '@/context/auth/AuthContext'
 // Dynamically import the PWA register to avoid TypeScript errors when the
 // virtual module "virtual:pwa-register" has no type declarations.

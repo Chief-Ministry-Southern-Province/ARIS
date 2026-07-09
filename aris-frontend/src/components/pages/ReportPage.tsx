@@ -10,11 +10,14 @@ import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
 import { useCreateAccident } from "@/hooks/useAccident";
 import { useGetVehicles } from "@/hooks/useVehicle";
 import type { CreateAccidentRequest } from "@/types/accident.type";
-import { SRI_LANKA_PROVINCES, DISTRICTS_BY_PROVINCE } from "@/constants/sriLankaLocations";
-import GoogleMap from "@/components/GoogleMap";
 import { Checkbox } from "@/components/atoms/Checkbox";
+import LocationPicker from "@/components/maps/LocationPicker";
+import { reverseGeocode } from "@/services/geocoding.service";
+import { mapSriLankaLocation } from "@/utils/locationMapper";
 
 import { useAuth } from "@/context/auth/AuthContext";
+
+import {toast} from "react-toastify";
 
 const ReportPage = () => {
 
@@ -23,10 +26,8 @@ const ReportPage = () => {
   const { createAccidentData, loading: submitting, error: submitError } = useCreateAccident();
   const { fetchVehicles, vehicles } = useGetVehicles();
 
-  const [districts, setDistricts] = useState<string[]>([]);
-
-  const { role} = useAuth();
-  const isDriver  = role.includes("driver");
+  const { role } = useAuth();
+  const isDriver = role.includes("driver");
 
   const [vehicleSearch, setVehicleSearch] = useState("");
 
@@ -57,17 +58,10 @@ const ReportPage = () => {
   });
 
   useEffect(() => {
-    if (form.province) {
-      setDistricts(DISTRICTS_BY_PROVINCE[form.province as keyof typeof DISTRICTS_BY_PROVINCE] ?? []);
-    } else {
-      setDistricts([]);
-    }
-  }, [form.province]);
-
-  useEffect(() => {
     fetchVehicles({ page: 1, search: "" });
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!isDriver || vehicles.length === 0) return;
 
@@ -104,19 +98,53 @@ const ReportPage = () => {
     }
   };
 
+  // Used by the driver's "Get GPS Location" pin button.
+  // Auto-fills lat/lng/location AND reverse-geocodes province/district.
   const handleGetLocation = async () => {
     try {
       const data = await getCurrentLocation();
+
+      let province = "";
+      let district = "";
+
+      try {
+        const geo = await reverseGeocode(Number(data.latitude), Number(data.longitude));
+        const mapped = mapSriLankaLocation(geo.address);
+        province = mapped.province;
+        district = mapped.district;
+      } catch (geoError) {
+        console.error("Reverse geocoding failed:", geoError);
+      }
 
       setForm((prev) => ({
         ...prev,
         latitude: data.latitude,
         longitude: data.longitude,
         location: data.location,
+        province,
+        district,
       }));
     } catch (error) {
       alert(error);
     }
+  };
+
+  // Used by the subject officer's map/search picker.
+  const handleMapLocationSelect = (location: {
+    latitude: string;
+    longitude: string;
+    address: string;
+    province: string;
+    district: string;
+  }) => {
+    setForm((prev) => ({
+      ...prev,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      location: location.address,
+      province: location.province,
+      district: location.district,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -142,6 +170,7 @@ const ReportPage = () => {
 
     try {
       await createAccidentData(payload);
+      toast.success("Accident report submitted successfully!");
       console.log(payload);
       setSuccessMessage("Accident report submitted successfully!");
 
@@ -291,67 +320,60 @@ const ReportPage = () => {
           </FormField>
         </div>
 
-        {/* Location */}
-        <FormField label={t("report.exactLocation")} required>
-          <div className="flex gap-2">
-            <InputField
-              type="text"
-              placeholder={t("report.locationPlaceholder")}
-              value={form.location}
-              onChange={(e) => update("location", e.target.value)}
+        {/* Location: driver gets a manual exact-location field, */}
+        {/* subject officer gets the map + search picker */}
+        {isDriver ? (
+          <FormField label={t("report.exactLocation")} required>
+            <div className="flex gap-2">
+              <InputField
+                type="text"
+                placeholder={t("report.locationPlaceholder")}
+                value={form.location}
+                onChange={(e) => update("location", e.target.value)}
+              />
+
+              <button
+                type="button"
+                onClick={handleGetLocation}
+                disabled={loadingLocation}
+                className="px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50"
+                title="Get GPS Location"
+              >
+                {loadingLocation ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <MapPin className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </FormField>
+        ) : (
+          <FormField label={t("report.exactLocation")} required>
+            <LocationPicker
+              key={successMessage}
+              onLocationSelect={handleMapLocationSelect}
             />
+          </FormField>
+        )}
 
-            <button
-              type="button"
-              onClick={handleGetLocation}
-              disabled={loadingLocation}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50"
-              title="Get GPS Location"
-            >
-              <MapPin className="w-4 h-4" />
-            </button>
-          </div>
-        </FormField>
-
-        {/* Province & District */}
+        {/* Province & District (auto-filled by either location method above) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField label={t("report.province")}>
-            <SelectField
+            <InputField
               value={form.province}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)}
-              options={SRI_LANKA_PROVINCES.map((province) => ({
-                value: province,
-                label: province
-              }))}
+              disabled
+              placeholder={isDriver ? "Auto-filled via GPS" : "Select a location on the map"}
             />
           </FormField>
 
           <FormField label={t("report.district")}>
-            <SelectField
+            <InputField
               value={form.district}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("district", e.target.value)}
-              options={districts.map((district) => ({
-                value: district,
-                label: district
-              }))}
+              disabled
+              placeholder={isDriver ? "Auto-filled via GPS" : "Select a location on the map"}
             />
           </FormField>
         </div>
-
-        {/* GPS Display */}
-        <GoogleMap
-          lat={Number(form.latitude || 6.9271)}
-          lng={Number(form.longitude || 79.8612)}
-          onMapClick={(lat, lng) => {
-            setForm((prev) => ({
-              ...prev,
-              latitude: lat.toString(),
-              longitude: lng.toString(),
-            }));
-          }}
-        />
-
-        
 
         {/* Casualties & Severity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // @ts-ignore: no type declarations for 'google-map-react'
 import GoogleMapReact from "google-map-react";
 import { MapPin } from "lucide-react";
