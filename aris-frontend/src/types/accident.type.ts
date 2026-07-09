@@ -109,9 +109,7 @@ export interface CreateAccidentRequest {
 
   weather_condition: WeatherCondition;
 
-  description?: string | null;
-
-  vehicle_damage?: string | null;
+  has_travel_permission?: boolean;
 }
 
 export interface UpdateAccidentRequest extends CreateAccidentRequest {

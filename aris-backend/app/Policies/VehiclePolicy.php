@@ -48,7 +48,7 @@ class VehiclePolicy
      */
     public function delete(User $user, Vehicle $vehicle): bool
     {
-        return $user->isSystemAdmin() || $user->hasRole('subject_officer');;
+        return $user->isSystemAdmin() || $user->hasRole('subject_officer') || $user->id === $vehicle->driver_id;
     }
 
     /**

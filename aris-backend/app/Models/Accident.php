@@ -53,9 +53,7 @@ class Accident extends Model
 
         'status',
 
-        'description',
-
-        'vehicle_damage',
+        'has_travel_permission',
     ];
 
     protected $casts = [

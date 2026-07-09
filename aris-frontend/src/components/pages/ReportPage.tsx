@@ -5,13 +5,17 @@ import { Button } from "@/components/atoms/Button";
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import { SelectField } from "@/components/atoms/SelectField";
-import { TextAreaField } from "../atoms/TextAreaField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
 import { useCreateAccident } from "@/hooks/useAccident";
 import { useGetVehicles } from "@/hooks/useVehicle";
 import type { CreateAccidentRequest } from "@/types/accident.type";
 import { SRI_LANKA_PROVINCES, DISTRICTS_BY_PROVINCE } from "@/constants/sriLankaLocations";
+import GoogleMap from "@/components/GoogleMap";
+import { Checkbox } from "@/components/atoms/Checkbox";
+
+import { useAuth } from "@/context/auth/AuthContext";
+
 const ReportPage = () => {
 
   const { t } = useTranslation();
@@ -21,10 +25,16 @@ const ReportPage = () => {
 
   const [districts, setDistricts] = useState<string[]>([]);
 
-  // Fetch vehicles on mount
+  const { role} = useAuth();
+  const isDriver  = role.includes("driver");
+
+  const [vehicleSearch, setVehicleSearch] = useState("");
+
+  const userId = Number(localStorage.getItem("id"));
+
   useEffect(() => {
-    fetchVehicles({ page: 1, search: "" });
-  }, []);
+    fetchVehicles({ page: 1, search: vehicleSearch });
+  }, [vehicleSearch]);
 
   const [form, setForm] = useState({
     date: "",
@@ -37,13 +47,12 @@ const ReportPage = () => {
     fatality_count: "",
     injury_count: "",
     severity: "",
-    description: "",
-    vehicleDamage: "",
     road_condition: "",
     weather_condition: "",
     mapLocation: "",
     latitude: "",
     longitude: "",
+    has_travel_permission: false,
     evidenceImages: [] as File[]
   });
 
@@ -59,9 +68,21 @@ const ReportPage = () => {
     fetchVehicles({ page: 1, search: "" });
   }, []);
 
+  useEffect(() => {
+    if (!isDriver || vehicles.length === 0) return;
+
+    const assignedVehicle = vehicles[0];
+
+    setForm(prev => ({
+        ...prev,
+        driver_id: String(userId),
+        vehicle_id: String(assignedVehicle.id),
+    }));
+}, [vehicles, userId, isDriver]);
+
   const [successMessage, setSuccessMessage] = useState("");
 
-  function update(field: string, value: string) {
+  function update(field: string, value: any) {
     setForm((prev) => ({
       ...prev,
       [field]: value,
@@ -116,12 +137,12 @@ const ReportPage = () => {
       fatality_count: form.fatality_count ? Number(form.fatality_count) : 0,
       road_condition: form.road_condition as CreateAccidentRequest["road_condition"],
       weather_condition: form.weather_condition as CreateAccidentRequest["weather_condition"],
-      description: form.description || null,
-      vehicle_damage: form.vehicleDamage || null,
+      has_travel_permission: form.has_travel_permission,
     };
 
     try {
       await createAccidentData(payload);
+      console.log(payload);
       setSuccessMessage("Accident report submitted successfully!");
 
       // Reset form
@@ -136,14 +157,13 @@ const ReportPage = () => {
         fatality_count: "",
         injury_count: "",
         severity: "",
-        description: "",
-        vehicleDamage: "",
         road_condition: "",
         weather_condition: "",
         mapLocation: "",
         latitude: "",
         longitude: "",
         evidenceImages: [],
+        has_travel_permission: false,
       });
     } catch {
       // error is handled by the hook
@@ -203,6 +223,72 @@ const ReportPage = () => {
               onChange={(e) => update("time", e.target.value)}
             />
           </FormField>
+
+
+          <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+            <Checkbox
+              name="has_travel_permission"
+              checked={form.has_travel_permission}
+              onChange={(e) =>
+                update(
+                  "has_travel_permission",
+                  (e.target as HTMLInputElement).checked
+                )
+              }
+            />
+
+            <div className="flex flex-col">
+              <label
+                htmlFor="has_travel_permission"
+                className="cursor-pointer text-sm font-medium text-gray-900"
+              >
+                Was the journey officially authorized?
+              </label>
+              <p className="text-xs text-gray-500">
+                Check this if the vehicle had official permission for the journey.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Vehicle & Driver */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+            {isDriver ? (
+                <InputField
+                    disabled
+                    value={`${vehicles[0]?.vehicle_number} - ${vehicles[0]?.brand} ${vehicles[0]?.model}`}
+                />
+            ) : (
+                <>
+                    <InputField
+                        placeholder="Search Registration No."
+                        value={vehicleSearch}
+                        onChange={(e) => setVehicleSearch(e.target.value)}
+                    />
+
+                    <SelectField
+                        value={form.vehicle_id}
+                        onChange={(e) => handleVehicleChange(e.target.value)}
+                        options={vehicles.map(vehicle => ({
+                            value: String(vehicle.id),
+                            label: `${vehicle.vehicle_number} — ${vehicle.brand} ${vehicle.model}`
+                        }))}
+                    />
+                </>
+            )}
+
+          <FormField label={t("report.driver")}>
+            <InputField
+              type="text"
+              value={
+                form.driver_id
+                  ? vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`
+                  : "No driver assigned"
+              }
+              disabled
+            />
+          </FormField>
         </div>
 
         {/* Location */}
@@ -253,51 +339,19 @@ const ReportPage = () => {
         </div>
 
         {/* GPS Display */}
-        <div className="w-full h-48 bg-blue-50 rounded-xl border-2 border-dashed border-blue-200 flex items-center justify-center">
-          <div className="text-center">
-            <MapPin className="w-8 h-8 text-blue-300 mx-auto mb-2" />
+        <GoogleMap
+          lat={Number(form.latitude || 6.9271)}
+          lng={Number(form.longitude || 79.8612)}
+          onMapClick={(lat, lng) => {
+            setForm((prev) => ({
+              ...prev,
+              latitude: lat.toString(),
+              longitude: lng.toString(),
+            }));
+          }}
+        />
 
-            <p className="text-sm text-blue-500">
-              {loadingLocation
-                ? "Getting current location..."
-                : "Current GPS Location"}
-            </p>
-
-            <p className="text-xs text-blue-400 mt-2">
-              Latitude: {form.latitude || "--"}
-            </p>
-
-            <p className="text-xs text-blue-400">
-              Longitude: {form.longitude || "--"}
-            </p>
-          </div>
-        </div>
-
-        {/* Vehicle & Driver */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t("report.vehicleRegistration")} required>
-            <SelectField
-              value={form.vehicle_id}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => handleVehicleChange(e.target.value)}
-              options={vehicles.map((vehicle) => ({
-                value: String(vehicle.id),
-                label: `${vehicle.vehicle_number} — ${vehicle.brand} ${vehicle.model}`
-              }))}
-            />
-          </FormField>
-
-          <FormField label={t("report.driver")}>
-            <InputField
-              type="text"
-              value={
-                form.driver_id
-                  ? vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`
-                  : "No driver assigned"
-              }
-              disabled
-            />
-          </FormField>
-        </div>
+        
 
         {/* Casualties & Severity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -334,22 +388,6 @@ const ReportPage = () => {
             />
           </FormField>
         </div>
-
-        {/* Description */}
-        <FormField
-          label={t("report.accidentDescription")}
-        >
-          <TextAreaField
-            rows={4}
-            placeholder={t(
-              "report.accidentDescriptionPlaceholder"
-            )}
-            value={form.description}
-            onChange={(e) =>
-              update("description", e.target.value)
-            }
-          />
-        </FormField>
 
         {/* Road Condition & Weather Condition */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -389,17 +427,6 @@ const ReportPage = () => {
             />
           </FormField>
         </div>
-
-        {/* Vehicle Damage */}
-        <FormField label={t("report.vehicleDamage")}>
-          <TextAreaField
-            rows={2}
-            value={form.vehicleDamage}
-            onChange={(e) =>
-              update("vehicleDamage", e.target.value)
-            }
-          />
-        </FormField>
 
         {/* Evidence Images */}
         <FormField label={t("report.evidenceImages")}>

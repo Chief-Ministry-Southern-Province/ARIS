@@ -83,9 +83,7 @@ return new class extends Migration
                 'CLOSED',
             ])->default('REPORTED');
 
-            $table->text('description')->nullable();
-
-            $table->text('vehicle_damage')->nullable();
+            $table->boolean('has_travel_permission')->default(false);
 
             $table->timestamps();
         });

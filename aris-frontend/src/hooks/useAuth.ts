@@ -12,8 +12,10 @@ export const useLogin = () => {
 
       const response = await login(nic, password);
 
+      console.log("Login response:", response);
       localStorage.setItem("token", response.token);
       localStorage.setItem("institutionType", response.institutionType ?? "");
+      localStorage.setItem("id", String(response.id));
 
       if (response.role) {
         localStorage.setItem(
