@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 type Option = {
   value: string;
   label: string;
@@ -13,6 +15,7 @@ export function SelectField({
   className = "",
   ...props
 }: SelectFieldProps) {
+  const { t } = useTranslation();
   return (
     <select
       {...props}
@@ -31,7 +34,7 @@ export function SelectField({
         ${className}
       `}
     >
-      <option value="">Select...</option>
+      <option value="">{t("common.select")}</option>
 
       {options.map((option) => (
         <option

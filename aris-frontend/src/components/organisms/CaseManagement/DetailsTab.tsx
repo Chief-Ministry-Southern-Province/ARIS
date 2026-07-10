@@ -81,7 +81,7 @@ const DetailsTab = ({ id }: { id: number }) => {
             </h2>
 
             <p className="mt-2 text-blue-100 font-semibold">
-              Vehicle Collision — {accident.severity} severity
+              {t(`report.VehicleCollision`)} — {t(`report.severityOptions.${accident.severity}`)}
             </p>
           </div>
         </div>
@@ -148,15 +148,15 @@ const DetailsTab = ({ id }: { id: number }) => {
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-500 block">Road Condition</span>
+              <span className="text-gray-500 block">{t("report.roadCondition")}</span>
               <span className="font-semibold text-slate-800">
-                {accident.road_condition.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                {t(`report.roadConditionOptions.${accident.road_condition}`)}
               </span>
             </div>
             <div>
-              <span className="text-gray-500 block">Weather Condition</span>
+              <span className="text-gray-500 block">{t("report.weatherCondition")}</span>
               <span className="font-semibold text-slate-800">
-                {accident.weather_condition.replace(/\b\w/g, (c) => c.toUpperCase())}
+                {t(`report.weatherConditionOptions.${accident.weather_condition}`)}
               </span>
             </div>
           </div>
@@ -169,13 +169,13 @@ const DetailsTab = ({ id }: { id: number }) => {
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-500 block">Fatalities</span>
+              <span className="text-gray-500 block">{t("report.casualties")}</span>
               <span className="font-semibold text-red-600 text-lg">
                 {accident.fatality_count}
               </span>
             </div>
             <div>
-              <span className="text-gray-500 block">Injuries</span>
+              <span className="text-gray-500 block">{t("report.injuries")}</span>
               <span className="font-semibold text-orange-600 text-lg">
                 {accident.injury_count}
               </span>

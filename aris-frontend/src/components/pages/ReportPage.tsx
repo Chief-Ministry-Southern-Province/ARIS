@@ -254,7 +254,7 @@ const ReportPage = () => {
             </h1>
 
             <p className="text-sm text-slate-500">
-              Record and submit vehicle accident details
+              {t("report.subtitle")}
             </p>
           </div>
         </div>
@@ -311,10 +311,10 @@ const ReportPage = () => {
                 htmlFor="has_travel_permission"
                 className="cursor-pointer text-sm font-medium text-gray-900"
               >
-                Was the journey officially authorized?
+                {t("report.journeyAuthorized.label")}
               </label>
               <p className="text-xs text-gray-500">
-                Check this if the vehicle had official permission for the journey.
+                {t("report.journeyAuthorized.description")}
               </p>
             </div>
           </div>
@@ -445,7 +445,7 @@ const ReportPage = () => {
               onChange={(e: ChangeEvent<HTMLSelectElement>) => update("severity", e.target.value)}
               options={["MINOR", "MAJOR", "FATAL"].map((severity) => ({
                 value: severity,
-                label: severity.charAt(0) + severity.slice(1).toLowerCase()
+                label: t(`report.severityOptions.${severity}`)
               }))}
             />
           </FormField>
@@ -466,12 +466,12 @@ const ReportPage = () => {
                 "OTHER"
               ].map((condition) => ({
                 value: condition,
-                label: condition.replace(/_/g, " ").charAt(0) + condition.replace(/_/g, " ").slice(1).toLowerCase()
+                label: t(`report.roadConditionOptions.${condition}`)
               }))}
             />
           </FormField>
 
-          <FormField label="Weather Condition" required>
+          <FormField label={t("report.weatherCondition")} required>
             <SelectField
               value={form.weather_condition}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => update("weather_condition", e.target.value)}
@@ -484,7 +484,7 @@ const ReportPage = () => {
                 "OTHER"
               ].map((weather) => ({
                 value: weather,
-                label: weather.charAt(0) + weather.slice(1).toLowerCase()
+                label: t(`report.weatherConditionOptions.${weather}`)
               }))}
             />
           </FormField>

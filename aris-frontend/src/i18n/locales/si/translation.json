@@ -21,7 +21,10 @@
     "subtitle": "ශ්‍රී ලංකා රජය — සෞඛ්‍ය අමාත්‍යාංශය"
   },
   "common": {
-    "logout": "ඉවත් වන්න"
+    "logout": "ඉවත් වන්න",
+    "loading": "පූරණය වෙමින්...",
+    "select": "තෝරන්න",
+    "search": "සොයන්න"
   },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",
@@ -42,7 +45,7 @@
   },
   "report": {
     "title": "නව අනතුරු වාර්තාව",
-    "subtitle": "අනතුරු වාර්තාව ඉදිරිපත් කිරීමට සියලු පියවර සම්පූර්ණ කරන්න",
+    "subtitle": "වාහන අනතුරේ විස්තර සටහන් කර ඉදිරිපත් කරන්න.",
     "incidentDetails": "සිදුවීමේ විස්තර",
     "accidentDate": "අනතුරු දිනය",
     "accidentTime": "අනතුරු වේලාව",
@@ -64,7 +67,37 @@
     "roadCondition": "මාර්ග / කාලගුණ තත්ත්ව",
     "selectCondition": "තත්ත්වය තෝරන්න",
     "mapHint": "සිතියමේ අනතුරු ස්ථානය සලකුණු කිරීමට ක්ලික් කරන්න",
-    "evidenceImages": "සාක්ෂි පින්තූර"
+    "evidenceImages": "සාක්ෂි පින්තූර",
+    "weatherCondition": "කාලගුණ තත්ත්වය",
+    "UploadEvidenceImages": "සාක්ෂි පින්තූර උඩුගත කරන්න",
+    "fatalities": "මරණ",
+    "VehicleCollision": "වාහන ගැටීම",
+    "JourneyAuthorized": "ගමන නිල වශයෙන් අනුමත",
+    "journeyAuthorized": {
+      "label": "ගමන නිල වශයෙන් අනුමත කර තිබුණාද?",
+      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න."
+    },
+    "severityOptions": {
+    "MINOR": "සුළු",
+    "MAJOR": "බරපතල",
+    "FATAL": "මාරාන්තික"
+    },
+    "roadConditionOptions": {
+      "DRY": "වියළි",
+      "WET": "තෙත්",
+      "FLOODED": "ජලයෙන් යටවූ",
+      "GRAVEL": "බොරළු මාර්ගය",
+      "UNDER_CONSTRUCTION": "ඉදිකිරීම් සිදු කෙරෙන",
+      "OTHER": "වෙනත්"
+    },
+    "weatherConditionOptions": {
+      "SUNNY": "සාමාන්‍ය",
+      "RAINY": "වැසි සහිත",
+      "CLOUDY": "වළාකුළු සහිත",
+      "FOGGY": "මීදුම් සහිත",
+      "WINDY": "සුළං සහිත",
+      "OTHER": "වෙනත්"
+    }
   },
   "btn": {
     "next": "ඊළඟ",
