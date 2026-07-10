@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\FileStorageService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\EvidenceResource;
 
 class EvidenceService
 {
@@ -130,12 +131,13 @@ class EvidenceService
     public function list(
         Accident $accident
     ) {
+        $evidence =  $accident
+                    ->evidence()
+                    ->with('uploader')
+                    ->latest()
+                    ->get();
 
-        return $accident
-            ->evidence()
-            ->with('uploader')
-            ->latest()
-            ->get();
+        return EvidenceResource::collection($evidence);
     }
 
     /**
@@ -154,12 +156,9 @@ class EvidenceService
     /**
      * Download evidence.
      */
-    public function download(
-        AccidentEvidence $evidence
-    ) {
+    public function download(AccidentEvidence $evidence, Accident $accident) {
 
-        return $this->storage
-            ->download(
+        return $this->storage->download(
 
                 $evidence->file_path,
 
@@ -170,9 +169,7 @@ class EvidenceService
     /**
      * Detect evidence type.
      */
-    protected function detectType(
-        string $mime
-    ): string {
+    protected function detectType(string $mime ): string {
 
         if (str_starts_with($mime, 'image/')) {
 

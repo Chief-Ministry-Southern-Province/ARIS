@@ -58,8 +58,8 @@ class EvidenceController extends Controller
     /**
      * Download evidence.
      */
-    public function download(AccidentEvidence $evidence) {
-        return $this->evidenceService->download($evidence);
+    public function download(Accident $accident,AccidentEvidence $evidence) {
+        return $this->evidenceService->download($evidence, $accident);
     }
 
     /**

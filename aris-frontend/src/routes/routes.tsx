@@ -106,7 +106,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/profile",
         <MyProfile />,
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES, "driver"],
       ),
 
       protectedPage(
