@@ -110,6 +110,8 @@ export interface CreateAccidentRequest {
   weather_condition: WeatherCondition;
 
   has_travel_permission?: boolean;
+
+  files?: File[];
 }
 
 export interface UpdateAccidentRequest extends CreateAccidentRequest {

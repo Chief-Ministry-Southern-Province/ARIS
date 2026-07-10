@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Evidence;
+namespace App\Services;
 
 use App\Models\Accident;
 use App\Models\AccidentEvidence;

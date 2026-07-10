@@ -31,7 +31,7 @@ class AccidentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isSystemAdmin() || $user->hasRole('subject_officer');
+        return $user->isSystemAdmin() || $user->hasRole('subject_officer') || $user->hasRole('driver');
     }
 
     /**

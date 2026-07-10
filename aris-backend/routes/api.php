@@ -58,4 +58,4 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::delete('/accidents/{accident}/evidence/{evidence}', [EvidenceController::class, 'destroy']);
 });
-
+Route::get('/phpinfo', fn () => phpinfo());

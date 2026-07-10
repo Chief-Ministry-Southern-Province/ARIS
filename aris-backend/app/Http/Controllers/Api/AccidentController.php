@@ -72,14 +72,21 @@ class AccidentController extends Controller
     {
         $this->authorize('create', Accident::class);
 
-        $accident = $this->accidentService->createAccident($request->validated(), auth()->user());
+        $accident = $this->accidentService->createAccident(
+            $request,
+            auth()->user()
+        );
 
         return response()->json([
             'message' => 'Accident reported successfully.',
-            'accident' => $accident->load(['institution', 'vehicle', 'driver', 'reporter']),
+            'accident' => $accident->load([
+                'institution',
+                'vehicle',
+                'driver',
+                'reporter',
+            ]),
         ], 201);
     }
-
     /**
      * Display the specified resource.
      */

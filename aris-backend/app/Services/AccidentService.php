@@ -4,9 +4,18 @@ namespace App\Services;
 
 use App\Models\Accident;
 use App\Models\User;
+use App\Http\Requests\Accident\StoreAccidentRequest;
+use Illuminate\Support\Facades\DB;
+use App\Services\EvidenceService;
 
 class AccidentService
 {
+    protected EvidenceService $evidenceService; 
+
+    public function __construct(EvidenceService $evidenceService)
+    {
+        $this->evidenceService = $evidenceService;
+    }
     /**
      * Generate a unique reference number for the accident.
      * Format: ACC-YYYYMMDD-XXXXX
@@ -33,34 +42,43 @@ class AccidentService
     /**
      * Create a new accident record.
      */
-    public function createAccident(array $data, User $user): Accident
+
+    public function createAccident(StoreAccidentRequest $request, User $user): Accident
     {
+        $data = $request->validated();
+
+        $files = $request->file('files');
+
         $data['reference_number'] = $this->generateReferenceNumber();
         $data['reported_by'] = $user->id;
         $data['institution_id'] = $user->institution_id;
 
         DB::beginTransaction();
 
-        $accident = Accident::create($data);
+        try {
 
-        if (!empty($data['files'])) {
+            $accident = Accident::create($data);
 
-            $this->evidenceService->upload(
+            if ($request->hasFile('files')) {
 
-                $accident,
+                $this->evidenceService->upload(
+                    $accident,
+                    $request->file('files'),
+                    $data['evidence_description'] ?? null,
+                    $user
+                );
+            }
 
-                $data['files'],
+            DB::commit();
 
-                $data['evidence_description'] ?? null,
+            return $accident;
 
-                $user
+        } catch (\Throwable $e) {
 
-            );
+            DB::rollBack();
+
+            throw $e;
         }
-
-        DB::commit();
-
-        return $accident;
     }
 
     /**

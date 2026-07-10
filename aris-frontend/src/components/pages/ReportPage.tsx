@@ -17,7 +17,7 @@ import { mapSriLankaLocation } from "@/utils/locationMapper";
 
 import { useAuth } from "@/context/auth/AuthContext";
 
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const ReportPage = () => {
 
@@ -54,7 +54,7 @@ const ReportPage = () => {
     latitude: "",
     longitude: "",
     has_travel_permission: false,
-    evidenceImages: [] as File[]
+    files: [] as File[]
   });
 
   useEffect(() => {
@@ -147,6 +147,42 @@ const ReportPage = () => {
     }));
   };
 
+  const buildFormData = (payload: CreateAccidentRequest): FormData => {
+    const formData = new FormData();
+
+    formData.append("vehicle_id", String(payload.vehicle_id));
+
+    if (payload.driver_id !== null && payload.driver_id !== undefined) {
+      formData.append("driver_id", String(payload.driver_id));
+    }
+
+    formData.append("accident_date", payload.accident_date ?? "");
+    formData.append("accident_time", payload.accident_time ?? "");
+    formData.append("severity", payload.severity ?? "");
+    formData.append("province", payload.province ?? "");
+    formData.append("district", payload.district ?? "");
+    formData.append("location", payload.location ?? "");
+
+    if (payload.latitude !== null && payload.latitude !== undefined) {
+      formData.append("latitude", String(payload.latitude));
+    }
+    if (payload.longitude !== null && payload.longitude !== undefined) {
+      formData.append("longitude", String(payload.longitude));
+    }
+
+    formData.append("injury_count", String(payload.injury_count ?? 0));
+    formData.append("fatality_count", String(payload.fatality_count ?? 0));
+    formData.append("road_condition", payload.road_condition ?? "");
+    formData.append("weather_condition", payload.weather_condition ?? "");
+    formData.append("has_travel_permission", payload.has_travel_permission ? "1" : "0");
+
+    (payload.files ?? []).forEach((file) => {
+      formData.append("files[]", file);
+    });
+
+    return formData;
+  };
+
   const handleSubmit = async () => {
     setSuccessMessage("");
 
@@ -166,15 +202,19 @@ const ReportPage = () => {
       road_condition: form.road_condition as CreateAccidentRequest["road_condition"],
       weather_condition: form.weather_condition as CreateAccidentRequest["weather_condition"],
       has_travel_permission: form.has_travel_permission,
+      files: form.files,
     };
 
+    const formData = buildFormData(payload);
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
     try {
-      await createAccidentData(payload);
+      await createAccidentData(formData as unknown as CreateAccidentRequest);
+      
       toast.success("Accident report submitted successfully!");
-      console.log(payload);
       setSuccessMessage("Accident report submitted successfully!");
 
-      // Reset form
       setForm({
         date: "",
         time: "",
@@ -191,7 +231,7 @@ const ReportPage = () => {
         mapLocation: "",
         latitude: "",
         longitude: "",
-        evidenceImages: [],
+        files: [],
         has_travel_permission: false,
       });
     } catch {
@@ -453,15 +493,15 @@ const ReportPage = () => {
         {/* Evidence Images */}
         <FormField label={t("report.evidenceImages")}>
           <ImageUploadField
+            key={successMessage}
             onChange={(files) =>
               setForm((prev) => ({
                 ...prev,
-                evidenceImages: files,
+                files: files,
               }))
             }
           />
         </FormField>
-
         {/* Submit */}
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>

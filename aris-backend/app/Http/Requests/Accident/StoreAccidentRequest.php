@@ -163,6 +163,9 @@ class StoreAccidentRequest extends FormRequest
             'driver_id.exists' => 'The selected driver does not exist.',
             'accident_date.before_or_equal' => 'Accident date cannot be in the future.',
             'accident_time.date_format' => 'Please enter a valid time in HH:MM format.',
+            'files.*.file' => 'Invalid uploaded file.',
+            'files.*.max' => 'Each file must not exceed 10MB.',
+            'files.*.mimes' => 'Allowed file types: JPG, PNG, PDF, DOC and DOCX.',
         ];
     }
 
@@ -183,6 +186,7 @@ class StoreAccidentRequest extends FormRequest
             'fatality_count' => 'Fatality Count',
             'road_condition' => 'Road Condition',
             'weather_condition' => 'Weather Condition',
+            'files' => 'Evidence Files',
         ];
     }
 }
