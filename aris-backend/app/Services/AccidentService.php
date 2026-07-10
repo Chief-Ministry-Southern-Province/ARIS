@@ -39,7 +39,28 @@ class AccidentService
         $data['reported_by'] = $user->id;
         $data['institution_id'] = $user->institution_id;
 
-        return Accident::create($data);
+        DB::beginTransaction();
+
+        $accident = Accident::create($data);
+
+        if (!empty($data['files'])) {
+
+            $this->evidenceService->upload(
+
+                $accident,
+
+                $data['files'],
+
+                $data['evidence_description'] ?? null,
+
+                $user
+
+            );
+        }
+
+        DB::commit();
+
+        return $accident;
     }
 
     /**

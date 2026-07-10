@@ -40,13 +40,19 @@ class StoreEvidenceRequest extends FormRequest
         return [
 
             'files.required' =>
-                'Please select at least one file.',
+                'Please upload at least one file.',
 
-            'files.*.mimes' =>
-                'Only JPG, PNG, PDF, DOC and DOCX are allowed.',
+            'files.array' =>
+                'Files must be an array.',
+
+            'files.*.file' =>
+                'Invalid uploaded file.',
 
             'files.*.max' =>
-                'Each file must be less than 10MB.',
+                'Each file must not exceed 10MB.',
+
+            'files.*.mimes' =>
+                'Allowed file types: JPG, PNG, PDF, DOC and DOCX.',
         ];
     }
 }

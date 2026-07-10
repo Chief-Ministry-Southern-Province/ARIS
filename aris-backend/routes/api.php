@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\AccidentController;
+use App\Http\Controllers\Api\EvidenceController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -47,5 +48,14 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     // Protected routes for accidents
     Route::apiResource('accidents', AccidentController::class);
+
+    // Protected routes for accident evidence
+    Route::get('/accidents/{accident}/evidence', [EvidenceController::class, 'index']);
+
+    Route::post('/accidents/{accident}/evidence', [EvidenceController::class, 'store']);
+
+    Route::get('/accidents/{accident}/evidence/{evidence}', [EvidenceController::class, 'download']);
+
+    Route::delete('/accidents/{accident}/evidence/{evidence}', [EvidenceController::class, 'destroy']);
 });
 

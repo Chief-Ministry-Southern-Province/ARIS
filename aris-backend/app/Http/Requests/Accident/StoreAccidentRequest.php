@@ -130,6 +130,28 @@ class StoreAccidentRequest extends FormRequest
                 'nullable',
                 'string',
             ],
+
+            'has_travel_permission' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'files' => [
+                'nullable',
+                'array',
+            ],
+
+            'files.*' => [
+                'file',
+                'max:10240',
+                'mimes:jpg,jpeg,png,pdf,doc,docx',
+            ],
+
+            'evidence_description' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
         ];
     }
 
