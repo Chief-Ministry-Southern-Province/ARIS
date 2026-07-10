@@ -71,5 +71,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Accident::class,'driver_id');
     }
+
+    public function uploadedEvidence()
+    {
+        return $this->hasMany(AccidentEvidence::class, 'uploaded_by');
+    }
     
 }

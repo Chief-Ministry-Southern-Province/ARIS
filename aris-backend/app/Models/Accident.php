@@ -86,4 +86,9 @@ class Accident extends Model
     {
         return $this->belongsTo(User::class, 'reported_by');
     }
+
+    public function evidence()
+    {
+        return $this->hasMany(AccidentEvidence::class);
+    }
 }
