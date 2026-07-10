@@ -131,7 +131,8 @@
         "FOGGY": "Foggy",
         "WINDY": "Windy",
         "OTHER": "Other"
-      }
+      },
+      "EnvironmentalConditions": "Environmental Conditions"
   },
   "btn": {
     "next": "Next",

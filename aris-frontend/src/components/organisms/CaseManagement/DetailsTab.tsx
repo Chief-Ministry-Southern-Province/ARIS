@@ -144,7 +144,7 @@ const DetailsTab = ({ id }: { id: number }) => {
         {/* Road & Weather Conditions */}
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-4">
           <h3 className="font-semibold text-slate-900 border-b border-slate-100 pb-2">
-            Environmental Conditions
+            {t("report.EnvironmentalConditions")}
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -165,7 +165,7 @@ const DetailsTab = ({ id }: { id: number }) => {
         {/* Casualties & Stats */}
         <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-5 space-y-4">
           <h3 className="font-semibold text-slate-900 border-b border-slate-100 pb-2">
-            Casualties & Injuries
+            {t("report.casualties")} & {t("report.injuries")}
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -185,9 +185,10 @@ const DetailsTab = ({ id }: { id: number }) => {
       </div>
 
       {/* Description */}
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 bg-slate-50">
-          <FileText className="w-5 h-5 text-blue-600" />
+      {accident.description && (
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-slate-100 bg-slate-50">
+            <FileText className="w-5 h-5 text-blue-600" />
 
           <h3 className="font-semibold text-slate-900">
             {t("caseManagement.details.description")}
@@ -199,7 +200,7 @@ const DetailsTab = ({ id }: { id: number }) => {
             {accident.description || "No description provided."}
           </p>
         </div>
-      </div>
+      </div>)}
 
       {/* Vehicle Damage Details */}
       {accident.vehicle_damage && (

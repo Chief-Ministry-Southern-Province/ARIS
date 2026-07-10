@@ -97,7 +97,8 @@
       "FOGGY": "මීදුම් සහිත",
       "WINDY": "සුළං සහිත",
       "OTHER": "වෙනත්"
-    }
+    },
+    "EnvironmentalConditions": "පරිසර තත්ත්වය"
   },
   "btn": {
     "next": "ඊළඟ",
@@ -165,6 +166,7 @@
     },
 
     "details": {
+      "caseId": "නඩු අංකය",
       "dateTime": "දිනය සහ වේලාව",
       "location": "ස්ථානය",
       "vehicle": "වාහනය",
@@ -608,7 +610,9 @@
     "tabs": {
       "details": "විස්තර",
       "actions": "ක්‍රියාමාර්ග",
-      "workflow": "කාර්ය ප්‍රවාහය"
+      "workflow": "කාර්ය ප්‍රවාහය",
+      "evidence": "විශ්ලේෂණ",
+      "investigationTeam": "විමර්ශන කණ්ඩායම"
     }
   },
    "analytics": {

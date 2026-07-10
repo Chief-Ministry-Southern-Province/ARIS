@@ -17,6 +17,10 @@ export const useLogin = () => {
       localStorage.setItem("institutionType", response.institutionType ?? "");
       localStorage.setItem("id", String(response.id));
 
+      if (response.name) {
+        localStorage.setItem("name", response.name);
+      }
+
       if (response.role) {
         localStorage.setItem(
           "role",

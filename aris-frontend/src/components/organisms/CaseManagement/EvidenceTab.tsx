@@ -268,7 +268,7 @@ const EvidenceTab = () => {
 
                   <div className="flex gap-2 mt-4">
                     <button
-                      onClick={() => setPreviewItem(ev)}
+                      onClick={() => window.open(ev.file_url, "_blank")}
                       className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-sm transition-colors"
                     >
                       <Eye className="w-4 h-4" />
