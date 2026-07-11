@@ -7,14 +7,18 @@ use App\Models\User;
 use App\Http\Requests\Accident\StoreAccidentRequest;
 use Illuminate\Support\Facades\DB;
 use App\Services\EvidenceService;
+use App\Services\AccidentCaseService;
 
 class AccidentService
 {
-    protected EvidenceService $evidenceService; 
+    protected EvidenceService $evidenceService;
 
-    public function __construct(EvidenceService $evidenceService)
+    protected AccidentCaseService $accidentCaseService;
+
+    public function __construct(EvidenceService $evidenceService, AccidentCaseService $accidentCaseService)
     {
         $this->evidenceService = $evidenceService;
+        $this->accidentCaseService = $accidentCaseService;
     }
     /**
      * Generate a unique reference number for the accident.
@@ -58,6 +62,8 @@ class AccidentService
         try {
 
             $accident = Accident::create($data);
+
+            $this->accidentCaseService->create($accident, $user);
 
             if ($request->hasFile('files')) {
 

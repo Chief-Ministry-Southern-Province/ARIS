@@ -15,6 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Institution;
 use App\Models\Vehicle;
 use App\Models\Accident;
+use App\Models\AccidentCase;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -75,6 +76,16 @@ class User extends Authenticatable
     public function uploadedEvidence()
     {
         return $this->hasMany(AccidentEvidence::class, 'uploaded_by');
+    }
+
+    public function createdAccidentCases()
+    {
+        return $this->hasMany(AccidentCase::class, 'created_by');
+    }
+
+    public function assignedAccidentCases()
+    {
+        return $this->hasMany(AccidentCase::class, 'assigned_to');
     }
     
 }

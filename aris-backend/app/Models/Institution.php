@@ -8,6 +8,7 @@ use \App\Models\Scopes\InstitutionScope;
 
 use App\Models\Vehicle;
 use App\Models\Accident;
+use App\Models\AccidentCase;
 
 class Institution extends Model
 {
@@ -43,6 +44,11 @@ class Institution extends Model
     public function accidents()
     {
         return $this->hasMany(Accident::class);
+    }
+
+    public function accidentCases()
+    {
+        return $this->hasMany(AccidentCase::class);
     }
 
 }

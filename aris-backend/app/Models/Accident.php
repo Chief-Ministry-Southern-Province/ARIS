@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Institution;
 use App\Models\Vehicle;
 use App\Models\User;
+use App\Models\AccidentEvidence;
 
 class Accident extends Model
 {
@@ -90,5 +91,10 @@ class Accident extends Model
     public function evidence()
     {
         return $this->hasMany(AccidentEvidence::class);
+    }
+
+    public function accidentCase()
+    {
+        return $this->hasOne(AccidentCase::class);
     }
 }
