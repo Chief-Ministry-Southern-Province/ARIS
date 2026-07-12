@@ -36,6 +36,11 @@ class Institution extends Model
         return $this->hasMany(Institution::class, 'parent_institution_id');
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class);

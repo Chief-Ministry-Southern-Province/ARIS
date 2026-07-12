@@ -16,6 +16,7 @@ use App\Models\Institution;
 use App\Models\Vehicle;
 use App\Models\Accident;
 use App\Models\AccidentCase;
+use App\Models\AccidentEvidence;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -86,6 +87,11 @@ class User extends Authenticatable
     public function assignedAccidentCases()
     {
         return $this->hasMany(AccidentCase::class, 'assigned_to');
+    }
+
+    public function caseHistories()
+    {
+        return $this->hasMany(CaseHistory::class);
     }
     
 }

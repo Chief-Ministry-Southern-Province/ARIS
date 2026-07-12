@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Accident;
 use App\Models\Institution;
 use App\Models\User;
+use App\Models\CaseHistory;
 
 class AccidentCase extends Model
 {
@@ -42,10 +43,11 @@ class AccidentCase extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    // public function histories()
-    // {
-    //     return $this->hasMany(CaseHistory::class);
-    // }
+    public function histories()
+    {
+        return $this->hasMany(CaseHistory::class)
+                ->latest();
+    }
 
     // public function approvals()
     // {

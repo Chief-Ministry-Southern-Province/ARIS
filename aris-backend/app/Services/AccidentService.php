@@ -8,6 +8,7 @@ use App\Http\Requests\Accident\StoreAccidentRequest;
 use Illuminate\Support\Facades\DB;
 use App\Services\EvidenceService;
 use App\Services\AccidentCaseService;
+use App\Services\AccidentTimelineService;
 
 class AccidentService
 {
@@ -15,11 +16,18 @@ class AccidentService
 
     protected AccidentCaseService $accidentCaseService;
 
-    public function __construct(EvidenceService $evidenceService, AccidentCaseService $accidentCaseService)
-    {
+    protected AccidentTimelineService $timelineService;
+
+    public function __construct(
+        EvidenceService $evidenceService,
+        AccidentCaseService $accidentCaseService,
+        AccidentTimelineService $timelineService
+    ) {
         $this->evidenceService = $evidenceService;
         $this->accidentCaseService = $accidentCaseService;
+        $this->timelineService = $timelineService;
     }
+
     /**
      * Generate a unique reference number for the accident.
      * Format: ACC-YYYYMMDD-XXXXX
@@ -46,7 +54,6 @@ class AccidentService
     /**
      * Create a new accident record.
      */
-
     public function createAccident(StoreAccidentRequest $request, User $user): Accident
     {
         $data = $request->validated();
@@ -63,7 +70,19 @@ class AccidentService
 
             $accident = Accident::create($data);
 
-            $this->accidentCaseService->create($accident, $user);
+            $case = $this->accidentCaseService->create($accident, $user);
+
+            $this->timelineService->create(
+                accidentCase: $case,
+                user: $user,
+                action: 'ACCIDENT_REPORTED',
+                description: "Accident {$accident->reference_number} reported",
+                newValue: [
+                    'reference_number' => $accident->reference_number,
+                    'severity' => $accident->severity,
+                    'location' => $accident->location,
+                ],
+            );
 
             if ($request->hasFile('files')) {
 
@@ -92,7 +111,20 @@ class AccidentService
      */
     public function updateAccident(Accident $accident, array $data): Accident
     {
+        $old = $accident->only(array_keys($data));
+
         $accident->update($data);
+
+        if ($accident->accidentCase) {
+            $this->timelineService->create(
+                accidentCase: $accident->accidentCase,
+                user: auth()->user(),
+                action: 'ACCIDENT_UPDATED',
+                description: "Accident {$accident->reference_number} details updated",
+                oldValue: $old,
+                newValue: $accident->only(array_keys($data)),
+            );
+        }
 
         return $accident->fresh();
     }
@@ -102,6 +134,16 @@ class AccidentService
      */
     public function deleteAccident(Accident $accident): bool
     {
+        if ($accident->accidentCase) {
+            $this->timelineService->create(
+                accidentCase: $accident->accidentCase,
+                user: auth()->user(),
+                action: 'ACCIDENT_DELETED',
+                description: "Accident {$accident->reference_number} deleted",
+            );
+        }
+
         return (bool) $accident->delete();
     }
+
 }
