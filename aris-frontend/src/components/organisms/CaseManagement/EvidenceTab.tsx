@@ -7,42 +7,50 @@ import type {EvidenceResponse,EvidenceType,} from "@/types/evidence.type";
 import EvidenceSummaryCard from "@/components/organisms/Evidence/EvidenceSummaryCard";
 import { useGetEvidence, useDownload } from "@/hooks/useEvidence";
 import Loader from "@/components/atoms/Loader";
+import { useAccidentCase } from "@/hooks/useAccidentCase";
+import { useGetAccident } from "@/hooks/useAccident";
 
 type FilterType = EvidenceType | "ALL";
 
-const EvidenceTab = () => {
+const EvidenceTab = ({ id }: { id: number }) => {
   const { t } = useTranslation();
 
-  const accidentId = Number(window.location.pathname.split("/")[2]);
   const [selectedType, setSelectedType] = useState<FilterType>("ALL");
-  const [previewItem, setPreviewItem] = useState<EvidenceResponse | null>(
-    null
-  );
+  const [previewItem, setPreviewItem] = useState<EvidenceResponse | null>(null);
   const [evidence, setEvidence] = useState<EvidenceResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
+  const { fetchAccidentCase, accidentCase,loading: loadingAccidentCase, error: errorAccidentCase } = useAccidentCase();
+  const { fetchEvidence: getEvidence, loading: loadingEvidence, error: errorEvidence } = useGetEvidence();
   const { downloadFile: downloadEvidence, loading: downloadLoading } = useDownload();
 
-  const { fetchEvidence: getEvidence } = useGetEvidence();
+  const loading = loadingAccidentCase || loadingEvidence;
+  const error = errorAccidentCase || errorEvidence;
+
+  useEffect(() => {
+    if (id) {
+      fetchAccidentCase(id);
+    }
+  }, [id]);
+
+  const accidentId = accidentCase?.accident.id;
 
   const fetchEvidence = useCallback(async () => {
   try {
-    setLoading(true);
-    setError("");
+    if (accidentId === undefined) {
+      return [];
+    }
 
     const response = await getEvidence(accidentId);
     setEvidence(response);
     return response;
   } catch (err: unknown) {
-    const message =
-      (err as { response?: { data?: { message?: string } } })?.response?.data
-        ?.message || "Failed to fetch evidence";
+    // const message =
+    //   (err as { response?: { data?: { message?: string } } })?.response?.data
+    //     ?.message || "Failed to fetch evidence";
 
-    setError(message);
     throw err;
   } finally {
-    setLoading(false);
+    // setLoading(false);
   }
 }, [accidentId]);
 
@@ -66,7 +74,9 @@ const EvidenceTab = () => {
   );
 
   const handleDownload = (evidenceItem: EvidenceResponse) => {
-    downloadEvidence(accidentId, evidenceItem.id,evidenceItem.accident_reference_number);
+    // Ensure accidentId and evidence id are defined before calling download
+    if (accidentId == null || evidenceItem.id == null) return;
+    downloadEvidence(accidentId, evidenceItem.id, evidenceItem.accident_reference_number);
   };
 
   const getBadgeStyle = (type: EvidenceType) => {

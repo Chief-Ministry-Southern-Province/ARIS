@@ -2,16 +2,29 @@ import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2 } from 
 import { useTranslation } from "react-i18next";
 import { useGetAccident } from "@/hooks/useAccident";
 import { useEffect } from "react";
+import { useAccidentCase } from "@/hooks/useAccidentCase";
 
 const DetailsTab = ({ id }: { id: number }) => {
   const { t } = useTranslation();
-  const { fetchAccident, accident, loading, error } = useGetAccident();
+  const { fetchAccident, accident, loading: loadingAccident, error: errorAccident } = useGetAccident();
+  const { fetchAccidentCase, accidentCase,loading: loadingAccidentCase, error: errorAccidentCase } = useAccidentCase();
+
+  const loading = loadingAccident || loadingAccidentCase;
+  const error = errorAccident || errorAccidentCase;
 
   useEffect(() => {
     if (id) {
-      fetchAccident(id);
+      fetchAccidentCase(id);
     }
   }, [id]);
+
+  const accidentId = accidentCase?.accident.id;
+
+  useEffect(() => {
+    if (accidentId) {
+      fetchAccident(accidentId);
+    }
+  }, [accidentId]);
 
   if (loading) {
     return (

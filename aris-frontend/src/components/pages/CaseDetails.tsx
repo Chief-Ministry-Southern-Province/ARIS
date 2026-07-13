@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {  useState } from "react";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import DetailsTab from "@/components/organisms/CaseManagement/DetailsTab";
 import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
@@ -8,7 +8,8 @@ import { useTranslation } from "react-i18next";
 
 import { useParams } from "react-router-dom";
 import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck} from "lucide-react";
- 
+
+
 const caseDetailsTabs = [
     {id: "Details",icon: FileText,label: "Details",i18n: "caseDetails.tabs.details"},
     {id: "Action",icon: ClipboardCheck,label: "Actions",i18n: "caseDetails.tabs.actions"},
@@ -26,7 +27,7 @@ function CaseDetails() {
   const [activeTab, setActiveTab] = useState("Details");
 
   return (
-    <div className="p-6 space-y-5">
+    (<div className="p-6 space-y-5">
       <div>
         <h1 className="text-gray-900">{t("caseDetails.title")}</h1>
         <p className="text-sm text-gray-500 mt-0.5">{t("caseDetails.subtitle")}</p>
@@ -62,7 +63,7 @@ function CaseDetails() {
 
           {/* case evidence */}
           {activeTab === "Evidence" && (
-            <EvidenceTab/>
+            <EvidenceTab id={numericId} />
           )}
 
           {/* investigation team */}
@@ -72,7 +73,7 @@ function CaseDetails() {
 
         </div>
       </div>
-    </div>
+    </div>)
   );
 }
 

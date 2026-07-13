@@ -20,9 +20,9 @@ export const getAccidentCases = async (
 
 export const getAccidentCase = async (id: number) => {
 
-  const response = await api.get<AccidentCase>(
+  const response = await api.get<{ data: AccidentCase }>(
     `/cases/${id}`
   );
 
-  return response.data;
+  return response.data.data;
 }
