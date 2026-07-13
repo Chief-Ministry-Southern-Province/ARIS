@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\AccidentController;
 use App\Http\Controllers\Api\EvidenceController;
 use App\Http\Controllers\Api\AccidentCaseController;
+use App\Http\Controllers\Api\CaseHistoryController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -65,6 +66,9 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/cases/{accidentCase}',[AccidentCaseController::class, 'show']);
 
     Route::put('/cases/{accidentCase}',[AccidentCaseController::class, 'update']);
+
+    // Protected routes for case history
+    Route::get('/cases/{accidentCase}/history',[CaseHistoryController::class, 'index']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
