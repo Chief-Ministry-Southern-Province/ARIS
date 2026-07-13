@@ -21,21 +21,12 @@ class AccidentTimelineService
     ]);
   }
 
-  public function getTimelineForCase(AccidentCase $accidentCase,?string $search = null,int $perPage = 10)
+  public function getTimelineForCase(AccidentCase $accidentCase)
   {
-    $query = CaseHistory::where('accident_case_id', $accidentCase->id)
-      ->with(['user'])
-      ->orderBy('created_at', 'desc');
-
-    if ($search) {
-      $query->where(function ($q) use ($search) {
-        $q->where('action', 'like', "%{$search}%")
-          ->orWhere('description', 'like', "%{$search}%")
-          ->orWhere('accident_case_id', 'like', "%{$search}%");
-      });
-    }
-
-    return $query->paginate($perPage);
+      return CaseHistory::where('accident_case_id', $accidentCase->id)
+          ->with('user')
+          ->latest()
+          ->get()->reverse();
   }
  
 }

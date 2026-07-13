@@ -17,7 +17,7 @@ import { CaseManagement } from "@/components/pages/CaseManagement";
 import AdminPanel from "@/components/pages/AdminPanel";
 import Notifications from "@/components/pages/Notifications";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
-import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
+//import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
 import VehicleDetails from "@/components/pages/VehicleDetails";
 
@@ -121,11 +121,11 @@ export const router = createBrowserRouter([
         FULL_ACCESS_ROLES
       ),
 
-      protectedPage(
-        "/approval-workflow",
-        <ApprovalWorkflow />,
-        FULL_ACCESS_ROLES
-      ),
+      // protectedPage(
+      //   "/approval-workflow",
+      //   <ApprovalWorkflow />,
+      //   FULL_ACCESS_ROLES
+      // ),
       protectedPage(
         "/cases/:caseId/details",
         <CaseDetails />,  

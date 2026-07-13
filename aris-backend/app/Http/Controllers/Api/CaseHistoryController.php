@@ -17,17 +17,9 @@ class CaseHistoryController extends Controller
         $this->accidentTimelineService = $accidentTimelineService;
     }
 
-    public function index(Request $request,AccidentCase $accidentCase) {
-
-        $timeline = $this->accidentTimelineService->getTimelineForCase(
-
-            accidentCase: $accidentCase,
-
-            search: $request->search,
-
-            perPage: $request->get('per_page', 10)
-
-        );
+    public function index(Request $request, AccidentCase $accidentCase)
+    {
+        $timeline = $this->accidentTimelineService->getTimelineForCase($accidentCase);
 
         return CaseHistoryResource::collection($timeline);
     }

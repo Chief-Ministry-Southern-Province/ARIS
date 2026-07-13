@@ -8,7 +8,6 @@ import EvidenceSummaryCard from "@/components/organisms/Evidence/EvidenceSummary
 import { useGetEvidence, useDownload } from "@/hooks/useEvidence";
 import Loader from "@/components/atoms/Loader";
 import { useAccidentCase } from "@/hooks/useAccidentCase";
-import { useGetAccident } from "@/hooks/useAccident";
 
 type FilterType = EvidenceType | "ALL";
 
@@ -35,7 +34,6 @@ const EvidenceTab = ({ id }: { id: number }) => {
   const accidentId = accidentCase?.accident.id;
 
   const fetchEvidence = useCallback(async () => {
-  try {
     if (accidentId === undefined) {
       return [];
     }
@@ -43,16 +41,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
     const response = await getEvidence(accidentId);
     setEvidence(response);
     return response;
-  } catch (err: unknown) {
-    // const message =
-    //   (err as { response?: { data?: { message?: string } } })?.response?.data
-    //     ?.message || "Failed to fetch evidence";
-
-    throw err;
-  } finally {
-    // setLoading(false);
-  }
-}, [accidentId]);
+  }, [accidentId]);
 
   useEffect(() => {
     fetchEvidence();
@@ -74,9 +63,13 @@ const EvidenceTab = ({ id }: { id: number }) => {
   );
 
   const handleDownload = (evidenceItem: EvidenceResponse) => {
-    // Ensure accidentId and evidence id are defined before calling download
-    if (accidentId == null || evidenceItem.id == null) return;
-    downloadEvidence(accidentId, evidenceItem.id, evidenceItem.accident_reference_number);
+    if (accidentId === undefined) return;
+
+    downloadEvidence(
+      accidentId,
+      evidenceItem.id!,
+      evidenceItem.accident_reference_number
+    );
   };
 
   const getBadgeStyle = (type: EvidenceType) => {

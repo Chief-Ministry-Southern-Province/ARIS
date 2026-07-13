@@ -254,7 +254,7 @@ class AccidentCaseService
                 });
             })
             ->latest()
-            ->paginate(2);
+            ->paginate(10);
     }
 
     public function findById(int $id): AccidentCase

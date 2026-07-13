@@ -58,7 +58,7 @@ function CaseDetails() {
 
           {/* case workflow */}
           {activeTab === "Workflow" && (
-            <ApprovalWorkflow />
+            <ApprovalWorkflow caseId={numericId} />
           )}
 
           {/* case evidence */}

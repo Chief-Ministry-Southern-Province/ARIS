@@ -25,6 +25,7 @@ class CaseHistoryResource extends JsonResource
             'user' => [
                 'id' => $this->user?->id,
                 'name' => $this->user?->name,
+                'role' => $this->user?->getRoleNames()->first(),
             ]
         ];
     }
