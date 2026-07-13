@@ -6,6 +6,8 @@ use App\Http\Requests\AccidentCase\UpdateAccidentCaseRequest;
 use App\Http\Resources\AccidentCaseResource;
 use App\Models\AccidentCase;
 use App\Services\AccidentCaseService;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class AccidentCaseController extends Controller
 {
@@ -16,28 +18,18 @@ class AccidentCaseController extends Controller
         $this->accidentCaseService = $accidentCaseService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $cases = AccidentCase::with([
-            'accident',
-            'creator',
-            'assignee',
-            'institution',
-        ])->latest()->paginate(10);
+        $cases = $this->accidentCaseService->getAll($request->search);
 
         return AccidentCaseResource::collection($cases);
     }
 
-    public function show(AccidentCase $accidentCase)
+    public function show(int $id)
     {
-        $accidentCase->load([
-            'accident',
-            'creator',
-            'assignee',
-            'institution',
-        ]);
+        $case = $this->accidentCaseService->findById($id);
 
-        return new AccidentCaseResource($accidentCase);
+        return new AccidentCaseResource($case);
     }
 
     public function update(UpdateAccidentCaseRequest $request,AccidentCase $accidentCase) {

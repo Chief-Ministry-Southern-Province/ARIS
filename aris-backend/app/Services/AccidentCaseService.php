@@ -7,6 +7,7 @@ use App\Models\AccidentCase;
 use App\Models\User;
 
 use App\Services\AccidentTimelineService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AccidentCaseService
 {
@@ -206,5 +207,65 @@ class AccidentCaseService
                 $query->where('name', 'subject_officer');
             })
             ->first();
+    }
+
+   public function getAll(?string $search = null): LengthAwarePaginator
+    {
+        return AccidentCase::query()
+            ->with([
+                'accident',
+                'creator',
+                'assignee',
+                'institution',
+            ])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    // Accident Case fields
+                    $q->where('case_number', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhere('priority', 'like', "%{$search}%")
+                        ->orWhere('current_stage', 'like', "%{$search}%")
+
+                        // Accident fields
+                        ->orWhereHas('accident', function ($accident) use ($search) {
+                            $accident
+                                ->where('id', 'like', "%{$search}%");
+                                // Add other accident columns here
+                                // ->orWhere('accident_number', 'like', "%{$search}%")
+                                // ->orWhere('vehicle_number', 'like', "%{$search}%")
+                                // ->orWhere('location', 'like', "%{$search}%");
+                        })
+
+                        // Creator
+                        ->orWhereHas('creator', function ($creator) use ($search) {
+                            $creator->where('name', 'like', "%{$search}%");
+                        })
+
+                        // Assignee
+                        ->orWhereHas('assignee', function ($assignee) use ($search) {
+                            $assignee->where('name', 'like', "%{$search}%");
+                        })
+
+                        // Institution
+                        ->orWhereHas('institution', function ($institution) use ($search) {
+                            $institution->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->latest()
+            ->paginate(2);
+    }
+
+    public function findById(int $id): AccidentCase
+    {
+        return AccidentCase::with([
+                'accident',
+                'creator',
+                'assignee',
+                'institution',
+                'histories.user',
+            ])
+            ->findOrFail($id);
     }
 }

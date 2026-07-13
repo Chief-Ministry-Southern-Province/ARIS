@@ -9,8 +9,12 @@ use App\Models\Institution;
 use App\Models\User;
 use App\Models\CaseHistory;
 
+use App\Models\Traits\BelongsToInstitution;
+
 class AccidentCase extends Model
 {
+    use BelongsToInstitution;
+    
     protected $fillable = [
         'case_number',
         'accident_id',

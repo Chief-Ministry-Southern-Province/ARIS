@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FolderSearch, Download, Loader2 } from "lucide-react";
-import { useGetAccidents } from "@/hooks/useAccident";
+import { useAccidentCases } from "@/hooks/useAccidentCase";
 
 export function CaseManagement() {
 
@@ -12,18 +12,19 @@ export function CaseManagement() {
   const navigate = useNavigate();
 
   const {
-    fetchAccidents,
-    accidents,
+    fetchAccidentCases,
+    accidentCases,
     loading,
     error,
     currentPage,
     lastPage,
     total,
-  } = useGetAccidents();
+  } = useAccidentCases();
 
   const statusBadgeColors: Record<string, string> = {
-    "REPORTED": "bg-yellow-100 text-yellow-800",
-    "UNDER_INVESTIGATION": "bg-blue-100 text-blue-800",
+    "OPEN": "bg-yellow-100 text-yellow-800",
+    "IN_PROGRESS": "bg-blue-100 text-blue-800",
+    "ON_HOLD": "bg-orange-100 text-orange-800",
     "COMPLETED": "bg-green-100 text-green-800",
     "CLOSED": "bg-gray-100 text-gray-800",
   };
@@ -34,31 +35,36 @@ export function CaseManagement() {
     "FATAL": "bg-red-100 text-red-800",
   };
 
+  const priorityBadgeColors: Record<string, string> = {
+    "LOW": "bg-gray-100 text-gray-600",
+    "MEDIUM": "bg-blue-100 text-blue-700",
+    "HIGH": "bg-orange-100 text-orange-700",
+    "URGENT": "bg-red-100 text-red-700",
+  };
+
   const [search, setSearch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState("");
 
-  // Fetch accidents on mount and when filters change
+  // Fetch cases on mount and when filters change
   useEffect(() => {
-    fetchAccidents({
+    fetchAccidentCases({
       page: 1,
       search,
-      status: selectedStatus,
-      severity: selectedSeverity,
     });
+    // status / severity filtering can be wired into fetchAccidentCases
+    // once the backend/service supports those query params for /api/cases
   }, [search, selectedStatus, selectedSeverity]);
 
   const handlePageChange = (page: number) => {
-    fetchAccidents({
+    fetchAccidentCases({
       page,
       search,
-      status: selectedStatus,
-      severity: selectedSeverity,
     });
   };
 
-  const formatStatus = (status: string) => {
-    return status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const formatLabel = (value: string) => {
+    return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   return (
@@ -136,21 +142,11 @@ export function CaseManagement() {
               All Status
             </option>
 
-            <option value="REPORTED">
-              Reported
-            </option>
-
-            <option value="UNDER_INVESTIGATION">
-              Under Investigation
-            </option>
-
-            <option value="COMPLETED">
-              Completed
-            </option>
-
-            <option value="CLOSED">
-              Closed
-            </option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="ON_HOLD">On Hold</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CLOSED">Closed</option>
           </select>
 
           <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
@@ -159,7 +155,7 @@ export function CaseManagement() {
               {total} Results
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -177,7 +173,7 @@ export function CaseManagement() {
           {loading ? (
             <div className="py-12 text-center">
               <Loader2 className="w-8 h-8 text-blue-500 mx-auto mb-3 animate-spin" />
-              <p className="text-gray-400 text-sm">Loading accidents...</p>
+              <p className="text-gray-400 text-sm">Loading cases...</p>
             </div>
           ) : (
           <table className="w-full text-sm">
@@ -212,6 +208,14 @@ export function CaseManagement() {
                 </th>
 
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Stage
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Priority
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   {t(
                     "caseManagement.table.status"
                   )}
@@ -220,49 +224,64 @@ export function CaseManagement() {
             </thead>
 
             <tbody className="divide-y divide-gray-50">
-              {accidents.map((accident) => (
+              {accidentCases.map((accidentCase) => (
                 <tr
-                  key={accident.id}
+                  key={accidentCase.id}
                   className="hover:bg-blue-50 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/cases/${accident.id}/details`)}
+                  onClick={() => navigate(`/cases/${accidentCase.id}/details`)}
                 >
                   <td className="px-5 py-3">
                     <span className="font-mono text-xs font-semibold text-blue-700">
-                      {accident.reference_number}
+                      {accidentCase.case_number}
                     </span>
+                    <div className="text-gray-400 text-xs font-mono">
+                      {accidentCase.accident?.reference_number}
+                    </div>
                   </td>
 
                   <td className="px-5 py-3">
-                    <div className="font-medium text-gray-800 text-xs">
-                      {accident.vehicle?.vehicle_number || "N/A"} — {accident.vehicle?.brand || ""} {accident.vehicle?.model || ""}
-                    </div>
-
                     <div className="text-gray-400 text-xs">
-                      {accident.location}, {accident.district}
+                      {accidentCase.accident?.location}
                     </div>
                   </td>
 
                   <td className="px-5 py-3 text-xs text-gray-600">
-                    {accident.institution?.name || "N/A"}
+                    {accidentCase.institution?.name || "N/A"}
                   </td>
 
                   <td className="px-5 py-3 text-xs text-gray-500 whitespace-nowrap">
-                    {new Date(accident.accident_date).toLocaleDateString()}
+                    {accidentCase.accident?.accident_date
+                      ? new Date(accidentCase.accident.accident_date).toLocaleDateString()
+                      : "N/A"}
                   </td>
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accident.severity] || "bg-gray-100 text-gray-800"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accidentCase.accident?.severity] || "bg-gray-100 text-gray-800"}`}
                     >
-                      {accident.severity.charAt(0) + accident.severity.slice(1).toLowerCase()}
+                      {accidentCase.accident?.severity
+                        ? formatLabel(accidentCase.accident.severity)
+                        : "N/A"}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-3 text-xs text-gray-600">
+                    {formatLabel(accidentCase.current_stage)}
+                  </td>
+
+                  <td className="px-5 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityBadgeColors[accidentCase.priority] || "bg-gray-100 text-gray-800"}`}
+                    >
+                      {formatLabel(accidentCase.priority)}
                     </span>
                   </td>
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accident.status] || "bg-gray-100 text-gray-800"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accidentCase.status] || "bg-gray-100 text-gray-800"}`}
                     >
-                      {formatStatus(accident.status)}
+                      {formatLabel(accidentCase.status)}
                     </span>
                   </td>
                 </tr>
@@ -273,7 +292,7 @@ export function CaseManagement() {
         </div>
 
         {/* Empty State */}
-        {!loading && accidents.length === 0 && (
+        {!loading && accidentCases.length === 0 && (
           <div className="py-12 text-center">
             <Search className="w-10 h-10 text-gray-200 mx-auto mb-3" />
 
@@ -291,7 +310,7 @@ export function CaseManagement() {
             {t(
               "caseManagement.pagination.showing"
             )}{" "}
-            {accidents.length}{" "}
+            {accidentCases.length}{" "}
             {t("caseManagement.pagination.of")}{" "}
             {total}{" "}
             {t(

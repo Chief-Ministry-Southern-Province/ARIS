@@ -82,35 +82,20 @@ export interface AccidentResponse extends Accident {
 
 export interface CreateAccidentRequest {
   vehicle_id: number;
-
   driver_id?: number | null;
-
   accident_date: string;
-
   accident_time: string;
-
   severity: Severity;
-
   province: string;
-
   district: string;
-
   location: string;
-
   latitude?: number | null;
-
   longitude?: number | null;
-
   injury_count?: number;
-
   fatality_count?: number;
-
   road_condition: RoadCondition;
-
   weather_condition: WeatherCondition;
-
   has_travel_permission?: boolean;
-
   files?: File[];
 }
 
