@@ -93,5 +93,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(CaseHistory::class);
     }
+
+    public function districts()
+    {
+        return $this->hasMany(SubjectOfficerDistrict::class);
+    }
     
 }

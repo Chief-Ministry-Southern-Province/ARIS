@@ -53,10 +53,10 @@ class AccidentCase extends Model
                 ->latest();
     }
 
-    // public function approvals()
-    // {
-    //     return $this->hasMany(Approval::class);
-    // }
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class);
+    }
 
     // public function fr1043()
     // {
