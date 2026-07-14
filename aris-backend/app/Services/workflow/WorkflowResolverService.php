@@ -5,6 +5,8 @@ namespace App\Services\Workflow;
 use App\Models\AccidentCase;
 use App\Models\Institution;
 
+use App\DTOs\WorkflowStep;
+
 class WorkflowResolverService
 {
   public function resolve(AccidentCase $case): array
@@ -37,25 +39,25 @@ class WorkflowResolverService
       $ministry = $pdhs->parentInstitution;
 
       return [
-      [
-        'step' => 1,
-        'institution' => $hospital,
-        'role' => 'subject_officer',
-      ],
-      [
-        'step'=> 2,
-        'institution' => $hospital,
-        'role' => 'administrative_officer',
-      ],
-      [
-        'step'=> 3,
-        'institution' => $hospital,
-        'role' => 'medical_superintendent',
-      ],
+        new WorkflowStep(
+          step: 1,
+          institution: $hospital,
+          role: 'subject_officer',
+        ),
+        new WorkflowStep(
+          step: 2,
+          institution: $hospital,
+          role: 'administrative_officer',
+        ),
+        new WorkflowStep(
+          step: 3,
+          institution: $hospital,
+          role: 'medical_superintendent',
+        ),
 
-      ...$this->resolvePDHS($pdhs,4),
+        ...$this->resolvePDHS($pdhs,4),
 
-      ...$this->resolveMinistry($ministry,$hospital->district,8),
+        ...$this->resolveMinistry($ministry,$hospital->district,8),
       ];
   }
 
@@ -68,23 +70,23 @@ class WorkflowResolverService
 
       return [
 
-          [
-              'step'=>1,
-              'institution'=>$rdhs,
-              'role'=>'subject_officer',
-          ],
+          new WorkflowStep(
+              step: 1,
+              institution: $rdhs,
+              role: 'subject_officer',
+          ),
 
-          [
-              'step'=>2,
-              'institution'=>$rdhs,
-              'role'=>'administrative_officer',
-          ],
+          new WorkflowStep(
+              step: 2,
+              institution: $rdhs,
+              role: 'administrative_officer',
+          ),
 
-          [
-              'step'=>3,
-              'institution'=>$rdhs,
-              'role'=>'regional_director',
-          ],
+          new WorkflowStep(
+              step: 3,
+              institution: $rdhs,
+              role: 'regional_director',
+          ),
 
           ...$this->resolvePDHS($pdhs,4),
 
@@ -98,29 +100,29 @@ class WorkflowResolverService
 
       return [
 
-          [
-              'step'=>$start,
-              'institution'=>$pdhs,
-              'role'=>'subject_officer',
-          ],
+          new WorkflowStep(
+              step: $start,
+              institution: $pdhs,
+              role: 'subject_officer',
+          ),
 
-          [
-              'step'=>$start+1,
-              'institution'=>$pdhs,
-              'role'=>'administrative_officer',
-          ],
+          new WorkflowStep(
+              step: $start + 1,
+              institution: $pdhs,
+              role: 'administrative_officer',
+          ),
 
-          [
-              'step'=>$start+2,
-              'institution'=>$pdhs,
-              'role'=>'deputy_director',
-          ],
+          new WorkflowStep(
+              step: $start + 2,
+              institution: $pdhs,
+              role: 'deputy_director',
+          ),
 
-          [
-              'step'=>$start+3,
-              'institution'=>$pdhs,
-              'role'=>'provincial_director',
-          ],
+          new WorkflowStep(
+              step: $start + 3,
+              institution: $pdhs,
+              role: 'provincial_director',
+          ),
 
       ];
   }
@@ -130,36 +132,36 @@ class WorkflowResolverService
 
       return [
 
-          [
-              'step'=>$start,
-              'institution'=>$ministry,
-              'role'=>'subject_officer',
-              'district'=>$district,
-          ],
+          new WorkflowStep(
+              step: $start,
+              institution: $ministry,
+              role: 'subject_officer',
+              district: $district,
+          ),
 
-          [
-              'step'=>$start+1,
-              'institution'=>$ministry,
-              'role'=>'administrative_officer',
-          ],
+          new WorkflowStep(
+              step: $start + 1,
+              institution: $ministry,
+              role: 'administrative_officer',
+          ),
 
-          [
-              'step'=>$start+2,
-              'institution'=>$ministry,
-              'role'=>'assistant_secretary',
-          ],
+          new WorkflowStep(
+              step: $start + 2,
+              institution: $ministry,
+              role: 'assistant_secretary',
+          ),
 
-          [
-              'step'=>$start+3,
-              'institution'=>$ministry,
-              'role'=>'senior_assistant_secretary',
-          ],
+          new WorkflowStep(
+              step: $start + 3,
+              institution: $ministry,
+              role: 'senior_assistant_secretary',
+          ),
 
-          [
-              'step'=>$start+4,
-              'institution'=>$ministry,
-              'role'=>'secretary',
-          ],
+          new WorkflowStep(
+              step: $start + 4,
+              institution: $ministry,
+              role: 'secretary',
+          ),
 
       ];
   }
@@ -195,7 +197,7 @@ class WorkflowResolverService
               'role'=>'provincial_director',
           ],
 
-          ...$this->resolveMinistry($ministry,$pdhs->district,5)
+          ...$this->resolveMinistry($ministry,'Galle',5)
 
       ];
   }

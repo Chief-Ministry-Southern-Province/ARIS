@@ -11,6 +11,7 @@ class Approval extends Model
         'document_type',
         'step',
         'institution_id',
+        'revision',
         'approver_id',
         'status',
         'comments',
