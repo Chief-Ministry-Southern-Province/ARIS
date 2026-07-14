@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AccidentController;
 use App\Http\Controllers\Api\EvidenceController;
 use App\Http\Controllers\Api\AccidentCaseController;
 use App\Http\Controllers\Api\CaseHistoryController;
+use App\Http\Controllers\Api\ApprovalController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -69,6 +70,15 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     // Protected routes for case history
     Route::get('/cases/{accidentCase}/history',[CaseHistoryController::class, 'index']);
+
+    // Protected routes for approvals
+     Route::get('/approvals/pending',[ApprovalController::class, 'pending']);
+
+    Route::get('/cases/{accidentCase}/approvals',[ApprovalController::class, 'history']);
+
+    Route::post('/approvals/{approval}/approve',[ApprovalController::class, 'approve']);
+
+    Route::post('/approvals/{approval}/reject',[ApprovalController::class, 'reject']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
