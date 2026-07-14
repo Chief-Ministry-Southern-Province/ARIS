@@ -250,8 +250,12 @@
     "headOfDepartment": "Head of Department",
 
     "approval": "Approval",
-
-    "submit": "Submit Report"
+    "status": "Status",
+    "draft": "Draft",
+    "submit": "Submit Report",
+    "approve": "Approve",
+    "saveDraft": "Save Draft",
+    "print": "Print"
   } ,
    "fr104_4": {
     "title": "FINAL REPORT OF LOSSES UNDER F. R. 104 (4)",

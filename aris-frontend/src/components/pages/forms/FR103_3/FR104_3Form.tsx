@@ -62,7 +62,7 @@ const FR104_3Form = () => {
     secretaryApprovalDate: "",
 
     items: [],
-    officers:[]
+    officers: []
   });
 
   const addItem = () => {
@@ -79,11 +79,8 @@ const FR104_3Form = () => {
       ],
     }));
   };
-  const updateItem = (
-    index: number,
-    field: keyof LostItem,
-    value: string
-  ) => {
+
+  const updateItem = (index: number,field: keyof LostItem,value: string) => {
     setFormData((prev) => ({
       ...prev,
       items: prev.items.map((item, i) =>
@@ -96,6 +93,7 @@ const FR104_3Form = () => {
       ),
     }));
   };
+
   const removeItem = (index: number) => {
     setFormData((prev) => ({
       ...prev,
@@ -118,11 +116,7 @@ const FR104_3Form = () => {
     }));
   };
 
-  const updateOfficer = (
-    index: number,
-    field: keyof Officer,
-    value: string
-  ) => {
+  const updateOfficer = (index: number,field: keyof Officer,value: string) => {
     setFormData((prev) => ({
       ...prev,
       officers: prev.officers.map((officer, i) =>
@@ -147,6 +141,12 @@ const FR104_3Form = () => {
       ...prev,
       [field as keyof FR104_3Data]: value as string,
     }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+      console.log("Submit clicked");
+      e.preventDefault();
+      console.log(formData);
   };
 
   return (
@@ -190,11 +190,11 @@ const FR104_3Form = () => {
 
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500">
-                Status
+                {t("fr104_3.status")}
               </p>
 
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                Draft
+                {t("fr104_3.draft")}
               </span>
             </div>
 
@@ -204,12 +204,15 @@ const FR104_3Form = () => {
         {/* Form */}
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200">
 
-          <form className="space-y-6 p-6 lg:p-8">
+          <form className="space-y-6 p-6 lg:p-8"
+            id="fr1043-form"
+            onSubmit={handleSubmit}
+          >
 
-            {/* Part A */}
+            {/* Part A - General Information (Form fields 1 & 2) */}
             <FormCard
               part="Part A"
-              title="General Information"
+              title={t("fr104_3.partA")}
             >
               <GeneralInformationSection
                 formData={formData}
@@ -217,10 +220,10 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part B */}
+            {/* Part B - Nature of Loss (Form field 3) */}
             <FormCard
               part="Part B"
-              title="Details of Loss"
+              title={t("fr104_3.natureOfLoss")}
             >
               <NatureOfLossSection
                 formData={formData}
@@ -228,21 +231,10 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part C */}
+            {/* Part C - Lost Items (Form table) */}
             <FormCard
               part="Part C"
-              title="Cause of Loss"
-            >
-              <CauseOfLossSection
-                formData={formData}
-                handleChange={handleChange}
-              />
-            </FormCard>
-
-            {/* Part D */}
-            <FormCard
-              part="Part D"
-              title="Lost Items"
+              title={t("fr104_3.itemsLost")}
             >
               <LostItemsSection
                 formData={formData}
@@ -252,21 +244,21 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part E */}
+            {/* Part D - Cause of Loss (Form field 4) */}
             <FormCard
-              part="Part E"
-              title="Police Information"
+              part="Part D"
+              title={t("fr104_3.causeOfLoss")}
             >
-              <PoliceInformationSection
+              <CauseOfLossSection
                 formData={formData}
                 handleChange={handleChange}
               />
             </FormCard>
 
-            {/* Part F */}
+            {/* Part E - Officers Responsible (Form field 5) */}
             <FormCard
-              part="Part F"
-              title="Responsible Officers"
+              part="Part E"
+              title={t("fr104_3.officersResponsible")}
             >
               <OfficersSection
                 formData={formData}
@@ -276,10 +268,21 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part G */}
+            {/* Part F - Police Information (Form field 6) */}
+            <FormCard
+              part="Part F"
+              title={t("fr104_3.policeStation")}
+            >
+              <PoliceInformationSection
+                formData={formData}
+                handleChange={handleChange}
+              />
+            </FormCard>
+
+            {/* Part G - Investigation (Form field 7) */}
             <FormCard
               part="Part G"
-              title="Investigation Findings"
+              title={t("fr104_3.investigation")}
             >
               <InvestigationSection
                 formData={formData}
@@ -287,10 +290,10 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part H */}
+            {/* Part H - Security Arrangements (Form field 8) */}
             <FormCard
               part="Part H"
-              title="Security Arrangements"
+              title={t("fr104_3.securityArrangements")}
             >
               <SecurityArrangementSection
                 formData={formData}
@@ -298,10 +301,10 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part I */}
+            {/* Part I - Prevention Arrangements (Form field 9) */}
             <FormCard
               part="Part I"
-              title="Preventive Measures"
+              title={t("fr104_3.preventionArrangements")}
             >
               <PreventionArrangementSection
                 formData={formData}
@@ -309,10 +312,10 @@ const FR104_3Form = () => {
               />
             </FormCard>
 
-            {/* Part J */}
+            {/* Part J - Approval & Certification (Head of Dept / Secretary) */}
             <FormCard
               part="Part J"
-              title="Approval & Certification"
+              title={t("fr104_3.approval")}
             >
               <ApprovalSection
                 formData={formData}
@@ -325,23 +328,24 @@ const FR104_3Form = () => {
         </div>
 
         {/* Sticky Action Bar */}
-        <div className="sticky bottom-0 bg-whiteborder-t border-slate-200 shadow-lg p-4">
+        <div className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
             {/* Submit */}
             <button
               type="submit"
+              form="fr1043-form"
               className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
               <CheckCircle size={18} />
-              Submit
+              {t("fr104_3.submit")}
             </button>
 
             {/* Approve */}
             <button
               type="button"
               onClick={() => setIsActionModalOpen(true)}
-              className="  order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
+              className="order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
               <CheckCircle size={18} />
-              Approve
+              {t("fr104_3.approve")}
             </button>
 
             {/* Save Draft */}
@@ -350,7 +354,7 @@ const FR104_3Form = () => {
               className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
             >
               <Save size={18} />
-              Save Draft
+              {t("fr104_3.saveDraft")}
             </button>
 
             {/* Print */}
@@ -359,7 +363,7 @@ const FR104_3Form = () => {
               onClick={() => window.print()}
               className="order-4 sm:order-1 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 " >
               <Printer size={18} />
-              Print
+              {t("fr104_3.print")}
             </button>
           </div>
         </div>

@@ -8,6 +8,8 @@ use App\Models\Accident;
 use App\Models\Institution;
 use App\Models\User;
 use App\Models\CaseHistory;
+use App\Models\Approval;
+use App\Models\FR1043;
 
 use App\Models\Traits\BelongsToInstitution;
 
@@ -58,10 +60,16 @@ class AccidentCase extends Model
         return $this->hasMany(Approval::class);
     }
 
-    // public function fr1043()
-    // {
-    //     return $this->hasOne(FR1043::class);
-    // }
+    public function fr1043()
+    {
+        return $this->hasOne(FR1043::class);
+    }
+
+    public function latestFR1043()
+    {
+        return $this->hasOne(FR1043::class)
+            ->latestOfMany('revision');
+    }
 
     // public function fr1044()
     // {
