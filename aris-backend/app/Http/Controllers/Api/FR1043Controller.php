@@ -9,6 +9,7 @@ use App\Models\AccidentCase;
 use App\Models\FR1043;
 use App\Services\FR1043\FR1043Service;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class FR1043Controller extends Controller
 {

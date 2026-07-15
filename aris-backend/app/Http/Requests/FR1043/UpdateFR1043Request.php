@@ -12,7 +12,12 @@ class UpdateFR1043Request extends FormRequest
      */
     public function authorize(): bool
     {
-         return [
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
 
             'status' => [
                 'required',
@@ -89,18 +94,6 @@ class UpdateFR1043Request extends FormRequest
                 'array'
             ],
 
-        ];
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
-    {
-        return [
-            //
         ];
     }
 }

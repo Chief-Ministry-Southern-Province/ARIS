@@ -1,5 +1,5 @@
-import {useState} from "react";
-import type {FR104_3Data , LostItem , Officer } from "@/types/form_104_3_types";
+import {useEffect, useState} from "react";
+import type { FR1043FormData , LostItem , Officer } from "@/types/form_104_3_types";
 import GeneralInformationSection from "@/components/organisms/Forms/FR104_3/GeneralInformationSection";
 import PoliceInformationSection from "@/components/organisms/Forms/FR104_3/PoliceInformationSection";
 import ApprovalSection from "@/components/organisms/Forms/ApprovalSection";
@@ -17,16 +17,29 @@ import { users } from "@/components/data/mockData";
 import type { User } from "@/components/data/mockData";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
+import type { FR1043Status } from "@/types/form_104_3_types";
 
 const FR104_3Form = () => {
 
   const currentUser: User = users[0];
 
+  const { caseId } = useParams();
+  const accidentCaseId = Number(caseId);
+
   const { t } = useTranslation();
 
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [formId, setFormId] = useState<number | null>(null);
+  const [formStatus, setFormStatus] = useState<FR1043Status | null>(null);
 
-  const [formData, setFormData] = useState<FR104_3Data>({
+  const { fetchFR1043, loading: loadingForm } = useGetFR1043();
+  const { saveFR1043, loading: saving } = useSaveFR1043();
+  const { submitFR1043Data, loading: submitting } = useSubmitFR1043();
+
+  const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
     date: "",
     place: "",
@@ -41,25 +54,6 @@ const FR104_3Form = () => {
     investigation: "",
     securityArrangements: "",
     preventionArrangements: "",
-
-    // Approval Workflow
-    preparedBy: "",
-    preparedDesignation: "",
-    preparedByUserId: "",
-    preparedSignature: null,
-    preparedDate: "",
-
-    headName: "",
-    headDesignation: "",
-    headUserId: "",
-    headSignature: null,
-    headApprovalDate: "",
-
-    secretaryName: "",
-    secretaryDesignation: "",
-    secretaryUserId: "",
-    secretarySignature: null,
-    secretaryApprovalDate: "",
 
     items: [],
     officers: []
@@ -139,14 +133,69 @@ const FR104_3Form = () => {
   const handleChange = (field: string, value: string | null) => {
     setFormData((prev) => ({
       ...prev,
-      [field as keyof FR104_3Data]: value as string,
+      [field as keyof FR1043FormData]: value as string,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-      console.log("Submit clicked");
+  useEffect(() => {
+    if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
+      return;
+    }
+
+    const loadForm = async () => {
+      try {
+        const response = await fetchFR1043(accidentCaseId);
+        setFormData(response.data);
+        setFormId(response.id);
+        setFormStatus(response.status);
+      } catch (error: unknown) {
+        const status = (error as { response?: { status?: number } })?.response?.status;
+
+        if (status !== 404) {
+          toast.error("Failed to load FR104(3) form.");
+        }
+      }
+    };
+
+    loadForm();
+  }, [accidentCaseId]);
+
+  const saveDraft = async () => {
+    if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
+      toast.error("Invalid accident case.");
+      return null;
+    }
+
+    try {
+      const response = await saveFR1043(accidentCaseId, formId, formStatus, formData);
+      setFormId(response.id);
+      setFormStatus(response.status);
+      toast.success("FR104(3) draft saved successfully.");
+      return response;
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(message || "Failed to save FR104(3) draft.");
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      console.log(formData);
+
+      const savedForm = await saveDraft();
+
+      if (!savedForm) {
+        return;
+      }
+
+      try {
+        const response = await submitFR1043Data(savedForm.id);
+        setFormStatus(response.status);
+        toast.success("FR104(3) form submitted successfully.");
+      } catch (error: unknown) {
+        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        toast.error(message || "Failed to submit FR104(3) form.");
+      }
   };
 
   return (
@@ -194,7 +243,7 @@ const FR104_3Form = () => {
               </p>
 
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                {t("fr104_3.draft")}
+                {formStatus || t("fr104_3.draft")}
               </span>
             </div>
 
@@ -334,9 +383,10 @@ const FR104_3Form = () => {
             <button
               type="submit"
               form="fr1043-form"
+              disabled={loadingForm || saving || submitting}
               className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
               <CheckCircle size={18} />
-              {t("fr104_3.submit")}
+              {submitting ? "Submitting..." : t("fr104_3.submit")}
             </button>
 
             {/* Approve */}
@@ -351,10 +401,12 @@ const FR104_3Form = () => {
             {/* Save Draft */}
             <button
               type="button"
+              onClick={saveDraft}
+              disabled={loadingForm || saving || submitting}
               className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
             >
               <Save size={18} />
-              {t("fr104_3.saveDraft")}
+              {saving ? "Saving..." : t("fr104_3.saveDraft")}
             </button>
 
             {/* Print */}

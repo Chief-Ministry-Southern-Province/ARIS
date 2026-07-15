@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\EvidenceController;
 use App\Http\Controllers\Api\AccidentCaseController;
 use App\Http\Controllers\Api\CaseHistoryController;
 use App\Http\Controllers\Api\ApprovalController;
+use App\Http\Controllers\Api\FR1043Controller;
 
 Route::post('/login', [AuthController::class, 'login']);
 

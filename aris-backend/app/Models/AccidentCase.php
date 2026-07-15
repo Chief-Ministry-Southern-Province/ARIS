@@ -60,18 +60,17 @@ class AccidentCase extends Model
         return $this->hasMany(Approval::class);
     }
 
-    public function fr1043()
+    public function fr1043s()
     {
-        return $this->hasOne(FR1043::class);
+        return $this->hasMany(FR1043::class, 'accident_case_id');
     }
 
     public function latestFR1043()
     {
-        return $this->hasOne(FR1043::class)
-            ->latestOfMany('revision');
+        return $this->hasOne(FR1043::class, 'accident_case_id')
+            ->ofMany('revision', 'max');
     }
-
-    // public function fr1044()
+        // public function fr1044()
     // {
     //     return $this->hasOne(FR1044::class);
     // }

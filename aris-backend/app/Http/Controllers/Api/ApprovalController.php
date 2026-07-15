@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Approval\ApproveRequest;
 use App\Http\Requests\Approval\RejectRequest;
 use App\Http\Resources\ApprovalResource;
