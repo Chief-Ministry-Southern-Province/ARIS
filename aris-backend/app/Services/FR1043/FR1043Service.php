@@ -14,6 +14,21 @@ class FR1043Service
       protected ApprovalService $approvalService
   ) {}
 
+  protected function generateReferenceNumber(): string
+  {
+      $year = now()->year;
+
+      $last = FR1043::latest('id')->first();
+
+      $next = $last ? $last->id + 1 : 1;
+
+      return sprintf(
+          'FR1043-%d-%04d',
+          $year,
+          $next
+      );
+  }
+
   public function createDraft(AccidentCase $case,User $user,array $data): FR1043 
   {
 
@@ -28,6 +43,8 @@ class FR1043Service
               : 1;
 
           return FR1043::create([
+
+              'reference_number' => $this->generateReferenceNumber(),
 
               'accident_case_id' => $case->id,
 
@@ -124,6 +141,17 @@ class FR1043Service
   {
       return $case->fr1043s()
           ->where('revision', $revision)
+          ->first();
+  }
+
+  public function getByReference(string $reference): ?FR1043
+  {
+      return FR1043::query()
+          ->where(
+              'reference_number',
+              $reference
+          )
+          ->latest('revision')
           ->first();
   }
 }

@@ -12,6 +12,8 @@ return new class extends Migration
 
             $table->id();
 
+            $table->string('reference_number')->unique();
+
             $table->foreignId('accident_case_id')
                 ->constrained()
                 ->cascadeOnDelete();

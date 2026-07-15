@@ -79,6 +79,20 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::post('/approvals/{approval}/approve',[ApprovalController::class, 'approve']);
 
     Route::post('/approvals/{approval}/reject',[ApprovalController::class, 'reject']);
+
+    // Protected routes for FR1043
+    Route::prefix('cases')->group(function () {
+
+        Route::get('/{accidentCase}/fr1043',[FR1043Controller::class, 'show']);
+
+        Route::get('/{accidentCase}/fr1043/history',[FR1043Controller::class, 'history']);
+
+        Route::post('/{accidentCase}/fr1043',[FR1043Controller::class, 'store']);
+    });
+
+    Route::put('/fr1043/{fr1043}',[FR1043Controller::class, 'update']);
+
+    Route::post('/fr1043/{fr1043}/submit',[FR1043Controller::class, 'submit']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());

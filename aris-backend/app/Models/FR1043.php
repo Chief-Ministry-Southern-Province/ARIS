@@ -8,6 +8,7 @@ class FR1043 extends Model
 {
     protected $fillable = [
         'accident_case_id',
+        'reference_number',
         'created_by',
         'revision',
         'status',
