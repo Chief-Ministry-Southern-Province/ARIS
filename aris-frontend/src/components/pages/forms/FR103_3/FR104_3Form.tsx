@@ -35,9 +35,11 @@ const FR104_3Form = () => {
   const [formId, setFormId] = useState<number | null>(null);
   const [formStatus, setFormStatus] = useState<FR1043Status | null>(null);
 
-  const { fetchFR1043, loading: loadingForm } = useGetFR1043();
-  const { saveFR1043, loading: saving } = useSaveFR1043();
-  const { submitFR1043Data, loading: submitting } = useSubmitFR1043();
+  const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(accidentCaseId);
+  const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
+  const submitMutation = useSubmitFR1043(accidentCaseId);
+  const submitting = submitMutation.isPending;
+  const isEditable = !formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus);
 
   const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
@@ -56,7 +58,19 @@ const FR104_3Form = () => {
     preventionArrangements: "",
 
     items: [],
-    officers: []
+    officers: [],
+    preparedBy: "",
+    preparedDesignation: "",
+    preparedSignature: null,
+    preparedDate: "",
+    headName: "",
+    headDesignation: "",
+    headSignature: null,
+    headApprovalDate: "",
+    secretaryName: "",
+    secretaryDesignation: "",
+    secretarySignature: null,
+    secretaryApprovalDate: "",
   });
 
   const addItem = () => {
@@ -142,23 +156,17 @@ const FR104_3Form = () => {
       return;
     }
 
-    const loadForm = async () => {
-      try {
-        const response = await fetchFR1043(accidentCaseId);
-        setFormData(response.data);
-        setFormId(response.id);
-        setFormStatus(response.status);
-      } catch (error: unknown) {
-        const status = (error as { response?: { status?: number } })?.response?.status;
+    if (loadedForm) {
+      setFormData(loadedForm.data);
+      setFormId(loadedForm.id);
+      setFormStatus(loadedForm.status);
+    }
+  }, [loadedForm]);
 
-        if (status !== 404) {
-          toast.error("Failed to load FR104(3) form.");
-        }
-      }
-    };
-
-    loadForm();
-  }, [accidentCaseId]);
+  useEffect(() => {
+    const status = (loadError as { response?: { status?: number } })?.response?.status;
+    if (loadError && status !== 404) toast.error("Failed to load FR104(3) form.");
+  }, [loadError]);
 
   const saveDraft = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
@@ -167,7 +175,7 @@ const FR104_3Form = () => {
     }
 
     try {
-      const response = await saveFR1043(accidentCaseId, formId, formStatus, formData);
+      const response = await saveFR1043(formId, formStatus, formData);
       setFormId(response.id);
       setFormStatus(response.status);
       toast.success("FR104(3) draft saved successfully.");
@@ -189,7 +197,7 @@ const FR104_3Form = () => {
       }
 
       try {
-        const response = await submitFR1043Data(savedForm.id);
+        const response = await submitMutation.mutateAsync(savedForm.id);
         setFormStatus(response.status);
         toast.success("FR104(3) form submitted successfully.");
       } catch (error: unknown) {
@@ -223,7 +231,7 @@ const FR104_3Form = () => {
               </p>
 
               <p className="font-semibold text-slate-800">
-                FR104-3-{new Date().getFullYear()}-0001
+                {loadedForm?.reference_number ?? "Not saved"}
               </p>
             </div>
 
@@ -258,6 +266,7 @@ const FR104_3Form = () => {
             onSubmit={handleSubmit}
           >
 
+            <fieldset disabled={!isEditable} className="space-y-6 disabled:opacity-70">
             {/* Part A - General Information (Form fields 1 & 2) */}
             <FormCard
               part="Part A"
@@ -372,6 +381,7 @@ const FR104_3Form = () => {
                 currentUser={currentUser}
               />
             </FormCard>
+            </fieldset>
 
           </form>
         </div>
@@ -383,7 +393,7 @@ const FR104_3Form = () => {
             <button
               type="submit"
               form="fr1043-form"
-              disabled={loadingForm || saving || submitting}
+              disabled={!isEditable || loadingForm || saving || submitting}
               className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
               <CheckCircle size={18} />
               {submitting ? "Submitting..." : t("fr104_3.submit")}
@@ -402,7 +412,7 @@ const FR104_3Form = () => {
             <button
               type="button"
               onClick={saveDraft}
-              disabled={loadingForm || saving || submitting}
+              disabled={!isEditable || loadingForm || saving || submitting}
               className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
             >
               <Save size={18} />

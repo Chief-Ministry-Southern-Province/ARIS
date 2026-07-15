@@ -70,7 +70,7 @@ class FR1043Controller extends Controller
         $fr1043 = $this->fr1043Service->updateDraft(
 
             fr1043: $fr1043,
-
+            user: $request->user(),
             data: $request->validated()['data']
 
         );
@@ -80,9 +80,9 @@ class FR1043Controller extends Controller
     /**
      * Submit draft.
      */
-    public function submit(FR1043 $fr1043)
+    public function submit(Request $request, FR1043 $fr1043)
     {
-        $fr1043 = $this->fr1043Service->submit($fr1043);
+        $fr1043 = $this->fr1043Service->submit($fr1043, $request->user());
 
         return new FR1043Resource($fr1043);
     }

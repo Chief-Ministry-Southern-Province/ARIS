@@ -17,6 +17,14 @@ class ApprovalResource extends JsonResource
             'status' => $this->status,
             'comments' => $this->comments,
             'acted_at' => $this->acted_at,
+            'case' => [
+                'id' => $this->accidentCase?->id,
+                'case_number' => $this->accidentCase?->case_number,
+            ],
+            'submitted_by' => [
+                'id' => $this->accidentCase?->creator?->id,
+                'name' => $this->accidentCase?->creator?->name,
+            ],
             'institution' => [
                 'id' => $this->institution?->id,
                 'name' => $this->institution?->name,

@@ -23,6 +23,7 @@ import VehicleDetails from "@/components/pages/VehicleDetails";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
+import PendingApprovals from "@/components/pages/PendingApprovals";
 
 import UnauthorizedPage from "@/components/pages/UnauthorizedPage";
 
@@ -126,6 +127,11 @@ export const router = createBrowserRouter([
       //   <ApprovalWorkflow />,
       //   FULL_ACCESS_ROLES
       // ),
+      protectedPage(
+        "/approvals",
+        <PendingApprovals />,
+        FULL_ACCESS_ROLES
+      ),
       protectedPage(
         "/cases/:caseId/details",
         <CaseDetails />,  

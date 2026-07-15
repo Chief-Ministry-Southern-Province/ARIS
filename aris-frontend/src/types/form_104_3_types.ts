@@ -28,7 +28,23 @@ export interface FR1043FormData {
 
   items: LostItem[];
   officers: Officer[];
+
+  preparedBy: string;
+  preparedDesignation: string;
+  preparedSignature: string | null;
+  preparedDate: string;
+  headName: string;
+  headDesignation: string;
+  headSignature: string | null;
+  headApprovalDate: string;
+  secretaryName: string;
+  secretaryDesignation: string;
+  secretarySignature: string | null;
+  secretaryApprovalDate: string;
 }
+
+// Kept as an alias for the existing FR104(3) field components.
+export type FR104_3Data = FR1043FormData;
 
 export interface FR1043Workflow {
   preparedBy: string;

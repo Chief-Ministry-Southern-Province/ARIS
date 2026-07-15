@@ -48,6 +48,11 @@ return new class extends Migration
                 'accident_case_id',
                 'revision',
             ]);
+
+            $table->unique([
+                'reference_number',
+                'revision',
+            ]);
         });
     }
 

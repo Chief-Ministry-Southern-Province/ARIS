@@ -5,15 +5,19 @@ namespace App\Services\Approval;
 use App\Data\WorkflowStep;
 use App\Models\AccidentCase;
 use App\Models\Approval;
+use App\Models\FR1043;
 use App\Models\User;
+use App\Notifications\FR1043ChangesRequested;
 use App\Services\Workflow\WorkflowResolverService;
+use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class ApprovalService
 {
     public function __construct(
-        protected WorkflowResolverService $workflowResolver
+        protected WorkflowResolverService $workflowResolver,
+        protected AccidentTimelineService $timelineService
     ) {}
 
     /**
@@ -145,7 +149,8 @@ class ApprovalService
 
         DB::transaction(function () use (
             $approval,
-            $comments
+            $comments,
+            $user
         ) {
 
             $approval->update([
@@ -200,22 +205,26 @@ class ApprovalService
                 */
 
             } else {
+                $fr1043 = FR1043::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->first();
 
-                /*
-                |--------------------------------------------------------------------------
-                | Workflow Completed
-                |--------------------------------------------------------------------------
-                |
-                | Later:
-                |
-                | Update Form Status
-                | Timeline
-                | Notification
-                | Change Case Stage
-                |
-                */
+                if ($approval->document_type === 'FR1043' && $fr1043) {
+                    $fr1043->update([
+                        'status' => 'APPROVED',
+                        'approved_at' => now(),
+                    ]);
+                }
 
             }
+
+            $action = $nextApproval ? 'FR1043_APPROVAL_STEP_APPROVED' : 'FR1043_APPROVED';
+            $description = $nextApproval
+                ? "FR1043 revision {$approval->revision} approved at step {$approval->step}."
+                : "FR1043 revision {$approval->revision} fully approved.";
+
+            $this->timelineService->create($approval->accidentCase, $user, $action, $description);
 
         });
 
@@ -239,7 +248,8 @@ class ApprovalService
 
         DB::transaction(function () use (
             $approval,
-            $comments
+            $comments,
+            $user
         ) {
 
             $approval->update([
@@ -252,16 +262,24 @@ class ApprovalService
 
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | Later
-            |--------------------------------------------------------------------------
-            |
-            | Update document status to CHANGES_REQUESTED
-            | Timeline
-            | Notify Subject Officer
-            |
-            */
+            if ($approval->document_type === 'FR1043') {
+                $fr1043 = FR1043::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->first();
+
+                if ($fr1043) {
+                    $fr1043->update(['status' => 'CHANGES_REQUESTED']);
+                    $fr1043->creator->notify(new FR1043ChangesRequested($fr1043, $comments));
+                }
+            }
+
+            $this->timelineService->create(
+                $approval->accidentCase,
+                $user,
+                'FR1043_REJECTED',
+                "FR1043 revision {$approval->revision} rejected: {$comments}"
+            );
 
         });
 
@@ -286,8 +304,9 @@ class ApprovalService
             )
 
             ->with([
-                'accidentCase',
+                'accidentCase.creator',
                 'institution',
+                'approver.roles',
             ])
 
             ->orderBy('created_at')
@@ -324,6 +343,7 @@ class ApprovalService
         return $query
 
             ->with([
+                'accidentCase.creator',
                 'approver.roles',
                 'institution',
             ])

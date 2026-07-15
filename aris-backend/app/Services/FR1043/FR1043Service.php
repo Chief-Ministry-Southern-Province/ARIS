@@ -6,12 +6,14 @@ use App\Models\AccidentCase;
 use App\Models\FR1043;
 use App\Models\User;
 use App\Services\Approval\ApprovalService;
+use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 
 class FR1043Service
 {
   public function __construct(
-      protected ApprovalService $approvalService
+      protected ApprovalService $approvalService,
+      protected AccidentTimelineService $timelineService
   ) {}
 
   protected function generateReferenceNumber(): string
@@ -42,7 +44,7 @@ class FR1043Service
               ? $latest->revision + 1
               : 1;
 
-          return FR1043::create([
+          $fr1043 = FR1043::create([
 
               'reference_number' => $this->generateReferenceNumber(),
 
@@ -58,10 +60,19 @@ class FR1043Service
 
           ]);
 
+          $this->timelineService->create(
+              $case,
+              $user,
+              'FR1043_DRAFT_CREATED',
+              "FR1043 draft {$fr1043->reference_number} (revision {$fr1043->revision}) created."
+          );
+
+          return $fr1043;
+
       });
   }
 
-  public function updateDraft(FR1043 $fr1043,array $data): FR1043 
+  public function updateDraft(FR1043 $fr1043, User $user, array $data): FR1043
   {
       abort_unless(
           in_array(
@@ -79,10 +90,17 @@ class FR1043Service
           'data' => $data,
       ]);
 
+      $this->timelineService->create(
+          $fr1043->accidentCase,
+          $user,
+          'FR1043_DRAFT_UPDATED',
+          "FR1043 draft {$fr1043->reference_number} (revision {$fr1043->revision}) updated."
+      );
+
       return $fr1043->fresh();
   }
 
-  public function submit(FR1043 $fr1043): FR1043 
+  public function submit(FR1043 $fr1043, User $user): FR1043
   {
     abort_unless(
         in_array(
@@ -95,7 +113,26 @@ class FR1043Service
         400
     );
 
-    DB::transaction(function () use ($fr1043) {
+    return DB::transaction(function () use ($fr1043, $user) {
+
+        if ($fr1043->status === 'CHANGES_REQUESTED') {
+            $previousRevision = $fr1043;
+            $fr1043 = FR1043::create([
+                'reference_number' => $previousRevision->reference_number,
+                'accident_case_id' => $previousRevision->accident_case_id,
+                'created_by' => $user->id,
+                'revision' => $previousRevision->revision + 1,
+                'status' => 'DRAFT',
+                'data' => $previousRevision->data,
+            ]);
+
+            $this->timelineService->create(
+                $fr1043->accidentCase,
+                $user,
+                'FR1043_RESUBMITTED',
+                "FR1043 {$fr1043->reference_number} resubmitted as revision {$fr1043->revision}."
+            );
+        }
 
         $fr1043->update([
             'status' => 'UNDER_APPROVAL',
@@ -112,15 +149,18 @@ class FR1043Service
 
         );
 
-        /*
-        | Timeline
-        | Notification
-        | Case Stage
-        */
+        $fr1043->accidentCase->update(['current_stage' => 'FR1043']);
+
+        $this->timelineService->create(
+            $fr1043->accidentCase,
+            $user,
+            'FR1043_SUBMITTED',
+            "FR1043 {$fr1043->reference_number} (revision {$fr1043->revision}) submitted for approval."
+        );
+
+        return $fr1043->fresh();
 
     });
-
-    return $fr1043->fresh();
   }
 
   public function getLatest(AccidentCase $case): ?FR1043 

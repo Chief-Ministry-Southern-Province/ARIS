@@ -1,6 +1,7 @@
 import { Clock, AlertCircle, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useTimeline } from "@/hooks/useTimeline";
+import { useApprovalHistory } from "@/hooks/useApprovals";
 import type { TimelineEntry } from "@/types/timeline.type";
 import { TIMELINE_ACTIONS, DEFAULT_ACTION } from "@/utils/timelineAction";
 
@@ -21,6 +22,12 @@ function formatDate(dateString: string): string {
 function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
   const { t } = useTranslation();
   const { timeline, loading, error } = useTimeline(caseId);
+  const numericCaseId = Number(caseId);
+  const { data: approvals = [], isLoading: approvalsLoading } = useApprovalHistory(numericCaseId);
+  const approvalsByRevision = approvals.reduce<Record<number, typeof approvals>>((groups, approval) => {
+    (groups[approval.revision] ??= []).push(approval);
+    return groups;
+  }, {});
 
   const latestAction =
     timeline.length > 0
@@ -53,6 +60,17 @@ function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
 
       {/* Timeline */}
       <div className="p-6">
+        <h3 className="mb-3 text-base font-semibold text-slate-900">Approval history</h3>
+        {approvalsLoading ? <p className="mb-6 text-sm text-slate-500">Loading approval history…</p> : Object.entries(approvalsByRevision).map(([revision, entries]) => (
+          <div key={revision} className="mb-5 overflow-x-auto rounded-xl border border-slate-200">
+            <div className="bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">Revision {revision}</div>
+            <table className="min-w-full text-sm"><thead className="text-left text-slate-500"><tr><th className="p-3">Approver</th><th className="p-3">Institution</th><th className="p-3">Role</th><th className="p-3">Status</th><th className="p-3">Comments</th><th className="p-3">Acted date</th></tr></thead><tbody>
+              {entries.map((approval) => <tr key={approval.id} className="border-t border-slate-100"><td className="p-3">{approval.approver.name}</td><td className="p-3">{approval.institution.name}</td><td className="p-3">{approval.approver.role?.replace(/_/g, " ")}</td><td className="p-3">{approval.status}</td><td className="p-3">{approval.comments ?? "—"}</td><td className="p-3">{approval.acted_at ? formatDate(approval.acted_at) : "—"}</td></tr>)}
+            </tbody></table>
+          </div>
+        ))}
+        {!approvalsLoading && approvals.length === 0 && <p className="mb-6 text-sm text-slate-500">No approvals have been created yet.</p>}
+        <h3 className="mb-3 text-base font-semibold text-slate-900">Case timeline</h3>
         {loading && (
           <div className="flex items-center justify-center py-10 text-slate-400 text-sm">
             Loading timeline…

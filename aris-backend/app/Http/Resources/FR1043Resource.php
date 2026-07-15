@@ -13,6 +13,8 @@ class FR1043Resource extends JsonResource
 
             'id' => $this->id,
 
+            'reference_number' => $this->reference_number,
+
             'revision' => $this->revision,
 
             'status' => $this->status,

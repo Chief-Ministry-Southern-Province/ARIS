@@ -1,86 +1,60 @@
-import { useState } from "react";
-import type { FR1043FormData,FR1043Response,FR1043Status } from "@/types/form_104_3_types";
-import {createFR1043,getFR1043,submitFR1043,updateFR1043} from "@/services/fr1043.service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { createFR1043, getFR1043, submitFR1043, updateFR1043 } from "@/services/fr1043.service";
+import type { FR1043FormData, FR1043Status } from "@/types/form_104_3_types";
 
-const getErrorMessage = (err: unknown, fallback: string) =>
-  (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-  fallback;
+const queryKey = (caseId: number) => ["fr1043", caseId] as const;
 
-export const useGetFR1043 = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [fr1043, setFR1043] = useState<FR1043Response | null>(null);
+export const useGetFR1043 = (caseId?: number) =>
+  useQuery({
+    queryKey: queryKey(caseId ?? 0),
+    queryFn: () => getFR1043(caseId as number),
+    enabled: Boolean(caseId && caseId > 0),
+    retry: false,
+  });
 
-  const fetchFR1043 = async (caseId: number) => {
-    try {
-      setLoading(true);
-      setError("");
+export const useUpdateFR1043 = (caseId: number) => {
+  const queryClient = useQueryClient();
 
-      const response = await getFR1043(caseId);
-      setFR1043(response);
-      return response;
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, "Failed to fetch FR104(3) form"));
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { fetchFR1043, fr1043, loading, error };
+  return useMutation({
+    mutationFn: ({ id, status, data }: { id: number; status: "DRAFT" | "CHANGES_REQUESTED"; data: FR1043FormData }) =>
+      updateFR1043(id, status, data),
+    onSuccess: (form) => {
+      queryClient.setQueryData(queryKey(caseId), form);
+      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
+    },
+  });
 };
 
-export const useSaveFR1043 = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+export const useSaveFR1043 = (caseId: number) => {
+  const queryClient = useQueryClient();
+  const update = useUpdateFR1043(caseId);
 
-  const saveFR1043 = async (
-    caseId: number,
-    formId: number | null,
-    status: FR1043Status | null,
-    data: FR1043FormData
-  ) => {
-    try {
-      setLoading(true);
-      setError("");
+  const create = useMutation({
+    mutationFn: (data: FR1043FormData) => createFR1043(caseId, data),
+    onSuccess: (form) => {
+      queryClient.setQueryData(queryKey(caseId), form);
+      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
+    },
+  });
 
-      if (formId) {
-        return await updateFR1043(
-          formId,
-          status === "CHANGES_REQUESTED" ? "CHANGES_REQUESTED" : "DRAFT",
-          data
-        );
-      }
-
-      return await createFR1043(caseId, data);
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, "Failed to save FR104(3) form"));
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  return {
+    saveFR1043: (formId: number | null, status: FR1043Status | null, data: FR1043FormData) =>
+      formId ? update.mutateAsync({ id: formId, status: status === "CHANGES_REQUESTED" ? "CHANGES_REQUESTED" : "DRAFT", data }) : create.mutateAsync(data),
+    loading: create.isPending || update.isPending,
   };
-
-  return { saveFR1043, loading, error };
 };
 
-export const useSubmitFR1043 = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+export const useSubmitFR1043 = (caseId: number) => {
+  const queryClient = useQueryClient();
 
-  const submitFR1043Data = async (id: number) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      return await submitFR1043(id);
-    } catch (err: unknown) {
-      setError(getErrorMessage(err, "Failed to submit FR104(3) form"));
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { submitFR1043Data, loading, error };
+  return useMutation({
+    mutationFn: submitFR1043,
+    onSuccess: (form) => {
+      queryClient.setQueryData(queryKey(caseId), form);
+      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
+      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      toast.success("FR104(3) form submitted successfully.");
+    },
+  });
 };
