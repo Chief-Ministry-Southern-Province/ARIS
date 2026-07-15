@@ -107,13 +107,13 @@ export const router = createBrowserRouter([
       protectedPage(
         "/profile",
         <MyProfile />,
-        [...FULL_ACCESS_ROLES, "driver"],
+        [...FULL_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
         "/change-password",
         <ChangePassword />,
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
@@ -140,7 +140,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/vehicles/:vehicleId",
         <VehicleDetails />,  
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES,"system_admin"]
       ),
       protectedPage(
         "/cases/:caseId/FR104-3/generate",

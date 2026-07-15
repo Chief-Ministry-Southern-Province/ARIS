@@ -2,7 +2,7 @@
 
 namespace App\Services\Approval;
 
-use App\Data\WorkflowStep;
+use App\DTOs\WorkflowStep;
 use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR1043;

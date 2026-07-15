@@ -29,6 +29,8 @@ class StoreUserRequest extends FormRequest
             'institution_id' => 'required|exists:institutions,id',
             'role'=> 'required|exists:roles,name',
             'password' => 'required|string|min:8',
+            'districts' => 'nullable|array',
+            'districts.*' => 'string|in:Galle,Matara,Hambantota',
         ];
     }
 }

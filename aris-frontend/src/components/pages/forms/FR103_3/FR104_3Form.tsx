@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
 import type { FR1043Status } from "@/types/form_104_3_types";
+import Loader from "@/components/atoms/Loader";
 
 const FR104_3Form = () => {
 
@@ -151,22 +152,25 @@ const FR104_3Form = () => {
     }));
   };
 
-  useEffect(() => {
+useEffect(() => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
       return;
     }
-
     if (loadedForm) {
-      setFormData(loadedForm.data);
+      setFormData(loadedForm.data as FR1043FormData);
       setFormId(loadedForm.id);
       setFormStatus(loadedForm.status);
     }
   }, [loadedForm]);
 
+  //console.log("Form Id", formId);
+
   useEffect(() => {
     const status = (loadError as { response?: { status?: number } })?.response?.status;
     if (loadError && status !== 404) toast.error("Failed to load FR104(3) form.");
   }, [loadError]);
+
+  if (loadingForm) return <Loader text="Loading FR104(3) form..." />;
 
   const saveDraft = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {

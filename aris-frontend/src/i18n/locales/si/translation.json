@@ -475,7 +475,8 @@
       "actions": "ක්‍රියාමාර්ග",
       "active": "සක්‍රීය",
       "edit": "සංස්කරණය",
-      "delete": "මකන්න"
+      "delete": "මකන්න",
+      "assignedDistricts": "පැවරුණු දිස්ත්‍රික්ක"
     },
 
     "roles": {

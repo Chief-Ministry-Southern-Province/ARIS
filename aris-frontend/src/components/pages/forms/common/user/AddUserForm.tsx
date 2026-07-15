@@ -6,7 +6,6 @@ import { useState,useEffect } from "react";
 import {selectRoleBaseOnUserInstitutionType,formatRole} from "@/utils/formatRole"
 import {useGetVisibleInstitutionsForUser} from "@/hooks/useInstitution"
 import {useCreateUser} from "@/hooks/useUser"
-import Loader from "@/components/atoms/Loader";
 
 export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   const { t } = useTranslation();
@@ -19,6 +18,7 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
     institution_id: 0,
     password: "",
     mobile: "",
+    districts: [],
   });
 
   const [seePassword, setSeePassword] = useState(false);
@@ -31,18 +31,39 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value })); 
+    setUser((prevUser) => {
+      const updatedValue = name === "institution_id" ? Number(value) : value;
+      const updatedUser = { ...prevUser, [name]: updatedValue };
+
+      // Clear districts if the conditions are no longer met
+      const selectedInst = institutions.find(inst => inst.id === Number(updatedUser.institution_id));
+      const isMinistry = selectedInst?.type === "MINISTRY";
+      const isSubjectOfficer = updatedUser.role === "subject_officer";
+      if (!isMinistry || !isSubjectOfficer) {
+        updatedUser.districts = [];
+      }
+      return updatedUser;
+    }); 
   };
 
   const { createUserData,loading:createUserLoading,error:createUserError } = useCreateUser();
 
-  const handleCreateUser = ()=>{
-    if(createUserLoading) return <Loader text="Creating user..." />;
-    createUserData(user);
-    onSuccess();
-  }
+  const handleCreateUser = async () => {
+    if (createUserLoading) return;
+    try {
+      await createUserData(user);
+      onSuccess();
+    } catch (e) {
+      // Handled by hook
+    }
+  };
   
   console.log(createUserError);
+
+  const selectedInstitution = institutions.find(inst => inst.id === Number(user.institution_id));
+  const isMinistry = selectedInstitution?.type === "MINISTRY";
+  const isSubjectOfficer = user.role === "subject_officer";
+  const showDistrictSelection = isMinistry && isSubjectOfficer;
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200">
@@ -114,7 +135,43 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
             </button>
           </div>
         </FormField>
+
+        {showDistrictSelection && (
+          <div className="md:col-span-2">
+            <FormField label={t("adminPanel.users.assignedDistricts")} required>
+              <div className="flex gap-6 mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                {["Galle", "Matara", "Hambantota"].map((district) => (
+                  <label key={district} className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value={district}
+                      checked={user.districts?.includes(district) || false}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setUser((prev) => {
+                          const currentDistricts = prev.districts || [];
+                          const newDistricts = checked
+                            ? [...currentDistricts, district]
+                            : currentDistricts.filter((d) => d !== district);
+                          return { ...prev, districts: newDistricts };
+                        });
+                      }}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    {district}
+                  </label>
+                ))}
+              </div>
+            </FormField>
+          </div>
+        )}
       </div>
+
+      {createUserError && (
+        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
+          {createUserError}
+        </div>
+      )}
 
       <div className="flex justify-end gap-3 mt-6">
         <button className="px-5 py-2 border border-gray-300 rounded-lg">
@@ -124,7 +181,7 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
         <button className="px-5 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
           onClick={handleCreateUser}
         >
-          Create User
+          {createUserLoading ? "Creating..." : "Create User"}
         </button>
       </div>
     </div>

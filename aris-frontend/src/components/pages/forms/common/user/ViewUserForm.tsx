@@ -134,6 +134,17 @@ export default function ViewUserForm({onClose,userId}: ViewUserFormProps) {
                 />
               </FormField>
 
+              {/* Assigned Districts */}
+              {user.roles[0]?.name === "subject_officer" && user.institution?.type === "MINISTRY" && (
+                <FormField label={t("adminPanel.users.assignedDistricts")}>
+                  <InputField
+                    value={user.districts?.map((d) => d.district).join(", ") || "None"}
+                    readOnly
+                    className="bg-gray-50 border-gray-200 cursor-default"
+                  />
+                </FormField>
+              )}
+
             </div>
           </div>
 

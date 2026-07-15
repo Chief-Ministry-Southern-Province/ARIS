@@ -173,32 +173,30 @@ class WorkflowResolverService
 
       return [
 
-          [
-              'step'=>1,
-              'institution'=>$pdhs,
-              'role'=>'subject_officer',
-          ],
+          new WorkflowStep(
+              step: 1,
+              institution: $pdhs,
+              role: 'subject_officer',
+          ),
 
-          [
-              'step'=>2,
-              'institution'=>$pdhs,
-              'role'=>'administrative_officer',
-          ],
+          new WorkflowStep(
+              step: 2,
+              institution: $pdhs,
+              role: 'administrative_officer',
+          ),
 
-          [
-              'step'=>3,
-              'institution'=>$pdhs,
-              'role'=>'deputy_director',
-          ],
+          new WorkflowStep(
+              step: 3,
+              institution: $pdhs,
+              role: 'deputy_director',
+          ),
 
-          [
-              'step'=>4,
-              'institution'=>$pdhs,
-              'role'=>'provincial_director',
-          ],
-
-          ...$this->resolveMinistry($ministry,'Galle',5)
-
+          new WorkflowStep(
+              step: 4,
+              institution: $pdhs,
+              role: 'provincial_director',
+          ),
+          ...$this->resolveMinistry($ministry,"Galle",5)
       ];
   }
 }

@@ -26,6 +26,7 @@ export interface User {
   updated_at: string;
   institution: Institution;
   roles: Role[];
+  districts?: { id: number; user_id: number; district: string }[];
 }
 
 export interface createUserRequest{
@@ -35,6 +36,7 @@ export interface createUserRequest{
   institution_id: number;
   password: string;
   role: string;
+  districts?: string[];
 }
 
 export interface viewUserResponse{
@@ -51,6 +53,7 @@ export interface updateUserRequest{
   mobile: string;
   institution_id: number;
   role: string;
+  districts?: string[];
 }
 
 export interface ProfileResponse {
