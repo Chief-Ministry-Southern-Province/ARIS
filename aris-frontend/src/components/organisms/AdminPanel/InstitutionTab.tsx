@@ -2,7 +2,7 @@ import { Search, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import AddInstitutionForm from "@/components/pages/forms/common/institution/AddInstitutionForm";
 import Modal from "@/components/molecules/Modal";
-import {useGetInstitutions} from "@/hooks/useInstitution"
+import { useInstitutions } from "@/hooks/queries/useInstitutionQueries"
 import type { Institution } from "@/types/Institution.type";
 import Loader from "@/components/atoms/Loader";
 import {formatInstitutionType} from "@/utils/formatInstitution";
@@ -20,8 +20,16 @@ const InstitutionTab = () => {
   //const { deleteInstitutionData } = useDeleteInstitution();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const { institutions, pagination, loading, fetchInstitutions } = useGetInstitutions({page, search});
+  const { data, isLoading: loading } = useInstitutions(page, debouncedSearch);
+  const institutions = data?.data ?? [];
+  const pagination = {
+    current_page: data?.current_page ?? page,
+    last_page: data?.last_page ?? 1,
+    per_page: data?.per_page ?? 10,
+    total: data?.total ?? 0,
+  };
 
   // const  handleDeleteInstitution = async (institutionId: string) => {
   //   const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
@@ -34,10 +42,7 @@ const InstitutionTab = () => {
   const handleSuccess = async () => {
       setShowAddInstitution(false);
       setShowEditInstitution(false);
-      await fetchInstitutions();
   };
-
-  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -46,10 +51,6 @@ const InstitutionTab = () => {
 
     return () => clearTimeout(timer);
   }, [search]);
-
-  useEffect(() => {
-    fetchInstitutions();
-}, [debouncedSearch, page]);
 
   return (
     <div className="space-y-4">

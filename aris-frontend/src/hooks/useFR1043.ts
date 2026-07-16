@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { createFR1043, getFR1043, submitFR1043, updateFR1043 } from "@/services/fr1043.service";
 import type { FR1043FormData, FR1043Status } from "@/types/form_104_3_types";
+import { queryKeys } from "@/hooks/queryKeys";
 
-const queryKey = (caseId: number) => ["fr1043", caseId] as const;
+const queryKey = queryKeys.fr1043;
 
 export const useGetFR1043 = (caseId?: number) =>
   useQuery({
@@ -21,7 +22,7 @@ export const useUpdateFR1043 = (caseId: number) => {
       updateFR1043(id, status, data),
     onSuccess: (form) => {
       queryClient.setQueryData(queryKey(caseId), form);
-      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline(caseId) });
     },
   });
 };
@@ -34,7 +35,7 @@ export const useSaveFR1043 = (caseId: number) => {
     mutationFn: (data: FR1043FormData) => createFR1043(caseId, data),
     onSuccess: (form) => {
       queryClient.setQueryData(queryKey(caseId), form);
-      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline(caseId) });
     },
   });
 
@@ -52,8 +53,8 @@ export const useSubmitFR1043 = (caseId: number) => {
     mutationFn: submitFR1043,
     onSuccess: (form) => {
       queryClient.setQueryData(queryKey(caseId), form);
-      queryClient.invalidateQueries({ queryKey: ["timeline", caseId] });
-      queryClient.invalidateQueries({ queryKey: ["approvals"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline(caseId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
       toast.success("FR104(3) form submitted successfully.");
     },
   });

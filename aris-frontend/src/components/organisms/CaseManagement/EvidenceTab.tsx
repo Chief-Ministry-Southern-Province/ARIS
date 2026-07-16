@@ -1,13 +1,14 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import {Image,Shield,Eye, Download,FileText,FileCheck,Gavel,Video,} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import EvidencePreviewModal from "@/components/organisms/Evidence/EvidencePreviewModal";
 import type {EvidenceResponse,EvidenceType,} from "@/types/evidence.type";
 import EvidenceSummaryCard from "@/components/organisms/Evidence/EvidenceSummaryCard";
-import { useGetEvidence, useDownload } from "@/hooks/useEvidence";
+import { useEvidenceDownloadMutation } from "@/hooks/mutations/useEvidenceDownloadMutation";
 import Loader from "@/components/atoms/Loader";
-import { useAccidentCase } from "@/hooks/useAccidentCase";
+import { useCase } from "@/hooks/queries/useCaseQueries";
+import { useEvidence } from "@/hooks/queries/useEvidenceQueries";
 
 type FilterType = EvidenceType | "ALL";
 
@@ -16,36 +17,13 @@ const EvidenceTab = ({ id }: { id: number }) => {
 
   const [selectedType, setSelectedType] = useState<FilterType>("ALL");
   const [previewItem, setPreviewItem] = useState<EvidenceResponse | null>(null);
-  const [evidence, setEvidence] = useState<EvidenceResponse[]>([]);
-
-  const { fetchAccidentCase, accidentCase,loading: loadingAccidentCase, error: errorAccidentCase } = useAccidentCase();
-  const { fetchEvidence: getEvidence, loading: loadingEvidence, error: errorEvidence } = useGetEvidence();
-  const { downloadFile: downloadEvidence, loading: downloadLoading } = useDownload();
+  const { data: accidentCase, isLoading: loadingAccidentCase, error: accidentCaseError } = useCase(id);
+  const accidentId = accidentCase?.accident.id;
+  const { data: evidence = [], isLoading: loadingEvidence, error: evidenceError } = useEvidence(accidentId);
+  const { mutate: downloadEvidence, isPending: downloadLoading } = useEvidenceDownloadMutation();
 
   const loading = loadingAccidentCase || loadingEvidence;
-  const error = errorAccidentCase || errorEvidence;
-
-  useEffect(() => {
-    if (id) {
-      fetchAccidentCase(id);
-    }
-  }, [id]);
-
-  const accidentId = accidentCase?.accident.id;
-
-  const fetchEvidence = useCallback(async () => {
-    if (accidentId === undefined) {
-      return [];
-    }
-
-    const response = await getEvidence(accidentId);
-    setEvidence(response);
-    return response;
-  }, [accidentId]);
-
-  useEffect(() => {
-    fetchEvidence();
-  }, [fetchEvidence]);
+  const error = accidentCaseError instanceof Error ? accidentCaseError.message : evidenceError instanceof Error ? evidenceError.message : "";
 
   const filteredEvidence =
     selectedType === "ALL"
@@ -65,11 +43,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
   const handleDownload = (evidenceItem: EvidenceResponse) => {
     if (accidentId === undefined) return;
 
-    downloadEvidence(
-      accidentId,
-      evidenceItem.id!,
-      evidenceItem.accident_reference_number
-    );
+    downloadEvidence({ accidentId, evidenceId: evidenceItem.id!, accidentReferenceNumber: evidenceItem.accident_reference_number });
   };
 
   const getBadgeStyle = (type: EvidenceType) => {

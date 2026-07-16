@@ -1,9 +1,9 @@
 import api from "./api";
 import type {PaginatedResponse} from "@/types/Pagination.type";
 
-import type {Vehicle,CreateVehicleRequest,UpdateVehicleRequest,} from "@/types/vehicle.type";
+import type {VehicleResponse,CreateVehicleRequest,UpdateVehicleRequest,} from "@/types/vehicle.type";
 
-export const getVehicles = async (page: number = 1,search: string = "") : Promise<PaginatedResponse<Vehicle>> => {
+export const getVehicles = async (page: number = 1,search: string = "") : Promise<PaginatedResponse<VehicleResponse>> => {
 
     const response = await api.get("/vehicles", {
         params: {
@@ -17,7 +17,7 @@ export const getVehicles = async (page: number = 1,search: string = "") : Promis
 
 export const getVehicle = async (id: number) => {
 
-    const response = await api.get<Vehicle>(
+  const response = await api.get<VehicleResponse>(
         `/vehicles/${id}`
     );
 

@@ -1,23 +1,19 @@
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import { useTranslation } from "react-i18next";
-import { useCreateInstitution,useGetAllowedInstitutionTypes, useGetParentInstitutions } from "@/hooks/useInstitution";
+import { useCreateInstitutionMutation } from "@/hooks/mutations/useResourceMutations";
+import { useInstitutionTypes, useParentInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import type { createInstitutionRequest } from "@/types/Institution.type";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {formatInstitutionType} from "@/utils/formatInstitution";
 import { toast } from "react-toastify";
 
 const AddInstitutionForm = ({ onSuccess, setShowAddInstitution }: { onSuccess: () => void, setShowAddInstitution: (show: boolean) => void }) => {
   
   const { t } = useTranslation();
-  const { createNewInstitution } = useCreateInstitution();
-  const { institutionTypes,fetchAllowedInstitutionTypes, loading } = useGetAllowedInstitutionTypes();
-  const { parentInstitutions, fetchParentInstitutions, loading: parentInstitutionsLoading } = useGetParentInstitutions();
-  
-  useEffect(() => {
-    fetchAllowedInstitutionTypes();
-    fetchParentInstitutions();
-  }, []);
+  const { mutateAsync: createNewInstitution } = useCreateInstitutionMutation();
+  const { data: institutionTypes = [], isLoading: loading } = useInstitutionTypes();
+  const { data: parentInstitutions = [], isLoading: parentInstitutionsLoading } = useParentInstitutions();
   // console.log(institutionTypes)
   // console.log(parentInstitutions)
 

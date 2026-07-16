@@ -1,25 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FolderSearch, Download, Loader2 } from "lucide-react";
-import { useAccidentCases } from "@/hooks/useAccidentCase";
+import { useCases } from "@/hooks/queries/useCaseQueries";
 
 export function CaseManagement() {
 
   const { t } = useTranslation();
 
   const navigate = useNavigate();
-
-  const {
-    fetchAccidentCases,
-    accidentCases,
-    loading,
-    error,
-    currentPage,
-    lastPage,
-    total,
-  } = useAccidentCases();
 
   const statusBadgeColors: Record<string, string> = {
     "OPEN": "bg-yellow-100 text-yellow-800",
@@ -45,23 +35,15 @@ export function CaseManagement() {
   const [search, setSearch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedSeverity, setSelectedSeverity] = useState("");
+  const [page, setPage] = useState(1);
+  const { data, isLoading: loading, error: queryError } = useCases(page, search);
+  const accidentCases = data?.data ?? [];
+  const currentPage = data?.current_page ?? page;
+  const lastPage = data?.last_page ?? 1;
+  const total = data?.total ?? 0;
+  const error = queryError instanceof Error ? queryError.message : "";
 
-  // Fetch cases on mount and when filters change
-  useEffect(() => {
-    fetchAccidentCases({
-      page: 1,
-      search,
-    });
-    // status / severity filtering can be wired into fetchAccidentCases
-    // once the backend/service supports those query params for /api/cases
-  }, [search, selectedStatus, selectedSeverity]);
-
-  const handlePageChange = (page: number) => {
-    fetchAccidentCases({
-      page,
-      search,
-    });
-  };
+  const handlePageChange = (nextPage: number) => setPage(nextPage);
 
   const formatLabel = (value: string) => {
     return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -108,7 +90,7 @@ export function CaseManagement() {
               placeholder={`${t("caseManagement.search")}...`}
               value={search}
               onChange={(e) =>
-                setSearch(e.target.value)
+                (setPage(1), setSearch(e.target.value))
               }
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -118,7 +100,7 @@ export function CaseManagement() {
           <select
             value={selectedSeverity}
             onChange={(e) =>
-              setSelectedSeverity(e.target.value)
+                (setPage(1), setSelectedSeverity(e.target.value))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
@@ -134,7 +116,7 @@ export function CaseManagement() {
           <select
             value={selectedStatus}
             onChange={(e) =>
-              setSelectedStatus(e.target.value)
+                (setPage(1), setSelectedStatus(e.target.value))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >

@@ -1,14 +1,14 @@
 import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import AddVehicleForm from "@/components/pages/forms/common/vehicle/AddVehicleForm";
 import Modal from "@/components/molecules/Modal";
 
 import EditVehicleForm  from "@/components/pages/forms/common/vehicle/EditVehicleForm";
-import {useGetVehicles} from "@/hooks/useVehicle";
+import { useVehicles } from "@/hooks/queries/useVehicleQueries";
 
 import ViewVehicleForm from "@/components/pages/forms/common/vehicle/ViewVehicleForm";
-import {useDeleteVehicle} from "@/hooks/useVehicle";
+import { useDeleteVehicleMutation } from "@/hooks/mutations/useResourceMutations";
 import {swalConfirm} from "@/utils/swal";
 import {toast} from "react-toastify";
 
@@ -25,34 +25,30 @@ const VehicleTab = () => {
   const [viewingVehicle, setViewingVehicle] = useState<number | null>(null);
   const [showViewVehicle, setShowViewVehicle] = useState(false);
   
-  const {vehicles, fetchVehicles, loading,lastPage, total} = useGetVehicles();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const { data, isLoading: loading } = useVehicles(page, search);
+  const vehicles = data?.data ?? [];
+  const lastPage = data?.last_page ?? 1;
+  const total = data?.total ?? 0;
 
-  const { deleteVehicleData } = useDeleteVehicle();
+  const { mutateAsync: deleteVehicleData } = useDeleteVehicleMutation();
 
   const handleDeleteVehicle = async (vehicleId: number) => {
     const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
     if (confirmed) {
       await deleteVehicleData(vehicleId);
       toast.success("Vehicle deleted successfully");
-      await fetchVehicles({page, search});
     }
   }
 
-  useEffect(() => {
-    fetchVehicles({page, search});
-  }, [page, search]);
-
   const createOnSuccess = () => {
     setShowAddVehicle(false);
-    fetchVehicles({page, search});
   };
 
   const updateOnSuccess = () => {
     setShowEditVehicle(false);
     setSelectedVehicle(null);
-    fetchVehicles({page, search});
   }
 
   const viewOnSuccess = () => {

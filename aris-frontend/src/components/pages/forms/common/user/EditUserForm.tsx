@@ -10,8 +10,9 @@ import type { updateUserRequest } from "@/types/User.type";
 
 import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
 
-import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
-import { useGetUserById,useUpdateUser,} from "@/hooks/useUser";
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
+import { useUser } from "@/hooks/queries/useUserQueries";
+import { useUpdateUserMutation } from "@/hooks/mutations/useResourceMutations";
 
 interface EditUserFormProps {
   userId: string;
@@ -33,16 +34,10 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
     districts: [],
   });
 
-  const {fetchVisibleInstitutions,institutions,loading: institutionLoading,} = useGetVisibleInstitutionsForUser();
-
-  const {fetchUserById,user: userData,loading: userLoading,} = useGetUserById();
-
-  const {updateUserData,loading: updateLoading,error: updateError} = useUpdateUser();
-
-  useEffect(() => {
-    fetchVisibleInstitutions();
-    fetchUserById(Number(userId));
-  }, [userId]);
+  const { data: institutions = [], isLoading: institutionLoading } = useVisibleInstitutions();
+  const { data: userData, isLoading: userLoading } = useUser(Number(userId));
+  const { mutateAsync: updateUserData, isPending: updateLoading, error: updateMutationError } = useUpdateUserMutation();
+  const updateError = updateMutationError instanceof Error ? updateMutationError.message : "";
 
   useEffect(() => {
     if (!userData) return;
@@ -79,7 +74,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
 
   const handleUpdateUser = async () => {
     try {
-      await updateUserData(Number(userId), user);
+      await updateUserData({ id: Number(userId), data: user });
       onSuccess();
     } catch (e) {
       // Handled by hook

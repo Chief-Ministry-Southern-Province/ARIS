@@ -1,9 +1,9 @@
 import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddUserForm from "@/components/pages/forms/common/user/AddUserForm";
 import Modal from "@/components/molecules/Modal";
 import { useTranslation } from "react-i18next";
-import { useGetAllUsers } from "@/hooks/useUser";
+import { useUsers } from "@/hooks/queries/useUserQueries";
 import Loader from "@/components/atoms/Loader";
 import { formatRole } from "@/utils/formatRole";
 import { toast } from "react-toastify";
@@ -11,7 +11,7 @@ import ViewUserForm from "@/components/pages/forms/common/user/ViewUserForm";
 import type { User } from "@/types/User.type";
 import EditUserForm from "@/components/pages/forms/common/user/EditUserForm";
 import Pagination from "@/components/molecules/Pagination";
-import {useDeleteUser} from "@/hooks/useUser";
+import { useDeleteUserMutation } from "@/hooks/mutations/useResourceMutations";
 import {swalConfirm} from "@/utils/swal";
 
 const UserTab = () => {
@@ -26,28 +26,28 @@ const UserTab = () => {
 
   const {t} = useTranslation();
 
-  const {fetchAllUsers,users,currentPage,lastPage,total,loading } = useGetAllUsers();
-
-  const {deleteUserData} = useDeleteUser();
+  const { data, isLoading: loading } = useUsers(page, search);
+  const users = data?.data ?? [];
+  const currentPage = data?.current_page ?? page;
+  const lastPage = data?.last_page ?? 1;
+  const total = data?.total ?? 0;
+  const { mutateAsync: deleteUserData } = useDeleteUserMutation();
 
   const handleDeleteUser = async (userId: string) => {
     const confirmed = await swalConfirm(t("adminPanel.users.deleteConfirmationTitle"), t("adminPanel.users.deleteConfirmationText"));
     if (confirmed) {
       await deleteUserData(Number(userId));
-      await fetchAllUsers(page,search);
     }
   }
 
   const onSuccess = async () => {
     setShowAddUser(false);
     toast.success("User created successfully");
-    await fetchAllUsers(page,search);
   }
 
   const onSuccessUpdate = async () => {
     setShowEditUser(false);
     toast.success("User updated successfully");
-    await fetchAllUsers(page,search);
   }
 
   const onClose = () => {
@@ -55,10 +55,6 @@ const UserTab = () => {
     setViewingUser(null);
   }
 
-
-  useEffect(() => {
-    fetchAllUsers(page,search);
-  }, [page,search]);
 
   
 

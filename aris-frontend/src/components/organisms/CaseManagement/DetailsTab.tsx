@@ -1,30 +1,16 @@
 import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useGetAccident } from "@/hooks/useAccident";
-import { useEffect } from "react";
-import { useAccidentCase } from "@/hooks/useAccidentCase";
+import { useAccident } from "@/hooks/queries/useAccidentQueries";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 
 const DetailsTab = ({ id }: { id: number }) => {
   const { t } = useTranslation();
-  const { fetchAccident, accident, loading: loadingAccident, error: errorAccident } = useGetAccident();
-  const { fetchAccidentCase, accidentCase,loading: loadingAccidentCase, error: errorAccidentCase } = useAccidentCase();
+  const { data: accidentCase, isLoading: loadingAccidentCase, error: accidentCaseError } = useCase(id);
+  const accidentId = accidentCase?.accident.id;
+  const { data: accident, isLoading: loadingAccident, error: accidentError } = useAccident(accidentId);
 
   const loading = loadingAccident || loadingAccidentCase;
-  const error = errorAccident || errorAccidentCase;
-
-  useEffect(() => {
-    if (id) {
-      fetchAccidentCase(id);
-    }
-  }, [id]);
-
-  const accidentId = accidentCase?.accident.id;
-
-  useEffect(() => {
-    if (accidentId) {
-      fetchAccident(accidentId);
-    }
-  }, [accidentId]);
+  const error = accidentError instanceof Error ? accidentError.message : accidentCaseError instanceof Error ? accidentCaseError.message : "";
 
   if (loading) {
     return (

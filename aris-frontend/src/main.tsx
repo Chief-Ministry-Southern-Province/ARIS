@@ -8,8 +8,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "./lib/leaflet";
 import {AuthProvider} from '@/context/auth/AuthContext'
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-const queryClient = new QueryClient();
+import { QueryProvider } from "@/providers/QueryProvider";
 // Dynamically import the PWA register to avoid TypeScript errors when the
 // virtual module "virtual:pwa-register" has no type declarations.
 (async () => {
@@ -24,10 +23,10 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <QueryProvider>
       <AuthProvider>
         <ThemeProvider><App /></ThemeProvider>
       </AuthProvider>
-    </QueryClientProvider>
+    </QueryProvider>
   </StrictMode>,
 )

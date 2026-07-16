@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import timelineService from "@/services/timeline.service";
+import { queryKeys } from "@/hooks/queryKeys";
 
 export const useTimeline = (caseId: number | string) => {
   const numericCaseId = Number(caseId);
   const query = useQuery({
-    queryKey: ["timeline", numericCaseId],
+    queryKey: queryKeys.timeline(numericCaseId),
     queryFn: () => timelineService.getCaseTimeline(numericCaseId),
     enabled: Number.isInteger(numericCaseId) && numericCaseId > 0,
   });

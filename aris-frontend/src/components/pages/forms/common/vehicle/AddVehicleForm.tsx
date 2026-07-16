@@ -1,14 +1,14 @@
 import { useState } from "react";
 import VehicleForm from "./VehicleForm";
 
-import { useCreateVehicle } from "@/hooks/useVehicle";
-import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
+import { useCreateVehicleMutation } from "@/hooks/mutations/useResourceMutations";
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
 
 import type { CreateVehicleRequest } from "@/types/vehicle.type";
 import { toast } from "react-toastify";
 import {initialValues} from "@/constants/vehicle";
 
-import {useGetAvailableDrivers} from "@/hooks/useUser";
+import { useAvailableDrivers } from "@/hooks/queries/useUserQueries";
 
 export default function AddVehicleForm({onSuccess}: {onSuccess: () => void}) {
 
@@ -16,16 +16,9 @@ export default function AddVehicleForm({onSuccess}: {onSuccess: () => void}) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const {createVehicleData,loading,} = useCreateVehicle();
-
-  const {fetchVisibleInstitutions,institutions,loading: loadingInstitutions} = useGetVisibleInstitutionsForUser();
-
-  const {fetchAvailableDrivers,drivers,loading: loadingDrivers} = useGetAvailableDrivers();
-
-  useState(() => {
-    fetchVisibleInstitutions();
-    fetchAvailableDrivers();
-  });
+  const { mutateAsync: createVehicleData, isPending: loading } = useCreateVehicleMutation();
+  const { data: institutions = [], isLoading: loadingInstitutions } = useVisibleInstitutions();
+  const { data: drivers = [], isLoading: loadingDrivers } = useAvailableDrivers();
 
   const handleChange = (
     e: React.ChangeEvent<

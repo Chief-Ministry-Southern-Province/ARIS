@@ -1,11 +1,10 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { FormField } from "@/components/molecules/FormField";
 
-import { useGetVehicle } from "@/hooks/useVehicle";
-import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
-import { useGetAvailableDrivers } from "@/hooks/useUser";
+import { useVehicle } from "@/hooks/queries/useVehicleQueries";
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
+import { useAvailableDrivers } from "@/hooks/queries/useUserQueries";
 
 type ViewVehicleFormProps = {
   vehicleId: number;
@@ -27,18 +26,9 @@ function FieldValue({ value }: FieldValueProps) {
 export default function ViewVehicleForm({vehicleId,onClose,}: ViewVehicleFormProps) {
   const { t } = useTranslation();
 
-  const { vehicle, fetchVehicle, loading: loadingVehicle } = useGetVehicle();
-
-  const { fetchVisibleInstitutions, institutions } =
-    useGetVisibleInstitutionsForUser();
-
-  const { fetchAvailableDrivers, drivers, loading: loadingDrivers } = useGetAvailableDrivers();
-
-  useEffect(() => {
-    fetchVehicle(vehicleId);
-    fetchVisibleInstitutions();
-    fetchAvailableDrivers();
-  }, [vehicleId]);
+  const { data: vehicle, isLoading: loadingVehicle } = useVehicle(vehicleId);
+  const { data: institutions = [] } = useVisibleInstitutions();
+  const { data: drivers = [], isLoading: loadingDrivers } = useAvailableDrivers();
 
   if (loadingVehicle || !vehicle) {
     return (

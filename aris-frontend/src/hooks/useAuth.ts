@@ -1,217 +1,75 @@
-import { useState } from "react";
-import { login, logout,changePassword,sendOtp,verifyOtp,resetPassword} from "@/services/auth.service";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changePassword, getProfile, login, logout, resetPassword, sendOtp, verifyOtp } from "@/services/auth.service";
+import { queryKeys } from "@/hooks/queryKeys";
+
+const profileKey = queryKeys.auth.profile;
+
+const errorMessage = (error: unknown) =>
+  (error as { response?: { data?: { message?: string } } })?.response?.data?.message ?? "Request failed";
+
+export const useProfile = () => useQuery({
+  queryKey: profileKey,
+  queryFn: getProfile,
+  retry: false,
+});
 
 export const useLogin = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const mutation = useMutation({
+    mutationFn: ({ nic, password }: { nic: string; password: string }) => login(nic, password),
+  });
 
-  const loginUser = async (nic: string,password: string,rememberMe: boolean) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await login(nic, password);
-
-      console.log("Login response:", response);
+  return {
+    loginUser: async (nic: string, password: string, rememberMe: boolean) => {
+      const response = await mutation.mutateAsync({ nic, password });
       localStorage.setItem("token", response.token);
       localStorage.setItem("institutionType", response.institutionType ?? "");
       localStorage.setItem("id", String(response.id));
-
-      if (response.name) {
-        localStorage.setItem("name", response.name);
-      }
-
-      if (response.role) {
-        localStorage.setItem(
-          "role",
-          JSON.stringify(response.role)
-        );
-      }
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedUsername", nic);
-      } else {
-        localStorage.removeItem("rememberedUsername");
-      }
-
+      if (response.name) localStorage.setItem("name", response.name);
+      if (response.role) localStorage.setItem("role", JSON.stringify(response.role));
+      if (rememberMe) localStorage.setItem("rememberedUsername", nic);
+      else localStorage.removeItem("rememberedUsername");
       return response;
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Login failed";
-
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    loginUser,
-    loading,
-    error,
+    },
+    loading: mutation.isPending,
+    error: mutation.error ? errorMessage(mutation.error) : "",
   };
 };
 
 export const useLogout = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const logoutUser = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      await logout();
-
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Logout failed";
-
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-    
-  }
-  return{
-      logoutUser,
-      loading,
-      error
-    }
+      queryClient.removeQueries({ queryKey: ["auth"] });
+    },
+  });
+  return { logoutUser: mutation.mutateAsync, loading: mutation.isPending, error: mutation.error ? errorMessage(mutation.error) : "" };
 };
+
 export const useChangePassword = () => {
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const changePasswordUser = async (current_password: string, new_password: string, new_password_confirmation: string) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await changePassword(current_password, new_password, new_password_confirmation);
-
-      return response;
-      
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Change password failed";
-
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const mutation = useMutation({
+    mutationFn: ({ current_password, new_password, new_password_confirmation }: { current_password: string; new_password: string; new_password_confirmation: string }) =>
+      changePassword(current_password, new_password, new_password_confirmation),
+  });
   return {
-    changePasswordUser,
-    loading,
-    error,
+    changePasswordUser: (current_password: string, new_password: string, new_password_confirmation: string) =>
+      mutation.mutateAsync({ current_password, new_password, new_password_confirmation }),
+    loading: mutation.isPending,
+    error: mutation.error ? errorMessage(mutation.error) : "",
   };
 };
-
-
 
 export const useSendOtp = () => {
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const sendOtpUser = async (nic: string) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await sendOtp(nic);
-
-      return response;
-      
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Send OTP failed";    
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    sendOtpUser,
-    loading,
-    error,
-  };
+  const mutation = useMutation({ mutationFn: (nic: string) => sendOtp(nic) });
+  return { sendOtpUser: mutation.mutateAsync, loading: mutation.isPending, error: mutation.error ? errorMessage(mutation.error) : "" };
 };
-
 export const useVerifyOtp = () => {
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const verifyOtpUser = async (mobile: string, otp: string) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await verifyOtp(mobile, otp);
-
-      return response;
-      
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Verify OTP failed";    
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    verifyOtpUser,
-    loading,
-    error,
-  };
+  const mutation = useMutation({ mutationFn: ({ mobile, otp }: { mobile: string; otp: string }) => verifyOtp(mobile, otp) });
+  return { verifyOtpUser: (mobile: string, otp: string) => mutation.mutateAsync({ mobile, otp }), loading: mutation.isPending, error: mutation.error ? errorMessage(mutation.error) : "" };
 };
-
 export const useResetPassword = () => {
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const resetPasswordUser = async (mobile: string, otp: string, new_password: string, new_password_confirmation: string) => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const response = await resetPassword(mobile, otp, new_password, new_password_confirmation);
-
-      return response;
-      
-    } catch (err: unknown) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Reset password failed";    
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    resetPasswordUser,
-    loading,
-    error,
-  };
+  const mutation = useMutation({ mutationFn: ({ mobile, otp, new_password, new_password_confirmation }: { mobile: string; otp: string; new_password: string; new_password_confirmation: string }) => resetPassword(mobile, otp, new_password, new_password_confirmation) });
+  return { resetPasswordUser: (mobile: string, otp: string, new_password: string, new_password_confirmation: string) => mutation.mutateAsync({ mobile, otp, new_password, new_password_confirmation }), loading: mutation.isPending, error: mutation.error ? errorMessage(mutation.error) : "" };
 };

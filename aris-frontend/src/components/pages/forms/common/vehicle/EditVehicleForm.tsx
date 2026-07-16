@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 
 import VehicleForm from "./VehicleForm";
 
-import {useGetVehicle,useUpdateVehicle,} from "@/hooks/useVehicle";
+import { useVehicle } from "@/hooks/queries/useVehicleQueries";
+import { useUpdateVehicleMutation } from "@/hooks/mutations/useResourceMutations";
 
-import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import { initialValues } from "@/constants/vehicle";
-import {useGetAvailableDrivers} from "@/hooks/useUser";
+import { useAvailableDrivers } from "@/hooks/queries/useUserQueries";
 
 import type {CreateVehicleRequest} from "@/types/vehicle.type";
 
@@ -24,23 +25,14 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const {vehicle,fetchVehicle,loading: loadingVehicle} = useGetVehicle();
-
-  const {updateVehicleData, loading} = useUpdateVehicle();
-
-  const {fetchVisibleInstitutions,institutions,loading: loadingInstitutions} = useGetVisibleInstitutionsForUser();
-
-  const {fetchAvailableDrivers,drivers,loading: loadingDrivers} = useGetAvailableDrivers();
+  const { data: vehicle, isLoading: loadingVehicle } = useVehicle(vehicleId);
+  const { mutateAsync: updateVehicleData, isPending: loading } = useUpdateVehicleMutation();
+  const { data: institutions = [], isLoading: loadingInstitutions } = useVisibleInstitutions();
+  const { data: drivers = [], isLoading: loadingDrivers } = useAvailableDrivers();
 
   useEffect(() => {
 
-    fetchVehicle(vehicleId);
-
-    fetchVisibleInstitutions();
-
-    fetchAvailableDrivers();
-
-  }, [vehicleId]);
+  }, []);
 
   useEffect(() => {
 
@@ -122,10 +114,7 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
 
       setErrors({});
 
-      await updateVehicleData(
-        vehicleId,
-        values
-      );
+      await updateVehicleData({ id: vehicleId, data: values });
 
       toast.success("Vehicle updated successfully.");
 

@@ -7,8 +7,8 @@ import { InputField } from "@/components/atoms/InputField";
 import { SelectField } from "@/components/atoms/SelectField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
-import { useCreateAccident } from "@/hooks/useAccident";
-import { useGetVehicles } from "@/hooks/useVehicle";
+import { useCreateAccidentMutation } from "@/hooks/mutations/useResourceMutations";
+import { useVehicles } from "@/hooks/queries/useVehicleQueries";
 import type { CreateAccidentRequest } from "@/types/accident.type";
 import { Checkbox } from "@/components/atoms/Checkbox";
 import LocationPicker from "@/components/maps/LocationPicker";
@@ -23,19 +23,16 @@ const ReportPage = () => {
 
   const { t } = useTranslation();
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
-  const { createAccidentData, loading: submitting, error: submitError } = useCreateAccident();
-  const { fetchVehicles, vehicles } = useGetVehicles();
-
   const { role } = useAuth();
   const isDriver = role.includes("driver");
 
   const [vehicleSearch, setVehicleSearch] = useState("");
+  const { data: vehicleResponse } = useVehicles(1, vehicleSearch);
+  const vehicles = vehicleResponse?.data ?? [];
+  const { mutateAsync: createAccidentData, isPending: submitting, error: submitMutationError } = useCreateAccidentMutation();
+  const submitError = submitMutationError instanceof Error ? submitMutationError.message : "";
 
   const userId = Number(localStorage.getItem("id"));
-
-  useEffect(() => {
-    fetchVehicles({ page: 1, search: vehicleSearch });
-  }, [vehicleSearch]);
 
   const [form, setForm] = useState({
     date: "",
@@ -56,10 +53,6 @@ const ReportPage = () => {
     has_travel_permission: false,
     files: [] as File[]
   });
-
-  useEffect(() => {
-    fetchVehicles({ page: 1, search: "" });
-  }, []);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {

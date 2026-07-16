@@ -2,10 +2,10 @@ import { InputField } from "@/components/atoms/InputField";
 import { FormField } from "@/components/molecules/FormField";
 import { useTranslation } from "react-i18next";
 import type {createUserRequest} from "@/types/User.type"
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import {selectRoleBaseOnUserInstitutionType,formatRole} from "@/utils/formatRole"
-import {useGetVisibleInstitutionsForUser} from "@/hooks/useInstitution"
-import {useCreateUser} from "@/hooks/useUser"
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries"
+import { useCreateUserMutation } from "@/hooks/mutations/useResourceMutations"
 
 export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   const { t } = useTranslation();
@@ -23,11 +23,7 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
 
   const [seePassword, setSeePassword] = useState(false);
 
-  const { fetchVisibleInstitutions,institutions,loading} = useGetVisibleInstitutionsForUser();
-
-  useEffect(() => {
-    fetchVisibleInstitutions();
-  }, []);
+  const { data: institutions = [], isLoading: loading } = useVisibleInstitutions();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -46,7 +42,8 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
     }); 
   };
 
-  const { createUserData,loading:createUserLoading,error:createUserError } = useCreateUser();
+  const { mutateAsync: createUserData, isPending: createUserLoading, error: createUserMutationError } = useCreateUserMutation();
+  const createUserError = createUserMutationError instanceof Error ? createUserMutationError.message : "";
 
   const handleCreateUser = async () => {
     if (createUserLoading) return;
