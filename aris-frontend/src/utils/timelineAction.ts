@@ -43,8 +43,14 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
   },
 
-  FR1043_DRAFT: {
-    label: "FR104(3) Draft",
+  FR1043_DRAFT_CREATED: {
+    label: "FR104(3) Draft Created",
+    icon: FileText,
+    badge: "bg-slate-100 text-slate-700 border-slate-200",
+  },
+
+  FR1043_DRAFT_UPDATED: {
+    label: "FR104(3) Draft Updated",
     icon: FileText,
     badge: "bg-slate-100 text-slate-700 border-slate-200",
   },
@@ -79,6 +85,12 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-red-100 text-red-700 border-red-200",
   },
 
+  FR1043_WORKFLOW_COMPLETED: {
+    label: "FR104(3) Workflow Completed",
+    icon: CheckCircle2,
+    badge: "bg-green-100 text-green-700 border-green-200",
+  },
+
   FR1044_SUBMITTED: {
     label: "FR104(4) Submitted",
     icon: FileText,
@@ -97,6 +109,12 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-red-100 text-red-700 border-red-200",
   },
 
+  FR1044_WORKFLOW_COMPLETED: {
+    label: "FR104(4) Workflow Completed",
+    icon: CheckCircle2,
+    badge: "bg-green-100 text-green-700 border-green-200",
+  },
+
   FR109_SUBMITTED: {
     label: "FR109 Submitted",
     icon: FileText,
@@ -113,6 +131,12 @@ export const TIMELINE_ACTIONS = {
     label: "FR109 Rejected",
     icon: XCircle,
     badge: "bg-red-100 text-red-700 border-red-200",
+  },
+
+  FR109_WORKFLOW_COMPLETED: {
+    label: "FR109 Workflow Completed",
+    icon: CheckCircle2,
+    badge: "bg-green-100 text-green-700 border-green-200",
   },
 } as const;
 

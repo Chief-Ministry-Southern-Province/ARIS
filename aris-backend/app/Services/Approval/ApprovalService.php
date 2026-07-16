@@ -251,12 +251,24 @@ class ApprovalService
 
             }
 
-            $action = $nextApproval ? 'FR1043_APPROVAL_STEP_APPROVED' : 'FR1043_APPROVED';
-            $description = $nextApproval
-                ? "FR1043 revision {$approval->revision} approved at step {$approval->step}."
-                : "FR1043 revision {$approval->revision} fully approved.";
+            $this->timelineService->createDocumentEvent(
+                $approval->accidentCase,
+                $user,
+                $approval->document_type,
+                'APPROVED',
+                $approval->revision,
+                step: $approval->step,
+            );
 
-            $this->timelineService->create($approval->accidentCase, $user, $action, $description);
+            if (!$nextApproval) {
+                $this->timelineService->createDocumentEvent(
+                    $approval->accidentCase,
+                    $user,
+                    $approval->document_type,
+                    'WORKFLOW_COMPLETED',
+                    $approval->revision,
+                );
+            }
 
         });
 
@@ -306,11 +318,13 @@ class ApprovalService
                 }
             }
 
-            $this->timelineService->create(
+            $this->timelineService->createDocumentEvent(
                 $approval->accidentCase,
                 $user,
-                'FR1043_REJECTED',
-                "FR1043 revision {$approval->revision} rejected: {$comments}"
+                $approval->document_type,
+                'REJECTED',
+                $approval->revision,
+                comments: $comments,
             );
 
         });

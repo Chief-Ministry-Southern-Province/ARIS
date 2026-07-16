@@ -58,11 +58,13 @@ class FR1043Service
 
           ]);
 
-          $this->timelineService->create(
+          $this->timelineService->createDocumentEvent(
               $case,
               $user,
-              'FR1043_DRAFT_CREATED',
-              "FR1043 draft {$fr1043->reference_number} (revision {$fr1043->revision}) created."
+              'FR1043',
+              'DRAFT_CREATED',
+              $fr1043->revision,
+              $fr1043->reference_number,
           );
 
           return $fr1043;
@@ -88,11 +90,13 @@ class FR1043Service
           'data' => $data,
       ]);
 
-      $this->timelineService->create(
+      $this->timelineService->createDocumentEvent(
           $fr1043->accidentCase,
           $user,
-          'FR1043_DRAFT_UPDATED',
-          "FR1043 draft {$fr1043->reference_number} (revision {$fr1043->revision}) updated."
+          'FR1043',
+          'DRAFT_UPDATED',
+          $fr1043->revision,
+          $fr1043->reference_number,
       );
 
       return $fr1043->fresh();
@@ -123,11 +127,14 @@ class FR1043Service
               'data' => $data,
           ]);
 
-          $this->timelineService->create(
+          $this->timelineService->createDocumentEvent(
               $revision->accidentCase,
               $user,
-              'FR1043_REVISION_CREATED',
-              "FR1043 {$revision->reference_number} revision {$revision->revision} created from rejected revision {$rejectedRevision->revision}."
+              'FR1043',
+              'REVISION_CREATED',
+              $revision->revision,
+              $revision->reference_number,
+              sourceRevision: $rejectedRevision->revision,
           );
 
           return $revision;
@@ -163,13 +170,13 @@ class FR1043Service
         $fr1043->accidentCase->update(['current_stage' => 'FR1043']);
 
         $isResubmission = $fr1043->revision > 1;
-        $this->timelineService->create(
+        $this->timelineService->createDocumentEvent(
             $fr1043->accidentCase,
             $user,
-            $isResubmission ? 'FR1043_RESUBMITTED' : 'FR1043_SUBMITTED',
-            $isResubmission
-                ? "FR1043 {$fr1043->reference_number} resubmitted as revision {$fr1043->revision}."
-                : "FR1043 {$fr1043->reference_number} (revision {$fr1043->revision}) submitted for approval."
+            'FR1043',
+            $isResubmission ? 'RESUBMITTED' : 'SUBMITTED',
+            $fr1043->revision,
+            $fr1043->reference_number,
         );
 
         return $fr1043->fresh();

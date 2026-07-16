@@ -8,6 +8,45 @@ use App\Models\CaseHistory;
 
 class AccidentTimelineService
 {
+  /**
+   * Record a document workflow event with one consistent action and description format.
+   */
+  public function createDocumentEvent(
+      AccidentCase $accidentCase,
+      ?User $user,
+      string $documentType,
+      string $event,
+      int $revision,
+      ?string $referenceNumber = null,
+      ?int $step = null,
+      ?string $comments = null,
+      ?int $sourceRevision = null,
+  ): CaseHistory {
+    $document = $referenceNumber
+      ? "{$documentType} {$referenceNumber}"
+      : $documentType;
+    $revisionLabel = "revision {$revision}";
+
+    $description = match ($event) {
+      'DRAFT_CREATED' => "{$document} draft {$revisionLabel} created.",
+      'DRAFT_UPDATED' => "{$document} draft {$revisionLabel} updated.",
+      'SUBMITTED' => "{$document} {$revisionLabel} submitted for approval.",
+      'REVISION_CREATED' => "{$document} {$revisionLabel} created from rejected revision {$sourceRevision}.",
+      'RESUBMITTED' => "{$document} {$revisionLabel} resubmitted for approval.",
+      'APPROVED' => "{$document} {$revisionLabel} approved at step {$step}.",
+      'REJECTED' => "{$document} {$revisionLabel} rejected: {$comments}",
+      'WORKFLOW_COMPLETED' => "{$document} {$revisionLabel} approval workflow completed.",
+      default => "{$document} {$revisionLabel} {$event}.",
+    };
+
+    return $this->create(
+      $accidentCase,
+      $user,
+      "{$documentType}_{$event}",
+      $description,
+    );
+  }
+
   public function create(AccidentCase $accidentCase,?User $user,string $action,?string $description,?array $oldValue = null,?array $newValue = null
   ): CaseHistory 
   {
