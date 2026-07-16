@@ -372,7 +372,7 @@ class ApprovalService
     /**
      * Approval history.
      */
-    public function getApprovalHistory(AccidentCase $case,string $documentType,?int $revision = null) 
+    public function getApprovalHistory(AccidentCase $case, ?string $documentType = null, ?int $revision = null)
     {
 
         $query = Approval::query()
@@ -382,10 +382,7 @@ class ApprovalService
                 $case->id
             )
 
-            ->where(
-                'document_type',
-                $documentType
-            );
+            ->when($documentType, fn ($query) => $query->where('document_type', $documentType));
 
         if ($revision !== null) {
 
@@ -403,6 +400,8 @@ class ApprovalService
                 'institution',
             ])
 
+            ->orderBy('document_type')
+            ->orderByDesc('revision')
             ->orderBy('step')
 
             ->get();

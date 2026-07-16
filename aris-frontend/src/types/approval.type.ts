@@ -17,3 +17,9 @@ export interface PaginatedApprovals {
   data: Approval[];
   meta?: { current_page: number; last_page: number };
 }
+
+export interface ApprovalHistoryGroup {
+  document_type: "FR1043" | "FR1044" | "FR109";
+  revision: number;
+  approvals: Approval[];
+}

@@ -8,11 +8,12 @@ export default function ApprovalDocumentViewer() {
   const navigate = useNavigate();
   const numericApprovalId = Number(approvalId);
   const { data: document, isLoading, error } = useApprovalDocument(numericApprovalId);
-  const { data: timeline = [] } = useApprovalHistory(
+  const { data: approvalGroups = [] } = useApprovalHistory(
     document?.case?.id ?? 0,
     "FR1043",
     document?.revision,
   );
+  const timeline = approvalGroups.flatMap((group) => group.approvals);
 
   if (isLoading) return <Loader text="Loading approval document..." />;
 

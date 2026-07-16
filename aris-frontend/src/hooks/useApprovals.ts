@@ -3,7 +3,7 @@ import { approve, getApprovalDocument, getApprovalHistory, getPendingApprovals, 
 
 export const usePendingApprovals = (page: number, search: string) => useQuery({ queryKey: ["approvals", "pending", page, search], queryFn: () => getPendingApprovals(page, search) });
 
-export const useApprovalHistory = (caseId: number, documentType = "FR1043", revision?: number) => useQuery({ queryKey: ["approvals", "history", caseId, documentType, revision], queryFn: () => getApprovalHistory(caseId, documentType, revision), enabled: caseId > 0 });
+export const useApprovalHistory = (caseId: number, documentType?: "FR1043" | "FR1044" | "FR109", revision?: number) => useQuery({ queryKey: ["approvals", "history", caseId, documentType, revision], queryFn: () => getApprovalHistory(caseId, documentType, revision), enabled: caseId > 0 });
 
 export const useApprovalDocument = (approvalId?: number) => useQuery({ queryKey: ["approvals", "document", approvalId], queryFn: () => getApprovalDocument(approvalId as number), enabled: Boolean(approvalId && approvalId > 0) });
 

@@ -29,19 +29,37 @@ class ApprovalController extends Controller
     }
 
     /**
-     * Approval history of a case.
+     * Approval history of a case, grouped by document type and revision.
      * /api/cases/15/approvals?document_type=FR1043&revision=2
      */
-    public function history(Request $request,AccidentCase $accidentCase) 
+    public function history(Request $request,AccidentCase $accidentCase)
     {
+        $filters = $request->validate([
+            'document_type' => ['nullable', 'in:FR1043,FR1044,FR109'],
+            'revision' => ['nullable', 'integer', 'min:1'],
+        ]);
+
         $approvals = $this->approvalService
             ->getApprovalHistory(
                 case: $accidentCase,
-                documentType: $request->get('document_type'),
-                revision: $request->get('revision')
+                documentType: $filters['document_type'] ?? null,
+                revision: $filters['revision'] ?? null
             );
 
-        return ApprovalResource::collection($approvals);
+        $groups = $approvals
+            ->groupBy(fn ($approval) => "{$approval->document_type}:{$approval->revision}")
+            ->map(function ($revisionApprovals) {
+                $first = $revisionApprovals->first();
+
+                return [
+                    'document_type' => $first->document_type,
+                    'revision' => $first->revision,
+                    'approvals' => ApprovalResource::collection($revisionApprovals)->resolve(),
+                ];
+            })
+            ->values();
+
+        return response()->json(['data' => $groups]);
     }
 
     /**
