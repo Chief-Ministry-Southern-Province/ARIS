@@ -20,11 +20,10 @@ import DigitalSignatures from "@/components/pages/DigitalSignatures";
 //import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
 import VehicleDetails from "@/components/pages/VehicleDetails";
+import ApprovalCenter from "@/components/pages/ApprovalCenter";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
-import PendingApprovals from "@/components/pages/PendingApprovals";
-
 import UnauthorizedPage from "@/components/pages/UnauthorizedPage";
 
 import LazyChart from "@/utils/LazyChart";
@@ -129,7 +128,7 @@ export const router = createBrowserRouter([
       // ),
       protectedPage(
         "/approvals",
-        <PendingApprovals />,
+        <ApprovalCenter />,
         FULL_ACCESS_ROLES
       ),
       protectedPage(

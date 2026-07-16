@@ -1,5 +1,6 @@
 export interface Approval {
   id: number;
+  reference_number: string;
   document_type: string;
   revision: number;
   step: number;

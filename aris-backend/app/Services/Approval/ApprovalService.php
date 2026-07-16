@@ -12,6 +12,7 @@ use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
+use Illuminate\Support\Facades\Log;
 
 class ApprovalService
 {
@@ -25,6 +26,8 @@ class ApprovalService
      */
     public function submit(AccidentCase $case,string $documentType,int $revision): void 
     {
+        set_time_limit(120);
+        
         $exists = Approval::query()
             ->where('accident_case_id', $case->id)
             ->where('document_type', $documentType)
@@ -42,9 +45,14 @@ class ApprovalService
             $documentType,
             $revision
         ) {
+            logger()->info("1");
 
-            $workflow = $this->workflowResolver
-                ->resolve($case);
+            $workflow = $this->workflowResolver->resolve($case);
+
+            logger()->info("2");
+
+            // $workflow = $this->workflowResolver
+            //     ->resolve($case);
 
             foreach ($workflow as $step) {
 
@@ -289,8 +297,8 @@ class ApprovalService
     /**
      * Pending approvals for logged-in user.
      */
-    public function getPendingApprovals(User $user) {
-
+    public function getPendingApprovals(User $user,?string $search = null)
+    {
         return Approval::query()
 
             ->where(
@@ -303,17 +311,40 @@ class ApprovalService
                 'PENDING'
             )
 
+            ->when(
+                $search,
+                function ($query) use ($search) {
+
+                    $query->whereHas(
+                        'accidentCase',
+                        function ($q) use ($search) {
+
+                            $q->where(
+                                'case_number',
+                                'like',
+                                "%{$search}%"
+                            );
+
+                        }
+                    );
+
+                }
+            )
+
             ->with([
-                'accidentCase.creator',
+
                 'institution',
+
                 'approver.roles',
+
+                'accidentCase.accident',
+
             ])
 
-            ->orderBy('created_at')
+            ->latest()
 
-            ->paginate(15);
+            ->paginate(10);
     }
-
     /**
      * Approval history.
      */

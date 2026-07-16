@@ -12,6 +12,7 @@ class ApprovalResource extends JsonResource
         return [
             'id' => $this->id,
             'document_type' => $this->document_type,
+            'reference_number'=> $this->reference_number,
             'revision' => $this->revision,
             'step' => $this->step,
             'status' => $this->status,

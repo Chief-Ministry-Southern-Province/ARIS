@@ -1,7 +1,7 @@
 import api from "@/services/api";
 import type { Approval, PaginatedApprovals } from "@/types/approval.type";
 
-export const getPendingApprovals = async (): Promise<PaginatedApprovals> => (await api.get("/approvals/pending")).data;
+export const getPendingApprovals = async (page: number, search: string): Promise<PaginatedApprovals> => (await api.get("/approvals/pending", { params: { page, search } })).data;
 
 export const getApprovalHistory = async (caseId: number): Promise<Approval[]> => (await api.get(`/cases/${caseId}/approvals`, { params: { document_type: "FR1043" } })).data.data;
 

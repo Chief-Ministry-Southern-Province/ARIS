@@ -42,22 +42,17 @@ class WorkflowResolverService
         new WorkflowStep(
           step: 1,
           institution: $hospital,
-          role: 'subject_officer',
+          role: 'administrative_officer',
         ),
         new WorkflowStep(
           step: 2,
           institution: $hospital,
-          role: 'administrative_officer',
-        ),
-        new WorkflowStep(
-          step: 3,
-          institution: $hospital,
           role: 'medical_superintendent',
         ),
 
-        ...$this->resolvePDHS($pdhs,4),
+        ...$this->resolvePDHS($pdhs,3),
 
-        ...$this->resolveMinistry($ministry,$hospital->district,8),
+        ...$this->resolveMinistry($ministry,$hospital->district,7),
       ];
   }
 
@@ -73,24 +68,18 @@ class WorkflowResolverService
           new WorkflowStep(
               step: 1,
               institution: $rdhs,
-              role: 'subject_officer',
+              role: 'administrative_officer',
           ),
 
           new WorkflowStep(
               step: 2,
               institution: $rdhs,
-              role: 'administrative_officer',
-          ),
-
-          new WorkflowStep(
-              step: 3,
-              institution: $rdhs,
               role: 'regional_director',
           ),
 
-          ...$this->resolvePDHS($pdhs,4),
+          ...$this->resolvePDHS($pdhs,3),
 
-          ...$this->resolveMinistry($ministry,$rdhs->district,8)
+          ...$this->resolveMinistry($ministry,$rdhs->district,7)
 
       ];
   }
@@ -172,31 +161,24 @@ class WorkflowResolverService
       $ministry = $pdhs->parentInstitution;
 
       return [
-
           new WorkflowStep(
               step: 1,
-              institution: $pdhs,
-              role: 'subject_officer',
-          ),
-
-          new WorkflowStep(
-              step: 2,
               institution: $pdhs,
               role: 'administrative_officer',
           ),
 
           new WorkflowStep(
-              step: 3,
+              step: 2,
               institution: $pdhs,
               role: 'deputy_director',
           ),
 
           new WorkflowStep(
-              step: 4,
+              step: 3,
               institution: $pdhs,
               role: 'provincial_director',
           ),
-          ...$this->resolveMinistry($ministry,"Galle",5)
+          ...$this->resolveMinistry($ministry,"Galle",4)
       ];
   }
 }
