@@ -13,7 +13,8 @@
     "digitalSignatures": "Digital Signatures",
     "analytics": "Analytics",
     "adminPanel": "Admin Panel",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "approvals": "Approvals"
   },
   "app": {
     "name": "Accident Reporting System",

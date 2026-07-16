@@ -23,6 +23,11 @@ class FR1043Resource extends JsonResource
 
             'approved_at' => $this->approved_at,
 
+            'case' => [
+                'id' => $this->accidentCase?->id,
+                'case_number' => $this->accidentCase?->case_number,
+            ],
+
             'data' => $this->data,
 
             'creator' => [

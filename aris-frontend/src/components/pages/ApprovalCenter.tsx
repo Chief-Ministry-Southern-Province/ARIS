@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {ClipboardCheck,RefreshCw,} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import ApprovalStats from "@/components/approval/ApprovalStats";
 import ApprovalSearch from "@/components/approval/ApprovalSearch";
@@ -9,6 +10,7 @@ import { usePendingApprovals } from "@/hooks/useApprovals";
 import type{ Approval } from "@/types/approval.type";
 
 export default function ApprovalCenter() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
@@ -17,10 +19,10 @@ export default function ApprovalCenter() {
   const approvals = data?.data ?? [];
   const meta = data?.meta;
 
+  console.log(data)
+
   const handleView = (approval: Approval) => {
-    console.log("View", approval);
-    // TODO:
-    // Navigate to FR1043/FR1044/FR109 Viewer
+    navigate(`/approvals/${approval.id}`);
   };
 
   const handleApprove = (approval: Approval) => {

@@ -20,10 +20,18 @@ import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
-import type { FR1043Status } from "@/types/form_104_3_types";
+import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
+import type { Approval } from "@/types/approval.type";
 
-const FR104_3Form = () => {
+interface FR1043FormProps {
+  readOnly?: boolean;
+  document?: FR1043Response;
+  approvalTimeline?: Approval[];
+  onBack?: () => void;
+}
+
+const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack }: FR1043FormProps) => {
 
   const currentUser: User = users[0];
 
@@ -36,11 +44,13 @@ const FR104_3Form = () => {
   const [formId, setFormId] = useState<number | null>(null);
   const [formStatus, setFormStatus] = useState<FR1043Status | null>(null);
 
-  const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(accidentCaseId);
+  const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
   const submitMutation = useSubmitFR1043(accidentCaseId);
   const submitting = submitMutation.isPending;
-  const isEditable = !formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus);
+  const isEditable = !readOnly && (!formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus));
+  const displayedForm = document ?? loadedForm;
+  const currentApproval = approvalTimeline.find((approval) => approval.status === "PENDING") ?? approvalTimeline.at(-1);
 
   const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
@@ -153,15 +163,13 @@ const FR104_3Form = () => {
   };
 
 useEffect(() => {
-    if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
+    if (!displayedForm || (!readOnly && (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0))) {
       return;
     }
-    if (loadedForm) {
-      setFormData(loadedForm.data as FR1043FormData);
-      setFormId(loadedForm.id);
-      setFormStatus(loadedForm.status);
-    }
-  }, [loadedForm]);
+    setFormData(displayedForm.data as FR1043FormData);
+    setFormId(displayedForm.id);
+    setFormStatus(displayedForm.status);
+  }, [displayedForm]);
 
   //console.log("Form Id", formId);
 
@@ -170,7 +178,7 @@ useEffect(() => {
     if (loadError && status !== 404) toast.error("Failed to load FR104(3) form.");
   }, [loadError]);
 
-  if (loadingForm) return <Loader text="Loading FR104(3) form..." />;
+  if (!readOnly && loadingForm) return <Loader text="Loading FR104(3) form..." />;
 
   const saveDraft = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
@@ -235,17 +243,17 @@ useEffect(() => {
               </p>
 
               <p className="font-semibold text-slate-800">
-                {loadedForm?.reference_number ?? "Not saved"}
+                {displayedForm?.reference_number ?? "Not saved"}
               </p>
             </div>
 
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500">
-                {t("fr104_3.date")}
+                {readOnly ? "Revision" : t("fr104_3.date")}
               </p>
 
               <p className="font-semibold text-slate-800">
-                {new Date().toLocaleDateString()}
+                {readOnly ? `Revision ${displayedForm?.revision ?? "—"}` : new Date().toLocaleDateString()}
               </p>
             </div>
 
@@ -260,6 +268,14 @@ useEffect(() => {
             </div>
 
           </div>
+
+          {readOnly && (
+            <div className="grid gap-4 border-t border-slate-200 px-8 py-5 text-sm md:grid-cols-3">
+              <div><p className="text-xs uppercase tracking-wide text-slate-500">Submitted Date</p><p className="font-semibold text-slate-800">{displayedForm?.submitted_at ? new Date(displayedForm.submitted_at).toLocaleString() : "—"}</p></div>
+              <div><p className="text-xs uppercase tracking-wide text-slate-500">Current Approval Step</p><p className="font-semibold text-slate-800">{currentApproval ? `Step ${currentApproval.step} — ${currentApproval.status}` : "—"}</p></div>
+              <div><p className="text-xs uppercase tracking-wide text-slate-500">Approval Timeline Summary</p><p className="font-semibold text-slate-800">{approvalTimeline.length} step{approvalTimeline.length === 1 ? "" : "s"} · {approvalTimeline.filter((approval) => approval.status === "APPROVED").length} approved</p></div>
+            </div>
+          )}
         </div>
 
         {/* Form */}
@@ -393,6 +409,9 @@ useEffect(() => {
         {/* Sticky Action Bar */}
         <div className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
+            {readOnly ? (
+              <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">Back</button>
+            ) : <>
             {/* Submit */}
             <button
               type="submit"
@@ -431,10 +450,11 @@ useEffect(() => {
               <Printer size={18} />
               {t("fr104_3.print")}
             </button>
+            </>}
           </div>
         </div>
       </div>
-      {isActionModalOpen && (
+      {!readOnly && isActionModalOpen && (
         <ActionModal
           step={"confirm" as unknown as approvalWorkflowStep}
           t={t}

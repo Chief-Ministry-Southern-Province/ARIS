@@ -21,6 +21,7 @@ import DigitalSignatures from "@/components/pages/DigitalSignatures";
 import CaseDetails from "@/components/pages/CaseDetails";
 import VehicleDetails from "@/components/pages/VehicleDetails";
 import ApprovalCenter from "@/components/pages/ApprovalCenter";
+import ApprovalDocumentViewer from "@/components/pages/ApprovalDocumentViewer";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
@@ -129,6 +130,11 @@ export const router = createBrowserRouter([
       protectedPage(
         "/approvals",
         <ApprovalCenter />,
+        FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/approvals/:approvalId",
+        <ApprovalDocumentViewer />,
         FULL_ACCESS_ROLES
       ),
       protectedPage(

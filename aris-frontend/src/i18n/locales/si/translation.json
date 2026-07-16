@@ -13,7 +13,8 @@
     "digitalSignatures": "ඩිජිටල් අත්සන්",
     "analytics": "විශ්ලේෂණ",
     "adminPanel": "පරිපාලන පැනලය",
-    "notifications": "දැනුම්දීම්"
+    "notifications": "දැනුම්දීම්",
+    "approvals": "අනුමත කිරීම්"
   },
   "app": {
     "name": "අනතුරු වාර්තා පද්ධතිය",

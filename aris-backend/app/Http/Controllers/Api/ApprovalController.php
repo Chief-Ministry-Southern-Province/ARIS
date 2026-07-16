@@ -45,6 +45,14 @@ class ApprovalController extends Controller
     }
 
     /**
+     * Read the exact document revision represented by an approval.
+     */
+    public function document(Approval $approval)
+    {
+        return $this->approvalService->getDocument($approval);
+    }
+
+    /**
      * Approve.
      */
     public function approve(ApproveRequest $request,Approval $approval) 

@@ -8,6 +8,7 @@ use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\User;
 use App\Notifications\FR1043ChangesRequested;
+use App\Http\Resources\FR1043Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,25 @@ class ApprovalService
         protected WorkflowResolverService $workflowResolver,
         protected AccidentTimelineService $timelineService
     ) {}
+
+    /**
+     * Resolve the submitted document revision represented by an approval.
+     *
+     * Keep document-specific lookup here so the approval document endpoint can
+     * serve additional document types without expanding its controller.
+     */
+    public function getDocument(Approval $approval)
+    {
+        return match ($approval->document_type) {
+            'FR1043' => new FR1043Resource(
+                FR1043::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->firstOrFail()
+            ),
+            default => abort(404, "Unsupported document type: {$approval->document_type}"),
+        };
+    }
 
     /**
      * Create approval workflow for a document.

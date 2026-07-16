@@ -74,6 +74,7 @@ export interface FR1043Response {
   status: FR1043Status;
   submitted_at: string | null;
   approved_at: string | null;
+  case: { id: number; case_number: string };
   data: FR1043FormData;
   workflow: FR1043Workflow;
   created_at: string;
