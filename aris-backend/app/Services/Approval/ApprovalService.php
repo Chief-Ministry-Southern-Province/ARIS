@@ -243,6 +243,10 @@ class ApprovalService
                         'status' => 'APPROVED',
                         'approved_at' => now(),
                     ]);
+
+                    $approval->accidentCase->update([
+                        'current_stage' => 'FR1044',
+                    ]);
                 }
 
             }

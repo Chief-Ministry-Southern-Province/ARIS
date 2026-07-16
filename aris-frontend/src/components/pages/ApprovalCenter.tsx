@@ -5,36 +5,57 @@ import { useNavigate } from "react-router-dom";
 import ApprovalStats from "@/components/approval/ApprovalStats";
 import ApprovalSearch from "@/components/approval/ApprovalSearch";
 import ApprovalTable from "@/components/approval/ApprovalTable";
+import ApprovalDecisionDialog from "@/components/approval/ApprovalDecisionDialog";
 
-import { usePendingApprovals } from "@/hooks/useApprovals";
+import { useApprove, usePendingApprovals, useReject } from "@/hooks/useApprovals";
 import type{ Approval } from "@/types/approval.type";
+import { toast } from "react-toastify";
+
+type Decision = { action: "approve" | "reject"; approval: Approval } | null;
 
 export default function ApprovalCenter() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [decision, setDecision] = useState<Decision>(null);
 
   const {data,isLoading,refetch,isRefetching,} = usePendingApprovals(page, search);
+  const approveMutation = useApprove();
+  const rejectMutation = useReject();
 
   const approvals = data?.data ?? [];
   const meta = data?.meta;
-
-  console.log(data)
 
   const handleView = (approval: Approval) => {
     navigate(`/approvals/${approval.id}`);
   };
 
   const handleApprove = (approval: Approval) => {
-    console.log("Approve", approval);
-    // TODO:
-    // Open Approve Confirmation Dialog
+    setDecision({ action: "approve", approval });
   };
 
   const handleReject = (approval: Approval) => {
-    console.log("Reject", approval);
-    // TODO:
-    // Open Reject Dialog
+    setDecision({ action: "reject", approval });
+  };
+
+  const submitDecision = async (comments: string) => {
+    if (!decision) return;
+
+    try {
+      if (decision.action === "approve") {
+        await approveMutation.mutateAsync({ id: decision.approval.id, comments: comments || undefined });
+        toast.success("Document approved successfully.");
+      } else {
+        await rejectMutation.mutateAsync({ id: decision.approval.id, comments });
+        toast.success("Document rejected and returned for changes.");
+      }
+
+      setDecision(null);
+      navigate("/approvals");
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(message || "Unable to update the approval.");
+    }
   };
 
   return (
@@ -154,6 +175,16 @@ export default function ApprovalCenter() {
 
         </div>
 
+      )}
+
+      {decision && (
+        <ApprovalDecisionDialog
+          approval={decision.approval}
+          action={decision.action}
+          isPending={approveMutation.isPending || rejectMutation.isPending}
+          onClose={() => setDecision(null)}
+          onConfirm={submitDecision}
+        />
       )}
 
     </div>
