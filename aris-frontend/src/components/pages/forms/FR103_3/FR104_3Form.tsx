@@ -249,10 +249,14 @@ useEffect(() => {
 
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500">
-                {readOnly ? "Revision" : t("fr104_3.date")}
+                Revision
               </p>
 
               <p className="font-semibold text-slate-800">
+                {displayedForm ? `Revision ${displayedForm.revision}` : "Not saved"}
+              </p>
+
+              <p className="hidden">
                 {readOnly ? `Revision ${displayedForm?.revision ?? "—"}` : new Date().toLocaleDateString()}
               </p>
             </div>
@@ -419,7 +423,7 @@ useEffect(() => {
               disabled={!isEditable || loadingForm || saving || submitting}
               className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
               <CheckCircle size={18} />
-              {submitting ? "Submitting..." : t("fr104_3.submit")}
+              {submitting ? "Submitting..." : (formStatus === "CHANGES_REQUESTED" || (displayedForm?.revision ?? 1) > 1 ? "Submit Again" : t("fr104_3.submit"))}
             </button>
 
             {/* Approve */}

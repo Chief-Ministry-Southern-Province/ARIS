@@ -36,13 +36,11 @@ class FR1043Service
 
       return DB::transaction(function () use ($case,$user,$data) {
 
-          $latest = $case->fr1043s()
-              ->latest('revision')
-              ->first();
-
-          $revision = $latest
-              ? $latest->revision + 1
-              : 1;
+          abort_if(
+              $case->fr1043s()->exists(),
+              409,
+              'An FR1043 form already exists for this case.'
+          );
 
           $fr1043 = FR1043::create([
 
@@ -52,7 +50,7 @@ class FR1043Service
 
               'created_by' => $user->id,
 
-              'revision' => $revision,
+              'revision' => 1,
 
               'status' => 'DRAFT',
 
@@ -74,14 +72,14 @@ class FR1043Service
 
   public function updateDraft(FR1043 $fr1043, User $user, array $data): FR1043
   {
+      abort_unless($fr1043->created_by === $user->id, 403);
+
+      if ($fr1043->status === 'CHANGES_REQUESTED') {
+          return $this->createRevision($fr1043, $user, $data);
+      }
+
       abort_unless(
-          in_array(
-              $fr1043->status,
-              [
-                  'DRAFT',
-                  'CHANGES_REQUESTED',
-              ]
-          ),
+          $fr1043->status === 'DRAFT',
           400,
           'This form cannot be edited.'
       );
@@ -100,39 +98,52 @@ class FR1043Service
       return $fr1043->fresh();
   }
 
+  /** Start a new immutable revision from a rejected document. */
+  protected function createRevision(FR1043 $rejectedRevision, User $user, array $data): FR1043
+  {
+      return DB::transaction(function () use ($rejectedRevision, $user, $data) {
+          $rejectedRevision = FR1043::query()->lockForUpdate()->findOrFail($rejectedRevision->id);
+
+          abort_unless($rejectedRevision->status === 'CHANGES_REQUESTED', 400, 'This form cannot be revised.');
+
+          $latest = FR1043::query()
+              ->where('accident_case_id', $rejectedRevision->accident_case_id)
+              ->lockForUpdate()
+              ->latest('revision')
+              ->firstOrFail();
+
+          abort_unless($latest->id === $rejectedRevision->id, 409, 'A newer revision already exists.');
+
+          $revision = FR1043::create([
+              'reference_number' => $rejectedRevision->reference_number,
+              'accident_case_id' => $rejectedRevision->accident_case_id,
+              'created_by' => $user->id,
+              'revision' => $rejectedRevision->revision + 1,
+              'status' => 'DRAFT',
+              'data' => $data,
+          ]);
+
+          $this->timelineService->create(
+              $revision->accidentCase,
+              $user,
+              'FR1043_REVISION_CREATED',
+              "FR1043 {$revision->reference_number} revision {$revision->revision} created from rejected revision {$rejectedRevision->revision}."
+          );
+
+          return $revision;
+      });
+  }
+
   public function submit(FR1043 $fr1043, User $user): FR1043
   {
+    abort_unless($fr1043->created_by === $user->id, 403);
+
     abort_unless(
-        in_array(
-            $fr1043->status,
-            [
-                'DRAFT',
-                'CHANGES_REQUESTED',
-            ]
-        ),
+        $fr1043->status === 'DRAFT',
         400
     );
 
     return DB::transaction(function () use ($fr1043, $user) {
-
-        if ($fr1043->status === 'CHANGES_REQUESTED') {
-            $previousRevision = $fr1043;
-            $fr1043 = FR1043::create([
-                'reference_number' => $previousRevision->reference_number,
-                'accident_case_id' => $previousRevision->accident_case_id,
-                'created_by' => $user->id,
-                'revision' => $previousRevision->revision + 1,
-                'status' => 'DRAFT',
-                'data' => $previousRevision->data,
-            ]);
-
-            $this->timelineService->create(
-                $fr1043->accidentCase,
-                $user,
-                'FR1043_RESUBMITTED',
-                "FR1043 {$fr1043->reference_number} resubmitted as revision {$fr1043->revision}."
-            );
-        }
 
         $fr1043->update([
             'status' => 'UNDER_APPROVAL',
@@ -151,11 +162,14 @@ class FR1043Service
 
         $fr1043->accidentCase->update(['current_stage' => 'FR1043']);
 
+        $isResubmission = $fr1043->revision > 1;
         $this->timelineService->create(
             $fr1043->accidentCase,
             $user,
-            'FR1043_SUBMITTED',
-            "FR1043 {$fr1043->reference_number} (revision {$fr1043->revision}) submitted for approval."
+            $isResubmission ? 'FR1043_RESUBMITTED' : 'FR1043_SUBMITTED',
+            $isResubmission
+                ? "FR1043 {$fr1043->reference_number} resubmitted as revision {$fr1043->revision}."
+                : "FR1043 {$fr1043->reference_number} (revision {$fr1043->revision}) submitted for approval."
         );
 
         return $fr1043->fresh();

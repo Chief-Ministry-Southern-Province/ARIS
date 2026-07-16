@@ -49,6 +49,18 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-slate-100 text-slate-700 border-slate-200",
   },
 
+  FR1043_REVISION_CREATED: {
+    label: "FR104(3) Revision Created",
+    icon: RefreshCcw,
+    badge: "bg-violet-100 text-violet-700 border-violet-200",
+  },
+
+  FR1043_RESUBMITTED: {
+    label: "FR104(3) Resubmitted",
+    icon: RefreshCcw,
+    badge: "bg-sky-100 text-sky-700 border-sky-200",
+  },
+
   FR1043_SUBMITTED: {
     label: "FR104(3) Submitted",
     icon: FileText,

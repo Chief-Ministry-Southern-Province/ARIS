@@ -9,6 +9,8 @@ export type TimelineAction =
 
   // FR104(3)
   | "FR1043_DRAFT"
+  | "FR1043_REVISION_CREATED"
+  | "FR1043_RESUBMITTED"
   | "FR1043_SUBMITTED"
   | "FR1043_APPROVED"
   | "FR1043_REJECTED"
