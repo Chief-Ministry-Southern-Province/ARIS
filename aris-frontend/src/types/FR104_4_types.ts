@@ -61,13 +61,13 @@ export interface FR104_4FormData {
   isDueToFraudNegligence: string; // "yes" | "no" — item 5's direct yes/no question  <-- was missing
 
   // Police Information (item 6)
-  policeReportFile: File | null;
+  policeReportFile: File | string | null;
 
   // Legal Action (item 9)
   courtName: string;
   courtCaseNo: string;
   courtOrderSummary: string;
-  courtOrderFile: File | null;
+  courtOrderFile: File | string | null;
 
   // Insurance (item 11)
   insuranceRecoverableAmountWords: string;
@@ -77,7 +77,7 @@ export interface FR104_4FormData {
 
   // Recommendations (item 13)
   recommendations: string;
-  boardReportFile: File | null;
+  boardReportFile: File | string | null;
 
   // Preventive Actions (item 14)
   preventiveActions: string;
@@ -87,3 +87,21 @@ export interface FR104_4FormData {
   boardMembers: BoardMember[];
   recoveries: RecoveryItem[];
 }
+
+export type FR1044Status = "DRAFT" | "SUBMITTED" | "UNDER_APPROVAL" | "CHANGES_REQUESTED" | "APPROVED";
+
+export interface FR1044Response {
+  document_type: "FR1044";
+  id: number;
+  reference_number: string;
+  revision: number;
+  status: FR1044Status;
+  submitted_at: string | null;
+  approved_at: string | null;
+  case: { id: number; case_number: string };
+  data: FR104_4FormData;
+  created_at: string;
+  updated_at: string;
+}
+
+export type FR1044Payload = { status: "DRAFT" | "CHANGES_REQUESTED"; data: FR104_4FormData };

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\AccidentCaseController;
 use App\Http\Controllers\Api\CaseHistoryController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\FR1043Controller;
+use App\Http\Controllers\Api\FR1044Controller;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -96,6 +97,16 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::put('/fr1043/{fr1043}',[FR1043Controller::class, 'update']);
 
     Route::post('/fr1043/{fr1043}/submit',[FR1043Controller::class, 'submit']);
+
+    // Protected routes for FR1044
+    Route::prefix('cases')->group(function () {
+        Route::get('/{accidentCase}/fr1044',[FR1044Controller::class, 'show']);
+        Route::get('/{accidentCase}/fr1044/history',[FR1044Controller::class, 'history']);
+        Route::post('/{accidentCase}/fr1044',[FR1044Controller::class, 'store']);
+    });
+
+    Route::put('/fr1044/{fr1044}',[FR1044Controller::class, 'update']);
+    Route::post('/fr1044/{fr1044}/submit',[FR1044Controller::class, 'submit']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());

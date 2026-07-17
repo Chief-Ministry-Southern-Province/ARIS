@@ -11,6 +11,8 @@ class FR1043Resource extends JsonResource
     {
         return [
 
+            'document_type' => 'FR1043',
+
             'id' => $this->id,
 
             'reference_number' => $this->reference_number,

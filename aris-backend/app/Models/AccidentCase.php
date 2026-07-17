@@ -72,9 +72,9 @@ class AccidentCase extends Model
             ->ofMany('revision', 'max');
     }
 
-    public function fr1044()
+    public function fr1044s()
     {
-        return $this->hasOne(FR1044::class);
+        return $this->hasMany(FR1044::class, 'accident_case_id');
     }
 
     public function latestFR1044()

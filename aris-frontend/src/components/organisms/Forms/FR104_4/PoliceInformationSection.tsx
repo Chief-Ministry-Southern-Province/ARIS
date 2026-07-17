@@ -38,7 +38,7 @@ export default function PoliceInformationSection({
         />
       </FormField>
 
-      {formData.policeReportFile && (
+      {formData.policeReportFile instanceof File && (
         <p className="text-sm text-green-600">
           {formData.policeReportFile.name}
         </p>

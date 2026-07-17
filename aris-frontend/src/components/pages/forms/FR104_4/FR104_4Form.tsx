@@ -1,4 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { CheckCircle, Printer, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { FormCard } from "@/components/molecules/FormCard";
+import Loader from "@/components/atoms/Loader";
 import GeneralInformationSection from "@/components/organisms/Forms/FR104_4/GeneralInformationSection";
 import LossDetailsSection from "@/components/organisms/Forms/FR104_4/LossDetailsSection";
 import CauseOfLossSection from "@/components/organisms/Forms/FR104_4/CauseOfLossSection";
@@ -12,316 +18,46 @@ import BoardOfInquirySection from "@/components/organisms/Forms/FR104_4/BoardOfI
 import RecommendationsSection from "@/components/organisms/Forms/FR104_4/RecommendationsSection";
 import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalActionSection";
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
-import { FormCard } from "@/components/molecules/FormCard";
-import { useTranslation } from "react-i18next";
-import type { FR104_4FormData } from "@/types/FR104_4_types";
-import {Printer,Save, CheckCircle} from "lucide-react";
-import {initialFormData} from "./initialFormData";
-import ActionModal from "@/components/organisms/Forms/ActionModel";
-import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
+import { initialFormData } from "./initialFormData";
+import { useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
+import type { FR104_4FormData, FR1044Response, FR1044Status } from "@/types/FR104_4_types";
+import type { Approval } from "@/types/approval.type";
 
-type FR1044Status =
-  | "DRAFT"
-  | "SUBMITTED"
-  | "UNDER_APPROVAL"
-  | "CHANGES_REQUESTED"
-  | "APPROVED";
+interface Props { readOnly?: boolean; document?: FR1044Response; approvalTimeline?: Approval[]; onBack?: () => void; }
+const badge: Record<FR1044Status, string> = { DRAFT: "bg-slate-100 text-slate-700", SUBMITTED: "bg-blue-100 text-blue-700", UNDER_APPROVAL: "bg-yellow-100 text-yellow-800", CHANGES_REQUESTED: "bg-red-100 text-red-700", APPROVED: "bg-emerald-100 text-emerald-700" };
 
-interface FR104_4FormProps {
-  referenceNumber?: string;
-  revision?: number;
-  status?: FR1044Status;
-}
-
-const STATUS_BADGE_CLASSES: Record<FR1044Status, string> = {
-  DRAFT: "bg-slate-100 text-slate-700",
-  SUBMITTED: "bg-blue-100 text-blue-700",
-  UNDER_APPROVAL: "bg-yellow-100 text-yellow-800",
-  CHANGES_REQUESTED: "bg-red-100 text-red-700",
-  APPROVED: "bg-emerald-100 text-emerald-700",
-};
-
-export default function FR104_4Form({
-  referenceNumber,
-  revision = 1,
-  status = "DRAFT",
-}: FR104_4FormProps) {
-
+export default function FR104_4Form({ readOnly = false, document, approvalTimeline = [], onBack }: Props) {
   const { t } = useTranslation();
-  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const { caseId } = useParams();
+  const accidentCaseId = Number(caseId);
+  const { data: loaded, isLoading, error } = useGetFR1044(readOnly ? undefined : accidentCaseId);
+  const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
+  const submit = useSubmitFR1044(accidentCaseId);
+  const displayed = document ?? loaded;
+  const [data, setData] = useState<FR104_4FormData>(initialFormData);
+  const [id, setId] = useState<number | null>(null);
+  const [status, setStatus] = useState<FR1044Status | null>(null);
+  const editable = !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
+  const currentApproval = approvalTimeline.find((item) => item.status === "PENDING") ?? approvalTimeline.at(-1);
 
-  const [formData, setFormData] =
-    useState<FR104_4FormData>(
-      initialFormData
-    );
-
-  const handleChange = (
-    field: string,
-    value: string | File | null
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value as unknown as string,
-    }));
+  useEffect(() => { if (displayed) { setData(displayed.data); setId(displayed.id); setStatus(displayed.status); } }, [displayed]);
+  useEffect(() => { if (error && (error as { response?: { status?: number } }).response?.status !== 404) toast.error("Failed to load FR104(4) form."); }, [error]);
+  const handleChange = (field: string, value: string | File | null) => setData((previous) => ({ ...previous, [field]: value }));
+  const payloadData = (): FR104_4FormData => ({
+    ...data,
+    policeReportFile: data.policeReportFile instanceof File ? data.policeReportFile.name : data.policeReportFile,
+    courtOrderFile: data.courtOrderFile instanceof File ? data.courtOrderFile.name : data.courtOrderFile,
+    boardReportFile: data.boardReportFile instanceof File ? data.boardReportFile.name : data.boardReportFile,
+  });
+  const save = async () => {
+    if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) { toast.error("Invalid accident case."); return null; }
+    try { const result = await saveFR1044(id, status, payloadData()); setId(result.id); setStatus(result.status); toast.success("FR104(4) draft saved successfully."); return result; }
+    catch (reason: unknown) { toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to save FR104(4) draft."); return null; }
   };
-
-  const handleSubmit = (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
-
-    console.log(formData);
-  };
-
- return (
-  <div className="min-h-screen bg-slate-100 py-8">
-    <div className="max-w-7xl mx-auto px-6">
-
-      {/* Header */}
-      <div className="bg-white rounded-2xl shadow-lg border border-slate-200 mb-8 overflow-hidden">
-
-        <div className="bg-blue-900 px-8 py-6">
-          <h1 className="text-3xl font-bold text-white">
-            {t("fr104_4.title")}
-          </h1>
-
-          <p className="text-blue-200 mt-2">
-            {t("fr104_4.subtitle")}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-8 py-4">
-          <div>
-            <p className="text-xs text-slate-500">
-              {t("fr104_4.generalInformation.referenceNo")}
-            </p>
-            <p className="font-semibold text-slate-800">
-              {referenceNumber || formData.referenceNo || "—"}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
-              {t("fr104_4.meta.revisionLabel")}
-            </p>
-            <p className="font-semibold text-slate-800">
-              {t("fr104_4.meta.revisionValue")} {revision}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-xs text-slate-500">
-              {t("fr104_4.meta.statusLabel")}
-            </p>
-            <span
-              className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${STATUS_BADGE_CLASSES[status]}`}
-            >
-              {t(`fr104_4.meta.status.${status}`)}
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-8"
-      >
-        <FormCard
-          part={t("fr104_4.parts.a")}
-          title={t("fr104_4.sections.generalInformation")}
-        >
-          <GeneralInformationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.b")}
-          title={t("fr104_4.sections.lossDetails")}
-        >
-          <LossDetailsSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.c")}
-          title={t("fr104_4.sections.causeOfLoss")}
-        >
-          <CauseOfLossSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.d")}
-          title={t("fr104_4.sections.policeInformation")}
-        >
-          <PoliceInformationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.e")}
-          title={t("fr104_4.sections.lostItems")}
-        >
-          <LostItemsSection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.f")}
-          title={t("fr104_4.sections.responsibleOfficers")}
-        >
-          <OfficersResponsibleSection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.g")}
-          title={t("fr104_4.sections.legalAction")}
-        >
-          <LegalActionSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.h")}
-          title={t("fr104_4.sections.investigation")}
-        >
-          <InvestigationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.i")}
-          title={t("fr104_4.sections.recoveryInformation")}
-        >
-          <RecoveryInformationSection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.j")}
-          title={t("fr104_4.sections.insuranceInformation")}
-        >
-          <InsuranceInformationSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.k")}
-          title={t("fr104_4.sections.boardOfInquiry")}
-        >
-          <BoardOfInquirySection
-            formData={formData}
-            setFormData={setFormData}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.l")}
-          title={t("fr104_4.sections.recommendations")}
-        >
-          <RecommendationsSection
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        <FormCard
-          part={t("fr104_4.parts.m")}
-          title={t("fr104_4.preventiveActions.title")}
-        >
-          <PreventiveActionsSection
-            formData={formData}
-            handleChange={handleChange}
-          />
-        </FormCard>
-
-        {/* <FormCard
-          part={t("fr104_4.parts.n")}
-          title={t("fr104_4.sections.approval")}
-        >
-          <ApprovalSection
-             formData={formData}
-             handleChange={handleChange} 
-             currentUser={currentUser}  
-          />
-        </FormCard> */}
-
-        {/* Footer Actions */}
-        <div className="sticky bottom-0 bg-whiteborder-t border-slate-200 shadow-lg p-4">
-          <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
-            {/* Submit */}
-            <button
-              type="submit"
-              className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
-              <CheckCircle size={18} />
-              Submit
-            </button>
-
-            {/* Approve */}
-            {/* <button
-              type="button"
-              onClick={() => setIsActionModalOpen(true)}
-              className="  order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
-              <CheckCircle size={18} />
-              Approve
-            </button> */}
-
-            {/* Save Draft */}
-            <button
-              type="button"
-              className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
-            >
-              <Save size={18} />
-              Save Draft
-            </button>
-
-            {/* Print */}
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="order-4 sm:order-1 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 " >
-              <Printer size={18} />
-              Print
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-    {isActionModalOpen && (
-      <ActionModal
-        step={"confirm" as unknown as approvalWorkflowStep}
-        t={t}
-        onClose={(action, comment) => {
-          setIsActionModalOpen(false);
-
-          console.log("Action:", action);
-          console.log("Comment:", comment);
-
-          // Handle approve/reject/submit here
-        }}
-      />
-    )}
-  </div>
-);
+  const handleSubmit = async (event: React.FormEvent) => { event.preventDefault(); const draft = await save(); if (!draft) return; try { const result = await submit.mutateAsync(draft.id); setStatus(result.status); } catch (reason: unknown) { toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to submit FR104(4) form."); } };
+  if (!readOnly && isLoading) return <Loader text="Loading FR104(4) form..." />;
+  const cards = [
+    ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} />], ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />], ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />], ["d", "policeInformation", <PoliceInformationSection formData={data} handleChange={handleChange} />], ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />], ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />], ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} />], ["h", "investigation", <InvestigationSection formData={data} handleChange={handleChange} />], ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />], ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />], ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />], ["l", "recommendations", <RecommendationsSection handleChange={handleChange} />], ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
+  ] as const;
+  return <div className="min-h-screen bg-slate-100 py-8"><div className="max-w-7xl mx-auto px-6"><div className="bg-white rounded-2xl shadow-lg border border-slate-200 mb-8 overflow-hidden"><div className="bg-blue-900 px-8 py-6"><h1 className="text-3xl font-bold text-white">{t("fr104_4.title")}</h1><p className="text-blue-200 mt-2">{t("fr104_4.subtitle")}</p></div><div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-8 py-4"><div><p className="text-xs text-slate-500">{t("fr104_4.generalInformation.referenceNo")}</p><p className="font-semibold">{displayed?.reference_number || data.referenceNo || "—"}</p></div><div><p className="text-xs text-slate-500">{t("fr104_4.meta.revisionLabel")}</p><p className="font-semibold">{t("fr104_4.meta.revisionValue")} {displayed?.revision ?? 1}</p></div><div><p className="text-xs text-slate-500">{t("fr104_4.meta.statusLabel")}</p><span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${badge[status ?? "DRAFT"]}`}>{t(`fr104_4.meta.status.${status ?? "DRAFT"}`)}</span></div></div></div>{readOnly && <div className="mb-8 grid gap-4 rounded-2xl border bg-white p-5 text-sm md:grid-cols-3"><div>Submitted: {displayed?.submitted_at ? new Date(displayed.submitted_at).toLocaleString() : "—"}</div><div>Current approval: {currentApproval ? `Step ${currentApproval.step} — ${currentApproval.status}` : "—"}</div><div>{approvalTimeline.length} approval steps</div></div>}<form onSubmit={handleSubmit} className="space-y-8"><fieldset disabled={!editable} className="space-y-8 disabled:opacity-70">{cards.map(([part, section, content]) => <FormCard key={part} part={t(`fr104_4.parts.${part}`)} title={section === "preventiveActions" ? t("fr104_4.preventiveActions.title") : t(`fr104_4.sections.${section}`)}>{content}</FormCard>)}</fieldset><div className="sticky bottom-0 bg-white border-t shadow-lg p-4"><div className="flex flex-col sm:flex-row sm:justify-end gap-3">{readOnly ? <button type="button" onClick={onBack} className="px-5 py-3 border rounded-lg">Back</button> : <><button type="submit" disabled={!editable || saving || submit.isPending} className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"><CheckCircle size={18}/>{submit.isPending ? "Submitting..." : status === "CHANGES_REQUESTED" || (displayed?.revision ?? 1) > 1 ? "Submit Again" : "Submit"}</button><button type="button" onClick={save} disabled={!editable || saving || submit.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Save size={18}/>{saving ? "Saving..." : "Save Draft"}</button><button type="button" onClick={() => window.print()} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Printer size={18}/>Print</button></>}</div></div></form></div></div>;
 }

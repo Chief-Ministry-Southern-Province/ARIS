@@ -12,7 +12,7 @@ return new class extends Migration
 
             $table->id();
 
-            $table->string('reference_number')->unique();
+            $table->string('reference_number');
 
             $table->foreignId('accident_case_id')
                 ->constrained()

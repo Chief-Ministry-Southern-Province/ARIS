@@ -37,7 +37,7 @@ export default function EditVehicleForm({vehicleId,onSuccess}: EditVehicleFormPr
   useEffect(() => {
 
     if (!vehicle) return;
-// eslint-disable-next-line react-hooks/set-state-in-effect
+ 
     setValues({
 
       vehicle_number: vehicle.vehicle_number,

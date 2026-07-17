@@ -68,6 +68,7 @@ export type FR1043Status =
   | "APPROVED";
 
 export interface FR1043Response {
+  document_type: "FR1043";
   id: number;
   reference_number: string;
   revision: number;

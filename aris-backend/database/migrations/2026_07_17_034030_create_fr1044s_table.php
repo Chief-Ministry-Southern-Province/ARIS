@@ -15,7 +15,8 @@ return new class extends Migration
             
             $table->id();
 
-            $table->string('reference_number')->unique();
+            // A resubmission keeps the same reference number and gets a new revision.
+            $table->string('reference_number');
 
             $table->foreignId('accident_case_id')
                 ->constrained()

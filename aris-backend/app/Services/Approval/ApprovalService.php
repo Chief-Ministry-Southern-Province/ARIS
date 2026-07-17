@@ -6,9 +6,11 @@ use App\DTOs\WorkflowStep;
 use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR1043;
+use App\Models\FR1044;
 use App\Models\User;
 use App\Notifications\FR1043ChangesRequested;
 use App\Http\Resources\FR1043Resource;
+use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +35,12 @@ class ApprovalService
         return match ($approval->document_type) {
             'FR1043' => new FR1043Resource(
                 FR1043::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->firstOrFail()
+            ),
+            'FR1044' => new FR1044Resource(
+                FR1044::query()
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->firstOrFail()
@@ -233,20 +241,29 @@ class ApprovalService
                 */
 
             } else {
-                $fr1043 = FR1043::query()
-                    ->where('accident_case_id', $approval->accident_case_id)
+                $document = match ($approval->document_type) {
+                    'FR1043' => FR1043::query(),
+                    'FR1044' => FR1044::query(),
+                    default => null,
+                };
+
+                $document = $document?->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->first();
 
-                if ($approval->document_type === 'FR1043' && $fr1043) {
-                    $fr1043->update([
+                if ($document) {
+                    $document->update([
                         'status' => 'APPROVED',
                         'approved_at' => now(),
                     ]);
 
-                    $approval->accidentCase->update([
-                        'current_stage' => 'FR1044',
-                    ]);
+                    if ($approval->document_type === 'FR1043') {
+                        $approval->accidentCase->update(['current_stage' => 'FR1044']);
+                    }
+
+                    if ($approval->document_type === 'FR1044') {
+                        $approval->accidentCase->update(['current_stage' => 'FR109']);
+                    }
                 }
 
             }
@@ -306,15 +323,18 @@ class ApprovalService
 
             ]);
 
-            if ($approval->document_type === 'FR1043') {
-                $fr1043 = FR1043::query()
+            if (in_array($approval->document_type, ['FR1043', 'FR1044'], true)) {
+                $document = ($approval->document_type === 'FR1043' ? FR1043::query() : FR1044::query())
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->first();
 
-                if ($fr1043) {
-                    $fr1043->update(['status' => 'CHANGES_REQUESTED']);
-                    $fr1043->creator->notify(new FR1043ChangesRequested($fr1043, $comments));
+                if ($document) {
+                    $document->update(['status' => 'CHANGES_REQUESTED']);
+
+                    if ($approval->document_type === 'FR1043') {
+                        $document->creator->notify(new FR1043ChangesRequested($document, $comments));
+                    }
                 }
             }
 

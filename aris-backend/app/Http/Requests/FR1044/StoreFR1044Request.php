@@ -25,7 +25,6 @@ class StoreFR1044Request extends FormRequest
     {
         return [
             // Top-level (fr1044s table columns)
-            'accident_case_id' => ['required', 'integer', 'exists:accident_cases,id'],
             'status' => ['nullable', Rule::in([
                 'DRAFT',
                 'SUBMITTED',
