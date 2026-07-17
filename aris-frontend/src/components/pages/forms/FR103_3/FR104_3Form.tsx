@@ -2,7 +2,6 @@ import {useEffect, useState} from "react";
 import type { FR1043FormData , LostItem , Officer } from "@/types/form_104_3_types";
 import GeneralInformationSection from "@/components/organisms/Forms/FR104_3/GeneralInformationSection";
 import PoliceInformationSection from "@/components/organisms/Forms/FR104_3/PoliceInformationSection";
-import ApprovalSection from "@/components/organisms/Forms/ApprovalSection";
 import NatureOfLossSection from "@/components/organisms/Forms/FR104_3/NatureOfLossSection";
 import LostItemsSection from "@/components/organisms/Forms/FR104_3/LostItemsSection";
 import CauseOfLossSection from "@/components/organisms/Forms/FR104_3/CauseOfLossSection";
@@ -13,8 +12,6 @@ import PreventionArrangementSection from "@/components/organisms/Forms/FR104_3/P
 import { useTranslation } from "react-i18next";
 import {FormCard} from "@/components/molecules/FormCard";
 import { CheckCircle, Save, Printer } from "lucide-react";
-import { users } from "@/components/data/mockData";
-import type { User } from "@/components/data/mockData";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
@@ -33,7 +30,6 @@ interface FR1043FormProps {
 
 const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack }: FR1043FormProps) => {
 
-  const currentUser: User = users[0];
 
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
@@ -395,7 +391,7 @@ useEffect(() => {
             </FormCard>
 
             {/* Part J - Approval & Certification (Head of Dept / Secretary) */}
-            <FormCard
+            {/* <FormCard
               part="Part J"
               title={t("fr104_3.approval")}
             >
@@ -404,7 +400,7 @@ useEffect(() => {
                 handleChange={handleChange}
                 currentUser={currentUser}
               />
-            </FormCard>
+            </FormCard> */}
             </fieldset>
 
           </form>
@@ -427,13 +423,13 @@ useEffect(() => {
             </button>
 
             {/* Approve */}
-            <button
+            {/* <button
               type="button"
               onClick={() => setIsActionModalOpen(true)}
               className="order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
               <CheckCircle size={18} />
               {t("fr104_3.approve")}
-            </button>
+            </button> */}
 
             {/* Save Draft */}
             <button

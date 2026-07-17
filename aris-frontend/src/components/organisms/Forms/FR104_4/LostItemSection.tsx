@@ -25,11 +25,13 @@ export default function LostItemsSection({
       lostItems: [
         ...prev.lostItems,
         {
+          id: crypto.randomUUID(),
           description: "",
           unit: "",
           quantity: "",
           estimatedCost: "",
           replacementCost: "",
+          fr105Value: "",
           originalCost: "",
         },
       ],
@@ -68,7 +70,7 @@ export default function LostItemsSection({
     <div className="space-y-4">
       {formData.lostItems.map((item, index) => (
         <div
-          key={index}
+          key={item.id}
           className="border rounded-xl p-4 bg-gray-50"
         >
           <div className="grid md:grid-cols-3 gap-4">
@@ -141,6 +143,20 @@ export default function LostItemsSection({
               />
             </FormField>
 
+            <FormField label={t("fr104_4.lostItems.fr105Value")}>
+              <InputField
+                type="number"
+                value={item.fr105Value}
+                onChange={(e) =>
+                  updateItem(
+                    index,
+                    "fr105Value",
+                    e.target.value
+                  )
+                }
+              />
+            </FormField>
+
             <FormField label={t("fr104_4.lostItems.originalCost")}>
               <InputField
                 type="number"
@@ -158,12 +174,12 @@ export default function LostItemsSection({
           </div>
 
           <button
-            type={t("fr104_4.buttons.remove") as "button"}
+            type="button"
             onClick={() => removeItem(index)}
             className="mt-4 text-red-500 flex items-center gap-2"
           >
             <Trash2 size={16} />
-            Remove
+            {t("fr104_4.buttons.remove")}
           </button>
         </div>
       ))}

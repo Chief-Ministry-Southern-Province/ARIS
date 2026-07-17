@@ -258,7 +258,7 @@
     "saveDraft": "Save Draft",
     "print": "Print"
   } ,
-   "fr104_4": {
+  "fr104_4": {
     "title": "FINAL REPORT OF LOSSES UNDER F. R. 104 (4)",
     "subtitle": "Negligence & Recovery Assessment",
     "sections": {
@@ -274,7 +274,8 @@
       "boardOfInquiry": "Board of Inquiry",
       "recommendations": "Recommendations of the Board of Inquiry",
       "approval": "Approval & Certification",
-      "legalAction": "Details of Legal Action Taken"
+      "legalAction": "Details of Legal Action Taken",
+      "forwarding": "Forwarding to Ministry"
     },
 
     "generalInformation": {
@@ -284,7 +285,10 @@
       "lossTime": "Time of Loss",
       "location": "Location",
       "preliminaryReportRefNo": "Preliminary Report Ref. No.",
-      "preliminaryReportDate": "Preliminary Report Date"
+      "preliminaryReportDate": "Preliminary Report Date",
+      "copyToAuditorGeneral": "Copy to: Auditor-General",
+      "yes": "Yes",
+      "no": "No"
     },
 
     "lossDetails": {
@@ -293,7 +297,10 @@
     },
 
     "causeOfLoss": {
-      "label": "Negligence, Delay, Omissions or Other Causes"
+      "question": "Is it due to fraud, negligence, delay, omissions or other fault?",
+      "yes": "Yes",
+      "no": "No",
+      "label": "Details of Negligence, Delay, Omissions or Other Causes"
     },
 
     "lostItems": {
@@ -302,6 +309,7 @@
       "quantity": "Quantity",
       "estimatedCost": "Estimated Cost",
       "replacementCost": "Replacement Cost",
+      "fr105Value": "Value in terms of F.R. 105(1)",
       "originalCost": "Original Cost",
       "addItem": "Add Item",
       "remove": "Remove"
@@ -368,6 +376,12 @@
       "signature": "Signature"
     },
 
+    "forwarding": {
+      "refNo": "S.T. / Ref. No.",
+      "date": "Date Forwarded",
+      "note": "Forwarded to the Secretary to the Ministry."
+    },
+
     "buttons": {
       "print": "Print",
       "saveDraft": "Save Draft",
@@ -403,7 +417,8 @@
       "k": "Part K",
       "l": "Part L",
       "m": "Part M",
-      "n": "Part N"
+      "n": "Part N",
+      "o": "Part O"
     }
   },
   "digitalSignature": {

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import GeneralInformationSection from "@/components/organisms/Forms/FR104_4/GeneralInformationSection";
 import LossDetailsSection from "@/components/organisms/Forms/FR104_4/LossDetailsSection";
 import CauseOfLossSection from "@/components/organisms/Forms/FR104_4/CauseOfLossSection";
@@ -11,7 +10,6 @@ import RecoveryInformationSection from "@/components/organisms/Forms/FR104_4/Rec
 import InsuranceInformationSection from "@/components/organisms/Forms/FR104_4/InsuranceInformationSection";
 import BoardOfInquirySection from "@/components/organisms/Forms/FR104_4/BoardOfInquirySection";
 import RecommendationsSection from "@/components/organisms/Forms/FR104_4/RecommendationsSection";
-import ApprovalSection from "@/components/organisms/Forms/ApprovalSection";
 import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalActionSection";
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { FormCard } from "@/components/molecules/FormCard";
@@ -19,14 +17,11 @@ import { useTranslation } from "react-i18next";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import {Printer,Save, CheckCircle} from "lucide-react";
 import {initialFormData} from "./initialFormData";
-import { users } from "@/components/data/mockData";
-import type { User } from "@/components/data/mockData";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 
 export default function FR104_4Form() {
 
-  const currentUser: User = users[0]; 
   const { t } = useTranslation();
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
 
@@ -205,7 +200,7 @@ export default function FR104_4Form() {
           />
         </FormCard>
 
-        <FormCard
+        {/* <FormCard
           part={t("fr104_4.parts.n")}
           title={t("fr104_4.sections.approval")}
         >
@@ -214,7 +209,7 @@ export default function FR104_4Form() {
              handleChange={handleChange} 
              currentUser={currentUser}  
           />
-        </FormCard>
+        </FormCard> */}
 
         {/* Footer Actions */}
         <div className="sticky bottom-0 bg-whiteborder-t border-slate-200 shadow-lg p-4">
@@ -228,13 +223,13 @@ export default function FR104_4Form() {
             </button>
 
             {/* Approve */}
-            <button
+            {/* <button
               type="button"
               onClick={() => setIsActionModalOpen(true)}
               className="  order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
               <CheckCircle size={18} />
               Approve
-            </button>
+            </button> */}
 
             {/* Save Draft */}
             <button

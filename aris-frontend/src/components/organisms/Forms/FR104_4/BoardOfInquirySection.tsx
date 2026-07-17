@@ -24,7 +24,8 @@ export default function BoardOfInquirySection({
       boardMembers: [
         ...prev.boardMembers,
         {
-          name: "",
+          id: crypto.randomUUID(),
+          memberName: "",
           designation: "",
         },
       ],
@@ -65,18 +66,18 @@ export default function BoardOfInquirySection({
       {formData.boardMembers.map(
         (member, index) => (
           <div
-            key={index}
+            key={member.id}
             className="border rounded-xl p-4 bg-gray-50"
           >
             <div className="grid md:grid-cols-2 gap-4">
 
               <FormField label={t("fr104_4.board.memberName")}>
                 <InputField
-                  value={member.name}
+                  value={member.memberName}
                   onChange={(e) =>
                     updateMember(
                       index,
-                      "name",
+                      "memberName",
                       e.target.value
                     )
                   }
