@@ -18,15 +18,6 @@ export default function GeneralInformationSection({
   return (
     <div className="grid md:grid-cols-2 gap-4">
 
-      <FormField label={t("fr104_4.generalInformation.referenceNo")} required>
-        <InputField
-          value={formData.referenceNo}
-          onChange={(e) =>
-            handleChange("referenceNo", e.target.value)
-          }
-        />
-      </FormField>
-
       <FormField label={t("fr104_4.generalInformation.ministry")}>
         <InputField
           value={formData.ministry}

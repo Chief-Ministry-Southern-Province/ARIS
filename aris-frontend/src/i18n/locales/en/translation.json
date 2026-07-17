@@ -215,6 +215,7 @@
     "formNo": "F.R. 104 (3)",
     "subtitle": "Report of Losses of Government Property",
 
+    "generalInformation": "General Information",
     "department": "Department / Corporation",
     "date": "Date",
     "place": "Place",
@@ -258,9 +259,23 @@
     "saveDraft": "Save Draft",
     "print": "Print"
   } ,
-  "fr104_4": {
+ "fr104_4": {
     "title": "FINAL REPORT OF LOSSES UNDER F. R. 104 (4)",
     "subtitle": "Negligence & Recovery Assessment",
+
+    "meta": {
+      "revisionLabel": "REVISION",
+      "revisionValue": "Revision",
+      "statusLabel": "Status",
+      "status": {
+        "DRAFT": "Draft",
+        "SUBMITTED": "Submitted",
+        "UNDER_APPROVAL": "Under Approval",
+        "CHANGES_REQUESTED": "Changes Requested",
+        "APPROVED": "Approved"
+      }
+    },
+
     "sections": {
       "generalInformation": "General Information",
       "lossDetails": "Loss Details",

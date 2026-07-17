@@ -290,7 +290,7 @@ useEffect(() => {
             {/* Part A - General Information (Form fields 1 & 2) */}
             <FormCard
               part="Part A"
-              title={t("fr104_3.partA")}
+              title={t("fr104_3.generalInformation")}
             >
               <GeneralInformationSection
                 formData={formData}

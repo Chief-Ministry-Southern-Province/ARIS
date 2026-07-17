@@ -206,6 +206,7 @@
     "formNo": "මු. රෙ. 104 (3)",
     "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
 
+    "generalInformation": "සාමාන්‍ය තොරතුරු",
     "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
     "date": "දිනය",
     "place": "ස්ථානය",
@@ -250,9 +251,22 @@
     "saveDraft": "කෙටුම්පත සුරකින්න",
     "print": "මුද්‍රණය කරන්න"
   },
-  "fr104_4": {
+ "fr104_4": {
     "title": "මු. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ අවසාන වාර්තාව",
     "subtitle": "නොසැලකිල්ල හා අයකර ගැනීමේ තක්සේරුව",
+
+    "meta": {
+      "revisionLabel": "සංශෝධනය",
+      "revisionValue": "සංශෝධනය",
+      "statusLabel": "තත්ත්වය",
+      "status": {
+        "DRAFT": "කෙටුම්පත",
+        "SUBMITTED": "ඉදිරිපත් කර ඇත",
+        "UNDER_APPROVAL": "අනුමැතිය සඳහා",
+        "CHANGES_REQUESTED": "වෙනස්කම් ඉල්ලා ඇත",
+        "APPROVED": "අනුමත කර ඇත"
+      }
+    },
 
     "sections": {
       "generalInformation": "සාමාන්‍ය තොරතුරු",

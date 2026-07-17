@@ -20,7 +20,32 @@ import {initialFormData} from "./initialFormData";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 
-export default function FR104_4Form() {
+type FR1044Status =
+  | "DRAFT"
+  | "SUBMITTED"
+  | "UNDER_APPROVAL"
+  | "CHANGES_REQUESTED"
+  | "APPROVED";
+
+interface FR104_4FormProps {
+  referenceNumber?: string;
+  revision?: number;
+  status?: FR1044Status;
+}
+
+const STATUS_BADGE_CLASSES: Record<FR1044Status, string> = {
+  DRAFT: "bg-slate-100 text-slate-700",
+  SUBMITTED: "bg-blue-100 text-blue-700",
+  UNDER_APPROVAL: "bg-yellow-100 text-yellow-800",
+  CHANGES_REQUESTED: "bg-red-100 text-red-700",
+  APPROVED: "bg-emerald-100 text-emerald-700",
+};
+
+export default function FR104_4Form({
+  referenceNumber,
+  revision = 1,
+  status = "DRAFT",
+}: FR104_4FormProps) {
 
   const { t } = useTranslation();
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
@@ -63,6 +88,37 @@ export default function FR104_4Form() {
           <p className="text-blue-200 mt-2">
             {t("fr104_4.subtitle")}
           </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-8 py-4">
+          <div>
+            <p className="text-xs text-slate-500">
+              {t("fr104_4.generalInformation.referenceNo")}
+            </p>
+            <p className="font-semibold text-slate-800">
+              {referenceNumber || formData.referenceNo || "—"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
+              {t("fr104_4.meta.revisionLabel")}
+            </p>
+            <p className="font-semibold text-slate-800">
+              {t("fr104_4.meta.revisionValue")} {revision}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs text-slate-500">
+              {t("fr104_4.meta.statusLabel")}
+            </p>
+            <span
+              className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${STATUS_BADGE_CLASSES[status]}`}
+            >
+              {t(`fr104_4.meta.status.${status}`)}
+            </span>
+          </div>
         </div>
 
       </div>
