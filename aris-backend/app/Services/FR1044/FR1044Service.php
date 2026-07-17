@@ -40,6 +40,20 @@ class FR1044Service
               'An FR1044 form already exists for this case.'
           );
 
+          $preliminaryReport = $case->fr1043s()
+              ->latest('revision')
+              ->first();
+
+          abort_unless(
+              $preliminaryReport && $preliminaryReport->status === 'APPROVED',
+              409,
+              'An approved FR1043 preliminary report is required before creating FR1044.'
+          );
+
+          $data['preliminaryReportRefNo'] = $preliminaryReport->reference_number;
+          $data['preliminaryReportDate'] = $preliminaryReport->data['date']
+              ?? $preliminaryReport->submitted_at?->toDateString();
+
           $fr1044 = FR1044::create([
               'reference_number' => $this->generateReferenceNumber(),
               'accident_case_id' => $case->id,
