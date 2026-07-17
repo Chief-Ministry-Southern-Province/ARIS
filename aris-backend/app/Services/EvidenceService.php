@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Accident;
 use App\Models\AccidentEvidence;
 use App\Models\User;
+use App\Models\FR1044;
 use App\Services\FileStorageService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Http\UploadedFile;
@@ -96,6 +97,33 @@ class EvidenceService
             'description' => $description,
             'uploaded_by' => $user->id,
         ]);
+    }
+
+    /** Store an attachment for a draft FR1044 revision. */
+    public function uploadForFR1044(FR1044 $fr1044, UploadedFile $file, string $fieldKey, ?string $description, User $user): AccidentEvidence
+    {
+        abort_unless($fr1044->created_by === $user->id, 403);
+        abort_unless($fr1044->status === 'DRAFT', 400, 'Attachments can only be added to a draft FR1044 revision.');
+
+        return DB::transaction(function () use ($fr1044, $file, $fieldKey, $description, $user) {
+            $evidence = $this->storeEvidence($fr1044->accidentCase->accident, $file, $description, $user);
+            $evidence->update([
+                'document_type' => 'FR1044',
+                'document_revision' => $fr1044->revision,
+                'field_key' => $fieldKey,
+            ]);
+
+            $this->timelineService->createDocumentEvent(
+                $fr1044->accidentCase,
+                $user,
+                'FR1044',
+                'ATTACHMENT_UPLOADED',
+                $fr1044->revision,
+                $fr1044->reference_number,
+            );
+
+            return $evidence->fresh();
+        });
     }
 
     /**

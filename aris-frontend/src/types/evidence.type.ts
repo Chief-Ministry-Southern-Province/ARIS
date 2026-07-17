@@ -21,6 +21,9 @@ export interface EvidenceResponse {
   file_size: number;
   file_size_kb: number;
   evidence_type: EvidenceType;
+  document_type: string | null;
+  document_revision: number | null;
+  field_key: string | null;
   description: string | null;
   uploaded_by: UploadedBy;
   uploaded_at: string;

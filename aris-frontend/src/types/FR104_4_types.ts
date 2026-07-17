@@ -62,12 +62,14 @@ export interface FR104_4FormData {
 
   // Police Information (item 6)
   policeReportFile: File | string | null;
+  policeReportEvidenceId?: number | null;
 
   // Legal Action (item 9)
   courtName: string;
   courtCaseNo: string;
   courtOrderSummary: string;
   courtOrderFile: File | string | null;
+  courtOrderEvidenceId?: number | null;
 
   // Insurance (item 11)
   insuranceRecoverableAmountWords: string;
@@ -78,6 +80,7 @@ export interface FR104_4FormData {
   // Recommendations (item 13)
   recommendations: string;
   boardReportFile: File | string | null;
+  boardReportEvidenceId?: number | null;
 
   // Preventive Actions (item 14)
   preventiveActions: string;

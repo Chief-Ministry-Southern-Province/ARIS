@@ -15,6 +15,12 @@ class AccidentEvidence extends Model
 
         'accident_id',
 
+        'document_type',
+
+        'document_revision',
+
+        'field_key',
+
         'original_name',
 
         'file_name',

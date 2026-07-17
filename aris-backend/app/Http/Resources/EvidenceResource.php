@@ -23,6 +23,9 @@ class EvidenceResource extends JsonResource
             'file_size' => $this->file_size,
             'file_size_kb' => round($this->file_size / 1024, 2),
             'evidence_type' => $this->evidence_type,
+            'document_type' => $this->document_type,
+            'document_revision' => $this->document_revision,
+            'field_key' => $this->field_key,
             'description' => $this->description,
 
             'uploaded_by' => [

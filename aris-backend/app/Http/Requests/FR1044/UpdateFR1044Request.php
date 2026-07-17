@@ -62,12 +62,14 @@ class UpdateFR1044Request extends FormRequest
 
             // Part D - Police Information (item 6)
             'data.policeReportFile' => ['sometimes', 'nullable', 'string'],
+            'data.policeReportEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part G - Legal Action (item 9)
             'data.courtName' => ['sometimes', 'nullable', 'string', 'max:255'],
             'data.courtCaseNo' => ['sometimes', 'nullable', 'string', 'max:100'],
             'data.courtOrderSummary' => ['sometimes', 'nullable', 'string'],
             'data.courtOrderFile' => ['sometimes', 'nullable', 'string'],
+            'data.courtOrderEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part J - Insurance (item 11)
             'data.insuranceRecoverableAmountWords' => ['sometimes', 'nullable', 'string'],
@@ -78,6 +80,7 @@ class UpdateFR1044Request extends FormRequest
             // Part L - Recommendations (item 13)
             'data.recommendations' => ['sometimes', 'nullable', 'string'],
             'data.boardReportFile' => ['sometimes', 'nullable', 'string'],
+            'data.boardReportEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part M - Preventive Actions (item 14)
             'data.preventiveActions' => ['sometimes', 'nullable', 'string'],

@@ -20,6 +20,7 @@ import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalAction
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { initialFormData } from "./initialFormData";
 import { useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
+import { uploadFR1044Attachment } from "@/services/fr1044.service";
 import type { FR104_4FormData, FR1044Response, FR1044Status } from "@/types/FR104_4_types";
 import type { Approval } from "@/types/approval.type";
 
@@ -51,7 +52,25 @@ export default function FR104_4Form({ readOnly = false, document, approvalTimeli
   });
   const save = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) { toast.error("Invalid accident case."); return null; }
-    try { const result = await saveFR1044(id, status, payloadData()); setId(result.id); setStatus(result.status); toast.success("FR104(4) draft saved successfully."); return result; }
+    try {
+      let result = await saveFR1044(id, status, payloadData());
+      const attachments = [
+        ["policeReportFile", "policeReportEvidenceId"],
+        ["courtOrderFile", "courtOrderEvidenceId"],
+        ["boardReportFile", "boardReportEvidenceId"],
+      ] as const;
+      let updatedData = result.data;
+
+      for (const [fileKey, evidenceKey] of attachments) {
+        const file = data[fileKey];
+        if (!(file instanceof File)) continue;
+        const evidence = await uploadFR1044Attachment(result.id, file, fileKey);
+        updatedData = { ...updatedData, [fileKey]: evidence.original_name, [evidenceKey]: evidence.id };
+      }
+
+      if (updatedData !== result.data) result = await saveFR1044(result.id, "DRAFT", updatedData);
+      setData(updatedData); setId(result.id); setStatus(result.status); toast.success("FR104(4) draft saved successfully."); return result;
+    }
     catch (reason: unknown) { toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to save FR104(4) draft."); return null; }
   };
   const handleSubmit = async (event: React.FormEvent) => { event.preventDefault(); const draft = await save(); if (!draft) return; try { const result = await submit.mutateAsync(draft.id); setStatus(result.status); } catch (reason: unknown) { toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to submit FR104(4) form."); } };

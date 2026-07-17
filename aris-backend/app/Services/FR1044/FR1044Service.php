@@ -4,6 +4,7 @@ namespace App\Services\FR1044;
 
 use App\Models\AccidentCase;
 use App\Models\FR1044;
+use App\Models\AccidentEvidence;
 use App\Models\User;
 use App\Services\Approval\ApprovalService;
 use App\Services\AccidentTimelineService;
@@ -64,6 +65,7 @@ class FR1044Service
   public function updateDraft(FR1044 $fr1044, User $user, array $data): FR1044
   {
       abort_unless($fr1044->created_by === $user->id, 403);
+      $this->validateEvidenceReferences($fr1044->accidentCase, $data);
 
       if ($fr1044->status === 'CHANGES_REQUESTED') {
           return $this->createRevision($fr1044, $user, $data);
@@ -89,6 +91,28 @@ class FR1044Service
       );
 
       return $fr1044->fresh();
+  }
+
+  /** Ensure attachment IDs are evidence for this case's accident and FR1044. */
+  protected function validateEvidenceReferences(AccidentCase $case, array $data): void
+  {
+      $ids = collect([
+          $data['policeReportEvidenceId'] ?? null,
+          $data['courtOrderEvidenceId'] ?? null,
+          $data['boardReportEvidenceId'] ?? null,
+      ])->filter()->unique()->values();
+
+      if ($ids->isEmpty()) {
+          return;
+      }
+
+      $valid = AccidentEvidence::query()
+          ->where('accident_id', $case->accident_id)
+          ->where('document_type', 'FR1044')
+          ->whereIn('id', $ids)
+          ->count();
+
+      abort_unless($valid === $ids->count(), 422, 'One or more attachments do not belong to this FR1044 case.');
   }
 
   protected function createRevision(FR1044 $rejectedRevision, User $user, array $data): FR1044

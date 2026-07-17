@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\FR1044\StoreFR1044Request;
 use App\Http\Requests\FR1044\UpdateFR1044Request;
+use App\Http\Requests\FR1044\StoreFR1044AttachmentRequest;
 use App\Http\Resources\FR1044Resource;
+use App\Http\Resources\EvidenceResource;
 use App\Models\AccidentCase;
 use App\Models\FR1044;
 use App\Services\FR1044\FR1044Service;
+use App\Services\EvidenceService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,6 +20,17 @@ class FR1044Controller extends Controller
     public function __construct(
         protected FR1044Service $fr1044Service
     ) {}
+
+    public function attachment(StoreFR1044AttachmentRequest $request, FR1044 $fr1044, EvidenceService $evidenceService): EvidenceResource
+    {
+        return new EvidenceResource($evidenceService->uploadForFR1044(
+            $fr1044,
+            $request->file('file'),
+            $request->validated('field_key'),
+            $request->validated('description'),
+            $request->user(),
+        ));
+    }
 
     /**
      * Get latest revision.

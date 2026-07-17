@@ -1,5 +1,6 @@
 import api from "@/services/api";
 import type { FR104_4FormData, FR1044Payload, FR1044Response } from "@/types/FR104_4_types";
+import type { EvidenceResponse } from "@/types/evidence.type";
 
 export const getFR1044 = async (caseId: number): Promise<FR1044Response> =>
   (await api.get(`/cases/${caseId}/fr1044`)).data;
@@ -12,3 +13,10 @@ export const updateFR1044 = async (id: number, status: "DRAFT" | "CHANGES_REQUES
 
 export const submitFR1044 = async (id: number): Promise<FR1044Response> =>
   (await api.post(`/fr1044/${id}/submit`)).data;
+
+export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: string): Promise<EvidenceResponse> => {
+  const payload = new FormData();
+  payload.append("file", file);
+  payload.append("field_key", fieldKey);
+  return (await api.post(`/fr1044/${id}/attachments`, payload)).data.data;
+};

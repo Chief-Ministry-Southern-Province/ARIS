@@ -59,12 +59,14 @@ class StoreFR1044Request extends FormRequest
 
             // Part D - Police Information (item 6)
             'data.policeReportFile' => ['nullable', 'string'],
+            'data.policeReportEvidenceId' => ['nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part G - Legal Action (item 9)
             'data.courtName' => ['nullable', 'string', 'max:255'],
             'data.courtCaseNo' => ['nullable', 'string', 'max:100'],
             'data.courtOrderSummary' => ['nullable', 'string'],
             'data.courtOrderFile' => ['nullable', 'string'],
+            'data.courtOrderEvidenceId' => ['nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part J - Insurance (item 11)
             'data.insuranceRecoverableAmountWords' => ['nullable', 'string'],
@@ -75,6 +77,7 @@ class StoreFR1044Request extends FormRequest
             // Part L - Recommendations (item 13)
             'data.recommendations' => ['nullable', 'string'],
             'data.boardReportFile' => ['nullable', 'string'],
+            'data.boardReportEvidenceId' => ['nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part M - Preventive Actions (item 14)
             'data.preventiveActions' => ['nullable', 'string'],
