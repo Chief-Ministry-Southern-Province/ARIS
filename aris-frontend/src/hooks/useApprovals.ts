@@ -1,8 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { approve, getApprovalDocument, getApprovalHistory, getPendingApprovals, reject } from "@/services/approval.service";
+import { approve, getApprovalDocument, getApprovalHistory, getApprovalStats, getDecidedApprovals, getPendingApprovals, reject } from "@/services/approval.service";
 import { queryKeys } from "@/hooks/queryKeys";
 
 export const usePendingApprovals = (page: number, search: string) => useQuery({ queryKey: queryKeys.approvals.pending(page, search), queryFn: () => getPendingApprovals(page, search) });
+
+export const useDecidedApprovals = (page: number, search: string, documentType: string, status: string) => useQuery({ queryKey: queryKeys.approvals.decided(page, search, documentType, status), queryFn: () => getDecidedApprovals(page, search, documentType, status) });
+
+export const useApprovalStats = () => useQuery({ queryKey: queryKeys.approvals.stats, queryFn: getApprovalStats });
 
 export const useApprovalHistory = (caseId: number, documentType?: "FR1043" | "FR1044" | "FR109", revision?: number) => useQuery({ queryKey: queryKeys.approvals.history(caseId, documentType, revision), queryFn: () => getApprovalHistory(caseId, documentType, revision), enabled: caseId > 0 });
 

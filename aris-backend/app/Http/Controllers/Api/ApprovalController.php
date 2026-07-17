@@ -28,6 +28,30 @@ class ApprovalController extends Controller
         return ApprovalResource::collection($approvals);
     }
 
+    /** Approved or rejected decisions made by the logged-in approver. */
+    public function decided(Request $request)
+    {
+        $filters = $request->validate([
+            'document_type' => ['nullable', 'in:FR1043,FR1044,FR109'],
+            'status' => ['nullable', 'in:APPROVED,REJECTED'],
+            'search' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        return ApprovalResource::collection($this->approvalService->getDecidedApprovals(
+            $request->user(),
+            $filters['document_type'] ?? null,
+            $filters['status'] ?? null,
+            $filters['search'] ?? null,
+        ));
+    }
+
+    public function stats(Request $request)
+    {
+        return response()->json([
+            'data' => $this->approvalService->getApprovalStats($request->user()),
+        ]);
+    }
+
     /**
      * Approval history of a case, grouped by document type and revision.
      * /api/cases/15/approvals?document_type=FR1043&revision=2

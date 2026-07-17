@@ -5,26 +5,34 @@ import { useNavigate } from "react-router-dom";
 import ApprovalStats from "@/components/approval/ApprovalStats";
 import ApprovalSearch from "@/components/approval/ApprovalSearch";
 import ApprovalTable from "@/components/approval/ApprovalTable";
+import DecidedApprovalsTable from "@/components/approval/DecidedApprovalsTable";
 import ApprovalDecisionDialog from "@/components/approval/ApprovalDecisionDialog";
 
-import { useApprove, usePendingApprovals, useReject } from "@/hooks/useApprovals";
+import { useApprove, useApprovalStats, useDecidedApprovals, usePendingApprovals, useReject } from "@/hooks/useApprovals";
 import type{ Approval } from "@/types/approval.type";
 import { toast } from "react-toastify";
 
 type Decision = { action: "approve" | "reject"; approval: Approval } | null;
+type View = "pending" | "decided";
 
 export default function ApprovalCenter() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [decision, setDecision] = useState<Decision>(null);
+  const [view, setView] = useState<View>("pending");
+  const [documentType, setDocumentType] = useState("");
+  const [decisionStatus, setDecisionStatus] = useState("");
 
-  const {data,isLoading,refetch,isRefetching,} = usePendingApprovals(page, search);
+  const pendingQuery = usePendingApprovals(page, search);
+  const decidedQuery = useDecidedApprovals(page, search, documentType, decisionStatus);
+  const { data: stats } = useApprovalStats();
   const approveMutation = useApprove();
   const rejectMutation = useReject();
 
-  const approvals = data?.data ?? [];
-  const meta = data?.meta;
+  const activeQuery = view === "pending" ? pendingQuery : decidedQuery;
+  const approvals = activeQuery.data?.data ?? [];
+  const meta = activeQuery.data?.meta;
 
   const handleView = (approval: Approval) => {
     navigate(`/approvals/${approval.id}`);
@@ -90,13 +98,13 @@ export default function ApprovalCenter() {
           </div>
 
           <button
-            onClick={() => refetch()}
-            disabled={isRefetching}
+            onClick={() => activeQuery.refetch()}
+            disabled={activeQuery.isRefetching}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C81] px-5 py-3 text-white transition hover:bg-[#1565C0] disabled:opacity-50"
           >
             <RefreshCw
               className={`w-4 h-4 ${
-                isRefetching ? "animate-spin" : ""
+                activeQuery.isRefetching ? "animate-spin" : ""
               }`}
             />
 
@@ -108,9 +116,14 @@ export default function ApprovalCenter() {
 
       </div>
 
+      <div className="flex gap-2 border-b border-slate-200">
+        <button onClick={() => { setView("pending"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "pending" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Pending Approvals</button>
+        <button onClick={() => { setView("decided"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "decided" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Approved / Rejected Documents</button>
+      </div>
+
       {/* Statistics */}
 
-      <ApprovalStats approvals={approvals} />
+      <ApprovalStats approvals={approvals} counts={stats} />
 
       {/* Search */}
 
@@ -122,15 +135,16 @@ export default function ApprovalCenter() {
         }}
       />
 
+      {view === "decided" && (
+        <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-2">
+          <label className="text-sm font-medium text-slate-700">Document type<select value={documentType} onChange={(event) => { setDocumentType(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All document types</option><option value="FR1043">FR1043</option><option value="FR1044">FR1044</option><option value="FR109">FR109</option></select></label>
+          <label className="text-sm font-medium text-slate-700">Decision<select value={decisionStatus} onChange={(event) => { setDecisionStatus(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All decisions</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select></label>
+        </div>
+      )}
+
       {/* Table */}
 
-      <ApprovalTable
-        approvals={approvals}
-        loading={isLoading}
-        onView={handleView}
-        onApprove={handleApprove}
-        onReject={handleReject}
-      />
+      {view === "pending" ? <ApprovalTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} onApprove={handleApprove} onReject={handleReject} /> : <DecidedApprovalsTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} />}
 
       {/* Pagination */}
 
@@ -177,7 +191,7 @@ export default function ApprovalCenter() {
 
       )}
 
-      {decision && (
+      {view === "pending" && decision && (
         <ApprovalDecisionDialog
           approval={decision.approval}
           action={decision.action}

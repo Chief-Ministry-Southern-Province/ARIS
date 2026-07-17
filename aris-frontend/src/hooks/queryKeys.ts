@@ -39,6 +39,8 @@ export const queryKeys = {
   approvals: {
     all: ["approvals"] as const,
     pending: (page: number, search: string) => ["approvals", "pending", page, search] as const,
+    decided: (page: number, search: string, documentType: string, status: string) => ["approvals", "decided", page, search, documentType, status] as const,
+    stats: ["approvals", "stats"] as const,
     history: (caseId: number, documentType?: string, revision?: number) => ["approvals", "history", caseId, documentType, revision] as const,
     document: (id: number) => ["approvals", "document", id] as const,
   },

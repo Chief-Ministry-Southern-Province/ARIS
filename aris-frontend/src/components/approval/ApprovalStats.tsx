@@ -5,26 +5,25 @@ import {
   XCircle,
 } from "lucide-react";
 
-import type{ Approval } from "@/types/approval.type";
+import type{ Approval, ApprovalStatsCounts } from "@/types/approval.type";
 
 interface Props {
   approvals: Approval[];
+  counts?: ApprovalStatsCounts;
 }
 
 export default function ApprovalStats({
   approvals,
+  counts,
 }: Props) {
 
-  const pending =
-    approvals.filter(a => a.status === "PENDING").length;
+  const pending = counts?.pending ?? approvals.filter(a => a.status === "PENDING").length;
 
-  const approved =
-    approvals.filter(a => a.status === "APPROVED").length;
+  const approved = counts?.approved ?? approvals.filter(a => a.status === "APPROVED").length;
 
-  const rejected =
-    approvals.filter(a => a.status === "REJECTED").length;
+  const rejected = counts?.rejected ?? approvals.filter(a => a.status === "REJECTED").length;
 
-  const total = approvals.length;
+  const total = counts?.total ?? approvals.length;
 
   const cards = [
 

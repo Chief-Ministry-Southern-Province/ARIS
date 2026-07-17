@@ -1,6 +1,6 @@
 export interface Approval {
   id: number;
-  reference_number: string;
+  reference_number: string | null;
   document_type: string;
   revision: number;
   step: number;
@@ -16,6 +16,13 @@ export interface Approval {
 export interface PaginatedApprovals {
   data: Approval[];
   meta?: { current_page: number; last_page: number };
+}
+
+export interface ApprovalStatsCounts {
+  pending: number;
+  approved: number;
+  rejected: number;
+  total: number;
 }
 
 export interface ApprovalHistoryGroup {

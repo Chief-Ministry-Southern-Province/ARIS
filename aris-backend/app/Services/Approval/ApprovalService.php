@@ -403,6 +403,46 @@ class ApprovalService
 
             ->paginate(10);
     }
+
+    /** Decisions already made by the logged-in approver. */
+    public function getDecidedApprovals(User $user, ?string $documentType = null, ?string $status = null, ?string $search = null)
+    {
+        return Approval::query()
+            ->where('approver_id', $user->id)
+            ->whereIn('status', ['APPROVED', 'REJECTED'])
+            ->when($documentType, fn ($query) => $query->where('document_type', $documentType))
+            ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('accidentCase', fn ($case) => $case->where('case_number', 'like', "%{$search}%"));
+            })
+            ->with([
+                'institution',
+                'approver.roles',
+                'accidentCase.accident',
+                'accidentCase.creator',
+            ])
+            ->orderByDesc('acted_at')
+            ->paginate(10);
+    }
+
+    /** Summary counts for the Approval Center cards. */
+    public function getApprovalStats(User $user): array
+    {
+        $counts = Approval::query()
+            ->where('approver_id', $user->id)
+            ->selectRaw("SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending")
+            ->selectRaw("SUM(CASE WHEN status = 'APPROVED' THEN 1 ELSE 0 END) as approved")
+            ->selectRaw("SUM(CASE WHEN status = 'REJECTED' THEN 1 ELSE 0 END) as rejected")
+            ->selectRaw("SUM(CASE WHEN status IN ('PENDING', 'APPROVED', 'REJECTED') THEN 1 ELSE 0 END) as total")
+            ->first();
+
+        return [
+            'pending' => (int) $counts->pending,
+            'approved' => (int) $counts->approved,
+            'rejected' => (int) $counts->rejected,
+            'total' => (int) $counts->total,
+        ];
+    }
     /**
      * Approval history.
      */

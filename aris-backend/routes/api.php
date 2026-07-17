@@ -76,6 +76,10 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     // Protected routes for approvals
     Route::get('/approvals/pending',[ApprovalController::class, 'pending']);
 
+    Route::get('/approvals/decided',[ApprovalController::class, 'decided']);
+
+    Route::get('/approvals/stats',[ApprovalController::class, 'stats']);
+
     Route::get('/approvals/{approval}/document',[ApprovalController::class, 'document']);
 
     Route::get('/cases/{accidentCase}/approvals',[ApprovalController::class, 'history']);
