@@ -25,6 +25,7 @@ import ApprovalDocumentViewer from "@/components/pages/ApprovalDocumentViewer";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
+import FR109Form from "@/components/pages/forms/FR109/FR109Form";
 import UnauthorizedPage from "@/components/pages/UnauthorizedPage";
 
 import LazyChart from "@/utils/LazyChart";
@@ -155,6 +156,11 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases/:caseId/FR104-4/generate",
         <FR104_4Form />,  
+        FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/cases/:caseId/FR109/generate",
+        <FR109Form />,  
         FULL_ACCESS_ROLES
       ),
 
