@@ -8,6 +8,7 @@ import { DEFAULT_ACTION, TIMELINE_ACTIONS } from "@/utils/timelineAction";
 
 interface ApprovalWorkflowProps {
   caseId: number | string;
+  view?: "approvals" | "timeline";
 }
 
 function formatDate(dateString: string | null): string {
@@ -22,11 +23,11 @@ function formatDate(dateString: string | null): string {
   });
 }
 
-function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
+function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps) {
   const { t } = useTranslation();
   const numericCaseId = Number(caseId);
-  const { timeline, loading, error } = useTimeline(caseId);
-  const { data: approvalGroups = [], isLoading: approvalsLoading } = useApprovalHistory(numericCaseId);
+  const { timeline, loading, error } = useTimeline(view === "timeline" ? caseId : 0);
+  const { data: approvalGroups = [], isLoading: approvalsLoading } = useApprovalHistory(view === "approvals" ? numericCaseId : 0);
 
   const latestAction = timeline.length > 0
     ? TIMELINE_ACTIONS[timeline[0].action as keyof typeof TIMELINE_ACTIONS] ?? DEFAULT_ACTION
@@ -37,16 +38,14 @@ function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">{t("approvalWorkflow.approvalHistory")}</h2>
-          <p className="mt-1 text-sm text-slate-500">Review approvals across every document revision.</p>
+          <h2 className="text-lg font-semibold text-slate-900">{view === "approvals" ? t("approvalWorkflow.approvalHistory") : "Case Timeline"}</h2>
+          <p className="mt-1 text-sm text-slate-500">{view === "approvals" ? "Review approvals across every document revision." : "Review all activity recorded for this case."}</p>
         </div>
-        <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium ${latestAction.badge}`}>
-          <HeaderIcon className="h-4 w-4" />
-          {latestAction.label}
-        </span>
+        {view === "timeline" && <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium ${latestAction.badge}`}><HeaderIcon className="h-4 w-4" />{latestAction.label}</span>}
       </div>
 
       <div className="p-6">
+        {view === "approvals" && <>
         <h3 className="mb-3 text-base font-semibold text-slate-900">Approval history</h3>
         {approvalsLoading && <p className="mb-6 text-sm text-slate-500">Loading approval history...</p>}
         {!approvalsLoading && approvalGroups.length === 0 && <p className="mb-6 text-sm text-slate-500">No approvals have been created yet.</p>}
@@ -103,8 +102,10 @@ function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
             </details>
           ))}
         </div>
+        </>}
 
-        <h3 className="mb-3 mt-8 text-base font-semibold text-slate-900">Case timeline</h3>
+        {view === "timeline" && <>
+        <h3 className="mb-3 text-base font-semibold text-slate-900">Case timeline</h3>
         {loading && <div className="flex justify-center py-10 text-sm text-slate-400">Loading timeline...</div>}
         {!loading && error && <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-500"><AlertCircle className="h-4 w-4" />{error}</div>}
         {!loading && !error && timeline.length === 0 && <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-400"><FileText className="h-4 w-4" />No activity recorded for this case yet.</div>}
@@ -138,6 +139,7 @@ function ApprovalWorkflow({ caseId }: ApprovalWorkflowProps) {
             })}
           </div>
         )}
+        </>}
       </div>
     </div>
   );

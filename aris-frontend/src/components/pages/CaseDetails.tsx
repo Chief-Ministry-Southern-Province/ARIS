@@ -7,13 +7,14 @@ import InvestigationTeamTab from "@/components/organisms/CaseManagement/Investig
 import { useTranslation } from "react-i18next";
 
 import { useParams } from "react-router-dom";
-import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck} from "lucide-react";
+import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck, Clock3} from "lucide-react";
 
 
 const caseDetailsTabs = [
     {id: "Details",icon: FileText,label: "Details",i18n: "caseDetails.tabs.details"},
     {id: "Action",icon: ClipboardCheck,label: "Actions",i18n: "caseDetails.tabs.actions"},
     {id: "Workflow",icon: GitBranch,label: "Workflow",i18n: "caseDetails.tabs.workflow"},
+    {id: "Timeline",icon: Clock3,label: "Timeline",i18n: "caseDetails.tabs.timeline"},
     {id: "Evidence",icon: Files,label: "Evidence",i18n: "caseDetails.tabs.evidence"},
     {id: "InvestigationTeam",icon: ShieldCheck,label: "Investigation Team",i18n: "caseDetails.tabs.investigationTeam"},
 ];
@@ -58,7 +59,11 @@ function CaseDetails() {
 
           {/* case workflow */}
           {activeTab === "Workflow" && (
-            <ApprovalWorkflow caseId={numericId} />
+            <ApprovalWorkflow caseId={numericId} view="approvals" />
+          )}
+
+          {activeTab === "Timeline" && (
+            <ApprovalWorkflow caseId={numericId} view="timeline" />
           )}
 
           {/* case evidence */}

@@ -738,7 +738,8 @@
       "actions": "ක්‍රියාමාර්ග",
       "workflow": "කාර්ය ප්‍රවාහය",
       "evidence": "විශ්ලේෂණ",
-      "investigationTeam": "විමර්ශන කණ්ඩායම"
+      "investigationTeam": "විමර්ශන කණ්ඩායම",
+      "timeline": "කාලරේඛාව"
     }
   },
    "analytics": {

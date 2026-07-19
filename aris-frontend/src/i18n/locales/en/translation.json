@@ -761,7 +761,8 @@
       "actions": "Actions",
       "workflow": "Workflow",
       "evidence": "Evidence",
-      "investigationTeam": "Investigation Team"
+      "investigationTeam": "Investigation Team",
+      "timeline": "Timeline"
     }
   },
   "analytics": {
