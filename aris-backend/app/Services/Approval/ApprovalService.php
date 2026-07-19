@@ -183,10 +183,13 @@ class ApprovalService
             400
         );
 
+        $accidentCase = $this->resolveApprovalCase($approval);
+
         DB::transaction(function () use (
             $approval,
             $comments,
-            $user
+            $user,
+            $accidentCase
         ) {
 
             $approval->update([
@@ -258,18 +261,18 @@ class ApprovalService
                     ]);
 
                     if ($approval->document_type === 'FR1043') {
-                        $approval->accidentCase->update(['current_stage' => 'FR1044']);
+                        $accidentCase->update(['current_stage' => 'FR1044']);
                     }
 
                     if ($approval->document_type === 'FR1044') {
-                        $approval->accidentCase->update(['current_stage' => 'FR109']);
+                        $accidentCase->update(['current_stage' => 'FR109']);
                     }
                 }
 
             }
 
             $this->timelineService->createDocumentEvent(
-                $approval->accidentCase,
+                $accidentCase,
                 $user,
                 $approval->document_type,
                 'APPROVED',
@@ -279,7 +282,7 @@ class ApprovalService
 
             if (!$nextApproval) {
                 $this->timelineService->createDocumentEvent(
-                    $approval->accidentCase,
+                    $accidentCase,
                     $user,
                     $approval->document_type,
                     'WORKFLOW_COMPLETED',
@@ -307,10 +310,13 @@ class ApprovalService
             400
         );
 
+        $accidentCase = $this->resolveApprovalCase($approval);
+
         DB::transaction(function () use (
             $approval,
             $comments,
-            $user
+            $user,
+            $accidentCase
         ) {
 
             $approval->update([
@@ -339,7 +345,7 @@ class ApprovalService
             }
 
             $this->timelineService->createDocumentEvent(
-                $approval->accidentCase,
+                $accidentCase,
                 $user,
                 $approval->document_type,
                 'REJECTED',
@@ -350,6 +356,12 @@ class ApprovalService
         });
 
         return $approval->fresh();
+    }
+
+    /** Resolve the case before changing approval state or writing timeline events. */
+    protected function resolveApprovalCase(Approval $approval): AccidentCase
+    {
+        return AccidentCase::query()->findOrFail($approval->accident_case_id);
     }
 
     /**

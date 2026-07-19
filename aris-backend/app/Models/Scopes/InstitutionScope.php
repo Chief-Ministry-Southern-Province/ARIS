@@ -26,7 +26,7 @@ class InstitutionScope implements Scope
 
          $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
 
-        $builder->where(
+        $builder->whereIn(
             $model->qualifyColumn('institution_id'),
             $institutionIds
         );
