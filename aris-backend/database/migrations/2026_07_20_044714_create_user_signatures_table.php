@@ -19,6 +19,10 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->uuid('public_id')
+                ->unique()
+                ->after('id');
+
             $table->string('disk')->default('private');
 
             $table->string('path');

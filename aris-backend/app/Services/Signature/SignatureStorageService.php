@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SignatureStorageService
 {
-    /**
-     * Store signature file.
-     */
     public function store(User $user, UploadedFile $file): string
     {
         return $file->store(
@@ -20,9 +17,6 @@ class SignatureStorageService
         );
     }
 
-    /**
-     * Delete signature file.
-     */
     public function delete(string $path): void
     {
         if (Storage::disk('private')->exists($path)) {
@@ -30,15 +24,11 @@ class SignatureStorageService
         }
     }
 
-    /**
-     * Stream signature.
-     */
     public function response(string $path): StreamedResponse
     {
         abort_unless(
             Storage::disk('private')->exists($path),
-            404,
-            'Signature not found.'
+            404
         );
 
         return Storage::disk('private')->response($path);

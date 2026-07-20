@@ -31,7 +31,7 @@ class UserSignatureController extends Controller
             'success' => true,
             'message' => 'Signature uploaded successfully.',
             'data' => [
-                'id' => $signature->id,
+                'public_id'=>$signature->public_id,
                 'is_active' => $signature->is_active,
                 'created_at' => $signature->created_at,
             ]
@@ -66,7 +66,7 @@ class UserSignatureController extends Controller
             'has_signature' => (bool) $signature,
             'data' => $signature
                 ? [
-                    'id' => $signature->id,
+                    'public_id' => $signature->public_id,
                     'created_at' => $signature->created_at,
                 ]
                 : null,
