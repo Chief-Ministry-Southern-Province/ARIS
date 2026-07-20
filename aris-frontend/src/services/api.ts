@@ -2,24 +2,24 @@ import axios from "axios";
 
 const api = axios.create({
   //baseURL:"https://aris-api.hopto.org/api",
-  baseURL:'http://localhost:8000/api',
-  headers:{
-    "Content-Type":"application/json"
-  }
-})
+  baseURL: 'http://localhost:8000/api',
+  timeout: 1200000,
+});
 
-api.interceptors.request.use((config)=>{
-
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
-  if(token){
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
+  if (!(config.data instanceof FormData) && !config.headers["Content-Type"]) {
+    config.headers["Content-Type"] = "application/json";
+  }
+
   return config;
-  
-},(error)=>{
+}, (error) => {
   return Promise.reject(error);
-})
+});
 
 export default api;

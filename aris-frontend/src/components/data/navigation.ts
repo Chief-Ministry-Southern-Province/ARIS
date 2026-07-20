@@ -1,4 +1,4 @@
-import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,} from "lucide-react";
+import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,FolderClock} from "lucide-react";
 
 export const FULL_ACCESS_ROLES = [
   "subject_officer",
@@ -78,4 +78,11 @@ export const navItems = [
     label: "nav.adminPanel",
     roles: [...FULL_ACCESS_ROLES, "system_admin"],
   },
+  {
+    id: "approvals",
+    path: "/approvals",
+    icon: FolderClock,
+    label: "nav.approvals",
+    roles: FULL_ACCESS_ROLES,
+  }
 ];

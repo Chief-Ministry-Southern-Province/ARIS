@@ -1,8 +1,8 @@
 import { X, Image, Shield } from "lucide-react";
-import type { Evidence } from "@/types/evidence.type";
+import type { EvidenceResponse } from "@/types/evidence.type";
 
 interface Props {
-  evidence: Evidence;
+  evidence: EvidenceResponse;
   onClose: () => void;
 }
 
@@ -19,10 +19,10 @@ export default function EvidencePreviewModal({
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <div>
             <h2 className="font-semibold text-lg">
-              {evidence.name}
+              {evidence.file_name}
             </h2>
             <p className="text-sm text-gray-500">
-              {evidence.caseId}
+              {evidence.evidence_type} - {evidence.mime_type}
             </p>
           </div>
 
@@ -36,7 +36,7 @@ export default function EvidencePreviewModal({
 
         {/* Preview Area */}
         <div className="h-72 bg-gray-50 flex items-center justify-center border-b">
-          {evidence.type === "photo" ? (
+          {String(evidence.evidence_type).toLowerCase() === "photo" ? (
             <div className="flex flex-col items-center">
               <Image className="w-24 h-24 text-blue-300" />
               <p className="text-gray-400 mt-3">
@@ -72,7 +72,7 @@ export default function EvidencePreviewModal({
               </label>
 
               <p className="mt-1 text-sm text-gray-800">
-                {evidence.uploadedBy}
+                {evidence.uploaded_by?.name ?? "Unknown"}
               </p>
             </div>
 
@@ -82,7 +82,7 @@ export default function EvidencePreviewModal({
               </label>
 
               <p className="mt-1 text-sm text-gray-800">
-                {evidence.date}
+                {evidence.uploaded_at}
               </p>
             </div>
 
@@ -92,7 +92,7 @@ export default function EvidencePreviewModal({
               </label>
 
               <p className="mt-1 text-sm text-gray-800">
-                {evidence.size}
+                {evidence.file_size}
               </p>
             </div>
           </div>

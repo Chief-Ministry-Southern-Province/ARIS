@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Services\InstitutionService;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Institution;
 
 class UserController extends Controller
 {
@@ -23,7 +25,7 @@ class UserController extends Controller
         $institutionIds = app(InstitutionService::class)
             ->accessibleInstitutionIds($request->user());
 
-        $users = User::with(['institution', 'roles'])
+        $users = User::with(['institution', 'roles', 'districts'])
             ->whereIn('institution_id', $institutionIds)
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
@@ -47,10 +49,24 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
+        $data = $request->validated();
+
+        $data['password'] = Hash::make($data['password']);
+
+        $user = User::create($data);
+
         $user->assignRole($request->role);
 
-        return response()->json($user, 201);
+        $institution = $user->institution;
+        if ($institution && $institution->type === 'MINISTRY' && $request->role === 'subject_officer') {
+            if ($request->has('districts')) {
+                foreach ($request->districts as $district) {
+                    $user->districts()->create(['district' => $district]);
+                }
+            }
+        }
+
+        return response()->json($user->load(['institution', 'roles', 'districts']), 201);
     }
 
     /**
@@ -60,7 +76,8 @@ class UserController extends Controller
     {
         return User::with([
             'institution',
-            'roles'
+            'roles',
+            'districts'
         ])->findOrFail($user->id);
     }
 
@@ -72,7 +89,21 @@ class UserController extends Controller
         $user->update($request->validated());
         $user->syncRoles($request->role);
 
-        return response()->json($user);
+        $institution = $user->institution;
+        if ($institution && $institution->type === 'MINISTRY' && $request->role === 'subject_officer') {
+            if ($request->has('districts')) {
+                $user->districts()->delete();
+                foreach ($request->districts as $district) {
+                    $user->districts()->create(['district' => $district]);
+                }
+            } else {
+                $user->districts()->delete();
+            }
+        } else {
+            $user->districts()->delete();
+        }
+
+        return response()->json($user->load(['institution', 'roles', 'districts']));
     }
 
     /**

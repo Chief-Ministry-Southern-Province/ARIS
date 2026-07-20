@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use \App\Models\Scopes\InstitutionScope;
 
 use App\Models\Vehicle;
+use App\Models\Accident;
+use App\Models\AccidentCase;
 
 class Institution extends Model
 {
@@ -34,9 +36,24 @@ class Institution extends Model
         return $this->hasMany(Institution::class, 'parent_institution_id');
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    public function accidents()
+    {
+        return $this->hasMany(Accident::class);
+    }
+
+    public function accidentCases()
+    {
+        return $this->hasMany(AccidentCase::class);
     }
 
 }

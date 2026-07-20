@@ -1,24 +1,23 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
+ 
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import { useTranslation } from "react-i18next";
-import { useUpdateInstitution,useGetAllowedInstitutionTypes, useGetParentInstitutions } from "@/hooks/useInstitution";
+import { useUpdateInstitutionMutation } from "@/hooks/mutations/useResourceMutations";
+import { useInstitution, useInstitutionTypes, useParentInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import type { updateInstitutionRequest } from "@/types/Institution.type";
 import { useEffect, useState } from "react";
 import {formatInstitutionType} from "@/utils/formatInstitution";
 import { toast } from "react-toastify";
-import { useGetInstitutionById } from "@/hooks/useInstitution";
 import Loader from "@/components/atoms/Loader";
 
 const EditInstitutionForm = ({ onSuccess, institutionId,setShowEditInstitution }: { onSuccess: () => void; institutionId: string, setShowEditInstitution: React.Dispatch<React.SetStateAction<boolean>> }) => {
   
   const { t } = useTranslation();
-  const { updateInstitutionData } = useUpdateInstitution();
-  const { institutionTypes,fetchAllowedInstitutionTypes, loading } = useGetAllowedInstitutionTypes();
-  const { parentInstitutions, fetchParentInstitutions, loading: parentInstitutionsLoading } = useGetParentInstitutions();
-
-  const { institution, fetchInstitutionById, loading: institutionLoading } = useGetInstitutionById();
+  const { mutateAsync: updateInstitutionData } = useUpdateInstitutionMutation();
+  const { data: institutionTypes = [], isLoading: loading } = useInstitutionTypes();
+  const { data: parentInstitutions = [], isLoading: parentInstitutionsLoading } = useParentInstitutions();
+  const { data: institution, isLoading: institutionLoading } = useInstitution(Number(institutionId));
 
   const [institutionData, setInstitutionData] = useState<updateInstitutionRequest>({
     name: "",
@@ -30,12 +29,6 @@ const EditInstitutionForm = ({ onSuccess, institutionId,setShowEditInstitution }
     contact_number: "",
     address: ""
   });
-  useEffect(() => {
-    fetchAllowedInstitutionTypes();
-    fetchParentInstitutions();
-    fetchInstitutionById(institutionId);
-  }, [institutionId]);
-
   useEffect(() => {
     if (institution) {
       setInstitutionData({
@@ -58,7 +51,7 @@ const EditInstitutionForm = ({ onSuccess, institutionId,setShowEditInstitution }
       setIsSubmitting(true);
 
       //console.log("Updating institution with data:", institutionData);
-      const response = await updateInstitutionData(institutionId, institutionData);
+      const response = await updateInstitutionData({ id: Number(institutionId), data: institutionData });
 
       console.log("Institution updated:", response);
 

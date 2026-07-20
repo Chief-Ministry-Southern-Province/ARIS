@@ -1,68 +1,53 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Filter} from "lucide-react";
-import { mockCases } from "../../components/data/mockData";
+import { Search, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { FolderSearch , Download} from "lucide-react";
+import { FolderSearch, Download, Loader2 } from "lucide-react";
+import { useCases } from "@/hooks/queries/useCaseQueries";
 
 export function CaseManagement() {
-  
+
   const { t } = useTranslation();
 
   const navigate = useNavigate();
 
   const statusBadgeColors: Record<string, string> = {
-    "Pending Approval": "bg-yellow-100 text-yellow-800",
-    "Under Investigation": "bg-blue-100 text-blue-800",
-    "Approved": "bg-green-100 text-green-800",
-    "Rejected": "bg-red-100 text-red-800",
-    "Completed": "bg-gray-100 text-gray-800",
-    "Draft": "bg-gray-100 text-gray-800",
-    "In Progress": "bg-blue-100 text-blue-800",
+    "OPEN": "bg-yellow-100 text-yellow-800",
+    "IN_PROGRESS": "bg-blue-100 text-blue-800",
+    "ON_HOLD": "bg-orange-100 text-orange-800",
+    "COMPLETED": "bg-green-100 text-green-800",
+    "CLOSED": "bg-gray-100 text-gray-800",
   };
 
-  const years = [
-    "all",
-    ...Array.from(
-      new Set(
-        mockCases.map((c) =>
-          new Date(c.date).getFullYear().toString()
-        )
-      )
-    ).sort((a, b) => Number(b) - Number(a)),
-  ];
+  const severityBadgeColors: Record<string, string> = {
+    "MINOR": "bg-yellow-100 text-yellow-800",
+    "MAJOR": "bg-orange-100 text-orange-800",
+    "FATAL": "bg-red-100 text-red-800",
+  };
+
+  const priorityBadgeColors: Record<string, string> = {
+    "LOW": "bg-gray-100 text-gray-600",
+    "MEDIUM": "bg-blue-100 text-blue-700",
+    "HIGH": "bg-orange-100 text-orange-700",
+    "URGENT": "bg-red-100 text-red-700",
+  };
 
   const [search, setSearch] = useState("");
-  const [selectedYear, setSelectedYear] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedSeverity, setSelectedSeverity] = useState("");
+  const [page, setPage] = useState(1);
+  const { data, isLoading: loading, error: queryError } = useCases(page, search);
+  const accidentCases = data?.data ?? [];
+  const currentPage = data?.current_page ?? page;
+  const lastPage = data?.last_page ?? 1;
+  const total = data?.total ?? 0;
+  const error = queryError instanceof Error ? queryError.message : "";
 
-  const filtered = mockCases.filter((c) => {
-    const matchSearch =
-      c.case_id
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      c.title
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      c.institution
-        .toLowerCase()
-        .includes(search.toLowerCase());
+  const handlePageChange = (nextPage: number) => setPage(nextPage);
 
-    const matchYear =
-      selectedYear === "all" ||
-      new Date(c.date).getFullYear().toString() ===
-        selectedYear;
-
-    const matchStatus =
-      selectedStatus === "all" ||
-      c.status === selectedStatus;
-
-    return (
-      matchSearch &&
-      matchYear &&
-      matchStatus
-    );
-  });
+  const formatLabel = (value: string) => {
+    return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  };
 
   return (
     <div className="p-6 space-y-5">
@@ -79,11 +64,18 @@ export function CaseManagement() {
             </h1>
 
             <p className="text-sm text-gray-500 mt-0.5">
-              {filtered.length} {t("caseManagement.casesFound")}
+              {total} {t("caseManagement.casesFound")}
             </p>
           </div>
         </div>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-medium">
+          {error}
+        </div>
+      )}
 
       {/* filters */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
@@ -98,72 +90,54 @@ export function CaseManagement() {
               placeholder={`${t("caseManagement.search")}...`}
               value={search}
               onChange={(e) =>
-                setSearch(e.target.value)
+                (setPage(1), setSearch(e.target.value))
               }
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Year Filter */}
+          {/* Severity Filter */}
           <select
-            value={selectedYear}
+            value={selectedSeverity}
             onChange={(e) =>
-              setSelectedYear(e.target.value)
+                (setPage(1), setSelectedSeverity(e.target.value))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">
-              All Years
+            <option value="">
+              All Severity
             </option>
-
-            {years
-              .filter((y) => y !== "all")
-              .map((year) => (
-                <option
-                  key={year}
-                  value={year}
-                >
-                  {year}
-                </option>
-              ))}
+            <option value="MINOR">Minor</option>
+            <option value="MAJOR">Major</option>
+            <option value="FATAL">Fatal</option>
           </select>
 
           {/* Status Filter */}
           <select
             value={selectedStatus}
             onChange={(e) =>
-              setSelectedStatus(e.target.value)
+                (setPage(1), setSelectedStatus(e.target.value))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">
+            <option value="">
               All Status
             </option>
 
-            <option value="Pending">
-              Pending
-            </option>
-
-            <option value="Under Investigation">
-              Under Investigation
-            </option>
-
-            <option value="Approved">
-              Approved
-            </option>
-
-            <option value="Rejected">
-              Rejected
-            </option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="ON_HOLD">On Hold</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CLOSED">Closed</option>
           </select>
 
           <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
             <Filter className="w-4 h-4 text-blue-600" />
             <span className="text-sm font-medium text-blue-700">
-              {filtered.length} Results
+              {total} Results
             </span>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -178,6 +152,12 @@ export function CaseManagement() {
       {/* Cases Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
+          {loading ? (
+            <div className="py-12 text-center">
+              <Loader2 className="w-8 h-8 text-blue-500 mx-auto mb-3 animate-spin" />
+              <p className="text-gray-400 text-sm">Loading cases...</p>
+            </div>
+          ) : (
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
@@ -206,97 +186,95 @@ export function CaseManagement() {
                 </th>
 
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Severity
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Stage
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Priority
+                </th>
+
+                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   {t(
                     "caseManagement.table.status"
                   )}
                 </th>
-
-                {/* <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  {t(
-                    "caseManagement.table.actions"
-                  )}
-                </th> */}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-50">
-              {filtered.map((c) => (
+              {accidentCases.map((accidentCase) => (
                 <tr
-                  key={c.id}
+                  key={accidentCase.id}
                   className="hover:bg-blue-50 transition-colors cursor-pointer"
-                  onClick={() => navigate(`/cases/${c.id}/details`)}
+                  onClick={() => navigate(`/cases/${accidentCase.id}/details`)}
                 >
                   <td className="px-5 py-3">
                     <span className="font-mono text-xs font-semibold text-blue-700">
-                      {c.case_id}
+                      {accidentCase.case_number}
+                    </span>
+                    <div className="text-gray-400 text-xs font-mono">
+                      {accidentCase.accident?.reference_number}
+                    </div>
+                  </td>
+
+                  <td className="px-5 py-3">
+                    <div className="text-gray-400 text-xs">
+                      {accidentCase.accident?.location}
+                    </div>
+                  </td>
+
+                  <td className="px-5 py-3 text-xs text-gray-600">
+                    {accidentCase.institution?.name || "N/A"}
+                  </td>
+
+                  <td className="px-5 py-3 text-xs text-gray-500 whitespace-nowrap">
+                    {accidentCase.accident?.accident_date
+                      ? new Date(accidentCase.accident.accident_date).toLocaleDateString()
+                      : "N/A"}
+                  </td>
+
+                  <td className="px-5 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accidentCase.accident?.severity] || "bg-gray-100 text-gray-800"}`}
+                    >
+                      {accidentCase.accident?.severity
+                        ? formatLabel(accidentCase.accident.severity)
+                        : "N/A"}
+                    </span>
+                  </td>
+
+                  <td className="px-5 py-3 text-xs text-gray-600">
+                    {formatLabel(accidentCase.current_stage)}
+                  </td>
+
+                  <td className="px-5 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityBadgeColors[accidentCase.priority] || "bg-gray-100 text-gray-800"}`}
+                    >
+                      {formatLabel(accidentCase.priority)}
                     </span>
                   </td>
 
                   <td className="px-5 py-3">
-                    <div className="font-medium text-gray-800 text-xs">
-                      {c.title}
-                    </div>
-
-                    <div className="text-gray-400 text-xs">
-                      {c.location}
-                    </div>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accidentCase.status] || "bg-gray-100 text-gray-800"}`}
+                    >
+                      {formatLabel(accidentCase.status)}
+                    </span>
                   </td>
-
-                  <td className="px-5 py-3 text-xs text-gray-600">
-                    {c.institution}
-                  </td>
-
-                  <td className="px-5 py-3 text-xs text-gray-500 whitespace-nowrap">
-                    {c.date}
-                  </td>
-
-                  <td className="px-5 py-3 text-xs text-gray-600">
-                    {statusBadgeColors[c.status] ? (
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[c.status]}`}
-                      >
-                        {c.status}
-                      </span>
-                    ) : (
-                      <span className="text-gray-500">{c.status}</span>
-                    )}
-                  </td>
-
-                  {/* <td className="px-5 py-3">
-                    <div className="flex items-center gap-1">
-                      
-                      <button
-                         onClick={() =>
-                          navigate(
-                            `/cases/${c.id}/details`
-                          )
-                        }
-                        className="p-1.5 rounded hover:bg-blue-50 text-blue-600 transition-colors"
-                        title="View"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/cases/${c.id}/approval-workflow`
-                          )
-                        }
-                        className="p-1.5 rounded hover:bg-green-50 text-green-600 transition-colors"
-                        title="Approval Workflow"
-                      >
-                        <Workflow className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td> */}
                 </tr>
               ))}
             </tbody>
           </table>
+          )}
         </div>
 
         {/* Empty State */}
-        {filtered.length === 0 && (
+        {!loading && accidentCases.length === 0 && (
           <div className="py-12 text-center">
             <Search className="w-10 h-10 text-gray-200 mx-auto mb-3" />
 
@@ -314,29 +292,44 @@ export function CaseManagement() {
             {t(
               "caseManagement.pagination.showing"
             )}{" "}
-            {filtered.length}{" "}
+            {accidentCases.length}{" "}
             {t("caseManagement.pagination.of")}{" "}
-            {mockCases.length}{" "}
+            {total}{" "}
             {t(
               "caseManagement.pagination.cases"
             )}
           </span>
 
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="px-3 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               {t(
                 "caseManagement.pagination.previous"
               )}
             </button>
 
-            <button
-              className="px-3 py-1.5 rounded text-xs text-white"
-              style={{ background: "#1E40AF" }}
-            >
-              1
-            </button>
+            {Array.from({ length: lastPage }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-3 py-1.5 rounded text-xs ${
+                  page === currentPage
+                    ? "text-white bg-blue-700"
+                    : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
 
-            <button className="px-3 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50">
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage >= lastPage}
+              className="px-3 py-1.5 border border-gray-200 rounded text-xs text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               {t(
                 "caseManagement.pagination.next"
               )}

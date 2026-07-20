@@ -1,9 +1,8 @@
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { InputField } from "@/components/atoms/InputField";
 import { FormField } from "@/components/molecules/FormField";
-import { useGetUserById } from "@/hooks/useUser";
+import { useUser } from "@/hooks/queries/useUserQueries";
 import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
 import Loader from "@/components/atoms/Loader";
 
@@ -17,11 +16,8 @@ export default function ViewUserForm({onClose,userId}: ViewUserFormProps) {
 
   const roleList = selectRoleBaseOnUserInstitutionType();
 
-  const {fetchUserById,user,loading,error,} = useGetUserById();
-
-  useEffect(() => {
-    fetchUserById(Number(userId));
-  }, [userId]);
+  const { data: user, isLoading: loading, error: queryError } = useUser(Number(userId));
+  const error = queryError instanceof Error ? queryError.message : "";
 
   if (loading) {
     return (
@@ -133,6 +129,17 @@ export default function ViewUserForm({onClose,userId}: ViewUserFormProps) {
                   className="bg-gray-50 border-gray-200 cursor-default"
                 />
               </FormField>
+
+              {/* Assigned Districts */}
+              {user.roles[0]?.name === "subject_officer" && user.institution?.type === "MINISTRY" && (
+                <FormField label={t("adminPanel.users.assignedDistricts")}>
+                  <InputField
+                    value={user.districts?.map((d) => d.district).join(", ") || "None"}
+                    readOnly
+                    className="bg-gray-50 border-gray-200 cursor-default"
+                  />
+                </FormField>
+              )}
 
             </div>
           </div>

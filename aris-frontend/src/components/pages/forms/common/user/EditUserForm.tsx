@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -10,8 +10,9 @@ import type { updateUserRequest } from "@/types/User.type";
 
 import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
 
-import { useGetVisibleInstitutionsForUser } from "@/hooks/useInstitution";
-import { useGetUserById,useUpdateUser,} from "@/hooks/useUser";
+import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
+import { useUser } from "@/hooks/queries/useUserQueries";
+import { useUpdateUserMutation } from "@/hooks/mutations/useResourceMutations";
 
 interface EditUserFormProps {
   userId: string;
@@ -30,18 +31,13 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
     role: "",
     institution_id: 0,
     mobile: "",
+    districts: [],
   });
 
-  const {fetchVisibleInstitutions,institutions,loading: institutionLoading,} = useGetVisibleInstitutionsForUser();
-
-  const {fetchUserById,user: userData,loading: userLoading,} = useGetUserById();
-
-  const {updateUserData,loading: updateLoading, } = useUpdateUser();
-
-  useEffect(() => {
-    fetchVisibleInstitutions();
-    fetchUserById(Number(userId));
-  }, [userId]);
+  const { data: institutions = [], isLoading: institutionLoading } = useVisibleInstitutions();
+  const { data: userData, isLoading: userLoading } = useUser(Number(userId));
+  const { mutateAsync: updateUserData, isPending: updateLoading, error: updateMutationError } = useUpdateUserMutation();
+  const updateError = updateMutationError instanceof Error ? updateMutationError.message : "";
 
   useEffect(() => {
     if (!userData) return;
@@ -52,6 +48,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
       mobile: userData.mobile,
       role: userData.roles[0]?.name ?? "",
       institution_id: userData.institution_id,
+      districts: userData.districts?.map((d) => d.district) ?? [],
     });
   }, [userData]);
 
@@ -60,19 +57,34 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
   ) => {
     const { name, value } = e.target;
 
-    setUser((prev) => ({
-      ...prev,
-      [name]:
-        name === "institution_id"
-          ? Number(value)
-          : value,
-    }));
+    setUser((prev) => {
+      const updatedValue = name === "institution_id" ? Number(value) : value;
+      const updatedUser = { ...prev, [name]: updatedValue };
+
+      // Clear districts if the conditions are no longer met
+      const selectedInst = institutions.find(inst => inst.id === Number(updatedUser.institution_id));
+      const isMinistry = selectedInst?.type === "MINISTRY";
+      const isSubjectOfficer = updatedUser.role === "subject_officer";
+      if (!isMinistry || !isSubjectOfficer) {
+        updatedUser.districts = [];
+      }
+      return updatedUser;
+    });
   };
 
   const handleUpdateUser = async () => {
-    await updateUserData(Number(userId), user);
-    onSuccess();
+    try {
+      await updateUserData({ id: Number(userId), data: user });
+      onSuccess();
+    } catch (e) {
+      // Handled by hook
+    }
   };
+
+  const selectedInstitution = institutions.find(inst => inst.id === Number(user.institution_id));
+  const isMinistry = selectedInstitution?.type === "MINISTRY";
+  const isSubjectOfficer = user.role === "subject_officer";
+  const showDistrictSelection = isMinistry && isSubjectOfficer;
 
   if (userLoading) {
     return (
@@ -180,7 +192,43 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
           />
         </FormField>
 
+        {showDistrictSelection && (
+          <div className="md:col-span-2">
+            <FormField label={t("adminPanel.users.assignedDistricts")} required>
+              <div className="flex gap-6 mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                {["Galle", "Matara", "Hambantota"].map((district) => (
+                  <label key={district} className="flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value={district}
+                      checked={user.districts?.includes(district) || false}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setUser((prev) => {
+                          const currentDistricts = prev.districts || [];
+                          const newDistricts = checked
+                            ? [...currentDistricts, district]
+                            : currentDistricts.filter((d) => d !== district);
+                          return { ...prev, districts: newDistricts };
+                        });
+                      }}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    {district}
+                  </label>
+                ))}
+              </div>
+            </FormField>
+          </div>
+        )}
+
       </div>
+
+      {updateError && (
+        <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-200">
+          {updateError}
+        </div>
+      )}
 
       <div className="flex justify-end gap-3 mt-8">
 

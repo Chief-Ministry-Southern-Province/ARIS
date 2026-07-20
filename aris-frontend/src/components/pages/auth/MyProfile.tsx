@@ -1,30 +1,12 @@
 import { Building2, Phone, Shield, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getProfile } from "@/services/auth.service";
-import { useEffect, useState } from "react";
-import type { ProfileResponse } from "@/types/User.type";
+import { useProfile } from "@/hooks/useAuth";
 import Loader from "@/components/atoms/Loader";
 
 export default function MyProfile() {
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await getProfile();
-        setProfile(response);
-      } catch (error) {
-        console.error("Failed to load profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const { data: profile, isLoading: loading } = useProfile();
 
   if (loading) {
     return (

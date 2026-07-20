@@ -13,7 +13,8 @@
     "digitalSignatures": "ඩිජිටල් අත්සන්",
     "analytics": "විශ්ලේෂණ",
     "adminPanel": "පරිපාලන පැනලය",
-    "notifications": "දැනුම්දීම්"
+    "notifications": "දැනුම්දීම්",
+    "approvals": "අනුමත කිරීම්"
   },
   "app": {
     "name": "අනතුරු වාර්තා පද්ධතිය",
@@ -21,7 +22,10 @@
     "subtitle": "ශ්‍රී ලංකා රජය — සෞඛ්‍ය අමාත්‍යාංශය"
   },
   "common": {
-    "logout": "ඉවත් වන්න"
+    "logout": "ඉවත් වන්න",
+    "loading": "පූරණය වෙමින්...",
+    "select": "තෝරන්න",
+    "search": "සොයන්න"
   },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",
@@ -42,7 +46,7 @@
   },
   "report": {
     "title": "නව අනතුරු වාර්තාව",
-    "subtitle": "අනතුරු වාර්තාව ඉදිරිපත් කිරීමට සියලු පියවර සම්පූර්ණ කරන්න",
+    "subtitle": "වාහන අනතුරේ විස්තර සටහන් කර ඉදිරිපත් කරන්න.",
     "incidentDetails": "සිදුවීමේ විස්තර",
     "accidentDate": "අනතුරු දිනය",
     "accidentTime": "අනතුරු වේලාව",
@@ -64,7 +68,38 @@
     "roadCondition": "මාර්ග / කාලගුණ තත්ත්ව",
     "selectCondition": "තත්ත්වය තෝරන්න",
     "mapHint": "සිතියමේ අනතුරු ස්ථානය සලකුණු කිරීමට ක්ලික් කරන්න",
-    "evidenceImages": "සාක්ෂි පින්තූර"
+    "evidenceImages": "සාක්ෂි පින්තූර",
+    "weatherCondition": "කාලගුණ තත්ත්වය",
+    "UploadEvidenceImages": "සාක්ෂි පින්තූර උඩුගත කරන්න",
+    "fatalities": "මරණ",
+    "VehicleCollision": "වාහන ගැටීම",
+    "JourneyAuthorized": "ගමන නිල වශයෙන් අනුමත",
+    "journeyAuthorized": {
+      "label": "ගමන නිල වශයෙන් අනුමත කර තිබුණාද?",
+      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න."
+    },
+    "severityOptions": {
+    "MINOR": "සුළු",
+    "MAJOR": "බරපතල",
+    "FATAL": "මාරාන්තික"
+    },
+    "roadConditionOptions": {
+      "DRY": "වියළි",
+      "WET": "තෙත්",
+      "FLOODED": "ජලයෙන් යටවූ",
+      "GRAVEL": "බොරළු මාර්ගය",
+      "UNDER_CONSTRUCTION": "ඉදිකිරීම් සිදු කෙරෙන",
+      "OTHER": "වෙනත්"
+    },
+    "weatherConditionOptions": {
+      "SUNNY": "සාමාන්‍ය",
+      "RAINY": "වැසි සහිත",
+      "CLOUDY": "වළාකුළු සහිත",
+      "FOGGY": "මීදුම් සහිත",
+      "WINDY": "සුළං සහිත",
+      "OTHER": "වෙනත්"
+    },
+    "EnvironmentalConditions": "පරිසර තත්ත්වය"
   },
   "btn": {
     "next": "ඊළඟ",
@@ -74,12 +109,12 @@
     "print": "මුද්‍රණය",
     "finalize": "අවසන් කරන්න"
   } ,
-    "login": {
+  "login": {
     "login": "පිවිසෙන්න",
     "username_placeholder": "ඔබගේ පරිශීලක නාමය ඇතුලත් කරන්න",
     "password_placeholder": "ඔබගේ මුරපදය ඇතුලත් කරන්න",
-    "usernameRequired": "කරුණාකර ඔබගේ පරිශීලක නාමය ඇතුළත් කරන්න",
-    "passwordRequired": "කරුණාකර ඔබගේ මුරපදය ඇතුළත් කරන්න",
+    "usernameRequired": "කරුණාකර ඔබගේ පරිශීලක නාමය ඇතුලත් කරන්න",
+    "passwordRequired": "කරුණාකර ඔබගේ මුරපදය ඇතුලත් කරන්න",
     "loginFailed": "පිවිසීම අසාර්ථක විය",
     "username": "පරිශීලක නාමය",
     "password": "මුරපදය",
@@ -132,6 +167,7 @@
     },
 
     "details": {
+      "caseId": "නඩු අංකය",
       "dateTime": "දිනය සහ වේලාව",
       "location": "ස්ථානය",
       "vehicle": "වාහනය",
@@ -170,6 +206,7 @@
     "formNo": "මු. රෙ. 104 (3)",
     "subtitle": "රජයේ දේපළ අලාභ පිළිබඳ වාර්තාව",
 
+    "generalInformation": "සාමාන්‍ය තොරතුරු",
     "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
     "date": "දිනය",
     "place": "ස්ථානය",
@@ -207,11 +244,29 @@
 
     "approval": "අනුමැතිය",
 
-    "submit": "වාර්තාව ඉදිරිපත් කරන්න"
+    "status": "තත්ත්වය",
+    "draft": "කෙටුම්පත",
+    "submit": "වාර්තාව ඉදිරිපත් කරන්න",
+    "approve": "අනුමත කරන්න",
+    "saveDraft": "කෙටුම්පත සුරකින්න",
+    "print": "මුද්‍රණය කරන්න"
   },
-  "fr104_4": {
+ "fr104_4": {
     "title": "මු. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ අවසාන වාර්තාව",
     "subtitle": "නොසැලකිල්ල හා අයකර ගැනීමේ තක්සේරුව",
+
+    "meta": {
+      "revisionLabel": "සංශෝධනය",
+      "revisionValue": "සංශෝධනය",
+      "statusLabel": "තත්ත්වය",
+      "status": {
+        "DRAFT": "කෙටුම්පත",
+        "SUBMITTED": "ඉදිරිපත් කර ඇත",
+        "UNDER_APPROVAL": "අනුමැතිය සඳහා",
+        "CHANGES_REQUESTED": "වෙනස්කම් ඉල්ලා ඇත",
+        "APPROVED": "අනුමත කර ඇත"
+      }
+    },
 
     "sections": {
       "generalInformation": "සාමාන්‍ය තොරතුරු",
@@ -226,7 +281,8 @@
       "boardOfInquiry": "විමර්ශන මණ්ඩලය",
       "recommendations": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
       "approval": "අනුමැතිය",
-      "legalAction": "ගත් නීතිමය ක්‍රියාමාර්ග පිළිබඳ විස්තර"
+      "legalAction": "ගත් නීතිමය ක්‍රියාමාර්ග පිළිබඳ විස්තර",
+      "forwarding": "අමාත්‍යාංශය වෙත යොමු කිරීම"
     },
     "generalInformation": {
       "referenceNo": "යොමු අංකය",
@@ -235,7 +291,10 @@
       "lossTime": "අලාභ වූ වේලාව",
       "location": "ස්ථානය",
       "preliminaryReportRefNo": "ප්‍රරම්භක වාර්තාව - යොමු අංකය",
-      "preliminaryReportDate": "ප්‍රරම්භක වාර්තා දිනය"
+      "preliminaryReportDate": "ප්‍රරම්භක වාර්තා දිනය",
+      "copyToAuditorGeneral": "පිටපත: විගණකාධිපති වෙත",
+      "yes": "ඔව්",
+      "no": "නැත"
     },
 
     "lossDetails": {
@@ -244,7 +303,10 @@
     },
 
     "causeOfLoss": {
-      "label": "නොසැලකිල්ල, ප්‍රමාදය, අතපසුකිරීම් හෝ වෙනත් හේතු"
+      "question": "එය වංචාවක්, නොසැලකිල්ලක්, ප්‍රමාදයක්, අතපසුවීමක් හෝ වෙනත් වරදක් නිසා සිදු වූවක්ද?",
+      "yes": "ඔව්",
+      "no": "නැත",
+      "label": "නොසැලකිල්ල, ප්‍රමාදය, අතපසුකිරීම් හෝ වෙනත් හේතු පිළිබඳ විස්තර"
     },
 
     "lostItems": {
@@ -253,6 +315,7 @@
       "quantity": "ප්‍රමාණය",
       "estimatedCost": "ඇස්තමේන්තුගත වටිනාකම",
       "replacementCost": "ප්‍රතිස්ථාපන වටිනාකම",
+      "fr105Value": "මු.රෙ. 105(1) ප්‍රකාරව වටිනාකම",
       "originalCost": "මුල් වටිනාකම",
       "addItem": "භාණ්ඩයක් එක් කරන්න",
       "remove": "ඉවත් කරන්න"
@@ -323,6 +386,12 @@
       "signature": "අත්සන"
     },
 
+    "forwarding": {
+      "refNo": "S.T. / යොමු අංකය",
+      "date": "යොමු කළ දිනය",
+      "note": "අමාත්‍යාංශයේ ලේකම් වෙත යොමු කරන ලදී."
+    },
+
     "buttons": {
       "print": "මුද්‍රණය",
       "saveDraft": "කෙටුම්පත සුරකින්න",
@@ -354,7 +423,98 @@
       "k": "K කොටස",
       "l": "L කොටස",
       "m": "M කොටස",
-      "n": "N කොටස"
+      "n": "N කොටස",
+      "o": "O කොටස"
+    }
+  },
+
+   "fr109": {
+    "title": "ශ්‍රී. රෙ. 109",
+    "subtitle": "ශ්‍රී. රෙ. 109 යටතේ අලාභයන් පොතෙන් කපා හැරීම සඳහා ඉල්ලුම් පත්‍රය",
+    "meta": {
+      "refNo": "යොමු අංකය",
+      "revisionLabel": "සංශෝධනය",
+      "revisionValue": "සංශෝ.",
+      "statusLabel": "තත්ත්වය",
+      "status": {
+        "DRAFT": "කෙටුම්පත",
+        "SUBMITTED": "ඉදිරිපත් කරන ලදී",
+        "UNDER_APPROVAL": "අනුමැතිය සඳහා",
+        "CHANGES_REQUESTED": "වෙනස්කම් ඉල්ලා ඇත",
+        "APPROVED": "අනුමත කරන ලදී"
+      }
+    },
+    "parts": {
+      "a": "A කොටස",
+      "b": "B කොටස",
+      "c": "C කොටස",
+      "d": "D කොටස",
+      "e": "E කොටස",
+      "f": "F කොටස",
+      "g": "G කොටස",
+      "h": "H කොටස",
+      "i": "I කොටස",
+      "j": "J කොටස"
+    },
+    "sections": {
+      "department": "දෙපාර්තමේන්තුව",
+      "report": "වාර්තාව",
+      "particularsOfProperty": "දේපළ පිළිබඳ විස්තර",
+      "valueOfLoss": "අලාභයේ වටිනාකම",
+      "legalActionAndSurcharges": "නීතිමය ක්‍රියාමාර්ගයේ ප්‍රතිඵලය සහ පනවන ලද අධිභාර",
+      "nonRecoveryAndAction": "අධිභාර නොහොබීමට හේතු සහ ගන්නා ලද ක්‍රියාමාර්ග",
+      "headOfDepartmentOrder": "ශ්‍රී. රෙ. 109 යටතේ දෙපාර්තමේන්තු ප්‍රධානියාගේ හෝ සංස්ථාවේ සභාපතිගේ නිර්දේශය",
+      "chiefAccountingOfficerOrder": "ශ්‍රී. රෙ. 108(1) යටතේ ප්‍රධාන ගණකාධිකාරී නිලධාරියාගේ නියෝගය හෝ ශ්‍රී. රෙ. 108(3) යටතේ නිර්දේශය",
+      "writeOffDecision": "පොතෙන් කපා හැරීමේ අනුමැතිය",
+      "writeOffNotedIn": "පොතෙන් කපා හැරීම සටහන් කළ ස්ථානය"
+    },
+    "fields": {
+      "department": "දෙපාර්තමේන්තුව",
+      "reportReferenceNo": "යොමු අංකය",
+      "preliminaryDate": "ප්‍රාථමික වාර්තාවේ දිනය",
+      "preliminary": "ප්‍රාථමික වාර්තාව",
+      "final": "අවසන් වාර්තාව",
+      "finalReportReferenceNo": "අවසන් වාර්තාවේ යොමු අංකය",
+      "preliminaryReportReferenceNo": "ප්‍රාථමික වාර්තාවේ යොමු අංකය",
+      "finalDate": "අවසාන වාර්තාවේ දිනය",
+      "descriptionOfProperty": "දේපළෙහි විස්තරය",
+      "surchargedOfficer": "පනවන ලද අධිභාරය අය කළ නිලධාරියාගේ නම",
+      "addOfficer": "නිලධාරියෙකු එක් කරන්න",
+      "remove": "ඉවත් කරන්න",
+      "quantity": "ප්‍රමාණය",
+      "originalCost": "මුල් පිරිවැය",
+      "estimatedCostAtTimeOfLoss": "අලාභය සිදු වූ අවස්ථාවේ දළ හෝ තක්සේරු කළ පිරිවැය",
+      "replacementValue": "ප්‍රතිස්ථාපන වටිනාකම හෝ අලුත්වැඩියා වියදම",
+      "valueUnderFr105": "මු. රෙ. 105(1) යටතේ වටිනාකම",
+      "amountRecovered": "වගකිව යුතු නිලධාරීන්ගෙන් / රක්ෂණයෙන් / ඇපකරයෙන් අය කරගත් මුදල",
+      "netLoss": "විදේශ විනිමය පිරිවැය, රේගු බදු, දෙපාර්තමේන්තු ගාස්තු ඇතුළත් ශුද්ධ අලාභය",
+      "nameOfCourt": "අධිකරණයේ නම",
+      "caseNo": "නඩු අංකය",
+      "outcomeOfLegalAction": "නීතිමය ක්‍රියාමාර්ගයේ ප්‍රතිඵලය / අධිකරණ නියෝගය",
+      "nameOfOfficer": "නිලධාරියාගේ නම",
+      "designation": "තනතුර",
+      "amountSurcharged": "පනවන ලද අධිභාර මුදල",
+      "amountRecoveredSurcharge": "අය කරගත් මුදල",
+      "dateOfRecovery": "අය කරගත් දිනය",
+      "receiptNo": "රිසිට් අංකය",
+      "creditParticulars": "බැර කළ විස්තර",
+      "balanceNotRecovered": "අය කරගැනීමට ඉතිරි ශේෂය",
+      "reasonsForNonRecovery": "නියමිත අධිභාර නොහොබූ හේතු",
+      "actionTakenDetails": "නිලධාරියා සේවයේ නොමැති නම්, ඔහුගේ වත්කම්වලින් හිඟය අයකර ගැනීමට ගත් ක්‍රියාමාර්ග විස්තර",
+      "resultsOfAction": "ඉහත ක්‍රියාමාර්ගයේ ප්‍රතිඵල",
+      "chiefAccountantDate": "දිනය",
+      "chiefAccountantSignature": "ප්‍රධාන ගණකාධිකාරීගේ අත්සන",
+      "secretaryToMinistryOf": "අමාත්‍යාංශයේ ලේකම්",
+      "date": "දිනය",
+      "serialNo": "අනු. අංකය",
+      "refNo": "යොමු අංකය",
+      "writeOffStatus": "කපා හැරීමේ තත්ත්වය",
+      "authorised": "අනුමත කරන ලදී",
+      "notApproved": "අනුමත කර නොමැත",
+      "stockBookFolio": "තොග පොත් පිටුව",
+      "inventoryBookFolio": "වත්කම් ලේඛන පොත් පිටුව",
+      "fixedAssetsRegisterFolio": "ස්ථාවර වත්කම් ලේඛනයේ පිටුව",
+      "ledgerFolio": "ලෙජරයේ පිටුව"
     }
   },
   "digitalSignature": {
@@ -435,7 +595,8 @@
       "actions": "ක්‍රියාමාර්ග",
       "active": "සක්‍රීය",
       "edit": "සංස්කරණය",
-      "delete": "මකන්න"
+      "delete": "මකන්න",
+      "assignedDistricts": "පැවරුණු දිස්ත්‍රික්ක"
     },
 
     "roles": {
@@ -575,7 +736,10 @@
     "tabs": {
       "details": "විස්තර",
       "actions": "ක්‍රියාමාර්ග",
-      "workflow": "කාර්ය ප්‍රවාහය"
+      "workflow": "කාර්ය ප්‍රවාහය",
+      "evidence": "විශ්ලේෂණ",
+      "investigationTeam": "විමර්ශන කණ්ඩායම",
+      "timeline": "කාලරේඛාව"
     }
   },
    "analytics": {

@@ -17,13 +17,15 @@ import { CaseManagement } from "@/components/pages/CaseManagement";
 import AdminPanel from "@/components/pages/AdminPanel";
 import Notifications from "@/components/pages/Notifications";
 import DigitalSignatures from "@/components/pages/DigitalSignatures";
-import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
+//import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import CaseDetails from "@/components/pages/CaseDetails";
 import VehicleDetails from "@/components/pages/VehicleDetails";
+import ApprovalCenter from "@/components/pages/ApprovalCenter";
+import ApprovalDocumentViewer from "@/components/pages/ApprovalDocumentViewer";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
-
+import FR109Form from "@/components/pages/forms/FR109/FR109Form";
 import UnauthorizedPage from "@/components/pages/UnauthorizedPage";
 
 import LazyChart from "@/utils/LazyChart";
@@ -106,13 +108,13 @@ export const router = createBrowserRouter([
       protectedPage(
         "/profile",
         <MyProfile />,
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
         "/change-password",
         <ChangePassword />,
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
@@ -121,9 +123,19 @@ export const router = createBrowserRouter([
         FULL_ACCESS_ROLES
       ),
 
+      // protectedPage(
+      //   "/approval-workflow",
+      //   <ApprovalWorkflow />,
+      //   FULL_ACCESS_ROLES
+      // ),
       protectedPage(
-        "/approval-workflow",
-        <ApprovalWorkflow />,
+        "/approvals",
+        <ApprovalCenter />,
+        FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/approvals/:approvalId",
+        <ApprovalDocumentViewer />,
         FULL_ACCESS_ROLES
       ),
       protectedPage(
@@ -134,7 +146,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/vehicles/:vehicleId",
         <VehicleDetails />,  
-        FULL_ACCESS_ROLES
+        [...FULL_ACCESS_ROLES,"system_admin"]
       ),
       protectedPage(
         "/cases/:caseId/FR104-3/generate",
@@ -144,6 +156,11 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases/:caseId/FR104-4/generate",
         <FR104_4Form />,  
+        FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/cases/:caseId/FR109/generate",
+        <FR109Form />,  
         FULL_ACCESS_ROLES
       ),
 

@@ -1,70 +1,235 @@
-import { AlertCircle, MapPin } from "lucide-react";
-import { mockUsers, mockVehicles } from "../data/mockData";
+import { AlertCircle, MapPin, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import { Button } from "@/components/atoms/Button";
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
-import  SelectField  from "@/components/atoms/SelectField ";
-import { TextAreaField } from "../atoms/TextAreaField";
+import { SelectField } from "@/components/atoms/SelectField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
-import {provinces} from "@/components/data/province";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
+import { useCreateAccidentMutation } from "@/hooks/mutations/useResourceMutations";
+import { useVehicles } from "@/hooks/queries/useVehicleQueries";
+import type { CreateAccidentRequest } from "@/types/accident.type";
+import { Checkbox } from "@/components/atoms/Checkbox";
+import LocationPicker from "@/components/maps/LocationPicker";
+import { reverseGeocode } from "@/services/geocoding.service";
+import { mapSriLankaLocation } from "@/utils/locationMapper";
+
+import { useAuth } from "@/context/auth/AuthContext";
+
+import { toast } from "react-toastify";
 
 const ReportPage = () => {
+
   const { t } = useTranslation();
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
+  const { role } = useAuth();
+  const isDriver = role.includes("driver");
 
- 
+  const [vehicleSearch, setVehicleSearch] = useState("");
+  const { data: vehicleResponse } = useVehicles(1, vehicleSearch);
+  const vehicles = vehicleResponse?.data ?? [];
+  const { mutateAsync: createAccidentData, isPending: submitting, error: submitMutationError } = useCreateAccidentMutation();
+  const submitError = submitMutationError instanceof Error ? submitMutationError.message : "";
+
+  const userId = Number(localStorage.getItem("id"));
+
   const [form, setForm] = useState({
     date: "",
     time: "",
     location: "",
     province: "",
     district: "",
-    vehicle: "",
-    driver: "",
-    casualties: "",
-    injuries: "",
-    casualties_type: "",
-    description: "",
-    vehicleDamage: "",
-    roadCondition: "",
+    vehicle_id: "",
+    driver_id: "",
+    fatality_count: "",
+    injury_count: "",
+    severity: "",
+    road_condition: "",
+    weather_condition: "",
     mapLocation: "",
     latitude: "",
     longitude: "",
-    evidenceImages: [] as File[]
+    has_travel_permission: false,
+    files: [] as File[]
   });
 
-  function update(field: string, value: string) {
+   
+  useEffect(() => {
+    if (!isDriver || vehicles.length === 0) return;
+
+    const assignedVehicle = vehicles[0];
+
+    setForm(prev => ({
+        ...prev,
+        driver_id: String(userId),
+        vehicle_id: String(assignedVehicle.id),
+    }));
+}, [vehicles, userId, isDriver]);
+
+  const [successMessage, setSuccessMessage] = useState("");
+
+  function update(field: string, value: any) {
     setForm((prev) => ({
       ...prev,
       [field]: value,
     }));
   }
 
+  // Auto-select driver when vehicle is selected
+  const handleVehicleChange = (vehicleId: string) => {
+    update("vehicle_id", vehicleId);
+
+    const selectedVehicle = vehicles.find(
+      (v) => v.id === Number(vehicleId)
+    );
+
+    if (selectedVehicle?.driver_id) {
+      update("driver_id", String(selectedVehicle.driver_id));
+    } else {
+      update("driver_id", "");
+    }
+  };
+
+  // Used by the driver's "Get GPS Location" pin button.
+  // Auto-fills lat/lng/location AND reverse-geocodes province/district.
   const handleGetLocation = async () => {
     try {
       const data = await getCurrentLocation();
+
+      let province = "";
+      let district = "";
+
+      try {
+        const geo = await reverseGeocode(Number(data.latitude), Number(data.longitude));
+        const mapped = mapSriLankaLocation(geo.address);
+        province = mapped.province;
+        district = mapped.district;
+      } catch (geoError) {
+        console.error("Reverse geocoding failed:", geoError);
+      }
 
       setForm((prev) => ({
         ...prev,
         latitude: data.latitude,
         longitude: data.longitude,
         location: data.location,
+        province,
+        district,
       }));
     } catch (error) {
       alert(error);
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Accident Report:", form);
+  // Used by the subject officer's map/search picker.
+  const handleMapLocationSelect = (location: {
+    latitude: string;
+    longitude: string;
+    address: string;
+    province: string;
+    district: string;
+  }) => {
+    setForm((prev) => ({
+      ...prev,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      location: location.address,
+      province: location.province,
+      district: location.district,
+    }));
+  };
 
-    alert("Report submitted successfully!");
+  const buildFormData = (payload: CreateAccidentRequest): FormData => {
+    const formData = new FormData();
 
-    // TODO:
-    // API call here
+    formData.append("vehicle_id", String(payload.vehicle_id));
+
+    if (payload.driver_id !== null && payload.driver_id !== undefined) {
+      formData.append("driver_id", String(payload.driver_id));
+    }
+
+    formData.append("accident_date", payload.accident_date ?? "");
+    formData.append("accident_time", payload.accident_time ?? "");
+    formData.append("severity", payload.severity ?? "");
+    formData.append("province", payload.province ?? "");
+    formData.append("district", payload.district ?? "");
+    formData.append("location", payload.location ?? "");
+
+    if (payload.latitude !== null && payload.latitude !== undefined) {
+      formData.append("latitude", String(payload.latitude));
+    }
+    if (payload.longitude !== null && payload.longitude !== undefined) {
+      formData.append("longitude", String(payload.longitude));
+    }
+
+    formData.append("injury_count", String(payload.injury_count ?? 0));
+    formData.append("fatality_count", String(payload.fatality_count ?? 0));
+    formData.append("road_condition", payload.road_condition ?? "");
+    formData.append("weather_condition", payload.weather_condition ?? "");
+    formData.append("has_travel_permission", payload.has_travel_permission ? "1" : "0");
+
+    (payload.files ?? []).forEach((file) => {
+      formData.append("files[]", file);
+    });
+
+    return formData;
+  };
+
+  const handleSubmit = async () => {
+    setSuccessMessage("");
+
+    const payload: CreateAccidentRequest = {
+      vehicle_id: Number(form.vehicle_id),
+      driver_id: form.driver_id ? Number(form.driver_id) : null,
+      accident_date: form.date,
+      accident_time: form.time,
+      severity: form.severity as CreateAccidentRequest["severity"],
+      province: form.province,
+      district: form.district,
+      location: form.location,
+      latitude: form.latitude ? Number(form.latitude) : null,
+      longitude: form.longitude ? Number(form.longitude) : null,
+      injury_count: form.injury_count ? Number(form.injury_count) : 0,
+      fatality_count: form.fatality_count ? Number(form.fatality_count) : 0,
+      road_condition: form.road_condition as CreateAccidentRequest["road_condition"],
+      weather_condition: form.weather_condition as CreateAccidentRequest["weather_condition"],
+      has_travel_permission: form.has_travel_permission,
+      files: form.files,
+    };
+
+    const formData = buildFormData(payload);
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+    try {
+      await createAccidentData(formData as unknown as CreateAccidentRequest);
+      
+      toast.success("Accident report submitted successfully!");
+      setSuccessMessage("Accident report submitted successfully!");
+
+      setForm({
+        date: "",
+        time: "",
+        location: "",
+        province: "",
+        district: "",
+        vehicle_id: "",
+        driver_id: "",
+        fatality_count: "",
+        injury_count: "",
+        severity: "",
+        road_condition: "",
+        weather_condition: "",
+        mapLocation: "",
+        latitude: "",
+        longitude: "",
+        files: [],
+        has_travel_permission: false,
+      });
+    } catch {
+      // error is handled by the hook
+    }
   };
 
   return (
@@ -82,14 +247,28 @@ const ReportPage = () => {
             </h1>
 
             <p className="text-sm text-slate-500">
-              Record and submit vehicle accident details
+              {t("report.subtitle")}
             </p>
           </div>
         </div>
       </div>
 
+      {/* Success Message */}
+      {successMessage && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-green-700 text-sm font-medium">
+          {successMessage}
+        </div>
+      )}
+
+      {/* Error Message */}
+      {submitError && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm font-medium">
+          {submitError}
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-6">
-          {/* Date & Time */}
+        {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
           <FormField label={t("report.accidentDate")} required>
             <InputField
@@ -106,135 +285,138 @@ const ReportPage = () => {
               onChange={(e) => update("time", e.target.value)}
             />
           </FormField>
-        </div>
 
-        {/* Location */}
-        <FormField label={t("report.exactLocation")} required>
-          <div className="flex gap-2">
-            <InputField
-              type="text"
-              placeholder={t("report.locationPlaceholder")}
-              value={form.location}
-              onChange={(e) => update("location", e.target.value)}
+
+          <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+            <Checkbox
+              name="has_travel_permission"
+              checked={form.has_travel_permission}
+              onChange={(e) =>
+                update(
+                  "has_travel_permission",
+                  (e.target as HTMLInputElement).checked
+                )
+              }
             />
 
-            <button
-              type="button"
-              onClick={handleGetLocation}
-              disabled={loadingLocation}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50"
-              title="Get GPS Location"
-            >
-              <MapPin className="w-4 h-4" />
-            </button>
-          </div>
-        </FormField>
-
-        {/* Province & District */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t("report.province")}>
-            <SelectField
-              value={form.province}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("province", e.target.value)} options={[]}            >
-              <option value="">
-                {t("report.selectProvince")}
-              </option>
-
-              {provinces.map((province) => (
-                <option key={province} value={province}>
-                  {province}
-                </option>
-              ))}
-            </SelectField>
-          </FormField>
-
-          <FormField label={t("report.district")}>
-            <InputField
-              type="text"
-              placeholder={t("report.district")}
-              value={form.district}
-              onChange={(e) => update("district", e.target.value)}
-            />
-          </FormField>
-        </div>
-
-        {/* GPS Display */}
-        <div className="w-full h-48 bg-blue-50 rounded-xl border-2 border-dashed border-blue-200 flex items-center justify-center">
-          <div className="text-center">
-            <MapPin className="w-8 h-8 text-blue-300 mx-auto mb-2" />
-
-            <p className="text-sm text-blue-500">
-              {loadingLocation
-                ? "Getting current location..."
-                : "Current GPS Location"}
-            </p>
-
-            <p className="text-xs text-blue-400 mt-2">
-              Latitude: {form.latitude || "--"}
-            </p>
-
-            <p className="text-xs text-blue-400">
-              Longitude: {form.longitude || "--"}
-            </p>
+            <div className="flex flex-col">
+              <label
+                htmlFor="has_travel_permission"
+                className="cursor-pointer text-sm font-medium text-gray-900"
+              >
+                {t("report.journeyAuthorized.label")}
+              </label>
+              <p className="text-xs text-gray-500">
+                {t("report.journeyAuthorized.description")}
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Vehicle & Driver */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t("report.vehicleRegistration")} required>
-            <SelectField
-              value={form.vehicle}
-              onChange={(e) => update("vehicle", e.target.value)}
-              options={[]}
-            >
-              <option value="">
-                {t("report.selectVehicle")}
-              </option>
+    
+            {isDriver ? (
+                <InputField
+                    disabled
+                    value={`${vehicles[0]?.vehicle_number} - ${vehicles[0]?.brand} ${vehicles[0]?.model}`}
+                />
+            ) : (
+                <>
+                    <InputField
+                        placeholder="Search Registration No."
+                        value={vehicleSearch}
+                        onChange={(e) => setVehicleSearch(e.target.value)}
+                    />
 
-              {mockVehicles.map((vehicle) => (
-                <option
-                  key={vehicle.id}
-                  value={vehicle.regNo}
-                >
-                  {vehicle.regNo} — {vehicle.make}
-                </option>
-              ))}
-            </SelectField>
-          </FormField>
+                    <SelectField
+                        value={form.vehicle_id}
+                        onChange={(e) => handleVehicleChange(e.target.value)}
+                        options={vehicles.map(vehicle => ({
+                            value: String(vehicle.id),
+                            label: `${vehicle.vehicle_number} — ${vehicle.brand} ${vehicle.model}`
+                        }))}
+                    />
+                </>
+            )}
 
-          <FormField label={t("report.driver")} required>
-            <SelectField
-              value={form.driver}
-              onChange={(e) => update("driver", e.target.value)}
-              options={[]}
-            >
-              <option value="">
-                {t("report.selectDriver")}
-              </option>
-
-              {mockUsers
-                .filter((user) => user.role === "Driver")
-                .map((user) => (
-                  <option
-                    key={user.id}
-                    value={user.name}
-                  >
-                    {user.name}
-                  </option>
-                ))}
-            </SelectField>
+          <FormField label={t("report.driver")}>
+            <InputField
+              type="text"
+              value={
+                form.driver_id
+                  ? vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`
+                  : "No driver assigned"
+              }
+              disabled
+            />
           </FormField>
         </div>
 
-        {/* Casualties */}
+        {/* Location: driver gets a manual exact-location field, */}
+        {/* subject officer gets the map + search picker */}
+        {isDriver ? (
+          <FormField label={t("report.exactLocation")} required>
+            <div className="flex gap-2">
+              <InputField
+                type="text"
+                placeholder={t("report.locationPlaceholder")}
+                value={form.location}
+                onChange={(e) => update("location", e.target.value)}
+              />
+
+              <button
+                type="button"
+                onClick={handleGetLocation}
+                disabled={loadingLocation}
+                className="px-3 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-600 disabled:opacity-50"
+                title="Get GPS Location"
+              >
+                {loadingLocation ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <MapPin className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </FormField>
+        ) : (
+          <FormField label={t("report.exactLocation")} required>
+            <LocationPicker
+              key={successMessage}
+              onLocationSelect={handleMapLocationSelect}
+            />
+          </FormField>
+        )}
+
+        {/* Province & District (auto-filled by either location method above) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField label={t("report.province")}>
+            <InputField
+              value={form.province}
+              disabled
+              placeholder={isDriver ? "Auto-filled via GPS" : "Select a location on the map"}
+            />
+          </FormField>
+
+          <FormField label={t("report.district")}>
+            <InputField
+              value={form.district}
+              disabled
+              placeholder={isDriver ? "Auto-filled via GPS" : "Select a location on the map"}
+            />
+          </FormField>
+        </div>
+
+        {/* Casualties & Severity */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField label={t("report.casualties")}>
             <InputField
               type="number"
               min="0"
-              value={form.casualties}
+              value={form.fatality_count}
               onChange={(e) =>
-                update("casualties", e.target.value)
+                update("fatality_count", e.target.value)
               }
             />
           </FormField>
@@ -243,103 +425,87 @@ const ReportPage = () => {
             <InputField
               type="number"
               min="0"
-              value={form.injuries}
+              value={form.injury_count}
               onChange={(e) =>
-                update("injuries", e.target.value)
+                update("injury_count", e.target.value)
               }
             />
           </FormField>
 
-          <FormField label={t("report.severity")}>
+          <FormField label={t("report.severity")} required>
             <SelectField
-              value={form.casualties_type}
-              onChange={(e) => update("casualties_type", e.target.value)} options={[]}            >
-              {["None", "Minor", "Serious", "Fatal"].map(
-                (severity) => (
-                  <option
-                    key={severity}
-                    value={severity}
-                  >
-                    {severity}
-                  </option>
-                )
-              )}
-            </SelectField>
+              value={form.severity}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("severity", e.target.value)}
+              options={["MINOR", "MAJOR", "FATAL"].map((severity) => ({
+                value: severity,
+                label: t(`report.severityOptions.${severity}`)
+              }))}
+            />
           </FormField>
         </div>
 
-        {/* Description */}
-        <FormField
-          label={t("report.accidentDescription")}
-          required
-        >
-          <TextAreaField
-            rows={4}
-            placeholder={t(
-              "report.accidentDescriptionPlaceholder"
-            )}
-            value={form.description}
-            onChange={(e) =>
-              update("description", e.target.value)
-            }
-          />
-        </FormField>
-
-        {/* Damage & Road Conditions */}
+        {/* Road Condition & Weather Condition */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label={t("report.vehicleDamage")}>
-            <TextAreaField
-              rows={2}
-              value={form.vehicleDamage}
-              onChange={(e) =>
-                update("vehicleDamage", e.target.value)
-              }
+          <FormField label={t("report.roadCondition")} required>
+            <SelectField
+              value={form.road_condition}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("road_condition", e.target.value)}
+              options={[
+                "DRY",
+                "WET",
+                "FLOODED",
+                "GRAVEL",
+                "UNDER_CONSTRUCTION",
+                "OTHER"
+              ].map((condition) => ({
+                value: condition,
+                label: t(`report.roadConditionOptions.${condition}`)
+              }))}
             />
           </FormField>
 
-          <FormField label={t("report.roadCondition")}>
+          <FormField label={t("report.weatherCondition")} required>
             <SelectField
-              value={form.roadCondition}
-              onChange={(e) => update("roadCondition", e.target.value)} options={[]}            >
-              <option value="">
-                Select condition
-              </option>
-
-              {[
-                "Dry & Clear",
-                "Wet",
-                "Night",
-                "Foggy",
-                "Heavy Rain",
-                "Road Works",
-              ].map((condition) => (
-                <option
-                  key={condition}
-                  value={condition}
-                >
-                  {condition}
-                </option>
-              ))}
-            </SelectField>
+              value={form.weather_condition}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => update("weather_condition", e.target.value)}
+              options={[
+                "SUNNY",
+                "RAINY",
+                "CLOUDY",
+                "FOGGY",
+                "WINDY",
+                "OTHER"
+              ].map((weather) => ({
+                value: weather,
+                label: t(`report.weatherConditionOptions.${weather}`)
+              }))}
+            />
           </FormField>
         </div>
 
         {/* Evidence Images */}
         <FormField label={t("report.evidenceImages")}>
           <ImageUploadField
+            key={successMessage}
             onChange={(files) =>
               setForm((prev) => ({
                 ...prev,
-                evidenceImages: files,
+                files: files,
               }))
             }
           />
         </FormField>
-
         {/* Submit */}
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>
-            {t("btn.submit")}
+          <Button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Submitting...
+              </span>
+            ) : (
+              t("btn.submit")
+            )}
           </Button>
         </div>
       </div>

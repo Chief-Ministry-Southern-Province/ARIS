@@ -27,6 +27,7 @@ export default function OfficersResponsibleSection({
       officers: [
         ...prev.officers,
         {
+          id: crypto.randomUUID(),
           name: "",
           designation: "",
           responsibility: "",
@@ -69,7 +70,7 @@ export default function OfficersResponsibleSection({
 
       {formData.officers.map((officer, index) => (
         <div
-          key={index}
+          key={officer.id}
           className="border rounded-xl p-4 bg-gray-50"
         >
           <div className="grid md:grid-cols-2 gap-4">

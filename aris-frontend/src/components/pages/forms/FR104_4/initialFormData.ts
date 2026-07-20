@@ -7,6 +7,7 @@ export const initialFormData: FR104_4FormData = {
   lossDate: "",
   lossTime: "",
   location: "",
+  copyToAuditorGeneral: "no",
 
   investigation: "",
 
@@ -18,6 +19,7 @@ export const initialFormData: FR104_4FormData = {
   lossDetails: "",
   circumstances: "",
   causeOfLoss: "",
+  isDueToFraudNegligence: "no",
 
   // Police Information
   policeReportFile: null,
@@ -41,31 +43,9 @@ export const initialFormData: FR104_4FormData = {
   // Preventive Actions
   preventiveActions: "",
 
-  // Approval Workflow
-  preparedBy: "",
-  preparedDesignation: "",
-  preparedByUserId: "",
-  preparedSignature: null,
-  preparedDate: "",
-
-  headName: "",
-  headDesignation: "",
-  headUserId: "",
-  headSignature: null,
-  headApprovalDate: "",
-
-  secretaryName: "",
-  secretaryDesignation: "",
-  secretaryUserId: "",
-  secretarySignature: null,
-  secretaryApprovalDate: "",
-
   // Dynamic Collections
   lostItems: [],
-
   officers: [],
-
   boardMembers: [],
-
   recoveries: [],
 };

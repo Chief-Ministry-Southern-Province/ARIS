@@ -1,27 +1,21 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
+ 
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { useGetInstitutionById } from "@/hooks/useInstitution";
+import { useInstitution, useParentInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import Loader from "@/components/atoms/Loader";
 import type { Institution } from "@/types/Institution.type";
 import { formatInstitutionType } from "@/utils/formatInstitution";
-import { useGetParentInstitutions } from "@/hooks/useInstitution";
 
 const ViewInstitutionForm = ({ institutionId,setShowViewInstitution }: { institutionId: string, setShowViewInstitution: (show: boolean) => void }) => {
   
   const { t } = useTranslation();
-  const { institution, fetchInstitutionById, loading: institutionLoading } = useGetInstitutionById();
-
-  const { parentInstitutions, fetchParentInstitutions, loading: parentInstitutionsLoading } = useGetParentInstitutions();
+  const { data: institution, isLoading: institutionLoading } = useInstitution(Number(institutionId));
+  const { data: parentInstitutions = [], isLoading: parentInstitutionsLoading } = useParentInstitutions();
 
   const [institutionData, setInstitutionData] = useState<Partial<Institution>>({});
-  useEffect(() => {
-    fetchInstitutionById(institutionId);
-    fetchParentInstitutions();
-  }, [institutionId]);
   useEffect(() => {
     if (institution) {
       setInstitutionData({

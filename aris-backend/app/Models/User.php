@@ -12,6 +12,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+use App\Models\Institution;
+use App\Models\Vehicle;
+use App\Models\Accident;
+use App\Models\AccidentCase;
+use App\Models\AccidentEvidence;
+
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -56,6 +62,46 @@ class User extends Authenticatable
     public function isSystemAdmin(): bool
     {
         return $this->hasRole('system_admin');
+    }
+
+    public function reportedAccidents()
+    {
+        return $this->hasMany(Accident::class, 'reported_by');
+    }
+
+    public function driverAccidents()
+    {
+        return $this->hasMany(Accident::class,'driver_id');
+    }
+
+    public function uploadedEvidence()
+    {
+        return $this->hasMany(AccidentEvidence::class, 'uploaded_by');
+    }
+
+    public function createdAccidentCases()
+    {
+        return $this->hasMany(AccidentCase::class, 'created_by');
+    }
+
+    public function assignedAccidentCases()
+    {
+        return $this->hasMany(AccidentCase::class, 'assigned_to');
+    }
+
+    public function caseHistories()
+    {
+        return $this->hasMany(CaseHistory::class);
+    }
+
+    public function districts()
+    {
+        return $this->hasMany(SubjectOfficerDistrict::class);
+    }
+
+    public function signatures()
+    {
+        return $this->hasMany(UserSignature::class);
     }
     
 }

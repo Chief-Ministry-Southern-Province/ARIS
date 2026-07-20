@@ -4,7 +4,11 @@ import './index.css'
 import App from './App.tsx'
 import { ThemeProvider } from './context/ThemeContext'
 import '@/i18n'
+import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "./lib/leaflet";
 import {AuthProvider} from '@/context/auth/AuthContext'
+import { QueryProvider } from "@/providers/QueryProvider";
 // Dynamically import the PWA register to avoid TypeScript errors when the
 // virtual module "virtual:pwa-register" has no type declarations.
 (async () => {
@@ -19,10 +23,10 @@ import {AuthProvider} from '@/context/auth/AuthContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
-    </AuthProvider>
+    <QueryProvider>
+      <AuthProvider>
+        <ThemeProvider><App /></ThemeProvider>
+      </AuthProvider>
+    </QueryProvider>
   </StrictMode>,
 )

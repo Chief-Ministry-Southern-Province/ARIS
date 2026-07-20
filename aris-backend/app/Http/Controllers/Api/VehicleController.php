@@ -19,30 +19,29 @@ class VehicleController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
+        $user = $request->user();
 
         $vehicles = Vehicle::query()
-
             ->with([
                 'institution',
                 'driver',
             ])
 
+            // If logged-in user is a driver, only show their assigned vehicles
+            ->when($user->hasRole('driver'), function ($query) use ($user) {
+                $query->where('driver_id', $user->id);
+            })
+
+            // Search
             ->when($search, function ($query) use ($search) {
-
                 $query->where(function ($q) use ($search) {
-
                     $q->where('vehicle_number', 'like', "%{$search}%")
-
-                        ->orWhere('brand', 'like', "%{$search}%")
-
-                        ->orWhere('model', 'like', "%{$search}%");
-
+                    ->orWhere('brand', 'like', "%{$search}%")
+                    ->orWhere('model', 'like', "%{$search}%");
                 });
-
             })
 
             ->latest()
-
             ->paginate(10);
 
         return response()->json($vehicles);

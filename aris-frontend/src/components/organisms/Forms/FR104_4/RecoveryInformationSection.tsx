@@ -23,9 +23,10 @@ export default function RecoveryInformationSection({
       recoveries: [
         ...prev.recoveries,
         {
-          officerName: "",
-          amountRecoverable: "",
-          recoveryMethod: "",
+          id: crypto.randomUUID(),
+          officer: "",
+          amount: "",
+          method: "",
         },
       ],
     }));
@@ -64,7 +65,7 @@ export default function RecoveryInformationSection({
       {formData.recoveries.map(
         (recovery, index) => (
           <div
-            key={index}
+            key={recovery.id}
             className="border rounded-xl p-4 bg-gray-50"
           >
             <div className="grid md:grid-cols-3 gap-4">
@@ -73,11 +74,11 @@ export default function RecoveryInformationSection({
                 label={t("fr104_4.recovery.officer")}
               >
                 <InputField
-                  value={recovery.officerName}
+                  value={recovery.officer}
                   onChange={(e) =>
                     updateRecovery(
                       index,
-                      "officerName",
+                      "officer",
                       e.target.value
                     )
                   }
@@ -89,13 +90,11 @@ export default function RecoveryInformationSection({
               >
                 <InputField
                   type="number"
-                  value={
-                    recovery.amountRecoverable
-                  }
+                  value={recovery.amount}
                   onChange={(e) =>
                     updateRecovery(
                       index,
-                      "amountRecoverable",
+                      "amount",
                       e.target.value
                     )
                   }
@@ -106,11 +105,11 @@ export default function RecoveryInformationSection({
                 label={t("fr104_4.recovery.method")}
               >
                 <InputField
-                  value={recovery.recoveryMethod}
+                  value={recovery.method}
                   onChange={(e) =>
                     updateRecovery(
                       index,
-                      "recoveryMethod",
+                      "method",
                       e.target.value
                     )
                   }
