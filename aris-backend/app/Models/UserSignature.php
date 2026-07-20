@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
-
 
 class UserSignature extends Model
 {
@@ -14,15 +14,29 @@ class UserSignature extends Model
         'user_id',
         'disk',
         'path',
+        'sha256',
+        'captured_from_ip',
+        'user_agent',
         'is_active',
     ];
 
-   public function getRouteKeyName(): string
+    /** @return array<string, string> */
+    protected function casts(): array
+    {
+        return [
+            'path' => 'encrypted',
+            'captured_from_ip' => 'encrypted',
+            'user_agent' => 'encrypted',
+            'is_active' => 'boolean',
+        ];
+    }
+
+    public function getRouteKeyName(): string
     {
         return 'public_id';
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
