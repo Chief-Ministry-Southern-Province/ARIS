@@ -26,9 +26,10 @@ interface FR1043FormProps {
   document?: FR1043Response;
   approvalTimeline?: Approval[];
   onBack?: () => void;
+  onDecision?: () => void;
 }
 
-const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack }: FR1043FormProps) => {
+const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack, onDecision }: FR1043FormProps) => {
 
 
   const { caseId } = useParams();
@@ -271,9 +272,18 @@ useEffect(() => {
 
           {readOnly && (
             <div className="grid gap-4 border-t border-slate-200 px-8 py-5 text-sm md:grid-cols-3">
-              <div><p className="text-xs uppercase tracking-wide text-slate-500">Submitted Date</p><p className="font-semibold text-slate-800">{displayedForm?.submitted_at ? new Date(displayedForm.submitted_at).toLocaleString() : "—"}</p></div>
-              <div><p className="text-xs uppercase tracking-wide text-slate-500">Current Approval Step</p><p className="font-semibold text-slate-800">{currentApproval ? `Step ${currentApproval.step} — ${currentApproval.status}` : "—"}</p></div>
-              <div><p className="text-xs uppercase tracking-wide text-slate-500">Approval Timeline Summary</p><p className="font-semibold text-slate-800">{approvalTimeline.length} step{approvalTimeline.length === 1 ? "" : "s"} · {approvalTimeline.filter((approval) => approval.status === "APPROVED").length} approved</p></div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Submitted Date</p> 
+                <p className="font-semibold text-slate-800">{displayedForm?.submitted_at ? new Date(displayedForm.submitted_at).toLocaleString() : "—"}</p>
+                </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Current Approval Step</p>
+                <p className="font-semibold text-slate-800">{currentApproval ? `Step ${currentApproval.step} — ${currentApproval.status}` : "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Approval Timeline Summary</p>
+                <p className="font-semibold text-slate-800">{approvalTimeline.length} step{approvalTimeline.length === 1 ? "" : "s"} · {approvalTimeline.filter((approval) => approval.status === "APPROVED").length} approved</p>
+              </div>
             </div>
           )}
         </div>
@@ -410,7 +420,10 @@ useEffect(() => {
         <div className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
             {readOnly ? (
-              <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">Back</button>
+              <>
+                {onDecision && <button type="button" onClick={onDecision} className="w-full sm:w-auto px-5 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2"><CheckCircle size={18} />Decision</button>}
+                <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">Back</button>
+              </>
             ) : <>
             {/* Submit */}
             <button

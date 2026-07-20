@@ -6,20 +6,15 @@ import ApprovalStats from "@/components/approval/ApprovalStats";
 import ApprovalSearch from "@/components/approval/ApprovalSearch";
 import ApprovalTable from "@/components/approval/ApprovalTable";
 import DecidedApprovalsTable from "@/components/approval/DecidedApprovalsTable";
-import ApprovalDecisionDialog from "@/components/approval/ApprovalDecisionDialog";
 
-import { useApprove, useApprovalStats, useDecidedApprovals, usePendingApprovals, useReject } from "@/hooks/useApprovals";
+import { useApprovalStats, useDecidedApprovals, usePendingApprovals } from "@/hooks/useApprovals";
 import type{ Approval } from "@/types/approval.type";
-import { toast } from "react-toastify";
-
-type Decision = { action: "approve" | "reject"; approval: Approval } | null;
 type View = "pending" | "decided";
 
 export default function ApprovalCenter() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [decision, setDecision] = useState<Decision>(null);
   const [view, setView] = useState<View>("pending");
   const [documentType, setDocumentType] = useState("");
   const [decisionStatus, setDecisionStatus] = useState("");
@@ -27,8 +22,6 @@ export default function ApprovalCenter() {
   const pendingQuery = usePendingApprovals(page, search);
   const decidedQuery = useDecidedApprovals(page, search, documentType, decisionStatus);
   const { data: stats } = useApprovalStats();
-  const approveMutation = useApprove();
-  const rejectMutation = useReject();
 
   const activeQuery = view === "pending" ? pendingQuery : decidedQuery;
   const approvals = activeQuery.data?.data ?? [];
@@ -36,34 +29,6 @@ export default function ApprovalCenter() {
 
   const handleView = (approval: Approval) => {
     navigate(`/approvals/${approval.id}`);
-  };
-
-  const handleApprove = (approval: Approval) => {
-    setDecision({ action: "approve", approval });
-  };
-
-  const handleReject = (approval: Approval) => {
-    setDecision({ action: "reject", approval });
-  };
-
-  const submitDecision = async (comments: string) => {
-    if (!decision) return;
-
-    try {
-      if (decision.action === "approve") {
-        await approveMutation.mutateAsync({ id: decision.approval.id, comments: comments || undefined });
-        toast.success("Document approved successfully.");
-      } else {
-        await rejectMutation.mutateAsync({ id: decision.approval.id, comments });
-        toast.success("Document rejected and returned for changes.");
-      }
-
-      setDecision(null);
-      navigate("/approvals");
-    } catch (error: unknown) {
-      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      toast.error(message || "Unable to update the approval.");
-    }
   };
 
   return (
@@ -144,7 +109,7 @@ export default function ApprovalCenter() {
 
       {/* Table */}
 
-      {view === "pending" ? <ApprovalTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} onApprove={handleApprove} onReject={handleReject} /> : <DecidedApprovalsTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} />}
+      {view === "pending" ? <ApprovalTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} /> : <DecidedApprovalsTable approvals={approvals} loading={activeQuery.isLoading} onView={handleView} />}
 
       {/* Pagination */}
 
@@ -189,16 +154,6 @@ export default function ApprovalCenter() {
 
         </div>
 
-      )}
-
-      {view === "pending" && decision && (
-        <ApprovalDecisionDialog
-          approval={decision.approval}
-          action={decision.action}
-          isPending={approveMutation.isPending || rejectMutation.isPending}
-          onClose={() => setDecision(null)}
-          onConfirm={submitDecision}
-        />
       )}
 
     </div>

@@ -14,16 +14,12 @@ interface Props {
   loading?: boolean;
 
   onView?: (approval: Approval) => void;
-  onApprove?: (approval: Approval) => void;
-  onReject?: (approval: Approval) => void;
 }
 
 export default function ApprovalTable({
   approvals,
   loading = false,
   onView,
-  onApprove,
-  onReject,
 }: Props) {
   if (loading) {
     return (
@@ -217,8 +213,6 @@ export default function ApprovalTable({
 
                   <ApprovalActionButtons
                     onView={() => onView?.(approval)}
-                    onApprove={() => onApprove?.(approval)}
-                    onReject={() => onReject?.(approval)}
                   />
 
                 </td>

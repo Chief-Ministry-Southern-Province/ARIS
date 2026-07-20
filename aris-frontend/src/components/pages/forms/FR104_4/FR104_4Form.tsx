@@ -34,6 +34,7 @@ interface Props {
   document?: FR1044Response;
   approvalTimeline?: Approval[];
   onBack?: () => void;
+  onDecision?: () => void;
 }
 
 const badge: Record<FR1044Status, string> = {
@@ -49,6 +50,7 @@ export default function FR104_4Form({
   document,
   approvalTimeline = [],
   onBack,
+  onDecision,
 }: Props) {
   const { t } = useTranslation();
   const { caseId } = useParams();
@@ -287,13 +289,10 @@ export default function FR104_4Form({
           <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="px-5 py-3 border rounded-lg"
-                >
-                  Back
-                </button>
+                <>
+                  {onDecision && <button type="button" onClick={onDecision} className="px-5 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"><CheckCircle size={18} />Decision</button>}
+                  <button type="button" onClick={onBack} className="px-5 py-3 border rounded-lg">Back</button>
+                </>
               ) : (
                 <>
                   <button
