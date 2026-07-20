@@ -98,5 +98,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(SubjectOfficerDistrict::class);
     }
+
+    public function signatures()
+    {
+        return $this->hasMany(UserSignature::class);
+    }
     
 }
