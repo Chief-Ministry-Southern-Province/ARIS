@@ -28,7 +28,7 @@ export default function DigitalSignatures() {
   const { data: profile, isLoading: isProfileLoading } = useProfile();
   const { data: status, isLoading: isStatusLoading } = useSignatureStatus();
   const publicId = status?.data?.public_id;
-  const { data: signatureImage } = useSignatureImage(publicId);
+  const { data: signatureImage, isLoading: isSignatureImageLoading } = useSignatureImage(publicId);
   const uploadMutation = useUploadSignature();
   const deleteMutation = useDeleteSignature();
   const [signatureUrl, setSignatureUrl] = useState<string>();
@@ -129,6 +129,7 @@ export default function DigitalSignatures() {
         <SignaturePreview
           user={selectedOfficer}
           signature={signatureUrl}
+          isLoading={hasSignature && isSignatureImageLoading}
         />
 
         <SignatureActions

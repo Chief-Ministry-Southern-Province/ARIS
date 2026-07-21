@@ -31,6 +31,7 @@ export interface UserListProps {
 export interface SignaturePreviewProps {
   user: Signatory;
   signature?: string;
+  isLoading?: boolean;
 }
 
 export interface SignatureDetailsProps {
