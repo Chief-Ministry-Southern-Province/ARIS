@@ -17,20 +17,11 @@ export default function SignaturePreview({
       <div className="min-h-55 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center">
         {signature ? (
           <div className="text-center">
-            {signature.startsWith("data:") ? (
-              <img
-                src={signature}
-                alt="signature"
-                className="max-h-32 mx-auto"
-              />
-            ) : (
-              <div
-                className="text-4xl text-blue-800 italic"
-                style={{ fontFamily: "cursive" }}
-              >
-                {user.name}
-              </div>
-            )}
+            <img
+              src={signature}
+              alt={`${user.name}'s signature`}
+              className="max-h-32 mx-auto"
+            />
 
             <p className="text-sm text-gray-500 mt-3">
               {user.name}

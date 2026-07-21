@@ -14,7 +14,8 @@
     "analytics": "Analytics",
     "adminPanel": "Admin Panel",
     "notifications": "Notifications",
-    "approvals": "Approvals"
+    "approvals": "Approvals",
+    "signature": "Signature"
   },
   "app": {
     "name": "Accident Reporting System",
@@ -539,7 +540,8 @@
     "removeSignature": "Remove Signature",
     "uploadSignature": "Upload Signature",
     "saveSignature": "Save Signature",
-    "clear": "Clear"
+    "clear": "Clear",
+    "cancel": "Cancel"
   },
   "evidenceManagement": {
     "title": "Evidence Management",

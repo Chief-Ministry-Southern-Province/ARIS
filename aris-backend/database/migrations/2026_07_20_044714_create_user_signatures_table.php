@@ -20,12 +20,11 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->uuid('public_id')
-                ->unique()
-                ->after('id');
+                ->unique();
 
             $table->string('disk')->default('private');
 
-            $table->string('path');
+            $table->longText('path');
 
             $table->boolean('is_active')->default(true);
 

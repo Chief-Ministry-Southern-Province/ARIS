@@ -45,5 +45,11 @@ export const queryKeys = {
     document: (id: number) => ["approvals", "document", id] as const,
   },
   auth: { profile: ["auth", "profile"] as const },
+  signatures: {
+    all: ["signatures"] as const,
+    status: ["signatures", "status"] as const,
+    imageRoot: ["signatures", "image"] as const,
+    image: (publicId: string) => ["signatures", "image", publicId] as const,
+  },
   
 } as const;

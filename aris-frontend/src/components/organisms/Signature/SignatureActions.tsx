@@ -9,7 +9,9 @@ import { useTranslation } from "react-i18next";
 export default function SignatureActions({
   hasSignature,
   drawMode,
+  isSubmitting = false,
   onDrawToggle,
+  onUpload,
   onRemove,
 }: SignatureActionsProps) {
   const { t } = useTranslation();
@@ -18,6 +20,7 @@ export default function SignatureActions({
     <div className="flex flex-wrap gap-3">
       <button
         onClick={onDrawToggle}
+        disabled={isSubmitting}
         className={`
           flex items-center gap-2
           px-4 py-2
@@ -54,14 +57,25 @@ export default function SignatureActions({
 
         <input
           type="file"
-          accept="image/*"
+          accept="image/png"
           className="hidden"
+          disabled={isSubmitting}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+
+            if (file) {
+              onUpload(file);
+            }
+
+            event.target.value = "";
+          }}
         />
       </label>
 
       {hasSignature && (
         <button
           onClick={onRemove}
+          disabled={isSubmitting}
           className="
             flex items-center gap-2
             px-4 py-2

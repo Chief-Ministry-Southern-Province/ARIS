@@ -529,7 +529,8 @@
     "removeSignature": "අත්සන ඉවත් කරන්න",
     "uploadSignature": "අත්සන උඩුගත කරන්න",
     "saveSignature": "අත්සන සුරකින්න",
-    "clear": "පිරිසිදු කරන්න"
+    "clear": "පිරිසිදු කරන්න",
+    "cancel": "අවලංගු කරන්න"
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CaseHistoryController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
+use App\Http\Controllers\Api\UserSignatureController;
 
 Route::post('/login', [AuthController::class, 'login']);
 

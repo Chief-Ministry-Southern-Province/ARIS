@@ -1,63 +1,109 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 import SignatureDetails from "@/components/organisms/Signature/SignatureDetails";
 import SignaturePreview from "@/components/organisms/Signature/SignaturePreview";
 import SignatureActions from "@/components/organisms/Signature/SignatureActions";
 import SignatureCanvas from "@/components/organisms/Signature/SignatureCanvas";
-import { mockUsers } from "../data/mockData";
+import { useProfile } from "@/hooks/useAuth";
+import {useDeleteSignature,useSignatureImage,useSignatureStatus,useUploadSignature,} from "@/hooks/useSignatures";
+import type { Signatory } from "@/types/signature.type";
 
-import type {
-  SignatureMap,
-  Signatory,
-} from "@/types/signature.type";
+const errorMessage = (error: unknown): string =>
+  (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+  ?? "Unable to update the signature. Please try again.";
 
-const signatories: Signatory[] = mockUsers.filter(
-  (user) => user.role !== "Driver"
-);
+const dataUrlToPngFile = async (dataUrl: string): Promise<File> => {
+  const response = await fetch(dataUrl);
+  const blob = await response.blob();
+
+  return new File([blob], "signature.png", { type: "image/png" });
+};
 
 export default function DigitalSignatures() {
   const { t } = useTranslation();
 
-  const [drawMode, setDrawMode] =
-    useState(false);
+  const [drawMode, setDrawMode] = useState(false);
+  const { data: profile, isLoading: isProfileLoading } = useProfile();
+  const { data: status, isLoading: isStatusLoading } = useSignatureStatus();
+  const publicId = status?.data?.public_id;
+  const { data: signatureImage } = useSignatureImage(publicId);
+  const uploadMutation = useUploadSignature();
+  const deleteMutation = useDeleteSignature();
+  const [signatureUrl, setSignatureUrl] = useState<string>();
 
-  const selectedUser = signatories[0]?.id ?? "";
+  const selectedOfficer = useMemo<Signatory | undefined>(() => {
+    if (!profile) {
+      return undefined;
+    }
 
-  const [signatures, setSignatures] =
-    useState<SignatureMap>({
-      U002: "sig_nimal",
-      U003: "sig_saman",
-    });
+    return {
+      id: String(profile.user.id),
+      name: profile.user.name,
+      role: profile.role.join(", "),
+      avatar: profile.user.name.slice(0, 2).toUpperCase(),
+    };
+  }, [profile]);
 
-  const selectedOfficer =
-    signatories.find(
-      (user) => user.id === selectedUser
-    ) ?? signatories[0];
+  useEffect(() => {
+    if (!signatureImage) {
+      setSignatureUrl(undefined);
 
-  const hasSignature =
-    !!signatures[selectedUser];
+      return;
+    }
 
-  const handleSaveSignature = (
-    signature: string
-  ) => {
-    setSignatures((prev) => ({
-      ...prev,
-      [selectedUser]: signature,
-    }));
+    const url = URL.createObjectURL(signatureImage);
+    setSignatureUrl(url);
 
-    setDrawMode(false);
+    return () => URL.revokeObjectURL(url);
+  }, [signatureImage]);
+
+  const uploadFile = async (file: File) => {
+    if (file.type !== "image/png") {
+      toast.error("Please select a PNG signature image.");
+
+      return;
+    }
+
+    if (file.size > 512 * 1024) {
+      toast.error("The signature image must not exceed 512 KB.");
+
+      return;
+    }
+
+    try {
+      await uploadMutation.mutateAsync(file);
+      setDrawMode(false);
+      toast.success("Signature saved successfully.");
+    } catch (error) {
+      toast.error(errorMessage(error));
+    }
   };
 
-  const handleRemoveSignature = () => {
-    setSignatures((prev) => {
-      const updated = { ...prev };
-
-      delete updated[selectedUser];
-
-      return updated;
-    });
+  const handleSaveSignature = async (signature: string) => {
+    try {
+      await uploadFile(await dataUrlToPngFile(signature));
+    } catch (error) {
+      toast.error(errorMessage(error));
+    }
   };
+
+  const handleRemoveSignature = async () => {
+    try {
+      await deleteMutation.mutateAsync();
+      toast.success("Signature removed successfully.");
+    } catch (error) {
+      toast.error(errorMessage(error));
+    }
+  };
+
+  if (isProfileLoading || isStatusLoading || !selectedOfficer) {
+    return <div className="p-6 text-sm text-gray-500">Loading signature settings...</div>;
+  }
+
+  const hasSignature = status?.has_signature ?? false;
+  const isSubmitting = uploadMutation.isPending || deleteMutation.isPending;
 
   return (
     <div className="p-6 space-y-6">
@@ -82,13 +128,15 @@ export default function DigitalSignatures() {
 
         <SignaturePreview
           user={selectedOfficer}
-          signature={signatures[selectedUser]}
+          signature={signatureUrl}
         />
 
         <SignatureActions
           hasSignature={hasSignature}
           drawMode={drawMode}
+          isSubmitting={isSubmitting}
           onDrawToggle={() => setDrawMode((prev) => !prev)}
+          onUpload={uploadFile}
           onRemove={handleRemoveSignature}
         />
 
@@ -96,6 +144,7 @@ export default function DigitalSignatures() {
           <SignatureCanvas
             onSave={handleSaveSignature}
             onCancel={() => setDrawMode(false)}
+            isSaving={uploadMutation.isPending}
           />
         )}
       </div>

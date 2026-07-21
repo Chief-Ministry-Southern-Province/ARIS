@@ -9,6 +9,7 @@ use App\Services\Signature\SignatureStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Http\Controllers\Controller;
 
 class UserSignatureController extends Controller
 {

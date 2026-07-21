@@ -9,37 +9,35 @@ use Intervention\Image\Colors\Rgb\Color;
 use Intervention\Image\EncodedImage;
 use Intervention\Image\Encoders\PngEncoder;
 use Intervention\Image\Exceptions\ImageDecoderException;
-use Intervention\Image\Interfaces\ImageManagerInterface;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use RuntimeException;
 
-/**
- * Normalizes an uploaded signature image entirely in memory.
- *
- * This service deliberately has no filesystem, database, authentication,
- * authorization, or domain-model dependencies.
- */
 final readonly class SignatureNormalizer
 {
     private const CANVAS_WIDTH = 600;
     private const CANVAS_HEIGHT = 200;
 
-    public function __construct(
-        private ImageManagerInterface $images,
-    ) {}
+    private ImageManager $imageManager;
 
-    /**
-     * Decode, fit, center, and re-encode an uploaded signature as PNG.
-     */
+    public function __construct()
+    {
+        $this->imageManager = new ImageManager(new Driver());
+    }
+
     public function normalize(UploadedFile $file): EncodedImage
     {
-        if (!$file->isValid() || $file->getRealPath() === false) {
+        if (! $file->isValid()) {
             throw new \InvalidArgumentException('The signature upload is invalid.');
         }
 
         try {
-            $image = $this->images->decodePath($file->getRealPath());
+            $image = $this->imageManager->decodeSplFileInfo($file);
         } catch (ImageDecoderException $exception) {
-            throw new \InvalidArgumentException('The signature upload is not a decodable image.', previous: $exception);
+            throw new \InvalidArgumentException(
+                'The signature upload is not a decodable image.',
+                previous: $exception
+            );
         }
 
         $encoded = $image
@@ -50,7 +48,7 @@ final readonly class SignatureNormalizer
             )
             ->encode(new PngEncoder());
 
-        if (!$encoded instanceof EncodedImage) {
+        if (! $encoded instanceof EncodedImage) {
             throw new RuntimeException('The signature image could not be encoded as PNG.');
         }
 
