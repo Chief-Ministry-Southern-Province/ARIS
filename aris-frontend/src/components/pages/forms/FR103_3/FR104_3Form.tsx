@@ -20,6 +20,7 @@ import { useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043"
 import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
+import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
 
 interface FR1043FormProps {
   readOnly?: boolean;
@@ -414,6 +415,10 @@ useEffect(() => {
             </fieldset>
 
           </form>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <DocumentApprovalSignatures approvals={approvalTimeline} />
         </div>
 
         {/* Sticky Action Bar */}

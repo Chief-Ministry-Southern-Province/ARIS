@@ -25,7 +25,8 @@
     "logout": "ඉවත් වන්න",
     "loading": "පූරණය වෙමින්...",
     "select": "තෝරන්න",
-    "search": "සොයන්න"
+    "search": "සොයන්න",
+    "approverSignatures": "අනුමත කරන්නන්ගේ අත්සන්"
   },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",

@@ -16,7 +16,7 @@ class Approval extends Model
         'status',
         'comments',
         'acted_at',
-        
+        'user_signature_id',
     ];
 
     public function accidentCase()

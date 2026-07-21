@@ -28,6 +28,7 @@ import type {
   FR1044Status,
 } from "@/types/FR104_4_types";
 import type { Approval } from "@/types/approval.type";
+import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
 
 interface Props {
   readOnly?: boolean;
@@ -332,6 +333,11 @@ export default function FR104_4Form({
             </div>
           </div>
         </form>
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <DocumentApprovalSignatures approvals={approvalTimeline} />
+        </div>
+        
       </div>
     </div>
   );

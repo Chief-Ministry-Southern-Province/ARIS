@@ -32,7 +32,8 @@
     "updating": "Updating...",
     "loading": "Loading...",
     "select": "Select",
-    "search": "Search"
+    "search": "Search",
+    "approverSignatures": "Approver Signatures"
   },
   "login": {
     "login": "Sign In",

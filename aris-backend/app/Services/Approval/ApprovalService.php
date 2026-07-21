@@ -193,7 +193,8 @@ class ApprovalService
             $approval,
             $comments,
             $user,
-            $accidentCase
+            $accidentCase,
+            $signature,
         ) {
 
             $approval->update([
@@ -412,6 +413,8 @@ class ApprovalService
 
                 'approver.roles',
 
+                'signature',
+
                 'accidentCase.accident',
 
             ])
@@ -437,6 +440,7 @@ class ApprovalService
                 'approver.roles',
                 'accidentCase.accident',
                 'accidentCase.creator',
+                'signature',
             ])
             ->orderByDesc('acted_at')
             ->paginate(10);
@@ -489,6 +493,7 @@ class ApprovalService
                 'accidentCase.creator',
                 'approver.roles',
                 'institution',
+                'signature',
             ])
 
             ->orderBy('document_type')
@@ -500,13 +505,12 @@ class ApprovalService
 
     protected function getActiveSignature(User $user): UserSignature
     {
-        if(!$signature &&
-            (   $user->hasRole('medical_superintendent') || 
-                $user->hasRole('regional_director') || 
-                $user->hasRole('provincial_director') || 
-                $user->hasRole('secretary') )
-            ) 
-        {
+        $signature = $user->signatures()
+            ->where('is_active', true)
+            ->latest()
+            ->first();
+
+        if (! $signature) {
             throw ValidationException::withMessages([
                 'signature' => 'Active signature not found. Please upload your signature before approving.',
             ]);

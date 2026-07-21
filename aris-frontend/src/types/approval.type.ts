@@ -11,6 +11,7 @@ export interface Approval {
   submitted_by: { id: number; name: string };
   institution: { id: number; name: string };
   approver: { id: number; name: string; role: string | null };
+  signature: { public_id: string } | null;
 }
 
 export interface PaginatedApprovals {

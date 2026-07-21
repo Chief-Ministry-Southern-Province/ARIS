@@ -49,6 +49,9 @@ class ApprovalResource extends JsonResource
                 'name' => $this->approver?->name,
                 'role' => $this->approver?->roles->first()?->name,
             ],
+            'signature' => $this->signature ? [
+                'public_id' => $this->signature->public_id,
+            ] : null,
         ];
     }
 }
