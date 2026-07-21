@@ -103,6 +103,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::post('/fr1043/{fr1043}/submit',[FR1043Controller::class, 'submit']);
 
+    Route::get('/fr1043/{fr1043}/pdf',[FR1043Controller::class, 'downloadPdf']);
+
     // Protected routes for FR1044
     Route::prefix('cases')->group(function () {
         Route::get('/{accidentCase}/fr1044',[FR1044Controller::class, 'show']);

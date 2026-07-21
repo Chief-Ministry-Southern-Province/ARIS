@@ -11,12 +11,12 @@ import SecurityArrangementSection from "@/components/organisms/Forms/FR104_3/Sec
 import PreventionArrangementSection from "@/components/organisms/Forms/FR104_3/PreventionArrangementSection";
 import { useTranslation } from "react-i18next";
 import {FormCard} from "@/components/molecules/FormCard";
-import { CheckCircle, Save, Printer } from "lucide-react";
+import { CheckCircle, Download, Save, Printer } from "lucide-react";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
+import { useDownloadFR1043Pdf, useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
 import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
@@ -45,6 +45,7 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
   const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
   const submitMutation = useSubmitFR1043(accidentCaseId);
+  const downloadPdfMutation = useDownloadFR1043Pdf();
   const submitting = submitMutation.isPending;
   const isEditable = !readOnly && (!formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus));
   const displayedForm = document ?? loadedForm;
@@ -158,6 +159,27 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
       ...prev,
       [field as keyof FR1043FormData]: value as string,
     }));
+  };
+
+  const downloadPdf = async () => {
+    if (!displayedForm?.id) {
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(displayedForm.id);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = `FR1043-${displayedForm.reference_number ?? displayedForm.id}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error(
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          ?? "Unable to download the FR1043 PDF.",
+      );
+    }
   };
 
 useEffect(() => {
@@ -426,6 +448,7 @@ useEffect(() => {
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
             {readOnly ? (
               <>
+                <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                 {onDecision && <button type="button" onClick={onDecision} className="w-full sm:w-auto px-5 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2"><CheckCircle size={18} />Decision</button>}
                 <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">Back</button>
               </>

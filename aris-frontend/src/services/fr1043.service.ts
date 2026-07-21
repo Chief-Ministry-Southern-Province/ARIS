@@ -27,3 +27,11 @@ export const submitFR1043 = async (id: number): Promise<FR1043Response> => {
 
   return response.data;
 };
+
+export const downloadFR1043Pdf = async (id: number): Promise<Blob> => {
+  const response = await api.get(`/fr1043/${id}/pdf`, {
+    responseType: "blob",
+  });
+
+  return response.data;
+};

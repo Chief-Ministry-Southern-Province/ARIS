@@ -13,11 +13,19 @@ class Approval extends Model
         'institution_id',
         'revision',
         'approver_id',
+        'user_signature_id',
         'status',
         'comments',
         'acted_at',
         'user_signature_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'acted_at' => 'datetime',
+        ];
+    }
 
     public function accidentCase()
     {

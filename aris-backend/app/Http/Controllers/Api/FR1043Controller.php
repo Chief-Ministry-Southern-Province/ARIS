@@ -8,13 +8,15 @@ use App\Http\Resources\FR1043Resource;
 use App\Models\AccidentCase;
 use App\Models\FR1043;
 use App\Services\FR1043\FR1043Service;
+use App\Services\PDF\FR1043PdfGenerator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class FR1043Controller extends Controller
 {
     public function __construct(
-        protected FR1043Service $fr1043Service
+        protected FR1043Service $fr1043Service,
+        protected FR1043PdfGenerator $pdfGenerator,
     ) {}
 
     /**
@@ -85,5 +87,11 @@ class FR1043Controller extends Controller
         $fr1043 = $this->fr1043Service->submit($fr1043, $request->user());
 
         return new FR1043Resource($fr1043);
+    }
+
+    /** Download a PDF representation of an FR1043 revision and its approvals. */
+    public function downloadPdf(FR1043 $fr1043)
+    {
+        return $this->pdfGenerator->download($fr1043->id);
     }
 }

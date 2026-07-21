@@ -61,12 +61,20 @@ final readonly class SignatureStorageService
         return $this->disk()->exists($path);
     }
 
+    /** Read and decrypt a private file. Authorization belongs to the caller. */
+    public function contents(string $path): string
+    {
+        abort_unless($this->exists($path), 404);
+
+        return $this->encryption->decrypt($this->disk()->get($path));
+    }
+
     /** Stream a decrypted private file response. Authorization belongs to the caller. */
     public function response(string $path): StreamedResponse
     {
         abort_unless($this->exists($path), 404);
 
-        $contents = $this->encryption->decrypt($this->disk()->get($path));
+        $contents = $this->contents($path);
 
         return new StreamedResponse(
             static function () use ($contents): void {
