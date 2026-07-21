@@ -16,6 +16,8 @@ use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
+use App\Models\UserSignature;
+use Illuminate\Validation\ValidationException;
 
 class ApprovalService
 {
@@ -185,6 +187,8 @@ class ApprovalService
 
         $accidentCase = $this->resolveApprovalCase($approval);
 
+        $signature = $this->getActiveSignature($user);
+
         DB::transaction(function () use (
             $approval,
             $comments,
@@ -200,6 +204,7 @@ class ApprovalService
 
                 'acted_at' => now(),
 
+                'user_signature_id' => $signature->id,
             ]);
 
             $nextApproval = Approval::query()
@@ -491,5 +496,22 @@ class ApprovalService
             ->orderBy('step')
 
             ->get();
+    }
+
+    protected function getActiveSignature(User $user): UserSignature
+    {
+        if(!$signature &&
+            (   $user->hasRole('medical_superintendent') || 
+                $user->hasRole('regional_director') || 
+                $user->hasRole('provincial_director') || 
+                $user->hasRole('secretary') )
+            ) 
+        {
+            throw ValidationException::withMessages([
+                'signature' => 'Active signature not found. Please upload your signature before approving.',
+            ]);
+        }
+
+        return $signature;
     }
 }

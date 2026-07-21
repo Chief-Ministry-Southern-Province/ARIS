@@ -16,6 +16,7 @@ class Approval extends Model
         'status',
         'comments',
         'acted_at',
+        
     ];
 
     public function accidentCase()
@@ -31,5 +32,10 @@ class Approval extends Model
     public function approver()
     {
         return $this->belongsTo(User::class,'approver_id');
+    }
+
+    public function signature()
+    {
+        return $this->belongsTo(UserSignature::class, 'user_signature_id');
     }
 }
