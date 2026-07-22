@@ -446,11 +446,19 @@ useEffect(() => {
         {/* Sticky Action Bar */}
         <div className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
-            {readOnly ? (
+            {true ? (
               <>
-                <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
-                {onDecision && <button type="button" onClick={onDecision} className="w-full sm:w-auto px-5 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2"><CheckCircle size={18} />Decision</button>}
-                <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">Back</button>
+                <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2">
+                  <Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}
+                </button>
+
+                {onDecision && 
+                  <button type="button" onClick={onDecision} className="w-full sm:w-auto px-5 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2">
+                    <CheckCircle size={18} />Decision
+                  </button>}
+                  <button type="button" onClick={onBack} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50">
+                    Back
+                  </button>
               </>
             ) : <>
             {/* Submit */}
@@ -462,15 +470,6 @@ useEffect(() => {
               <CheckCircle size={18} />
               {submitting ? "Submitting..." : (formStatus === "CHANGES_REQUESTED" || (displayedForm?.revision ?? 1) > 1 ? "Submit Again" : t("fr104_3.submit"))}
             </button>
-
-            {/* Approve */}
-            {/* <button
-              type="button"
-              onClick={() => setIsActionModalOpen(true)}
-              className="order-2 sm:order-3 w-full sm:w-auto px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 ">
-              <CheckCircle size={18} />
-              {t("fr104_3.approve")}
-            </button> */}
 
             {/* Save Draft */}
             <button

@@ -44,7 +44,7 @@ final readonly class DocumentSignatureService
                 'data:image/png;base64,%s',
                 base64_encode($this->storage->contents($approval->signature->path)),
             ),
-            'approved_at' => $approval->acted_at,
+            'approved_at' => $approval->acted_at?->format('Y-m-d H:i'),
         ];
     }
 }
