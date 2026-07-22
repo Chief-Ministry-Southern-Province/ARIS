@@ -150,15 +150,15 @@
         }
 
         .medium-padding {
-            padding-bottom: 18px !important;
+            padding-bottom: 5px !important;
         }
 
         .large-padding {
-            padding-bottom: 32px !important;
+            padding-bottom: 5px !important;
         }
 
         .very-large-padding {
-            padding-bottom: 50px !important;
+            padding-bottom: 5px !important;
         }
 
         .items-table {
@@ -176,7 +176,7 @@
             padding-bottom: 7px;
         }
 
-        .page-title {
+        .page-header {
             text-align: center;
             font-size: 9px;
             margin: 0 0 8px 0;
@@ -216,15 +216,23 @@
             line-height: 1.5;
         }
 
-        .page-number {
+        .page-footer {
             text-align: center;
             font-size: 8px;
-            margin-top: 8px;
         }
     </style>
 </head>
 
 <body>
+
+    <htmlpagefooter name="document-footer">
+        <div class="page-footer">{PAGENO}</div>
+    </htmlpagefooter>
+    <sethtmlpagefooter name="document-footer" value="on" show-this-page="1" />
+
+    <htmlpageheader name="continuation-header">
+        <div class="page-header">({PAGENO})</div>
+    </htmlpageheader>
 
     {{-- ============================================================ --}}
     {{-- PAGE 1 --}}
@@ -448,12 +456,6 @@
                 ->values()
                 ->take(6);
 
-            $minimumItemRows = 6;
-
-            $emptyItemRows = max(
-                0,
-                $minimumItemRows - $items->count()
-            );
         @endphp
 
         <table class="border-table items-table">
@@ -562,25 +564,6 @@
                     </tr>
                 @endforeach
 
-                @for($row = 0; $row < $emptyItemRows; $row++)
-                    <tr>
-                        <td class="medium-padding">
-                            &nbsp;
-                        </td>
-
-                        <td>
-                            &nbsp;
-                        </td>
-
-                        <td>
-                            &nbsp;
-                        </td>
-
-                        <td>
-                            &nbsp;
-                        </td>
-                    </tr>
-                @endfor
             </tbody>
         </table>
 
@@ -621,19 +604,7 @@
             </tr>
         </table>
 
-        <div class="page-number">
-            1
-        </div>
-
-    <pagebreak />
-
-    {{-- ============================================================ --}}
-    {{-- PAGE 2 --}}
-    {{-- ============================================================ --}}
-
-        <p class="page-title">
-            (2)
-        </p>
+        <sethtmlpageheader name="continuation-header" value="on" />
 
         @php
             $rawOfficers = data_get(
@@ -653,12 +624,6 @@
                 ->values()
                 ->take(4);
 
-            $minimumOfficerRows = 4;
-
-            $emptyOfficerRows = max(
-                0,
-                $minimumOfficerRows - $officers->count()
-            );
         @endphp
 
         <p class="section-label">
@@ -750,21 +715,6 @@
                     </tr>
                 @endforeach
 
-                @for($row = 0; $row < $emptyOfficerRows; $row++)
-                    <tr>
-                        <td>
-                            &nbsp;
-                        </td>
-
-                        <td class="medium-padding">
-                            &nbsp;
-                        </td>
-
-                        <td class="medium-padding">
-                            &nbsp;
-                        </td>
-                    </tr>
-                @endfor
             </tbody>
         </table>
 
@@ -866,7 +816,11 @@
                     ))) !!}
                 </td>
             </tr>
+        </table>
 
+        <pagebreak />
+
+        <table class="border-table">
             <tr>
                 <td class="number-cell">
                     8.
@@ -1139,10 +1093,6 @@
                 </td>
             </tr>
         </table>
-
-        <div class="page-number">
-            2
-        </div>
 
 </body>
 
