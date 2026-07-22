@@ -79,7 +79,8 @@ final class PdfService
             'fontdata' => array_merge($defaultFontConfig['fontdata'], config('mpdf.font_data')),
             'default_font' => config('mpdf.default_font'),
             'autoScriptToLang' => true,
-            'autoLangToFont' => false,
+            'autoLangToFont' => true,
+            'languageToFont' => new ArisLanguageToFont(),
         ], $this->renderingOptions($options));
 
         return new Mpdf($config);

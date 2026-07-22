@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 
 <head>
 
@@ -20,7 +20,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: notosanssinhala, sans-serif;
+    font-family: notosanssinhala, notosanstamil, dejavusans, sans-serif;
 }
 
 body{
@@ -126,8 +126,8 @@ td{
 </tr>
 </table>
 
-<p class="subtitle">මූ. රෙ. 104(3) සටහේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</p>
-<p class="subtitle">நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</p>
+<p class="subtitle" lang="si">මූ. රෙ. 104(3) සටහේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</p>
+<p class="subtitle" lang="ta">நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</p>
 <p class="title">PRELIMINARY REPORT OF LOSSES UNDER F. R. 104 (3)</p>
 
 <table class="no-border">
@@ -136,13 +136,13 @@ td{
         <span class="field-line">&nbsp;</span>
     </td>
     <td width="35%" class="small">
-        අමාත්‍යාංශයේ ලේකම්<br>
-        அமைச்சின் செயலாளர்
+        <span lang="si">අමාත්‍යාංශයේ ලේකම්</span><br>
+        <span lang="ta">அமைச்சின் செயலாளர்</span>
     </td>
 </tr>
 <tr>
     <td>Copy to : Auditor-General<br>
-        <span class="small">පිටපත වගඇකසාධ්පති</span>
+        <span class="small" lang="si">පිටපත වගඇකසාධ්පති</span>
     </td>
     <td>Ref. No. {{ $document->reference_number }}</td>
 </tr>
@@ -292,7 +292,7 @@ td{
     </td>
     <td width="50%" class="small">
         Head of Department / Chairman of Corporation<br>
-        தினைக்களத் தலைவர் / கூட்டுத்தாபனத்தவரசாளர்
+        <span lang="ta">தினைக்களத் தலைவர் / கூட்டுத்தாபனத்தவரசாளர்</span>
     </td>
 </tr>
 <tr>
@@ -310,7 +310,7 @@ td{
     </td>
     <td class="small">
         Secretary to the Ministry of <span class="field-line">&nbsp;</span><br>
-        அமைச்சின் செயலாளர்
+        <span lang="ta">அமைச்சின் செயலாளர்</span>
     </td>
 </tr>
 </table>
