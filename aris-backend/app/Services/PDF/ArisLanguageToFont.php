@@ -13,7 +13,7 @@ final class ArisLanguageToFont extends LanguageToFont
         $language = strtolower(explode('-', $llcc)[0]);
 
         return match ($language) {
-            'si', 'sin' => [false, 'notosanssinhala'],
+            'si', 'sin' => [false, 'iskoolapota'],
             'ta', 'tam' => [false, 'notosanstamil'],
             default => parent::getLanguageOptions($llcc, $adobeCJK),
         };

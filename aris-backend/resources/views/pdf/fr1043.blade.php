@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-
     <style>
         html,
         body {
@@ -15,1085 +13,435 @@
         table,
         td,
         th,
-        span,
-        div,
-        p {
-            font-family: dejavusans, sans-serif;
-        }
-
-        body {
+        span {
+            font-family: iskoolapota, notosanssinhala, notosanstamil, dejavusans, sans-serif;
+            font-size: 10pt;
+            line-height: 1.15;
             color: #000;
-            font-size: 9px;
-            line-height: 1.3;
         }
 
         table {
-            width: 100%;
+            width: 200mm;
+            margin: 0;
             border-collapse: collapse;
             border-spacing: 0;
         }
 
-        td,
-        th {
-            vertical-align: top;
+        .inner-table {
+            width: 100%;
         }
 
-        .border-table td,
-        .border-table th {
-            border: 0.7px solid #000;
-            padding: 5px;
+        .items-table {
+            table-layout: fixed;
+        }
+
+        .items-row td {
+            border-top: 0;
+            border-bottom: 0;
+        }
+
+        .items-row-last td {
+            border-bottom: 1px solid #000;
+        }
+
+        td,
+        th {
+            border: 1px solid #000;
+            padding: 2mm;
+            vertical-align: top;
         }
 
         .no-border,
         .no-border td,
         .no-border th {
-            border: none !important;
+            border: 0;
         }
 
         .no-border td,
         .no-border th {
-            padding: 2px 4px;
-        }
-
-        .header-table,
-        .header-table td {
-            border: none;
-        }
-
-        .header-table td {
             padding: 0;
         }
 
-        .form-code-box {
-            border: 0.7px solid #000;
-            padding: 4px 6px;
-            text-align: center;
-            font-size: 7px;
-            line-height: 1.3;
+        .page-break {
+            page-break-after: always;
         }
 
-        .form-code-number {
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .heading-section {
-            text-align: center;
-            margin-top: 7px;
-            margin-bottom: 8px;
-        }
-
-        .heading-section p {
-            margin: 1px 0;
-        }
-
-        .heading-si,
-        .heading-ta {
-            font-size: 9px;
-        }
-
-        .heading-en {
-            margin-top: 3px !important;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .top-info {
-            margin-bottom: 8px;
-        }
-
-        .top-info td {
-            font-size: 8px;
-            line-height: 1.4;
-        }
-
-        .field-line {
-            text-decoration: underline;
-        }
-
-        .field-line-short {
-            text-decoration: underline;
-        }
-
-        .number-cell {
-            width: 6%;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .label-cell {
-            width: 30%;
-        }
-
-        .value-cell {
-            width: 64%;
-        }
-
-        .label-en {
-            font-weight: bold;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .right {
+        .gazette {
+            height: 12mm;
+            font-size: 8pt;
+            line-height: 1.1;
             text-align: right;
         }
 
-        .bold {
+        .title-block {
+            height: 18mm;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .title-si,
+        .title-ta {
+            font-size: 13pt;
             font-weight: bold;
         }
 
-        .small {
-            font-size: 7px;
+        .title-en {
+            font-size: 14pt;
+            font-weight: bold;
         }
 
-        .medium-padding {
-            padding-bottom: 5px !important;
+        .label-local {
+            font-size: 8pt;
         }
 
-        .large-padding {
-            padding-bottom: 5px !important;
-        }
-
-        .very-large-padding {
-            padding-bottom: 5px !important;
-        }
-
-        .items-table {
-            margin-top: 7px;
-        }
-
-        .items-table th {
+        .table-header {
+            font-size: 9pt;
+            font-weight: bold;
             text-align: center;
             vertical-align: middle;
-            font-weight: normal;
         }
 
-        .items-table td {
-            padding-top: 7px;
-            padding-bottom: 7px;
+        .reference {
+            font-size: 9pt;
+            text-align: right;
         }
 
-        .page-header {
-            text-align: center;
-            font-size: 9px;
-            margin: 0 0 8px 0;
+        .fixed-12 { height: 12mm; }
+        .fixed-14 { height: 14mm; }
+        .fixed-16 { height: 16mm; }
+        .fixed-18 { height: 18mm; }
+        .fixed-24 { height: 24mm; }
+        .fixed-32 { height: 32mm; }
+        .fixed-36 { height: 36mm; }
+        .fixed-40 { height: 40mm; }
+        .fixed-45 { height: 45mm; }
+        .fixed-60 { height: 60mm; }
+
+        .items-cell,
+        .officers-cell,
+        .response-cell {
+            overflow: hidden;
         }
 
-        .section-label {
-            font-size: 8px;
-            margin: 8px 0 4px 0;
-        }
-
-        .signature-table {
-            margin-top: 15px;
-        }
-
-        .signature-table td {
-            border: none;
-            padding: 3px 5px;
-        }
-
-        .signature-space {
-            padding-top: 5px;
-            padding-bottom: 5px;
-        }
-
-        .signature-image {
-            width: 110px;
-            height: 45px;
+        .item-line,
+        .officer-line {
+            line-height: 1.45;
         }
 
         .signature-line {
-            width: 155px;
-            border-top: 0.7px dotted #000;
-            margin-top: 38px;
+            height: 12mm;
+            border-bottom: 1px dotted #000;
+        }
+
+        .signature-image {
+            width: 32mm;
+            height: 12mm;
         }
 
         .signature-label {
-            line-height: 1.5;
+            font-size: 10pt;
+            line-height: 1.2;
         }
 
-        .page-footer {
+        .footer {
+            height: 4mm;
+            font-size: 8pt;
             text-align: center;
-            font-size: 8px;
+            vertical-align: middle;
         }
     </style>
 </head>
-
 <body>
-
-    <htmlpagefooter name="document-footer">
-        <div class="page-footer">{PAGENO}</div>
-    </htmlpagefooter>
-    <sethtmlpagefooter name="document-footer" value="on" show-this-page="1" />
-
-    <htmlpageheader name="continuation-header">
-        <div class="page-header">({PAGENO})</div>
-    </htmlpageheader>
-
-    {{-- ============================================================ --}}
-    {{-- PAGE 1 --}}
-    {{-- ============================================================ --}}
-
-        <table class="header-table">
-            <tr>
-                <td style="width: 65%;">
-                    &nbsp;
-                </td>
-
-                <td style="width: 35%;">
-                    <div class="form-code-box">
-                        <span lang="si">පොදු</span>
-                        /
-                        <span lang="ta">பொது</span>
-                        /
-                        General
-
-                        &nbsp;
-
-                        <span class="form-code-number">283</span>
-
-                        <br>
-
-                        (F2* S., T. &amp; E.) 12/76
-
-                        <br>
-
-                        (A4* S., T. &amp; E. 06/2023 - Amended)
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-        <div class="heading-section">
-            <p class="heading-si" lang="si">
-                මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව
-            </p>
-
-            <p class="heading-ta" lang="ta">
-                நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை
-            </p>
-
-            <p class="heading-en">
-                PRELIMINARY REPORT OF LOSSES UNDER F. R. 104 (3)
-            </p>
-        </div>
-
-        <table class="no-border top-info">
-            <tr>
-                <td style="width: 65%;">
-                    <span lang="si">අමාත්‍යාංශයේ ලේකම්</span>
-                    /
-                    <span lang="ta">அமைச்சின் செயலாளர்</span>
-                    /
-                    Secretary to the Ministry of
-
-                    <span class="field-line">
-                        {{ data_get($document->data, 'ministry', '') ?: '____________________' }}
-                    </span>
-                </td>
-
-                <td style="width: 35%;">
-                    &nbsp;
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <span lang="si">පිටපත: විගණකාධිපති</span>
-                    /
-                    <span lang="ta">
-                        பிரதி: கணக்காய்வாளர் தலைமை அதிபதி
-                    </span>
-                    /
-                    Copy to: Auditor-General
-                </td>
-
-                <td>
-                    <span lang="si">යොමු අංකය</span>
-                    /
-                    <span lang="ta">தொடர் இல.</span>
-                    /
-                    Ref. No.:
-
-                    <span class="field-line-short">
-                        {{ $document->reference_number ?: '____________' }}
-                    </span>
-                </td>
-            </tr>
-        </table>
-
-        <table class="border-table">
-            <tr>
-                <td class="number-cell">
-                    1.
-                </td>
-
-                <td class="label-cell">
-                    <span lang="si">
-                        දෙපාර්තමේන්තුව / සංස්ථාව
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        திணைக்களம் / கூட்டுத்தாபனம்
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Department / Corporation
-                    </span>
-                </td>
-
-                <td class="value-cell medium-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'department',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-
-            <tr>
-                <td class="number-cell">
-                    2.
-                </td>
-
-                <td class="label-cell">
-                    <span lang="si">අලාභය</span>
-
-                    <br>
-
-                    <span lang="ta">இழப்பு</span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Loss
-                    </span>
-                </td>
-
-                <td class="value-cell large-padding">
-                    <div>
-                        <span class="bold">
-                            Date:
-                        </span>
-
-                        {{ data_get(
-                            $document->data,
-                            'lossDate',
-                            data_get($document->data, 'date', '')
-                        ) }}
-
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                        <span class="bold">
-                            Place:
-                        </span>
-
-                        {{ data_get(
-                            $document->data,
-                            'lossPlace',
-                            data_get($document->data, 'place', '')
-                        ) }}
-                    </div>
-
-                    <div style="margin-top: 7px;">
-                        {!! nl2br(e(data_get(
-                            $document->data,
-                            'lossDetails',
-                            data_get($document->data, 'loss', '')
-                        ))) !!}
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="number-cell">
-                    3.
-                </td>
-
-                <td class="label-cell">
-                    <span lang="si">
-                        අලාභයේ ස්වභාවය
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        இழப்பின் தன்மை
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Nature of Loss
-                    </span>
-                </td>
-
-                <td class="value-cell medium-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'natureOfLoss',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-        </table>
-
-        @php
-            $rawItems = data_get($document->data, 'items', []);
-
-            $items = collect(is_array($rawItems) ? $rawItems : [])
-                ->filter(function ($item) {
-                    return is_array($item);
-                })
-                ->values()
-                ->take(6);
-
-        @endphp
-
-        <table class="border-table items-table">
-            <tbody>
-                <tr>
-                    <th style="width: 43%;">
-                        <span lang="si">
-                            අහිමි වූ භාණ්ඩවල විස්තරය
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            இழந்த பொருட்களின் விபரம்
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Description of items lost
-                        </span>
-                    </th>
-
-                    <th style="width: 14%;">
-                        <span lang="si">
-                            ප්‍රමාණය
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            அளவு
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Quantity
-                        </span>
-                    </th>
-
-                    <th style="width: 20%;">
-                        <span lang="si">
-                            මිනුම් ඒකක
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            அளவீட்டு அலகு
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Unit of Measure
-                        </span>
-                    </th>
-
-                    <th style="width: 23%;">
-                        <span lang="si">
-                            වටිනාකම
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            பெறுமதி
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Value
-                        </span>
-                    </th>
-                </tr>
-            </tbody>
-
-            <tbody>
-                @foreach($items as $item)
+    @php
+        $text = static fn (mixed $value, int $limit): string => \Illuminate\Support\Str::limit(
+            trim((string) $value),
+            $limit,
+            '...'
+        );
+
+        $items = collect(data_get($document->data, 'items', []))
+            ->filter(static fn ($item): bool => is_array($item) || is_object($item))
+            ->values()
+            ->take(5);
+
+        $officers = collect(data_get($document->data, 'officers', []))
+            ->filter(static fn ($officer): bool => is_array($officer) || is_object($officer))
+            ->values()
+            ->take(4);
+    @endphp
+
+    {{-- PAGE 1: Header and sections 1–4 only. --}}
+    <table class="no-border">
+        <tr>
+            <td class="gazette">
+                <span lang="si">පොදු</span> / <span lang="ta">பொது</span> / General<br>
+                <strong>283</strong><br>
+                (F2* S., T. &amp; E.) 12/76<br>
+                (A4* S., T. &amp; E. 06/2023 - Amended)
+            </td>
+        </tr>
+        <tr>
+            <td class="title-block">
+                <span class="title-si" lang="si">මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</span><br>
+                <span class="title-ta" lang="ta">நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</span><br>
+                <span class="title-en">PRELIMINARY REPORT OF LOSSES UNDER F.R. 104 (3)</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="fixed-14">
+                <table class="no-border inner-table">
                     <tr>
-                        <td class="medium-padding">
-                            {!! nl2br(e(data_get(
-                                $item,
-                                'description',
-                                ''
-                            ))) !!}
+                        <td style="width: 140mm;">
+                            <span class="label-local" lang="si">අමාත්‍යාංශයේ ලේකම්</span> /
+                            <span class="label-local" lang="ta">அமைச்சின் செயலாளர்</span> /
+                            Secretary to the Ministry of
+                            {{ $text(data_get($document->data, 'ministry', ''), 50) }}
                         </td>
-
-                        <td class="center">
-                            {{ data_get($item, 'quantity', '') }}
-                        </td>
-
-                        <td class="center">
-                            {{ data_get(
-                                $item,
-                                'unitOfMeasure',
-                                data_get($item, 'unit', '')
-                            ) }}
-                        </td>
-
-                        <td class="right">
-                            {{ data_get($item, 'value', '') }}
+                        <td class="reference" style="width: 60mm;">
+                            <span class="label-local" lang="si">යොමු අංකය</span> /
+                            <span class="label-local" lang="ta">தொடர் இல.</span><br>
+                            Ref. No.: {{ $text($document->reference_number ?? '', 30) }}
                         </td>
                     </tr>
-                @endforeach
-
-            </tbody>
-        </table>
-
-        <table
-            class="border-table"
-            style="margin-top: 8px;"
-        >
-            <tr>
-                <td class="number-cell">
-                    4.
-                </td>
-
-                <td class="label-cell">
-                    <span lang="si">
-                        අලාභයට හේතුව
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        இழப்பிற்கான காரணம்
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Cause of Loss
-                    </span>
-                </td>
-
-                <td class="value-cell large-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'causeOfLoss',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-        </table>
-
-        <sethtmlpageheader name="continuation-header" value="on" />
-
-        @php
-            $rawOfficers = data_get(
-                $document->data,
-                'officers',
-                []
-            );
-
-            $officers = collect(
-                is_array($rawOfficers) || $rawOfficers instanceof \Illuminate\Support\Collection
-                    ? $rawOfficers
-                    : []
-            )
-                ->filter(function ($officer) {
-                    return is_array($officer) || is_object($officer);
-                })
-                ->values()
-                ->take(4);
-
-        @endphp
-
-        <p class="section-label">
-            5.
-            <span lang="si">
-                වගකිවයුතු නිලධාරීන්
-            </span>
-            /
-            <span lang="ta">
-                பொறுப்பான அலுவலர்கள்
-            </span>
-            /
-            <span class="bold">
-                Officers responsible
-            </span>
-        </p>
-
-        <table class="border-table">
-            <tbody>
-                <tr>
-                    <th style="width: 6%;">
-                        &nbsp;
-                    </th>
-
-                    <th style="width: 47%;">
-                        <span lang="si">
-                            නම
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            பெயர்
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Name
-                        </span>
-                    </th>
-
-                    <th style="width: 47%;">
-                        <span lang="si">
-                            තනතුර
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            பதவி
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Designation
-                        </span>
-                    </th>
-                </tr>
-            </tbody>
-
-            <tbody>
-                @foreach($officers as $officer)
                     <tr>
                         <td>
-                            &nbsp;
+                            <span class="label-local" lang="si">පිටපත: විගණකාධිපති</span> /
+                            <span class="label-local" lang="ta">பிரதி: கணக்காய்வாளர் தலைமை அதிபதி</span> /
+                            Copy to: Auditor-General
                         </td>
-
-                        <td class="medium-padding">
-                            {!! nl2br(e(data_get(
-                                $officer,
-                                'name',
-                                ''
-                            ))) !!}
-                        </td>
-
-                        <td class="medium-padding">
-                            @if(is_object($officer) && method_exists($officer, 'getRoleNames'))
-                                {{ $officer->getRoleNames()->implode(', ') }}
-                            @else
-                                {!! nl2br(e(data_get(
-                                    $officer,
-                                    'designation',
-                                    data_get($officer, 'roles', '')
-                                ))) !!}
-                            @endif
-                        </td>
+                        <td></td>
                     </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-16">
+            <td style="width: 50mm;">
+                <span class="label-local" lang="si">1. දෙපාර්තමේන්තුව / සංස්ථාව</span><br>
+                <span class="label-local" lang="ta">1. திணைக்களம் / கூட்டுத்தாபனம்</span><br>
+                Department / Corporation
+            </td>
+            <td class="response-cell" style="width: 150mm;">
+                {{ $text(data_get($document->data, 'department', ''), 180) }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-32">
+            <td style="width: 82mm;">
+                <span class="label-local" lang="si">2. අලාභය</span><br>
+                <span class="label-local" lang="ta">2. இழப்பு</span><br>
+                Loss<br>
+                {{ $text(data_get($document->data, 'lossDetails', data_get($document->data, 'loss', '')), 180) }}
+            </td>
+            <td style="width: 52mm;">
+                <span class="label-local" lang="si">දිනය</span> / <span class="label-local" lang="ta">திகதி</span><br>
+                Date<br>
+                {{ $text(data_get($document->data, 'lossDate', data_get($document->data, 'date', '')), 30) }}
+            </td>
+            <td style="width: 66mm;">
+                <span class="label-local" lang="si">ස්ථානය</span> / <span class="label-local" lang="ta">இடம்</span><br>
+                Place<br>
+                {{ $text(data_get($document->data, 'lossPlace', data_get($document->data, 'place', '')), 60) }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-12">
+            <td style="width: 50mm;">
+                <span class="label-local" lang="si">3. අලාභයේ ස්වභාවය</span><br>
+                <span class="label-local" lang="ta">3. இழப்பின் தன்மை</span><br>
+                Nature of Loss
+            </td>
+            <td class="response-cell" style="width: 150mm;">
+                {{ $text(data_get($document->data, 'natureOfLoss', ''), 180) }}
+            </td>
+        </tr>
+    </table>
+
+    <table class="items-table">
+        <tr class="fixed-12">
+            <th class="table-header" style="width: 90mm;">
+                <span lang="si">අහිමි වූ භාණ්ඩවල විස්තරය</span><br>
+                <span lang="ta">இழந்த பொருட்களின் விபரம்</span><br>
+                Description of items lost
+            </th>
+            <th class="table-header" style="width: 34mm;">
+                <span lang="si">ප්‍රමාණය</span><br>
+                <span lang="ta">அளவு</span><br>
+                Quantity
+            </th>
+            <th class="table-header" style="width: 36mm;">
+                <span lang="si">මිනුම් ඒකක</span><br>
+                <span lang="ta">அளவீட்டு அலகு</span><br>
+                Units of Measure
+            </th>
+            <th class="table-header" style="width: 40mm;">
+                <span lang="si">වටිනාකම</span><br>
+                <span lang="ta">பெறுமதி</span><br>
+                Value
+            </th>
+        </tr>
+        @for($itemIndex = 0; $itemIndex < 5; $itemIndex++)
+            @php
+                $item = $items->get($itemIndex);
+            @endphp
+            <tr class="fixed-36 items-row {{ $itemIndex === 4 ? 'items-row-last' : '' }}">
+                <td class="items-cell" style="width: 90mm;">
+                    <span class="item-line">{{ $text(data_get($item, 'description', ''), 90) }}</span>
+                </td>
+                <td class="items-cell" style="width: 34mm; text-align: center;">
+                    <span class="item-line">{{ $text(data_get($item, 'quantity', ''), 20) }}</span>
+                </td>
+                <td class="items-cell" style="width: 36mm; text-align: center;">
+                    <span class="item-line">{{ $text(data_get($item, 'unitOfMeasure', data_get($item, 'unit', '')), 25) }}</span>
+                </td>
+                <td class="items-cell" style="width: 40mm; text-align: right;">
+                    <span class="item-line">{{ $text(data_get($item, 'value', ''), 25) }}</span>
+                </td>
+            </tr>
+        @endfor
+    </table>
+
+    <table>
+        <tr class="fixed-12">
+            <td style="width: 50mm;">
+                <span class="label-local" lang="si">4. අලාභයට හේතුව</span><br>
+                <span class="label-local" lang="ta">4. இழப்பிற்கான காரணம்</span><br>
+                Cause of Loss
+            </td>
+            <td class="response-cell" style="width: 150mm;">
+                {{ $text(data_get($document->data, 'causeOfLoss', ''), 180) }}
+            </td>
+        </tr>
+    </table>
+
+    <table class="no-border page-break">
+        <tr><td class="footer">1</td></tr>
+    </table>
+
+    {{-- PAGE 2: Sections 5–9 and signatures only. --}}
+    <table class="no-border">
+        <tr><td class="footer" style="height: 6mm;">(2)</td></tr>
+    </table>
+
+    <table>
+        <tr class="fixed-12">
+            <th class="table-header" style="width: 100mm;">
+                <span lang="si">5. වගකිවයුතු නිලධාරීන්ගේ නම</span><br>
+                <span lang="ta">5. பொறுப்பான அலுவலர்களின் பெயர்</span><br>
+                Name
+            </th>
+            <th class="table-header" style="width: 100mm;">
+                <span lang="si">තනතුර</span><br>
+                <span lang="ta">பதவி</span><br>
+                Designation
+            </th>
+        </tr>
+        <tr class="fixed-40">
+            <td class="officers-cell" style="width: 100mm;">
+                @foreach($officers as $officer)
+                    <span class="officer-line">{{ $text(data_get($officer, 'name', ''), 70) }}</span><br>
                 @endforeach
-
-            </tbody>
-        </table>
-
-        <table
-            class="border-table"
-            style="margin-top: 8px;"
-        >
-            <tr>
-                <td style="width: 6%; text-align: center; font-weight: bold;">
-                    6.
-                </td>
-
-                <td style="width: 24%;">
-                    <span lang="si">
-                        පොලිස් ස්ථානයේ නම
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        பொலிஸ் நிலையத்தின் பெயர்
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Name of Police Station
-                    </span>
-                </td>
-
-                <td style="width: 26%;" class="medium-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'policeStation',
-                        ''
-                    ))) !!}
-                </td>
-
-                <td style="width: 25%;">
-                    <span lang="si">
-                        පොලිසියට වාර්තා කළ දිනය
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        பொலிஸாருக்கு அறிவித்த திகதி
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Date of reporting to Police
-                    </span>
-                </td>
-
-                <td style="width: 19%;" class="medium-padding">
-                    {{ data_get(
-                        $document->data,
-                        'policeReportDate',
-                        ''
-                    ) }}
-                </td>
-            </tr>
-        </table>
-
-        <table
-            class="border-table"
-            style="margin-top: 8px;"
-        >
-            <tr>
-                <td class="number-cell">
-                    7.
-                </td>
-
-                <td style="width: 34%;">
-                    <span lang="si">
-                        සිදු කරනු ලබන විමර්ශනයේ ස්වභාවය
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        மேற்கொள்ளப்படும் விசாரணையின் தன்மை
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Nature of investigation being carried out
-                    </span>
-                </td>
-
-                <td style="width: 60%;" class="large-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'investigation',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-        </table>
-
-        <pagebreak />
-
-        <table class="border-table">
-            <tr>
-                <td class="number-cell">
-                    8.
-                </td>
-
-                <td style="width: 34%;">
-                    <span lang="si">
-                        පොත්පත්, වාර්තා ආදියෙහි ආරක්ෂාව සඳහා කරන ලද
-                        විධිවිධාන
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        புத்தகங்கள், பதிவேடுகள் முதலியவற்றின்
-                        பாதுகாப்பிற்காக செய்யப்பட்ட ஏற்பாடுகள்
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Arrangements made for the security of the books,
-                        records, etc.
-                    </span>
-                </td>
-
-                <td style="width: 60%;" class="very-large-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'securityArrangements',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-
-            <tr>
-                <td class="number-cell">
-                    9.
-                </td>
-
-                <td style="width: 34%;">
-                    <span lang="si">
-                        තවදුරටත් අලාභ සිදුවීම වැළැක්වීම සඳහා කරන ලද
-                        විධිවිධාන
-                    </span>
-
-                    <br>
-
-                    <span lang="ta">
-                        மேலும் இழப்புகள் ஏற்படுவதைத் தடுப்பதற்காக
-                        செய்யப்பட்ட ஏற்பாடுகள்
-                    </span>
-
-                    <br>
-
-                    <span class="label-en">
-                        Arrangements made for the prevention of further
-                        losses
-                    </span>
-                </td>
-
-                <td style="width: 60%;" class="very-large-padding">
-                    {!! nl2br(e(data_get(
-                        $document->data,
-                        'preventionArrangements',
-                        ''
-                    ))) !!}
-                </td>
-            </tr>
-        </table>
-
-        <table class="signature-table">
-            <tr>
-                <td style="width: 48%;">
-                    <div>
-                        <span lang="si">
-                            දිනය
-                        </span>
-
-                        /
-
-                        <span lang="ta">
-                            திகதி
-                        </span>
-
-                        /
-
-                        Date:
-
-                        {{ data_get(
-                            $headSignature,
-                            'approved_at',
-                            ''
-                        ) }}
-                    </div>
-
-                    <div class="signature-space">
-                        @if(data_get(
-                            $headSignature,
-                            'signature_data_uri'
-                        ))
-                            <img
-                                class="signature-image"
-                                src="{{ data_get(
-                                    $headSignature,
-                                    'signature_data_uri'
-                                ) }}"
-                                alt="Head of department signature"
-                            >
-                        @else
-                            <div class="signature-line">
-                                &nbsp;
-                            </div>
-                        @endif
-                    </div>
-                </td>
-
-                <td style="width: 52%;">
-                    <div class="signature-space">
-                        <div class="signature-line">
-                            &nbsp;
-                        </div>
-                    </div>
-
-                    <div class="signature-label">
-                        <span lang="si">
-                            දෙපාර්තමේන්තු ප්‍රධානියා /
-                            සංස්ථාවේ සභාපති
-                        </span>
-
-                        <br>
-
-                        <span lang="ta">
-                            திணைக்களத் தலைவர் /
-                            கூட்டுத்தாபனத் தலைவர்
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Head of Department /
-                            Chairman of Corporation
-                        </span>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
-        <table
-            class="no-border"
-            style="margin-top: 5px;"
-        >
-            <tr>
-                <td style="width: 50%;">
-                    <span lang="si">
-                        ඉදිරිපත් කරන ලදී
-                    </span>
-
-                    /
-
-                    <span lang="ta">
-                        அனுப்பப்பட்டது
-                    </span>
-
-                    /
-
-                    <span class="bold">
-                        Forwarded
-                    </span>
-                </td>
-
-                <td style="width: 50%;">
-                    <span lang="si">
-                        යොමු අංකය
-                    </span>
-
-                    /
-
-                    <span lang="ta">
-                        தொடர் இல.
-                    </span>
-
-                    /
-
-                    Ref. No.:
-
-                    {{ $document->reference_number ?? '' }}
-                </td>
-            </tr>
-        </table>
-
-        <table class="signature-table">
-            <tr>
-                <td style="width: 48%;">
-                    <div>
-                        <span lang="si">
-                            දිනය
-                        </span>
-
-                        /
-
-                        <span lang="ta">
-                            திகதி
-                        </span>
-
-                        /
-
-                        Date:
-
-                        {{ data_get(
-                            $secretarySignature,
-                            'approved_at',
-                            ''
-                        ) }}
-                    </div>
-
-                    <div class="signature-space">
-                        @if(data_get(
-                            $secretarySignature,
-                            'signature_data_uri'
-                        ))
-                            <img
-                                class="signature-image"
-                                src="{{ data_get(
-                                    $secretarySignature,
-                                    'signature_data_uri'
-                                ) }}"
-                                alt="Secretary signature"
-                            >
-                        @else
-                            <div class="signature-line">
-                                &nbsp;
-                            </div>
-                        @endif
-                    </div>
-                </td>
-
-                <td style="width: 52%;">
-                    <div class="signature-space">
-                        <div class="signature-line">
-                            &nbsp;
-                        </div>
-                    </div>
-
-                    <div class="signature-label">
-                        <span lang="si">
-                            අමාත්‍යාංශයේ ලේකම්
-                        </span>
-
-                        /
-
-                        <span lang="ta">
-                            அமைச்சின் செயலாளர்
-                        </span>
-
-                        <br>
-
-                        <span class="bold">
-                            Secretary to the Ministry of
-                        </span>
-
-                    <span class="field-line-short">
-                        {{ data_get(
-                            $document->data,
-                            'ministry',
-                            ''
-                        ) ?: '____________' }}
-                        </span>
-                    </div>
-                </td>
-            </tr>
-        </table>
-
+            </td>
+            <td class="officers-cell" style="width: 100mm;">
+                @foreach($officers as $officer)
+                    @php
+                        $designation = is_object($officer) && method_exists($officer, 'getRoleNames')
+                            ? $officer->getRoleNames()->implode(', ')
+                            : data_get($officer, 'designation', data_get($officer, 'roles', ''));
+                    @endphp
+                    <span class="officer-line">{{ $text($designation, 70) }}</span><br>
+                @endforeach
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-24">
+            <td style="width: 100mm;">
+                <span class="label-local" lang="si">6. පොලිස් ස්ථානයේ නම</span><br>
+                <span class="label-local" lang="ta">6. பொலிஸ் நிலையத்தின் பெயர்</span><br>
+                Name of Police Station<br>
+                {{ $text(data_get($document->data, 'policeStation', ''), 110) }}
+            </td>
+            <td style="width: 100mm;">
+                <span class="label-local" lang="si">පොලිසියට වාර්තා කළ දිනය</span><br>
+                <span class="label-local" lang="ta">பொலிஸாருக்கு அறிவித்த திகதி</span><br>
+                Date reported to Police<br>
+                {{ $text(data_get($document->data, 'policeReportDate', ''), 35) }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-40">
+            <td style="width: 60mm;">
+                <span class="label-local" lang="si">7. සිදු කරනු ලබන විමර්ශනයේ ස්වභාවය</span><br>
+                <span class="label-local" lang="ta">7. மேற்கொள்ளப்படும் விசாரணையின் தன்மை</span><br>
+                Nature of Investigation being carried out
+            </td>
+            <td class="response-cell" style="width: 140mm;">
+                {{ $text(data_get($document->data, 'investigation', ''), 280) }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-45">
+            <td style="width: 60mm;">
+                <span class="label-local" lang="si">8. පොත්පත්, වාර්තා ආදියෙහි ආරක්ෂාව සඳහා කරන ලද විධිවිධාන</span><br>
+                <span class="label-local" lang="ta">8. புத்தகங்கள், பதிவேடுகள் முதலியவற்றின் பாதுகாப்பிற்காக செய்யப்பட்ட ஏற்பாடுகள்</span><br>
+                Arrangements made for the security of books, records, etc.
+            </td>
+            <td class="response-cell" style="width: 140mm;">
+                {{ $text(data_get($document->data, 'securityArrangements', ''), 320) }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr class="fixed-45">
+            <td style="width: 60mm;">
+                <span class="label-local" lang="si">9. තවදුරටත් අලාභ සිදුවීම වැළැක්වීම සඳහා කරන ලද විධිවිධාන</span><br>
+                <span class="label-local" lang="ta">9. மேலும் இழப்புகள் ஏற்படுவதைத் தடுப்பதற்காக செய்யப்பட்ட ஏற்பாடுகள்</span><br>
+                Arrangements made for prevention of further losses
+            </td>
+            <td class="response-cell" style="width: 140mm;">
+                {{ $text(data_get($document->data, 'preventionArrangements', ''), 320) }}
+            </td>
+        </tr>
+    </table>
+
+    <table class="no-border">
+        <tr class="fixed-60">
+            <td style="width: 90mm; padding-top: 4mm;">
+                <span class="signature-label">Date: {{ $text(data_get($headSignature, 'approved_at', ''), 30) }}</span><br><br>
+                @if(data_get($headSignature, 'signature_data_uri'))
+                    <img class="signature-image" src="{{ data_get($headSignature, 'signature_data_uri') }}" alt="Head signature">
+                @else
+                    <table class="no-border inner-table"><tr><td class="signature-line"></td></tr></table>
+                @endif
+            </td>
+            <td style="width: 110mm; padding-top: 4mm;">
+                <table class="no-border inner-table">
+                    <tr><td class="signature-line"></td></tr>
+                    <tr><td class="signature-label">Head of Department / Chairman of Corporation</td></tr>
+                    <tr><td style="height: 7mm;">Forwarded</td></tr>
+                    <tr><td>Ref. No.: {{ $text($document->reference_number ?? '', 30) }}</td></tr>
+                    <tr><td class="signature-line"></td></tr>
+                    <tr><td class="signature-label">Secretary to the Ministry of {{ $text(data_get($document->data, 'ministry', ''), 45) }}</td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table class="no-border">
+        <tr><td class="footer">2</td></tr>
+    </table>
 </body>
-
 </html>

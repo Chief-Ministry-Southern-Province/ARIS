@@ -11,7 +11,7 @@ import SecurityArrangementSection from "@/components/organisms/Forms/FR104_3/Sec
 import PreventionArrangementSection from "@/components/organisms/Forms/FR104_3/PreventionArrangementSection";
 import { useTranslation } from "react-i18next";
 import {FormCard} from "@/components/molecules/FormCard";
-import { CheckCircle, Download, Save, Printer } from "lucide-react";
+import { CheckCircle, Download, Eye, Save, Printer } from "lucide-react";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
@@ -21,6 +21,7 @@ import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
 import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
+import PdfPreviewModal from "@/components/organisms/PDF/PdfPreviewModal";
 
 interface FR1043FormProps {
   readOnly?: boolean;
@@ -41,6 +42,7 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [formId, setFormId] = useState<number | null>(null);
   const [formStatus, setFormStatus] = useState<FR1043Status | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
@@ -82,6 +84,12 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
     secretarySignature: null,
     secretaryApprovalDate: "",
   });
+
+  useEffect(() => () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+  }, [previewUrl]);
 
   const addItem = () => {
     setFormData((prev) => ({
@@ -178,6 +186,23 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
       toast.error(
         (error as { response?: { data?: { message?: string } } }).response?.data?.message
           ?? "Unable to download the FR1043 PDF.",
+      );
+    }
+  };
+
+  const previewPdf = async () => {
+    if (!displayedForm?.id) {
+      toast.info("Save the FR104(3) form before previewing its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(displayedForm.id);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      toast.error(
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          ?? "Unable to generate the FR1043 PDF preview.",
       );
     }
   };
@@ -452,6 +477,10 @@ useEffect(() => {
                   <Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}
                 </button>
 
+                <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2">
+                  <Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}
+                </button>
+
                 {onDecision && 
                   <button type="button" onClick={onDecision} className="w-full sm:w-auto px-5 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2">
                     <CheckCircle size={18} />Decision
@@ -506,6 +535,13 @@ useEffect(() => {
 
             // Handle approve/reject/submit here
           }}
+        />
+      )}
+      {previewUrl && (
+        <PdfPreviewModal
+          filename={`FR1043-${displayedForm?.reference_number ?? displayedForm?.id ?? "preview"}.pdf`}
+          pdfUrl={previewUrl}
+          onClose={() => setPreviewUrl(null)}
         />
       )}
     </div>

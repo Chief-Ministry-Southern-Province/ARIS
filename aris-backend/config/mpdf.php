@@ -6,18 +6,26 @@ return [
     'mode' => 'utf-8',
     'format' => 'A4',
     'orientation' => 'P',
-    // Keep the document geometry in one place. CSS @page rules are not used
-    // because mPDF can reflow nested full-width page containers around them.
-    'margin_left' => 13,
-    'margin_right' => 13,
-    'margin_top' => 12,
-    'margin_bottom' => 12,
+    // FR104(3) uses a fixed 200mm form area on A4 paper.
+    'margin_left' => 5,
+    'margin_right' => 5,
+    'margin_top' => 10,
+    'margin_bottom' => 10,
     'margin_header' => 5,
     'margin_footer' => 5,
+    // Preserve a visible border when a long table flows onto the next page.
+    'split_table_border_width' => 0.01,
     'temp_dir' => storage_path('app/mpdf'),
     'font_dir' => resource_path('fonts'),
-    'default_font' => 'notosanssinhala',
+    'default_font' => 'iskoolapota',
     'font_data' => [
+        'iskoolapota' => [
+            'R' => 'IskoolaPota.ttf',
+            // Iskoola Pota is supplied by Windows as a single font face.
+            // Reuse it when mPDF requests bold instead of falling back.
+            'B' => 'IskoolaPota.ttf',
+            'useOTL' => 0x80,
+        ],
         'notosanssinhala' => [
             'R' => 'NotoSansSinhala-Regular.ttf',
             'B' => 'NotoSansSinhala-Bold.ttf',

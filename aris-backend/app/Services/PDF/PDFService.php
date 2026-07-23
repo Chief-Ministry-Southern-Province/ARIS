@@ -74,6 +74,7 @@ final class PdfService
             'margin_bottom' => config('mpdf.margin_bottom'),
             'margin_header' => config('mpdf.margin_header'),
             'margin_footer' => config('mpdf.margin_footer'),
+            'splitTableBorderWidth' => config('mpdf.split_table_border_width'),
             'tempDir' => $tempDir,
             'fontDir' => array_merge($defaultConfig['fontDir'], [config('mpdf.font_dir')]),
             'fontdata' => array_merge($defaultFontConfig['fontdata'], config('mpdf.font_data')),
