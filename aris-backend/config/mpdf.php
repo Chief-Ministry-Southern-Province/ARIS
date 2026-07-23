@@ -9,8 +9,8 @@ return [
     // FR104(3) uses a fixed 200mm form area on A4 paper.
     'margin_left' => 5,
     'margin_right' => 5,
-    'margin_top' => 10,
-    'margin_bottom' => 10,
+    'margin_top' => 5,
+    'margin_bottom' => 5,
     'margin_header' => 5,
     'margin_footer' => 5,
     // Preserve a visible border when a long table flows onto the next page.
