@@ -17,6 +17,7 @@ import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDownloadFR1043Pdf, useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
+import { useApprovalHistory } from "@/hooks/useApprovals";
 import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
@@ -48,10 +49,18 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
   const submitMutation = useSubmitFR1043(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1043Pdf();
+  const { data: approvalGroups = [] } = useApprovalHistory(
+    readOnly ? 0 : accidentCaseId,
+    "FR1043",
+  );
   const submitting = submitMutation.isPending;
   const isEditable = !readOnly && (!formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus));
   const displayedForm = document ?? loadedForm;
-  const currentApproval = approvalTimeline.find((approval) => approval.status === "PENDING") ?? approvalTimeline.at(-1);
+  const generatedApprovalTimeline = approvalGroups.flatMap((group) => group.approvals);
+  const resolvedApprovalTimeline = approvalTimeline.length > 0
+    ? approvalTimeline
+    : generatedApprovalTimeline;
+  const currentApproval = resolvedApprovalTimeline.find((approval) => approval.status === "PENDING") ?? resolvedApprovalTimeline.at(-1);
 
   const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
@@ -330,7 +339,7 @@ useEffect(() => {
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-500">Approval Timeline Summary</p>
-                <p className="font-semibold text-slate-800">{approvalTimeline.length} step{approvalTimeline.length === 1 ? "" : "s"} · {approvalTimeline.filter((approval) => approval.status === "APPROVED").length} approved</p>
+                <p className="font-semibold text-slate-800">{resolvedApprovalTimeline.length} step{resolvedApprovalTimeline.length === 1 ? "" : "s"} · {resolvedApprovalTimeline.filter((approval) => approval.status === "APPROVED").length} approved</p>
               </div>
             </div>
           )}
@@ -465,7 +474,7 @@ useEffect(() => {
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <DocumentApprovalSignatures approvals={approvalTimeline} />
+          <DocumentApprovalSignatures approvals={resolvedApprovalTimeline} />
         </div>
 
         {/* Sticky Action Bar */}

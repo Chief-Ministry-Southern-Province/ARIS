@@ -25,6 +25,7 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
             'pdf.fr1043',
             $this->buildViewData($document),
             "FR1043-{$document->reference_number}.pdf",
+            ['footer' => $this->footerHtml()],
         );
     }
 
@@ -38,6 +39,7 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
             'pdf.fr1043',
             $this->buildViewData($document),
             "FR1043-{$document->reference_number}.pdf",
+            ['footer' => $this->footerHtml()],
         );
     }
 
@@ -84,5 +86,10 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
         }
 
         return null;
+    }
+
+    private function footerHtml(): string
+    {
+        return '<div style="border-top: 0.25mm solid #000; padding-top: 1mm; font-family: iskoolapota, sans-serif; font-size: 8pt;"><div style="width: 50%; float: left; font-weight: bold;">Southern Provincial Ministry of Health</div><div style="width: 50%; float: right; text-align: right;">Page {PAGENO}</div><div style="clear: both;"></div></div>';
     }
 }

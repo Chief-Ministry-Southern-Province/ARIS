@@ -19,7 +19,7 @@ final readonly class DocumentSignatureService
             ->where('document_type', $documentType)
             ->where('revision', $revision)
             ->where('status', 'APPROVED')
-            ->with(['approver.roles', 'signature'])
+            ->with(['approver.roles', 'approver.institution', 'institution', 'signature'])
             ->get();
 
         $signatures = [];
@@ -38,7 +38,9 @@ final readonly class DocumentSignatureService
         return [
             'approval_id' => $approval->id,
             'name' => $approval->approver?->name,
-            'role' => $approval->approver?->roles->first()?->name,
+            'role' => str_replace('_', ' ', $approval->approver?->roles->pluck('name')->implode(', ')),
+            'institution' => $approval->institution?->name ?? $approval->approver?->institution?->name,
+            'comments' => $approval->comments,
             'signature_public_id' => $approval->signature?->public_id,
             'signature_data_uri' => sprintf(
                 'data:image/png;base64,%s',

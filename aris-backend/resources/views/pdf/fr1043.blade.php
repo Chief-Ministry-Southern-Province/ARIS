@@ -290,6 +290,36 @@
             border-bottom: 0.25mm dotted #000;
         }
 
+        .signature-card-grid td {
+            border: 0;
+            padding: 2mm;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .approval-signature-image {
+            width: 52mm;
+            height: 20mm;
+            object-fit: contain;
+        }
+
+        .signature-card-institution {
+            font-size: 9pt;
+            font-weight: bold;
+            line-height: 1.15;
+        }
+
+        .signature-card-name {
+            font-size: 8.5pt;
+            line-height: 1.15;
+        }
+
+        .signature-card-role,
+        .signature-card-date {
+            font-size: 8.5pt;
+            line-height: 1.15;
+        }
+
         .signature-label {
             font-size: 9pt;
             line-height: 1.12;
@@ -475,12 +505,6 @@
             </tr>
         </table>
 
-        <table class="no-border">
-            <tr>
-                <td class="footer-note">(2023/06) ශ්‍රී ලංකා රජයේ මුද්‍රණ දෙපාර්තමේන්තුව</td>
-            </tr>
-        </table>
-
     </div>
 
     <div class="page page-2">
@@ -560,40 +584,31 @@
             </tr>
         </table>
 
-        <table class="no-border page-break-avoid">
-            <tr>
-                <td class="signature-area" style="width: 55mm; padding: 4mm 2mm 0;">
-                    <span class="signature-label"><span lang="si">දිනය</span> / <span lang="ta">திகதி</span> / Date:</span><br>
-                    {{ $text(data_get($headSignature, 'approved_at', ''), 30) }}
-                </td>
-                <td class="signature-area" style="width: 145mm; padding: 4mm 2mm 0;">
-                    <table class="no-border">
-                        <tr>
-                            <td class="no-border" style="height: 20mm;">
-                                @if (data_get($headSignature, 'signature_data_uri'))
-                                    <img class="signature-image" src="{{ data_get($headSignature, 'signature_data_uri') }}" alt="Head signature">
-                                @else
-                                    <div class="signature-line"></div>
-                                @endif
-                                <br>
-                                <span class="signature-label">Head of Department / Chairman of Corporation</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="no-border" style="height: 18mm;">
-                                <span lang="si">යොමු කරන ලදී</span> / <span lang="ta">அனுப்பப்பட்டது</span> / Forwarded<br>
-                                Ref. No.: {{ $text($referenceNumber, 30) }} &nbsp;&nbsp; Date: {{ $text(data_get($headSignature, 'approved_at', ''), 30) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="no-border">
+        <table class="no-border signature-card-grid page-break-avoid"
+            style="margin-top: 16mm;"
+        >
+            @forelse (array_chunk($signatures, 3) as $signatureRow)
+                <tr>
+                    @foreach ($signatureRow as $signature)
+                        <td style="width: 66.66mm;">
+                            @if (data_get($signature, 'signature_data_uri'))
+                                <img class="approval-signature-image" src="{{ data_get($signature, 'signature_data_uri') }}" alt="{{ $text(data_get($signature, 'name', 'Approver'), 50) }} signature"><br>
+                            @else
                                 <div class="signature-line"></div>
-                                <span class="signature-label">Secretary to the Ministry of {{ $text(data_get($documentData, 'ministry', ''), 45) }}</span>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+                            @endif
+                            <span class="signature-card-name">{{ $text(data_get($signature, 'name', ''), 55) }}</span><br>
+                            <span class="signature-card-institution">{{ $text(data_get($signature, 'institution', ''), 55) }}</span><br>
+                            <span class="signature-card-role">{{ $text(data_get($signature, 'role', ''), 55) }}</span><br>
+                            <span class="signature-card-date">{{ $text(data_get($signature, 'approved_at', ''), 30) }}</span>
+                        </td>
+                    @endforeach
+                    @for ($emptyCard = count($signatureRow); $emptyCard < 3; $emptyCard++)
+                        <td style="width: 66.66mm;"></td>
+                    @endfor
+                </tr>
+            @empty
+                <tr><td style="width: 200mm;">No approved signatures available.</td></tr>
+            @endforelse
         </table>
 
     </div>
