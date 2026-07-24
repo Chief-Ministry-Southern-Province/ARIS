@@ -20,3 +20,6 @@ export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: s
   payload.append("field_key", fieldKey);
   return (await api.post(`/fr1044/${id}/attachments`, payload)).data.data;
 };
+
+export const getFR1044AttachmentPreview = async (id: number, fieldKey: string): Promise<EvidenceResponse> =>
+  (await api.get(`/fr1044/${id}/attachments/${fieldKey}`)).data.data;

@@ -21,7 +21,7 @@ import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/Preve
 import { initialFormData } from "./initialFormData";
 import { useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
 import { useGetFR1043 } from "@/hooks/useFR1043";
-import { uploadFR1044Attachment } from "@/services/fr1044.service";
+import { getFR1044AttachmentPreview, uploadFR1044Attachment } from "@/services/fr1044.service";
 import type {
   FR104_4FormData,
   FR1044Response,
@@ -45,6 +45,9 @@ const badge: Record<FR1044Status, string> = {
   CHANGES_REQUESTED: "bg-red-100 text-red-700",
   APPROVED: "bg-emerald-100 text-emerald-700",
 };
+
+type AttachmentFieldKey = "policeReportFile" | "courtOrderFile" | "boardReportFile";
+type AttachmentEvidenceKey = "policeReportEvidenceId" | "courtOrderEvidenceId" | "boardReportEvidenceId";
 
 export default function FR104_4Form({
   readOnly = false,
@@ -71,9 +74,14 @@ export default function FR104_4Form({
   const [data, setData] = useState<FR104_4FormData>(initialFormData);
   const [id, setId] = useState<number | null>(null);
   const [status, setStatus] = useState<FR1044Status | null>(null);
+  const [attachmentPreviewUrls, setAttachmentPreviewUrls] = useState<
+    Partial<Record<AttachmentFieldKey, string>>
+  >({});
+  const [attachmentPreviewsLoading, setAttachmentPreviewsLoading] = useState(false);
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
+  const showAttachmentPreviews = Boolean(id && status && !editable);
 
   const currentApproval =
     approvalTimeline.find((item) => item.status === "PENDING") ??
@@ -86,6 +94,48 @@ export default function FR104_4Form({
       setStatus(displayed.status);
     }
   }, [displayed]);
+
+  useEffect(() => {
+    if (!showAttachmentPreviews || !id) {
+      setAttachmentPreviewUrls({});
+      setAttachmentPreviewsLoading(false);
+      return;
+    }
+
+    let active = true;
+    setAttachmentPreviewsLoading(true);
+    const fieldKeys: AttachmentFieldKey[] = [
+      "policeReportFile",
+      "courtOrderFile",
+      "boardReportFile",
+    ];
+
+    Promise.all(
+      fieldKeys.map(async (fieldKey) => {
+        try {
+          const attachment = await getFR1044AttachmentPreview(id, fieldKey);
+          return [fieldKey, attachment.file_url] as const;
+        } catch {
+          return null;
+        }
+      })
+    ).then((attachments) => {
+      if (!active) return;
+
+      setAttachmentPreviewUrls(
+        Object.fromEntries(
+          attachments.filter(
+            (attachment): attachment is readonly [AttachmentFieldKey, string] => attachment !== null
+          )
+        )
+      );
+      setAttachmentPreviewsLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [id, showAttachmentPreviews]);
 
   useEffect(() => {
     if (displayed || !preliminaryReport) return;
@@ -108,6 +158,16 @@ export default function FR104_4Form({
 
   const handleChange = (field: string, value: string | File | null) =>
     setData((previous) => ({ ...previous, [field]: value }));
+
+  const removeAttachment = (
+    fileKey: AttachmentFieldKey,
+    evidenceKey: AttachmentEvidenceKey
+  ) =>
+    setData((previous) => ({
+      ...previous,
+      [fileKey]: null,
+      [evidenceKey]: null,
+    }));
 
   const payloadData = (): FR104_4FormData => ({
     ...data,
@@ -195,15 +255,15 @@ export default function FR104_4Form({
     ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} isPreliminaryLoading={preliminaryReportLoading} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
-    ["d", "policeInformation", <PoliceInformationSection formData={data} handleChange={handleChange} />],
+    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} previewLoading={Boolean(data.policeReportFile) && attachmentPreviewsLoading} />],
     ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />],
     ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />],
-    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} />],
+    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
     ["h", "investigation", <InvestigationSection formData={data} handleChange={handleChange} />],
     ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />],
     ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />],
     ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />],
-    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} />],
+    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} previewLoading={Boolean(data.boardReportFile) && attachmentPreviewsLoading} />],
     ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
   ] as const;
 

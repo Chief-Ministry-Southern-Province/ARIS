@@ -9,6 +9,7 @@ use App\Http\Resources\FR1044Resource;
 use App\Http\Resources\EvidenceResource;
 use App\Models\AccidentCase;
 use App\Models\FR1044;
+use App\Models\AccidentEvidence;
 use App\Services\FR1044\FR1044Service;
 use App\Services\EvidenceService;
 use Illuminate\Http\Request;
@@ -30,6 +31,22 @@ class FR1044Controller extends Controller
             $request->validated('description'),
             $request->user(),
         ));
+    }
+
+    /** Resolve the uploaded file assigned to an FR1044 attachment field. */
+    public function attachmentPreview(FR1044 $fr1044, string $fieldKey): EvidenceResource
+    {
+        abort_unless(in_array($fieldKey, ['policeReportFile', 'courtOrderFile', 'boardReportFile'], true), 404);
+
+        $evidence = AccidentEvidence::query()
+            ->where('accident_id', $fr1044->accidentCase->accident_id)
+            ->where('document_type', 'FR1044')
+            ->where('document_revision', $fr1044->revision)
+            ->where('field_key', $fieldKey)
+            ->latest('id')
+            ->firstOrFail();
+
+        return new EvidenceResource($evidence);
     }
 
     /**

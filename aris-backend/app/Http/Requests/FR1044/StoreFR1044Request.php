@@ -37,11 +37,12 @@ class StoreFR1044Request extends FormRequest
 
             // Part A - General Information (items 1-3, header)
             'data.referenceNo' => ['nullable', 'string', 'max:100'],
-            'data.ministry' => ['required', 'string', 'max:255'],
-            'data.lossDate' => ['required', 'date'],
+            
+            'data.ministry' => ['nullable', 'string', 'max:255'],
+            'data.lossDate' => ['nullable', 'date'],
             'data.lossTime' => ['nullable', 'date_format:H:i'],
-            'data.location' => ['required', 'string', 'max:255'],
-            'data.copyToAuditorGeneral' => ['required', Rule::in(['yes', 'no'])],
+            'data.location' => ['nullable', 'string', 'max:255'],
+            'data.copyToAuditorGeneral' => ['nullable', Rule::in(['yes', 'no'])],
 
             'data.investigation' => ['nullable', 'string'],
 
@@ -50,12 +51,12 @@ class StoreFR1044Request extends FormRequest
             'data.preliminaryReportDate' => ['nullable', 'date'],
 
             // Part B - Loss Details (item 4)
-            'data.lossDetails' => ['required', 'string'],
-            'data.circumstances' => ['required', 'string'],
+            'data.lossDetails' => ['nullable', 'string'],
+            'data.circumstances' => ['nullable', 'string'],
 
             // Part C - Cause of Loss (item 5)
             'data.causeOfLoss' => ['nullable', 'string'],
-            'data.isDueToFraudNegligence' => ['required', Rule::in(['yes', 'no'])],
+            'data.isDueToFraudNegligence' => ['nullable', Rule::in(['yes', 'no'])],
 
             // Part D - Police Information (item 6)
             'data.policeReportFile' => ['nullable', 'string'],
@@ -106,10 +107,10 @@ class StoreFR1044Request extends FormRequest
             'data.forwardingDate' => ['nullable', 'date'],
 
             // Part E - Lost Items (item 7)
-            'data.lostItems' => ['required', 'array', 'min:1'],
-            'data.lostItems.*.description' => ['required', 'string', 'max:255'],
+            'data.lostItems' => ['nullable', 'array'],
+            'data.lostItems.*.description' => ['nullable', 'string', 'max:255'],
             'data.lostItems.*.unit' => ['nullable', 'string', 'max:50'],
-            'data.lostItems.*.quantity' => ['required', 'numeric', 'min:0'],
+            'data.lostItems.*.quantity' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.estimatedCost' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.replacementCost' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.fr105Value' => ['nullable', 'numeric', 'min:0'],
@@ -117,7 +118,7 @@ class StoreFR1044Request extends FormRequest
 
             // Part F - Officers Responsible (item 8)
             'data.officers' => ['nullable', 'array'],
-            'data.officers.*.name' => ['required_with:data.officers', 'string', 'max:255'],
+            'data.officers.*.name' => ['nullable', 'string', 'max:255'],
             'data.officers.*.designation' => ['nullable', 'string', 'max:255'],
             'data.officers.*.responsibility' => ['nullable', 'string'],
             'data.officers.*.disciplinaryAction' => ['nullable', 'string'],
@@ -125,13 +126,13 @@ class StoreFR1044Request extends FormRequest
 
             // Part I - Recovery Information (item 10)
             'data.recoveries' => ['nullable', 'array'],
-            'data.recoveries.*.officer' => ['required_with:data.recoveries', 'string', 'max:255'],
+            'data.recoveries.*.officer' => ['nullable', 'string', 'max:255'],
             'data.recoveries.*.amount' => ['nullable', 'numeric', 'min:0'],
             'data.recoveries.*.method' => ['nullable', 'string'],
 
             // Part K - Board of Inquiry (item 12)
             'data.boardMembers' => ['nullable', 'array'],
-            'data.boardMembers.*.memberName' => ['required_with:data.boardMembers', 'string', 'max:255'],
+            'data.boardMembers.*.memberName' => ['nullable', 'string', 'max:255'],
             'data.boardMembers.*.designation' => ['nullable', 'string', 'max:255'],
         ];
     }

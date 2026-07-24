@@ -40,11 +40,13 @@ class UpdateFR1044Request extends FormRequest
 
             // Part A - General Information (items 1-3, header)
             'data.referenceNo' => ['sometimes', 'nullable', 'string', 'max:100'],
-            'data.ministry' => ['sometimes', 'required', 'string', 'max:255'],
-            'data.lossDate' => ['sometimes', 'required', 'date'],
+            // Saving an existing FR1044 draft sends the entire frontend form,
+            // including fields that may not have been completed yet.
+            'data.ministry' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'data.lossDate' => ['sometimes', 'nullable', 'date'],
             'data.lossTime' => ['sometimes', 'nullable', 'date_format:H:i'],
-            'data.location' => ['sometimes', 'required', 'string', 'max:255'],
-            'data.copyToAuditorGeneral' => ['sometimes', 'required', Rule::in(['yes', 'no'])],
+            'data.location' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'data.copyToAuditorGeneral' => ['sometimes', 'nullable', Rule::in(['yes', 'no'])],
 
             'data.investigation' => ['sometimes', 'nullable', 'string'],
 
@@ -53,12 +55,12 @@ class UpdateFR1044Request extends FormRequest
             'data.preliminaryReportDate' => ['sometimes', 'nullable', 'date'],
 
             // Part B - Loss Details (item 4)
-            'data.lossDetails' => ['sometimes', 'required', 'string'],
-            'data.circumstances' => ['sometimes', 'required', 'string'],
+            'data.lossDetails' => ['sometimes', 'nullable', 'string'],
+            'data.circumstances' => ['sometimes', 'nullable', 'string'],
 
             // Part C - Cause of Loss (item 5)
             'data.causeOfLoss' => ['sometimes', 'nullable', 'string'],
-            'data.isDueToFraudNegligence' => ['sometimes', 'required', Rule::in(['yes', 'no'])],
+            'data.isDueToFraudNegligence' => ['sometimes', 'nullable', Rule::in(['yes', 'no'])],
 
             // Part D - Police Information (item 6)
             'data.policeReportFile' => ['sometimes', 'nullable', 'string'],
@@ -109,10 +111,10 @@ class UpdateFR1044Request extends FormRequest
             'data.forwardingDate' => ['sometimes', 'nullable', 'date'],
 
             // Part E - Lost Items (item 7)
-            'data.lostItems' => ['sometimes', 'array', 'min:1'],
-            'data.lostItems.*.description' => ['required_with:data.lostItems', 'string', 'max:255'],
+            'data.lostItems' => ['sometimes', 'nullable', 'array'],
+            'data.lostItems.*.description' => ['nullable', 'string', 'max:255'],
             'data.lostItems.*.unit' => ['nullable', 'string', 'max:50'],
-            'data.lostItems.*.quantity' => ['required_with:data.lostItems', 'numeric', 'min:0'],
+            'data.lostItems.*.quantity' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.estimatedCost' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.replacementCost' => ['nullable', 'numeric', 'min:0'],
             'data.lostItems.*.fr105Value' => ['nullable', 'numeric', 'min:0'],
@@ -120,7 +122,7 @@ class UpdateFR1044Request extends FormRequest
 
             // Part F - Officers Responsible (item 8)
             'data.officers' => ['sometimes', 'array'],
-            'data.officers.*.name' => ['required_with:data.officers', 'string', 'max:255'],
+            'data.officers.*.name' => ['nullable', 'string', 'max:255'],
             'data.officers.*.designation' => ['nullable', 'string', 'max:255'],
             'data.officers.*.responsibility' => ['nullable', 'string'],
             'data.officers.*.disciplinaryAction' => ['nullable', 'string'],
@@ -128,13 +130,13 @@ class UpdateFR1044Request extends FormRequest
 
             // Part I - Recovery Information (item 10)
             'data.recoveries' => ['sometimes', 'array'],
-            'data.recoveries.*.officer' => ['required_with:data.recoveries', 'string', 'max:255'],
+            'data.recoveries.*.officer' => ['nullable', 'string', 'max:255'],
             'data.recoveries.*.amount' => ['nullable', 'numeric', 'min:0'],
             'data.recoveries.*.method' => ['nullable', 'string'],
 
             // Part K - Board of Inquiry (item 12)
             'data.boardMembers' => ['sometimes', 'array'],
-            'data.boardMembers.*.memberName' => ['required_with:data.boardMembers', 'string', 'max:255'],
+            'data.boardMembers.*.memberName' => ['nullable', 'string', 'max:255'],
             'data.boardMembers.*.designation' => ['nullable', 'string', 'max:255'],
         ];
     }

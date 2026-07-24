@@ -115,6 +115,7 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::put('/fr1044/{fr1044}',[FR1044Controller::class, 'update']);
     Route::post('/fr1044/{fr1044}/submit',[FR1044Controller::class, 'submit']);
     Route::post('/fr1044/{fr1044}/attachments',[FR1044Controller::class, 'attachment']);
+    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}',[FR1044Controller::class, 'attachmentPreview']);
 
     //Protected routes for user signature
     Route::post('/user/signature', [UserSignatureController::class, 'store']);
