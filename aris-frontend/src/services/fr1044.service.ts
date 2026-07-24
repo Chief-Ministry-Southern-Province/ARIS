@@ -14,6 +14,9 @@ export const updateFR1044 = async (id: number, status: "DRAFT" | "CHANGES_REQUES
 export const submitFR1044 = async (id: number): Promise<FR1044Response> =>
   (await api.post(`/fr1044/${id}/submit`)).data;
 
+export const downloadFR1044Pdf = async (id: number): Promise<Blob> =>
+  (await api.get(`/fr1044/${id}/pdf`, { responseType: "blob" })).data;
+
 export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: string): Promise<EvidenceResponse> => {
   const payload = new FormData();
   payload.append("file", file);
