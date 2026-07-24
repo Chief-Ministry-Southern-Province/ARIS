@@ -38,7 +38,9 @@ function Login() {
 
       toast.success("Login successful");
 
-      if( response.role.includes("driver") ) {
+      if (response.role.includes("system_admin")) {
+        navigate("/admin");
+      } else if( response.role.includes("driver") ) {
         navigate("/report");
       }else{
         navigate("/dashboard");
