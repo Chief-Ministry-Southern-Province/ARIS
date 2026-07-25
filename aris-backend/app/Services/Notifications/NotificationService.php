@@ -5,37 +5,45 @@ namespace App\Services\Notifications;
 use App\Models\Approval;
 use App\Models\User;
 use App\Models\Accident;
+use App\Models\Notification as UserNotification;
 use App\Notifications\DocumentRejectedNotification;
 use App\Notifications\NextApprovalNotification;
 use App\Notifications\RevisionRequestedNotification;
 use App\Notifications\WorkflowCompletedNotification;
-use App\Notifications\NewAccidentReportedNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationService
 {
   /** Return the authenticated user's database notifications, newest first. */
   public function paginateFor(User $user, int $perPage = 20): LengthAwarePaginator
   {
-      return $user->notifications()
+      return UserNotification::query()
+          ->where('user_id', $user->id)
           ->latest()
           ->paginate(min(max($perPage, 1), 100));
   }
 
   public function unreadCountFor(User $user): int
   {
-      return $user->unreadNotifications()->count();
+      return UserNotification::query()
+          ->where('user_id', $user->id)
+          ->where('read', false)
+          ->count();
   }
 
-  public function markAsRead(User $user, string $notificationId): DatabaseNotification
+  public function markAsRead(User $user, string $notificationId): UserNotification
   {
-      /** @var DatabaseNotification $notification */
-      $notification = $user->notifications()->findOrFail($notificationId);
+      /** @var UserNotification $notification */
+      $notification = UserNotification::query()
+          ->where('user_id', $user->id)
+          ->findOrFail($notificationId);
 
       if (is_null($notification->read_at)) {
-          $notification->markAsRead();
+          $notification->update([
+              'read' => true,
+              'read_at' => now(),
+          ]);
       }
 
       return $notification->fresh();
@@ -43,7 +51,13 @@ class NotificationService
 
   public function markAllAsRead(User $user): int
   {
-      return $user->unreadNotifications()->update(['read_at' => now()]);
+      return UserNotification::query()
+          ->where('user_id', $user->id)
+          ->where('read', false)
+          ->update([
+              'read' => true,
+              'read_at' => now(),
+          ]);
   }
 
   public function notifyNextApprover(Model $model, Approval $approval): void
@@ -83,10 +97,10 @@ class NotificationService
   public function notifyNewAccidentReported(Accident $accident): void
   {
       $institution = $accident->institution;
-      $reportedUser = $accident->reported_by;
+      $reportedUser = $accident->reporter;
 
       // Notify Institution Subject Officers
-      if($reportedUser->hasRole('driver')) {
+      if ($reportedUser?->hasRole('driver')) {
 
           $subjectOfficers = User::query()
               ->where('institution_id', $institution->id)
@@ -94,7 +108,7 @@ class NotificationService
               ->get();
 
           foreach ($subjectOfficers as $user) {
-              $user->notify(new NewAccidentReportedNotification($accident));
+              $this->storeNewAccidentNotification($user, $accident);
           }
 
       }
@@ -112,8 +126,38 @@ class NotificationService
           ->get();
 
       foreach ($subjectOfficers as $user) {
-          $user->notify(new NewAccidentReportedNotification($accident));
+          $this->storeNewAccidentNotification($user, $accident);
       }
+  }
+
+  private function storeNewAccidentNotification(User $user, Accident $accident): void
+  {
+      $case = $accident->accidentCase;
+      $institutionName = $accident->institution?->name ?? 'Unknown institution';
+
+      if (! $case) {
+          return;
+      }
+
+      $message = "A new accident ({$case->case_number}) has been reported by {$institutionName}.";
+
+      UserNotification::create([
+          'user_id' => $user->id,
+          'title' => 'New Accident Report',
+          'message' => $message,
+          'type' => 'ACCIDENT_REPORTED',
+          'action_url' => "/cases/{$case->id}/details",
+          'read' => false,
+          'data' => [
+              'title' => 'New Accident Report',
+              'message' => $message,
+              'type' => 'ACCIDENT_REPORTED',
+              'institution_name' => $institutionName,
+              'accident_id' => $accident->id,
+              'accident_case_id' => $case->id,
+              'url' => "/cases/{$case->id}/details",
+          ],
+      ]);
   }
 
 }

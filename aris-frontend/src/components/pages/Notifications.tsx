@@ -1,241 +1,82 @@
-import {Bell,AlertTriangle,CheckCircle,XCircle,UserPlus,Clock,Eye,} from "lucide-react";
+import { Bell, AlertTriangle, CheckCircle, Clock, Eye, UserPlus, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const notifications = [
-  {
-    id: 1,
-    case_id: "ARIS-2025-001",
-    type: "new_case",
-    title: "New accident case reported",
-    description: "Case ARIS-2025-001 has been submitted.",
-    time: "5 minutes ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    case_id: "ARIS-2025-002",
-    type: "assigned",
-    title: "Investigator assigned",
-    description: "You have been assigned to Case ARIS-2025-002.",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    case_id: "ARIS-2025-003",
-    type: "approval",
-    title: "Approval request received",
-    description: "Case ARIS-2025-003 is awaiting your approval.",
-    time: "3 hours ago",
-    unread: false,
-  },
-  {
-    id: 4,
-    case_id: "ARIS-2025-004",
-    type: "approved",
-    title: "Case approved",
-    description: "Case ARIS-2025-004 has been approved.",
-    time: "Yesterday",
-    unread: false,
-  },
-];
+import Loader from "@/components/atoms/Loader";
+import { useMarkAllNotificationsAsRead, useMarkNotificationAsRead, useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
+import type { AppNotification } from "@/types/notification.type";
 
 const getNotificationIcon = (type: string) => {
   switch (type) {
-    case "new_case":
-      return {
-        icon: AlertTriangle,
-        bg: "bg-orange-100",
-        color: "text-orange-600",
-      };
-
-    case "assigned":
-      return {
-        icon: UserPlus,
-        bg: "bg-blue-100",
-        color: "text-blue-600",
-      };
-
-    case "approval":
-      return {
-        icon: Clock,
-        bg: "bg-yellow-100",
-        color: "text-yellow-600",
-      };
-
-    case "approved":
-      return {
-        icon: CheckCircle,
-        bg: "bg-green-100",
-        color: "text-green-600",
-      };
-
-    case "rejected":
-      return {
-        icon: XCircle,
-        bg: "bg-red-100",
-        color: "text-red-600",
-      };
-
-    default:
-      return {
-        icon: Bell,
-        bg: "bg-slate-100",
-        color: "text-slate-600",
-      };
+    case "ACCIDENT_REPORTED": return { icon: AlertTriangle, bg: "bg-orange-100", color: "text-orange-600" };
+    case "ASSIGNED": return { icon: UserPlus, bg: "bg-blue-100", color: "text-blue-600" };
+    case "APPROVAL_REQUIRED": return { icon: Clock, bg: "bg-yellow-100", color: "text-yellow-600" };
+    case "APPROVED": return { icon: CheckCircle, bg: "bg-green-100", color: "text-green-600" };
+    case "REJECTED": return { icon: XCircle, bg: "bg-red-100", color: "text-red-600" };
+    default: return { icon: Bell, bg: "bg-slate-100", color: "text-slate-600" };
   }
 };
 
+const formatTime = (value: string) => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+};
+
 const Notifications = () => {
-
   const navigate = useNavigate();
+  const { data: notificationPage, isLoading, isError } = useNotifications();
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
+  const markAsRead = useMarkNotificationAsRead();
+  const markAllAsRead = useMarkAllNotificationsAsRead();
+  const notifications = notificationPage?.data ?? [];
 
-  const unreadCount = notifications.filter(
-    (n) => n.unread
-  ).length;
+  const openNotification = async (notification: AppNotification) => {
+    if (!notification.read_at) {
+      await markAsRead.mutateAsync(notification.id);
+    }
+
+    if (notification.data.url) {
+      navigate(notification.data.url);
+    }
+  };
+
+  if (isLoading) return <Loader text="Loading notifications..." />;
+  if (isError) return <p className="p-6 text-center text-sm text-red-600">Unable to load notifications.</p>;
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            Notifications
-          </h1>
-
-          <p className="text-slate-500 mt-1">
-            View system alerts and updates
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
+          <p className="mt-1 text-slate-500">View system alerts and updates</p>
         </div>
-
-        <button
-          className="
-            px-4 py-2
-            rounded-lg
-            border border-slate-200
-            bg-white
-            hover:bg-slate-50
-            text-sm
-            font-medium
-            text-blue-600
-            hover:opacity-90
-            transition-all
-            cursor-pointer
-          "
-        >
-          Mark All as Read
+        <button type="button" onClick={() => markAllAsRead.mutate()} disabled={unreadCount === 0 || markAllAsRead.isPending} className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60">
+          {markAllAsRead.isPending ? "Marking..." : "Mark all as read"}
         </button>
       </div>
 
-      {/* Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-          <p className="text-sm text-slate-500">
-            Total Notifications
-          </p>
-
-          <h2 className="text-3xl font-bold text-slate-900 mt-2">
-            {notifications.length}
-          </h2>
-        </div>
-
-        <div className="bg-white border border-blue-200 rounded-xl p-5 shadow-sm">
-          <p className="text-sm text-blue-600">
-            Unread
-          </p>
-
-          <h2 className="text-3xl font-bold text-blue-700 mt-2">
-            {unreadCount}
-          </h2>
-        </div>
-
-        <div className="bg-white border border-green-200 rounded-xl p-5 shadow-sm">
-          <p className="text-sm text-green-600">
-            Read
-          </p>
-
-          <h2 className="text-3xl font-bold text-green-700 mt-2">
-            {notifications.length - unreadCount}
-          </h2>
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <SummaryCard label="Total Notifications" value={notificationPage?.total ?? 0} color="slate" />
+        <SummaryCard label="Unread" value={unreadCount} color="blue" />
+        <SummaryCard label="Read" value={Math.max((notificationPage?.total ?? 0) - unreadCount, 0)} color="green" />
       </div>
 
-      {/* Notifications */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        {notifications.map((notification) => {
-          const config = getNotificationIcon(
-            notification.type
-          );
-
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        {notifications.length === 0 ? (
+          <p className="p-10 text-center text-sm text-slate-500">No notifications yet.</p>
+        ) : notifications.map((notification) => {
+          const config = getNotificationIcon(notification.data.type ?? notification.type);
           const Icon = config.icon;
+          const unread = !notification.read_at;
 
           return (
-            <div
-              key={notification.id}
-              className={`
-                p-5
-                border-b border-slate-100
-                hover:bg-slate-50
-                transition-colors
-                ${
-                  notification.unread
-                    ? "bg-blue-50/40"
-                    : ""
-                }
-              `}
-            >
+            <div key={notification.id} className={`border-b border-slate-100 p-5 transition-colors hover:bg-slate-50 ${unread ? "bg-blue-50/40" : ""}`}>
               <div className="flex gap-4">
-                <div
-                  className={`
-                    w-12 h-12
-                    rounded-xl
-                    flex items-center justify-center
-                    ${config.bg}
-                  `}
-                >
-                  <Icon
-                    className={`w-6 h-6 ${config.color}`}
-                  />
-                </div>
-
+                <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${config.bg}`}><Icon className={`h-6 w-6 ${config.color}`} /></div>
                 <div className="flex-1">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-slate-900">
-                        {notification.title}
-                      </h3>
-
-                      <p className="mt-1 text-sm text-slate-600">
-                        {notification.description}
-                      </p>
-                    </div>
-
-                    {notification.unread && (
-                      <span className="w-3 h-3 rounded-full bg-blue-600" />
-                    )}
+                  <div className="flex items-start justify-between gap-4">
+                    <div><h3 className="font-semibold text-slate-900">{notification.data.title ?? notification.title ?? "Notification"}</h3><p className="mt-1 text-sm text-slate-600">{notification.data.message ?? notification.message ?? "You have a new notification."}</p></div>
+                    {unread && <span className="mt-1 h-3 w-3 shrink-0 rounded-full bg-blue-600" />}
                   </div>
-
-                  <div className="flex items-center justify-between mt-3">
-                    <span className="text-xs text-slate-400">
-                      {notification.time}
-                    </span>
-
-                    <button
-                      className="
-                        inline-flex
-                        items-center
-                        gap-2
-                        text-sm
-                        text-blue-600
-                        hover:text-blue-700
-                        font-medium
-                      "
-                      onClick={() => navigate(`/cases/${notification.case_id}/details`)}
-                    >
-                      <Eye className="w-4 h-4" />
-                      View
-                    </button>
-                  </div>
+                  <div className="mt-3 flex items-center justify-between"><span className="text-xs text-slate-400">{formatTime(notification.created_at)}</span>{(notification.data.url ?? notification.action_url) && <button type="button" onClick={() => openNotification(notification)} disabled={markAsRead.isPending} className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"><Eye className="h-4 w-4" />View</button>}</div>
                 </div>
               </div>
             </div>
@@ -245,5 +86,10 @@ const Notifications = () => {
     </div>
   );
 };
+
+function SummaryCard({ label, value, color }: { label: string; value: number; color: "slate" | "blue" | "green" }) {
+  const colorClasses = { slate: "border-slate-200 text-slate-900", blue: "border-blue-200 text-blue-700", green: "border-green-200 text-green-700" };
+  return <div className={`rounded-xl border bg-white p-5 shadow-sm ${colorClasses[color]}`}><p className="text-sm text-slate-500">{label}</p><h2 className="mt-2 text-3xl font-bold">{value}</h2></div>;
+}
 
 export default Notifications;
