@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Models\Accident;
 use App\Models\AccidentCase;
 use App\Models\User;
-use App\Services\NotificationService;
-
+use App\Services\Notifications\NotificationService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -52,7 +51,7 @@ class AccidentCaseService
             description: "Case {$case->case_number} created",
         );
 
-        $this->notificationService->sendCaseCreatedNotification($case);
+        $this->notificationService->notifyNewAccidentReported($accident);
 
         return $case;
     }

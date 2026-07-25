@@ -11,9 +11,41 @@ use App\Notifications\RevisionRequestedNotification;
 use App\Notifications\WorkflowCompletedNotification;
 use App\Notifications\NewAccidentReportedNotification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationService
 {
+  /** Return the authenticated user's database notifications, newest first. */
+  public function paginateFor(User $user, int $perPage = 20): LengthAwarePaginator
+  {
+      return $user->notifications()
+          ->latest()
+          ->paginate(min(max($perPage, 1), 100));
+  }
+
+  public function unreadCountFor(User $user): int
+  {
+      return $user->unreadNotifications()->count();
+  }
+
+  public function markAsRead(User $user, string $notificationId): DatabaseNotification
+  {
+      /** @var DatabaseNotification $notification */
+      $notification = $user->notifications()->findOrFail($notificationId);
+
+      if (is_null($notification->read_at)) {
+          $notification->markAsRead();
+      }
+
+      return $notification->fresh();
+  }
+
+  public function markAllAsRead(User $user): int
+  {
+      return $user->unreadNotifications()->update(['read_at' => now()]);
+  }
+
   public function notifyNextApprover(Model $model, Approval $approval): void
   {
     $approval->approver->notify(
