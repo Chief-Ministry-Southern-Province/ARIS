@@ -2,21 +2,20 @@
 
 namespace App\Notifications;
 
+use App\Models\Approval;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NextApprovalNotification extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
-        //
+    public const TYPE = 'APPROVAL_REQUIRED';
+
+    public function __construct(
+        private readonly Approval $approval,
+        private readonly ?string $referenceNumber,
+    ) {
     }
 
     /**
@@ -26,29 +25,37 @@ class NextApprovalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
+     * Payload shared by the custom notifications table and the frontend.
      *
-     * @return array<string, mixed>
+     * The approval service persists this payload in the application's custom
+     * notifications table instead of Laravel's polymorphic notifications table.
      */
     public function toArray(object $notifiable): array
     {
+        $document = trim("{$this->approval->document_type} {$this->referenceNumber}");
+        $caseNumber = $this->approval->accidentCase?->case_number ?? 'this case';
+        $message = "{$document} requires your approval for {$caseNumber}.";
+
         return [
-            //
+            'title' => 'Approval Required',
+            'message' => $message,
+            'type' => self::TYPE,
+            'approval_id' => $this->approval->id,
+            'accident_case_id' => $this->approval->accident_case_id,
+            'document_type' => $this->approval->document_type,
+            'reference_number' => $this->referenceNumber,
+            'revision' => $this->approval->revision,
+            'step' => $this->approval->step,
+            'url' => "/approvals/{$this->approval->id}",
         ];
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return $this->toArray($notifiable);
     }
 }

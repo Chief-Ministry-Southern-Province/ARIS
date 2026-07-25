@@ -5,6 +5,8 @@ namespace App\Services\Notifications;
 use App\Models\Approval;
 use App\Models\User;
 use App\Models\Accident;
+use App\Models\FR1043;
+use App\Models\FR1044;
 use App\Models\Notification as UserNotification;
 use App\Notifications\DocumentRejectedNotification;
 use App\Notifications\NextApprovalNotification;
@@ -16,148 +18,175 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class NotificationService
 {
   /** Return the authenticated user's database notifications, newest first. */
-  public function paginateFor(User $user, int $perPage = 20): LengthAwarePaginator
-  {
-      return UserNotification::query()
-          ->where('user_id', $user->id)
-          ->latest()
-          ->paginate(min(max($perPage, 1), 100));
-  }
+public function paginateFor(User $user, int $perPage = 20): LengthAwarePaginator
+{
+    return UserNotification::query()
+        ->where('user_id', $user->id)
+        ->latest()
+        ->paginate(min(max($perPage, 1), 100));
+}
 
-  public function unreadCountFor(User $user): int
-  {
-      return UserNotification::query()
-          ->where('user_id', $user->id)
-          ->where('read', false)
-          ->count();
-  }
+public function unreadCountFor(User $user): int
+{
+    return UserNotification::query()
+        ->where('user_id', $user->id)
+        ->where('read', false)
+        ->count();
+}
 
-  public function markAsRead(User $user, string $notificationId): UserNotification
-  {
-      /** @var UserNotification $notification */
-      $notification = UserNotification::query()
-          ->where('user_id', $user->id)
-          ->findOrFail($notificationId);
+public function markAsRead(User $user, string $notificationId): UserNotification
+{
+    /** @var UserNotification $notification */
+    $notification = UserNotification::query()
+        ->where('user_id', $user->id)
+        ->findOrFail($notificationId);
 
-      if (is_null($notification->read_at)) {
-          $notification->update([
-              'read' => true,
-              'read_at' => now(),
-          ]);
-      }
+    if (is_null($notification->read_at)) {
+        $notification->update([
+            'read' => true,
+            'read_at' => now(),
+        ]);
+    }
 
-      return $notification->fresh();
-  }
+    return $notification->fresh();
+}
 
-  public function markAllAsRead(User $user): int
-  {
-      return UserNotification::query()
-          ->where('user_id', $user->id)
-          ->where('read', false)
-          ->update([
-              'read' => true,
-              'read_at' => now(),
-          ]);
-  }
+public function markAllAsRead(User $user): int
+{
+    return UserNotification::query()
+        ->where('user_id', $user->id)
+        ->where('read', false)
+        ->update([
+            'read' => true,
+            'read_at' => now(),
+        ]);
+}
 
-  public function notifyNextApprover(Model $model, Approval $approval): void
-  {
-    $approval->approver->notify(
-            new NextApprovalNotification($approval)
-        );
-  }
+public function notifyNextApprover(Approval $approval): void
+{
+    $approval->loadMissing(['approver', 'accidentCase']);
 
-  public function notifyWorkflowCompleted(Model $document, User $user): void
-  {
+    if (! $approval->approver || ! $approval->accidentCase) {
+        return;
+    }
+
+    $referenceNumber = match ($approval->document_type) {
+        'FR1043' => FR1043::query()
+            ->where('accident_case_id', $approval->accident_case_id)
+            ->where('revision', $approval->revision)
+            ->value('reference_number'),
+        'FR1044' => FR1044::query()
+            ->where('accident_case_id', $approval->accident_case_id)
+            ->where('revision', $approval->revision)
+            ->value('reference_number'),
+        default => null,
+    };
+
+    $payload = (new NextApprovalNotification($approval, $referenceNumber))
+        ->toArray($approval->approver);
+
+    UserNotification::create([
+        'user_id' => $approval->approver_id,
+        'title' => $payload['title'],
+        'message' => $payload['message'],
+        'type' => $payload['type'],
+        'action_url' => $payload['url'],
+        'read' => false,
+        'data' => $payload,
+    ]);
+}
+
+public function notifyWorkflowCompleted(Model $document, User $user): void
+{
+$user->notify(
+        new WorkflowCompletedNotification($document)
+    );
+}
+
+public function notifyRejected(User $user,Model $document,string $reason): void 
+{
     $user->notify(
-            new WorkflowCompletedNotification($document)
-        );
-  }
+        new DocumentRejectedNotification(
+            $document,
+            $reason
+        )
+    );
+}
 
-  public function notifyRejected(User $user,Model $document,string $reason): void 
-  {
-        $user->notify(
-            new DocumentRejectedNotification(
-                $document,
-                $reason
-            )
-        );
-  }
-
-  public function notifyRevisionRequested(User $user,Model $document,string $comments): void 
-  {
+public function notifyRevisionRequested(User $user,Model $document,string $comments): void 
+{
         $user->notify(
             new RevisionRequestedNotification(
                 $document,
                 $comments
             )
         );
-  }
+}
 
-  public function notifyNewAccidentReported(Accident $accident): void
-  {
-      $institution = $accident->institution;
-      $reportedUser = $accident->reporter;
+public function notifyNewAccidentReported(Accident $accident): void
+{
+    $institution = $accident->institution;
+    $reportedUser = $accident->reporter;
 
-      // Notify Institution Subject Officers
-      if ($reportedUser?->hasRole('driver')) {
+    // Notify Institution Subject Officers
+    if ($reportedUser?->hasRole('driver')) {
 
-          $subjectOfficers = User::query()
-              ->where('institution_id', $institution->id)
-              ->role('subject_officer')
-              ->get();
+        $subjectOfficers = User::query()
+            ->where('institution_id', $institution->id)
+            ->role('subject_officer')
+            ->get();
 
-          foreach ($subjectOfficers as $user) {
-              $this->storeNewAccidentNotification($user, $accident);
-          }
+        foreach ($subjectOfficers as $user) {
+            $this->storeNewAccidentNotification($user, $accident);
+        }
 
-      }
+    }
 
-      // Notify Parent Subject Officers
-      $parentInstitution = $institution->parentInstitution;
+    // Notify Parent Subject Officers
+    $parentInstitution = $institution->parentInstitution;
 
-      if (! $parentInstitution) {
-          return;
-      }
+    if (! $parentInstitution) {
+        return;
+    }
 
-      $subjectOfficers = User::query()
-          ->where('institution_id', $parentInstitution->id)
-          ->role('subject_officer')
-          ->get();
+    $subjectOfficers = User::query()
+        ->where('institution_id', $parentInstitution->id)
+        ->role('subject_officer')
+        ->get();
 
-      foreach ($subjectOfficers as $user) {
-          $this->storeNewAccidentNotification($user, $accident);
-      }
-  }
+    foreach ($subjectOfficers as $user) {
+        $this->storeNewAccidentNotification($user, $accident);
+    }
+}
 
-  private function storeNewAccidentNotification(User $user, Accident $accident): void
-  {
-      $case = $accident->accidentCase;
-      $institutionName = $accident->institution?->name ?? 'Unknown institution';
+private function storeNewAccidentNotification(User $user, Accident $accident): void
+{
+    $case = $accident->accidentCase;
+    $institutionName = $accident->institution?->name ?? 'Unknown institution';
 
-      if (! $case) {
-          return;
-      }
+    if (! $case) {
+        return;
+    }
 
-      $message = "A new accident ({$case->case_number}) has been reported by {$institutionName}.";
+    $message = "A new accident ({$case->case_number}) has been reported by {$institutionName}.";
 
-      UserNotification::create([
-          'user_id' => $user->id,
-          'title' => 'New Accident Report',
-          'message' => $message,
-          'type' => 'ACCIDENT_REPORTED',
-          'action_url' => "/cases/{$case->id}/details",
-          'read' => false,
-          'data' => [
-              'title' => 'New Accident Report',
-              'message' => $message,
-              'type' => 'ACCIDENT_REPORTED',
-              'institution_name' => $institutionName,
-              'accident_id' => $accident->id,
-              'accident_case_id' => $case->id,
-              'url' => "/cases/{$case->id}/details",
-          ],
-      ]);
-  }
+    UserNotification::create([
+        'user_id' => $user->id,
+        'title' => 'New Accident Report',
+        'message' => $message,
+        'type' => 'ACCIDENT_REPORTED',
+        'action_url' => "/cases/{$case->id}/details",
+        'read' => false,
+        'data' => [
+            'title' => 'New Accident Report',
+            'message' => $message,
+            'type' => 'ACCIDENT_REPORTED',
+            'institution_name' => $institutionName,
+            'accident_id' => $accident->id,
+            'accident_case_id' => $case->id,
+            'url' => "/cases/{$case->id}/details",
+        ],
+    ]);
+}
 
 }

@@ -33,8 +33,10 @@ const Notifications = () => {
       await markAsRead.mutateAsync(notification.id);
     }
 
-    if (notification.data.url) {
-      navigate(notification.data.url);
+    const destination = notification.data.url ?? notification.action_url;
+
+    if (destination) {
+      navigate(destination);
     }
   };
 

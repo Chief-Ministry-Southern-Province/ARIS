@@ -4,6 +4,11 @@ export interface NotificationPayload {
   type?: string;
   accident_id?: number;
   accident_case_id?: number;
+  approval_id?: number;
+  document_type?: string;
+  reference_number?: string | null;
+  revision?: number;
+  step?: number;
   url?: string;
 }
 
