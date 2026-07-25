@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Accident;
 use App\Models\AccidentCase;
 use App\Models\User;
+use App\Services\NotificationService;
 
 use App\Services\AccidentTimelineService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -12,10 +13,12 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class AccidentCaseService
 {
     protected AccidentTimelineService $timelineService;
+    protected NotificationService $notificationService;
 
-    public function __construct(AccidentTimelineService $timelineService)
+    public function __construct(AccidentTimelineService $timelineService, NotificationService $notificationService)
     {
         $this->timelineService = $timelineService;
+        $this->notificationService = $notificationService;
     }
 
     protected function generateCaseNumber(): string
@@ -48,6 +51,8 @@ class AccidentCaseService
             action: 'CASE_CREATED',
             description: "Case {$case->case_number} created",
         );
+
+        $this->notificationService->sendCaseCreatedNotification($case);
 
         return $case;
     }
