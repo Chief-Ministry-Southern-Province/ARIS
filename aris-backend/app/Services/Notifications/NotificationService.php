@@ -96,11 +96,20 @@ public function notifyNextApprover(Approval $approval): void
     ]);
 }
 
-public function notifyWorkflowCompleted(Model $document, User $user): void
+public function notifyWorkflowCompleted(User $recipient, Model $document, Approval $approval): void
 {
-    $user->notify(
-            new WorkflowCompletedNotification($document)
-        );
+    $payload = (new WorkflowCompletedNotification($document, $approval))
+        ->toArray($recipient);
+
+    UserNotification::create([
+        'user_id' => $recipient->id,
+        'title' => $payload['title'],
+        'message' => $payload['message'],
+        'type' => $payload['type'],
+        'action_url' => $payload['url'],
+        'read' => false,
+        'data' => $payload,
+    ]);
 }
 
 public function notifyRejected(User $recipient, Model $document, Approval $approval, string $reason): void

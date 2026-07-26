@@ -293,6 +293,18 @@ class ApprovalService
                     'WORKFLOW_COMPLETED',
                     $approval->revision,
                 );
+
+                $recipient = $document?->creator;
+
+                if ($document && $recipient) {
+                    DB::afterCommit(function () use ($recipient, $document, $approval) {
+                        $this->notificationService->notifyWorkflowCompleted(
+                            recipient: $recipient,
+                            document: $document,
+                            approval: $approval,
+                        );
+                    });
+                }
             }
 
         });

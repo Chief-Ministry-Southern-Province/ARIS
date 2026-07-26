@@ -2,20 +2,21 @@
 
 namespace App\Notifications;
 
+use App\Models\Approval;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 
 class WorkflowCompletedNotification extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct()
-    {
+    public const TYPE = 'WORKFLOW_COMPLETED';
+
+    public function __construct(
+        private readonly Model $document,
+        private readonly Approval $approval,
+    ) {
         //
     }
 
@@ -26,29 +27,34 @@ class WorkflowCompletedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
+     * Payload persisted by NotificationService in the application's custom
+     * notifications table and consumed by the React notification UI.
      */
     public function toArray(object $notifiable): array
     {
+        $documentType = $this->approval->document_type;
+        $referenceNumber = $this->document->reference_number;
+        $caseId = $this->approval->accident_case_id;
+
         return [
-            //
+            'title' => 'Approval Workflow Completed',
+            'message' => "{$documentType} {$referenceNumber} has completed all approval steps.",
+            'type' => self::TYPE,
+            'approval_id' => $this->approval->id,
+            'accident_case_id' => $caseId,
+            'document_type' => $documentType,
+            'reference_number' => $referenceNumber,
+            'revision' => $this->approval->revision,
+            'url' => "/cases/{$caseId}/details",
         ];
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return $this->toArray($notifiable);
     }
 }
