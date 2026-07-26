@@ -8,7 +8,6 @@ use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\User;
-use App\Notifications\FR1043ChangesRequested;
 use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
@@ -209,6 +208,8 @@ class ApprovalService
             $signature,
         ) {
 
+            $document = null;
+
             $approval->update([
 
                 'status' => 'APPROVED',
@@ -324,11 +325,8 @@ class ApprovalService
         ) {
 
             $approval->update([
-
                 'status' => 'REJECTED',
-
                 'comments' => $comments,
-
                 'acted_at' => now(),
 
             ]);
@@ -341,10 +339,6 @@ class ApprovalService
 
                 if ($document) {
                     $document->update(['status' => 'CHANGES_REQUESTED']);
-
-                    if ($approval->document_type === 'FR1043') {
-                        $document->creator->notify(new FR1043ChangesRequested($document, $comments));
-                    }
                 }
             }
 
@@ -356,6 +350,19 @@ class ApprovalService
                 $approval->revision,
                 comments: $comments,
             );
+
+            $recipient = $document?->creator;
+
+            if ($recipient) {
+                DB::afterCommit(function () use ($document, $approval, $comments, $recipient) {
+                    $this->notificationService->notifyRejected(
+                        recipient: $recipient,
+                        document: $document,
+                        approval: $approval,
+                        reason: $comments,
+                    );
+                });
+            }
 
         });
 

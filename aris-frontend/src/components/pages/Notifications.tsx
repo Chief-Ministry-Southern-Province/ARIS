@@ -11,6 +11,7 @@ const getNotificationIcon = (type: string) => {
     case "APPROVAL_REQUIRED": return { icon: Clock, bg: "bg-yellow-100", color: "text-yellow-600" };
     case "APPROVED": return { icon: CheckCircle, bg: "bg-green-100", color: "text-green-600" };
     case "REJECTED": return { icon: XCircle, bg: "bg-red-100", color: "text-red-600" };
+    case "DOCUMENT_REJECTED": return { icon: XCircle, bg: "bg-red-100", color: "text-red-600" };
     default: return { icon: Bell, bg: "bg-slate-100", color: "text-slate-600" };
   }
 };

@@ -9,6 +9,7 @@ export interface NotificationPayload {
   reference_number?: string | null;
   revision?: number;
   step?: number;
+  comments?: string;
   url?: string;
 }
 
