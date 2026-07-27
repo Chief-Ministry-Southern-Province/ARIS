@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
 use App\Http\Controllers\Api\UserSignatureController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\WorkflowSettingController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -133,6 +134,13 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/user/signature/{signature}', [UserSignatureController::class, 'show']);
 
     Route::delete('/user/signature', [UserSignatureController::class, 'destroy']);
+
+    // Protected routes for workflow settings
+    Route::get('/workflow-settings',[WorkflowSettingController::class, 'index']);
+
+    Route::put('/workflow-settings',[WorkflowSettingController::class, 'update']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
+
+

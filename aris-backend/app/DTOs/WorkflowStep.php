@@ -11,5 +11,6 @@ class WorkflowStep
         public Institution $institution,
         public string $role,
         public ?string $district = null,
+        public ?int $approverId = null,
     ) {}
 }

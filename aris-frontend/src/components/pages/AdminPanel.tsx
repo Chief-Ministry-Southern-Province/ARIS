@@ -4,6 +4,7 @@ import UserTab from "@/components/organisms/AdminPanel/UserTab";
 import InstitutionTab from "@/components/organisms/AdminPanel/InstitutionTab";
 import VehicleTab from "@/components/organisms/AdminPanel/VehicleTab";
 import AuditLogTab from "@/components/organisms/AdminPanel/AuditLogTab";
+import WorkflowSettingTab from "@/components/organisms/AdminPanel/WorkflowSettingTab";
 import { useTranslation } from "react-i18next";
 
 function AdminPanel() {
@@ -45,6 +46,11 @@ function AdminPanel() {
           {/* Vehicles */}
           {activeTab === "vehicles" && (
             <VehicleTab />
+          )}
+
+          {/* Workflow Settings */}
+          {activeTab === "workflow" && (
+            <WorkflowSettingTab />
           )}
 
           {/* Audit Logs */}

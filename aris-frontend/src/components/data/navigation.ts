@@ -10,13 +10,15 @@ export const FULL_ACCESS_ROLES = [
   "secretary",
   "assistant_secretary",
   "senior_assistant_secretary",
+  "treasury_secretary",
 ];
 
 export const SIGNATURE_ACCESS_ROLE = [
   "medical_superintendent",
   "regional_director",
   "provincial_director",
-  "secretary"
+  "secretary",
+  "treasury_secretary",
 ]
 
 export const REPORT_ROLES = [

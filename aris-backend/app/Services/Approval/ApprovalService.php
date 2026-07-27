@@ -12,6 +12,7 @@ use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +26,7 @@ class ApprovalService
         protected WorkflowResolverService $workflowResolver,
         protected AccidentTimelineService $timelineService,
         protected NotificationService $notificationService,
+        protected NotificationService $notificationService
     ) {}
 
     /**
@@ -78,7 +80,7 @@ class ApprovalService
         ) {
             logger()->info("1");
 
-            $workflow = $this->workflowResolver->resolve($case);
+            $workflow = $this->workflowResolver->resolve($case, $documentType, $revision);
 
             logger()->info("2");
 
@@ -127,6 +129,11 @@ class ApprovalService
      */
     protected function findApprover(WorkflowStep $step): User 
     {
+        if ($step->approverId) {
+            return User::query()
+                ->role($step->role)
+                ->findOrFail($step->approverId);
+        }
 
         if (
             $step->institution->type === 'MINISTRY'
@@ -351,6 +358,14 @@ class ApprovalService
 
                 if ($document) {
                     $document->update(['status' => 'CHANGES_REQUESTED']);
+
+                    if ($approval->document_type === 'FR1043') {
+                        $this->notificationService->notifyFR1043ChangesRequested(
+                            $document->creator,
+                            $document,
+                            $comments
+                        );
+                    }
                 }
             }
 
