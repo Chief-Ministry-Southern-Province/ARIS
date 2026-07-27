@@ -4,8 +4,10 @@ import Loader from "@/components/atoms/Loader";
 import { useUpdateWorkflowSettings, useWorkflowSettings } from "@/hooks/useWorkflowSetting";
 import type { WorkflowSetting } from "@/types/workflow-setting.type";
 
+const EMPTY_WORKFLOW_SETTINGS: WorkflowSetting[] = [];
+
 const WorkflowSettingTab = () => {
-  const { data: settings = [], isLoading, isError } = useWorkflowSettings();
+  const { data: settings = EMPTY_WORKFLOW_SETTINGS, isLoading, isError } = useWorkflowSettings();
   const updateSettings = useUpdateWorkflowSettings();
   const [values, setValues] = useState<Record<string, string>>({});
 

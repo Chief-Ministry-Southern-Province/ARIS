@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getWorkflowSettings, updateWorkflowSettings } from "@/services/WorkflowSetting.service";
+import { getWorkflowSettings, updateWorkflowSettings } from "@/services/workflowSetting.service";
 import { toast } from "react-toastify";
 
 export function useUpdateWorkflowSettings() {
