@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
+import { useUnreadNotificationCount } from "@/hooks/useNotifications";
 
 interface TopNavProps {
   onMenuClick: () => void;
@@ -16,6 +17,7 @@ interface TopNavProps {
 export function TopNav({ onMenuClick }: TopNavProps) {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { data: unreadNotificationCount = 0 } = useUnreadNotificationCount();
 
   const handleLogout = () => {
     navigate("/login");
@@ -70,11 +72,12 @@ export function TopNav({ onMenuClick }: TopNavProps) {
 
         {/* Notifications */}
         <button
+          onClick={() => navigate("/notifications")}
           className="relative p-2 rounded-lg hover:bg-muted transition-colors"
           title="Notifications"
         >
           <Bell className="w-5 h-5 text-muted-foreground" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+          {unreadNotificationCount > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />}
         </button>
 
         {/* User Section */}

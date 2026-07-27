@@ -45,6 +45,11 @@ export const queryKeys = {
     document: (id: number) => ["approvals", "document", id] as const,
   },
   auth: { profile: ["auth", "profile"] as const },
+  notifications: {
+    all: ["notifications"] as const,
+    list: (page: number) => ["notifications", "list", page] as const,
+    unreadCount: ["notifications", "unread-count"] as const,
+  },
   signatures: {
     all: ["signatures"] as const,
     status: ["signatures", "status"] as const,

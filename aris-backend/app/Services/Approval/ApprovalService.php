@@ -18,12 +18,14 @@ use RuntimeException;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserSignature;
 use Illuminate\Validation\ValidationException;
+use App\Services\Notifications\NotificationService;
 
 class ApprovalService
 {
     public function __construct(
         protected WorkflowResolverService $workflowResolver,
         protected AccidentTimelineService $timelineService,
+        protected NotificationService $notificationService,
         protected NotificationService $notificationService
     ) {}
 
@@ -193,7 +195,17 @@ class ApprovalService
 
         $accidentCase = $this->resolveApprovalCase($approval);
 
-        $signature = $this->getActiveSignature($user);
+        // Determine if the approver requires a signature for this approval step
+        $signatureRequired = $user->hasAnyRole([
+            'medical_superintendent',
+            'regional_director',
+            'provincial_director',
+            'secretary',
+        ]);
+
+        $signature = $signatureRequired
+            ? $this->getActiveSignature($user)
+            : null;
 
         DB::transaction(function () use (
             $approval,
@@ -203,15 +215,14 @@ class ApprovalService
             $signature,
         ) {
 
+            $document = null;
+
             $approval->update([
 
                 'status' => 'APPROVED',
-
                 'comments' => $comments,
-
                 'acted_at' => now(),
-
-                'user_signature_id' => $signature->id,
+                'user_signature_id' => $signature?->id,
             ]);
 
             $nextApproval = Approval::query()
@@ -220,40 +231,28 @@ class ApprovalService
                     'accident_case_id',
                     $approval->accident_case_id
                 )
-
                 ->where(
                     'document_type',
                     $approval->document_type
                 )
-
                 ->where(
                     'revision',
                     $approval->revision
                 )
-
                 ->where(
                     'step',
                     $approval->step + 1
                 )
-
                 ->first();
 
             if ($nextApproval) {
-
                 $nextApproval->update([
-
                     'status' => 'PENDING',
-
-                ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | Later
-                |--------------------------------------------------------------------------
-                |
-                | Notify next approver
-                |
-                */
+                ]);   
+                
+                DB::afterCommit(function () use ($nextApproval) {
+                    $this->notificationService->notifyNextApprover($nextApproval);
+                });
 
             } else {
                 $document = match ($approval->document_type) {
@@ -291,6 +290,7 @@ class ApprovalService
                 $approval->revision,
                 step: $approval->step,
             );
+           
 
             if (!$nextApproval) {
                 $this->timelineService->createDocumentEvent(
@@ -300,6 +300,18 @@ class ApprovalService
                     'WORKFLOW_COMPLETED',
                     $approval->revision,
                 );
+
+                $recipient = $document?->creator;
+
+                if ($document && $recipient) {
+                    DB::afterCommit(function () use ($recipient, $document, $approval) {
+                        $this->notificationService->notifyWorkflowCompleted(
+                            recipient: $recipient,
+                            document: $document,
+                            approval: $approval,
+                        );
+                    });
+                }
             }
 
         });
@@ -332,11 +344,8 @@ class ApprovalService
         ) {
 
             $approval->update([
-
                 'status' => 'REJECTED',
-
                 'comments' => $comments,
-
                 'acted_at' => now(),
 
             ]);
@@ -368,6 +377,19 @@ class ApprovalService
                 $approval->revision,
                 comments: $comments,
             );
+
+            $recipient = $document?->creator;
+
+            if ($recipient) {
+                DB::afterCommit(function () use ($document, $approval, $comments, $recipient) {
+                    $this->notificationService->notifyRejected(
+                        recipient: $recipient,
+                        document: $document,
+                        approval: $approval,
+                        reason: $comments,
+                    );
+                });
+            }
 
         });
 
