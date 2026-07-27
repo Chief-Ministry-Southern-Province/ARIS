@@ -22,6 +22,8 @@ export const getUserRole = (role: string): string => {
       return "Assistant Secretary";
     case "senior_assistant_secretary":
       return "Senior Assistant Secretary";
+    case "treasury_secretary":
+      return "Treasury Secretary";
     default:
       return role;
   }

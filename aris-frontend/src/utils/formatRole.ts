@@ -9,7 +9,7 @@ export const selectRoleBaseOnUserInstitutionType = ()=>{
 
   switch (userInstitutionType) {
     case "MINISTRY":
-      return ["subject_officer", "secretary", "assistant_secretary", "senior_assistant_secretary","administrative_officer","driver"];
+      return ["subject_officer", "secretary", "assistant_secretary", "senior_assistant_secretary", "treasury_secretary", "administrative_officer", "driver"];
       break;
 
     case "PDHS":

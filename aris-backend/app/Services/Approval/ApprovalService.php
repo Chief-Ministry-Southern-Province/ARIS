@@ -77,7 +77,7 @@ class ApprovalService
         ) {
             logger()->info("1");
 
-            $workflow = $this->workflowResolver->resolve($case);
+            $workflow = $this->workflowResolver->resolve($case, $documentType, $revision);
 
             logger()->info("2");
 
@@ -126,6 +126,11 @@ class ApprovalService
      */
     protected function findApprover(WorkflowStep $step): User 
     {
+        if ($step->approverId) {
+            return User::query()
+                ->role($step->role)
+                ->findOrFail($step->approverId);
+        }
 
         if (
             $step->institution->type === 'MINISTRY'

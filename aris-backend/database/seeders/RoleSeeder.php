@@ -13,16 +13,17 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'system_admin']);
-        Role::create(['name' => 'driver']);
-        Role::create(['name' => 'subject_officer']); 
-        Role::create(['name' => 'administrative_officer']); 
-        Role::create(['name' => 'medical_superintendent']); 
-        Role::create(['name' => 'regional_director']); 
-        Role::create(['name' => 'provincial_director']); 
-        Role::create(['name' => 'deputy_director']);
-        Role::create(['name' => 'secretary']);
-        Role::create(['name' => 'assistant_secretary']);
-        Role::create(['name' => 'senior_assistant_secretary']);
+        Role::firstOrCreate(['name' => 'system_admin']);
+        Role::firstOrCreate(['name' => 'driver']);
+        Role::firstOrCreate(['name' => 'subject_officer']);
+        Role::firstOrCreate(['name' => 'administrative_officer']);
+        Role::firstOrCreate(['name' => 'medical_superintendent']);
+        Role::firstOrCreate(['name' => 'regional_director']);
+        Role::firstOrCreate(['name' => 'provincial_director']);
+        Role::firstOrCreate(['name' => 'deputy_director']);
+        Role::firstOrCreate(['name' => 'secretary']);
+        Role::firstOrCreate(['name' => 'assistant_secretary']);
+        Role::firstOrCreate(['name' => 'senior_assistant_secretary']);
+        Role::firstOrCreate(['name' => 'treasury_secretary']);
     }
 }

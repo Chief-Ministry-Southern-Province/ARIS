@@ -14,22 +14,23 @@ class WorkflowSettingSeeder extends Seeder
      */
     public function run(): void
     {
-        WorkflowSetting::updateOrCreate(
-            ['key' => 'fr1043.treasury_threshold'],
+        WorkflowSetting::firstOrCreate(
+            ['key' => 'workflow.pdhs_threshold'],
             [
-                'value' => '500000',
+                'value' => '0',
                 'type' => 'integer',
-                'description' => 'Treasury approval threshold for FR1043',
+                'description' => 'Maximum loss amount handled by PDHS for FR1043 and FR1044',
             ]
         );
 
-        WorkflowSetting::updateOrCreate(
-            ['key' => 'fr1043.enable_treasury'],
+        WorkflowSetting::firstOrCreate(
+            ['key' => 'workflow.ministry_threshold'],
             [
-                'value' => 'true',
-                'type' => 'boolean',
-                'description' => 'Enable Secretary of Treasury approval',
+                'value' => '0',
+                'type' => 'integer',
+                'description' => 'Maximum loss amount handled by Ministry for FR1043 and FR1044',
             ]
         );
+
     }
 }
