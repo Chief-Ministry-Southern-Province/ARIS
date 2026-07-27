@@ -15,9 +15,18 @@ use App\Notifications\RevisionRequestedNotification;
 use App\Notifications\WorkflowCompletedNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Events\UserNotificationCreated;
 
 class NotificationService
 {
+private function storeAndBroadcast(array $attributes): UserNotification
+{
+    $notification = UserNotification::create($attributes);
+
+    UserNotificationCreated::dispatch($notification);
+
+    return $notification;
+}
   /** Return the authenticated user's database notifications, newest first. */
 public function paginateFor(User $user, int $perPage = 20): LengthAwarePaginator
 {
@@ -86,7 +95,7 @@ public function notifyNextApprover(Approval $approval): void
     $payload = (new NextApprovalNotification($approval, $referenceNumber))
         ->toArray($approval->approver);
 
-    UserNotification::create([
+    $this->storeAndBroadcast([
         'user_id' => $approval->approver_id,
         'title' => $payload['title'],
         'message' => $payload['message'],
@@ -102,7 +111,7 @@ public function notifyWorkflowCompleted(User $recipient, Model $document, Approv
     $payload = (new WorkflowCompletedNotification($document, $approval))
         ->toArray($recipient);
 
-    UserNotification::create([
+    $this->storeAndBroadcast([
         'user_id' => $recipient->id,
         'title' => $payload['title'],
         'message' => $payload['message'],
@@ -118,7 +127,7 @@ public function notifyRejected(User $recipient, Model $document, Approval $appro
     $payload = (new DocumentRejectedNotification($document, $approval, $reason))
         ->toArray($recipient);
 
-    UserNotification::create([
+    $this->storeAndBroadcast([
         'user_id' => $recipient->id,
         'title' => $payload['title'],
         'message' => $payload['message'],
@@ -211,7 +220,7 @@ private function storeNewAccidentNotification(User $user, Accident $accident): v
 
     $message = "A new accident ({$case->case_number}) has been reported by {$institutionName}.";
 
-    UserNotification::create([
+    $this->storeAndBroadcast([
         'user_id' => $user->id,
         'title' => 'New Accident Report',
         'message' => $message,

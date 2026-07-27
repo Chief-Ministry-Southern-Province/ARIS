@@ -12,6 +12,7 @@ import { LanguageSwitcher } from "@/components/molecules/LanguageSwitcher";
 import { navItems } from "@/components/data/navigation";
 import NotificationDropdown from "@/components/organisms/Notification/NotificationDropdown";
 import UserMenu from "@/components/organisms/TopNavbar/UserMenu";
+import { useUnreadNotificationCount } from "@/hooks/useNotifications";
 
 interface TopNavbarProps {
   userName: string;
@@ -32,6 +33,7 @@ export function TopNavbar({
     useState(false);
 
   const location = useLocation();
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
 
   const notificationRef =
     useRef<HTMLDivElement>(null);
@@ -113,7 +115,9 @@ export function TopNavbar({
             >
               <Bell size={18} />
 
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive" />
+              {unreadCount > 0 && (
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive" />
+              )}
             </button>
 
             {notifOpen && (

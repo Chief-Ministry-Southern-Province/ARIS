@@ -9,6 +9,7 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.css";
 import "./lib/leaflet";
 import {AuthProvider} from '@/context/auth/AuthContext'
 import { QueryProvider } from "@/providers/QueryProvider";
+import RealtimeNotifications from "@/components/providers/RealtimeNotifications";
 // Dynamically import the PWA register to avoid TypeScript errors when the
 // virtual module "virtual:pwa-register" has no type declarations.
 (async () => {
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryProvider>
       <AuthProvider>
+        <RealtimeNotifications />
         <ThemeProvider><App /></ThemeProvider>
       </AuthProvider>
     </QueryProvider>
