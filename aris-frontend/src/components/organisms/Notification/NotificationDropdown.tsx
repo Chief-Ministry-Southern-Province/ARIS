@@ -1,58 +1,49 @@
-import NotificationItem from "./NotificationItem";
-import { notifications } from "../../data/mockData";
 import { useNavigate } from "react-router-dom";
+import NotificationItem from "./NotificationItem";
+import { useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
+import type { AppNotification } from "@/types/notification.type";
+
+const formatTime = (value: string) =>
+  new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 
 const NotificationDropdown = () => {
-  const unreadCount = notifications.length;
   const navigate = useNavigate();
+  const { data: notificationPage, isLoading } = useNotifications();
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
+  const notifications = notificationPage?.data.slice(0, 5) ?? [];
+
+  const openNotification = (notification: AppNotification) => {
+    navigate(notification.data.url ?? notification.action_url ?? "/notifications");
+  };
 
   return (
-    <div className="absolute right-0 top-12 w-80 bg-card border border-border rounded-xl shadow-xl overflow-hidden z-50">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+    <div className="absolute right-0 top-12 z-50 w-80 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <h3 className="font-semibold text-sm">
-            Notifications
-          </h3>
-
-          <p className="text-xs text-muted-foreground">
-            {unreadCount} unread notifications
-          </p>
+          <h3 className="text-sm font-semibold">Notifications</h3>
+          <p className="text-xs text-muted-foreground">{unreadCount} unread notifications</p>
         </div>
-
-        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
-          {unreadCount} New
-        </span>
+        {unreadCount > 0 && <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">{unreadCount} New</span>}
       </div>
 
-      {/* List */}
       <div className="max-h-80 overflow-y-auto">
-        {notifications.map((notification) => (
-          <NotificationItem
-            key={notification.id}
-            {...notification}
-          />
-        ))}
+        {isLoading ? <p className="px-4 py-6 text-center text-sm text-muted-foreground">Loading notifications...</p> :
+          notifications.length === 0 ? <p className="px-4 py-6 text-center text-sm text-muted-foreground">No notifications yet.</p> :
+            notifications.map((notification) => (
+              <NotificationItem
+                key={notification.id}
+                title={notification.data.title ?? notification.title ?? "Notification"}
+                description={notification.data.message ?? notification.message ?? "You have a new notification."}
+                time={formatTime(notification.created_at)}
+                color={!notification.read_at ? "bg-blue-500" : "bg-slate-300"}
+                unread={!notification.read_at}
+                onClick={() => openNotification(notification)}
+              />
+            ))}
       </div>
 
-      {/* Footer */}
       <div className="border-t border-border p-2">
-        <button
-          className="
-            w-full
-            py-2
-            text-sm
-            font-medium
-            rounded-lg
-            text-blue-600
-            hover:bg-blue-50
-            transition-colors
-            "
-
-          onClick={() => navigate("/notifications")}
-        >
-          View All Notifications
-        </button>
+        <button className="w-full rounded-lg py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50" onClick={() => navigate("/notifications")}>View All Notifications</button>
       </div>
     </div>
   );

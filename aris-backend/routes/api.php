@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
 use App\Http\Controllers\Api\UserSignatureController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\WorkflowSettingController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,6 +37,12 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+
+    // Authenticated user's database notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
     Route::apiResource('users', UserController::class);
 
