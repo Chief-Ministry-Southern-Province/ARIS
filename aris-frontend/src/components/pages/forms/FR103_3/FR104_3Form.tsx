@@ -480,7 +480,7 @@ useEffect(() => {
         {/* Sticky Action Bar */}
         <div className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 ">
-            {true ? (
+            {readOnly ? (
               <>
                 <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2">
                   <Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}

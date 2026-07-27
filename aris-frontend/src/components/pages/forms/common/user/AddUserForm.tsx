@@ -3,14 +3,12 @@ import { FormField } from "@/components/molecules/FormField";
 import { useTranslation } from "react-i18next";
 import type {createUserRequest} from "@/types/User.type"
 import { useState } from "react";
-import {selectRoleBaseOnUserInstitutionType,formatRole} from "@/utils/formatRole"
+import { rolesForInstitution, formatRole } from "@/utils/formatRole"
 import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries"
 import { useCreateUserMutation } from "@/hooks/mutations/useResourceMutations"
 
 export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   const { t } = useTranslation();
-  const roleList = selectRoleBaseOnUserInstitutionType();
-
   const [user,setUser] = useState<createUserRequest>({
     name: "",
     nic: "",
@@ -58,6 +56,7 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   console.log(createUserError);
 
   const selectedInstitution = institutions.find(inst => inst.id === Number(user.institution_id));
+  const roleList = rolesForInstitution(selectedInstitution?.type);
   const isMinistry = selectedInstitution?.type === "MINISTRY";
   const isSubjectOfficer = user.role === "subject_officer";
   const showDistrictSelection = isMinistry && isSubjectOfficer;

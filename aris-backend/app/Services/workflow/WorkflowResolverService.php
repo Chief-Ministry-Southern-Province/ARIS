@@ -108,6 +108,7 @@ class WorkflowResolverService
   {
       $user = User::query()
           ->role('treasury_secretary')
+          ->whereHas('institution', fn ($query) => $query->where('type', 'MINISTRY'))
           ->with('institution')
           ->orderBy('id')
           ->first();

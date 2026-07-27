@@ -9,10 +9,23 @@ class WorkflowSettingService
 {
   private const CACHE_KEY = 'workflow_settings';
 
-  public function getSettings()
+  /**
+   * Cache scalar setting data, not Eloquent models/collections. Model objects
+   * are serialized by database cache drivers and can become invalid after a
+   * framework or autoloader update.
+   */
+  public function getSettings(): array
   {
     return Cache::rememberForever(self::CACHE_KEY, function () {
-      return WorkflowSetting::all()->keyBy('key');
+      return WorkflowSetting::query()
+        ->get(['key', 'value', 'type'])
+        ->mapWithKeys(fn (WorkflowSetting $setting) => [
+          $setting->key => [
+            'value' => $setting->value,
+            'type' => $setting->type,
+          ],
+        ])
+        ->all();
     });
   }
 
@@ -22,19 +35,19 @@ class WorkflowSettingService
 
   public function get(string $key,mixed $default = null): mixed
   {
-    $setting = $this->getSettings()->get($key);
+    $setting = $this->getSettings()[$key] ?? null;
 
     if(!$setting){
       return $default;
     }
     
-    return match ($setting->type) {
-       'string' => $setting->value,
-       'integer' => (int) $setting->value,
-       'boolean' => filter_var($setting->value, FILTER_VALIDATE_BOOLEAN),
-       'float' => (float) $setting->value,
-       'array' => json_decode($setting->value, true),
-       default => $setting->value,
+    return match ($setting['type']) {
+       'string' => $setting['value'],
+       'integer' => (int) $setting['value'],
+       'boolean' => filter_var($setting['value'], FILTER_VALIDATE_BOOLEAN),
+       'float' => (float) $setting['value'],
+       'array' => json_decode($setting['value'], true),
+       default => $setting['value'],
     };
   }
 

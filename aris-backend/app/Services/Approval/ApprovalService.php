@@ -8,11 +8,11 @@ use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\User;
-use App\Notifications\FR1043ChangesRequested;
 use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +23,8 @@ class ApprovalService
 {
     public function __construct(
         protected WorkflowResolverService $workflowResolver,
-        protected AccidentTimelineService $timelineService
+        protected AccidentTimelineService $timelineService,
+        protected NotificationService $notificationService
     ) {}
 
     /**
@@ -350,7 +351,11 @@ class ApprovalService
                     $document->update(['status' => 'CHANGES_REQUESTED']);
 
                     if ($approval->document_type === 'FR1043') {
-                        $document->creator->notify(new FR1043ChangesRequested($document, $comments));
+                        $this->notificationService->notifyFR1043ChangesRequested(
+                            $document->creator,
+                            $document,
+                            $comments
+                        );
                     }
                 }
             }
