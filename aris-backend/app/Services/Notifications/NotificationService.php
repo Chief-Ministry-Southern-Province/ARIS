@@ -5,6 +5,7 @@ namespace App\Services\Notifications;
 use App\Models\Approval;
 use App\Models\User;
 use App\Models\Accident;
+use App\Models\Institution;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\Notification as UserNotification;
@@ -143,6 +144,10 @@ public function notifyNewAccidentReported(Accident $accident): void
     $institution = $accident->institution;
     $reportedUser = $accident->reporter;
 
+    if (! $institution) {
+        return;
+    }
+
     // Notify Institution Subject Officers
     if ($reportedUser?->hasRole('driver')) {
 
@@ -157,21 +162,42 @@ public function notifyNewAccidentReported(Accident $accident): void
 
     }
 
-    // Notify Parent Subject Officers
-    $parentInstitution = $institution->parentInstitution;
+    // Notify only the ministry subject officer assigned to the accident district.
+    $district = trim((string) ($accident->district ?: $institution?->district));
+    $ministry = $this->findAncestorByType($institution, 'MINISTRY');
 
-    if (! $parentInstitution) {
+    if (! $ministry || $district === '') {
         return;
     }
 
-    $subjectOfficers = User::query()
-        ->where('institution_id', $parentInstitution->id)
+    $districtSubjectOfficers = User::query()
+        ->where('institution_id', $ministry->id)
         ->role('subject_officer')
+        ->whereHas('districts', function ($query) use ($district) {
+            $query->where('district', $district);
+        })
         ->get();
 
-    foreach ($subjectOfficers as $user) {
+    foreach ($districtSubjectOfficers as $user) {
         $this->storeNewAccidentNotification($user, $accident);
     }
+}
+
+private function findAncestorByType(?Institution $institution, string $type): ?Institution
+{
+    $visited = [];
+
+    while ($institution && ! isset($visited[$institution->id])) {
+        $visited[$institution->id] = true;
+
+        if ($institution->type === $type) {
+            return $institution;
+        }
+
+        $institution = $institution->parentInstitution;
+    }
+
+    return null;
 }
 
 private function storeNewAccidentNotification(User $user, Accident $accident): void
