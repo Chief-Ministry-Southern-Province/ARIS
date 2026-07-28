@@ -12,7 +12,6 @@ use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
-use App\Services\NotificationService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +24,6 @@ class ApprovalService
     public function __construct(
         protected WorkflowResolverService $workflowResolver,
         protected AccidentTimelineService $timelineService,
-        protected NotificationService $notificationService,
         protected NotificationService $notificationService
     ) {}
 
@@ -217,14 +215,6 @@ class ApprovalService
 
             $document = null;
 
-            $approval->update([
-
-                'status' => 'APPROVED',
-                'comments' => $comments,
-                'acted_at' => now(),
-                'user_signature_id' => $signature?->id,
-            ]);
-
             $nextApproval = Approval::query()
 
                 ->where(
@@ -244,6 +234,18 @@ class ApprovalService
                     $approval->step + 1
                 )
                 ->first();
+
+            // Intermediate steps recommend the document. Only the final
+            // workflow step gives the document its final approval.
+            $decisionStatus = $nextApproval ? 'RECOMMENDED' : 'APPROVED';
+
+            $approval->update([
+
+                'status' => $decisionStatus,
+                'comments' => $comments,
+                'acted_at' => now(),
+                'user_signature_id' => $signature?->id,
+            ]);
 
             if ($nextApproval) {
                 $nextApproval->update([
@@ -286,7 +288,7 @@ class ApprovalService
                 $accidentCase,
                 $user,
                 $approval->document_type,
-                'APPROVED',
+                $decisionStatus,
                 $approval->revision,
                 step: $approval->step,
             );
@@ -358,14 +360,6 @@ class ApprovalService
 
                 if ($document) {
                     $document->update(['status' => 'CHANGES_REQUESTED']);
-
-                    if ($approval->document_type === 'FR1043') {
-                        $this->notificationService->notifyFR1043ChangesRequested(
-                            $document->creator,
-                            $document,
-                            $comments
-                        );
-                    }
                 }
             }
 
@@ -461,7 +455,7 @@ class ApprovalService
     {
         return Approval::query()
             ->where('approver_id', $user->id)
-            ->whereIn('status', ['APPROVED', 'REJECTED'])
+            ->whereIn('status', ['RECOMMENDED', 'APPROVED', 'REJECTED'])
             ->when($documentType, fn ($query) => $query->where('document_type', $documentType))
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($search, function ($query) use ($search) {
@@ -484,13 +478,15 @@ class ApprovalService
         $counts = Approval::query()
             ->where('approver_id', $user->id)
             ->selectRaw("SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending")
+            ->selectRaw("SUM(CASE WHEN status = 'RECOMMENDED' THEN 1 ELSE 0 END) as recommended")
             ->selectRaw("SUM(CASE WHEN status = 'APPROVED' THEN 1 ELSE 0 END) as approved")
             ->selectRaw("SUM(CASE WHEN status = 'REJECTED' THEN 1 ELSE 0 END) as rejected")
-            ->selectRaw("SUM(CASE WHEN status IN ('PENDING', 'APPROVED', 'REJECTED') THEN 1 ELSE 0 END) as total")
+            ->selectRaw("SUM(CASE WHEN status IN ('PENDING', 'RECOMMENDED', 'APPROVED', 'REJECTED') THEN 1 ELSE 0 END) as total")
             ->first();
 
         return [
             'pending' => (int) $counts->pending,
+            'recommended' => (int) $counts->recommended,
             'approved' => (int) $counts->approved,
             'rejected' => (int) $counts->rejected,
             'total' => (int) $counts->total,

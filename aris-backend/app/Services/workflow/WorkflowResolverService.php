@@ -94,8 +94,12 @@ class WorkflowResolverService
       $data = is_array($data) ? $data : (json_decode((string) $data, true) ?: []);
 
       return match ($documentType) {
-          'FR1043' => collect($data['items'] ?? [])->sum(fn (array $item) => $this->money($item['value'] ?? 0)),
-          'FR1044' => collect($data['lostItems'] ?? [])->sum(fn (array $item) => $this->money($item['fr105Value'] ?? $item['estimatedCost'] ?? 0)),
+          'FR1043' => collect($data['items'] ?? [])->sum(function (array $item): float {
+              $quantity = $this->money($item['quantity'] ?? 1);
+
+              return $this->money($item['value'] ?? 0) * ($quantity > 0 ? $quantity : 1);
+          }),
+          'FR1044' => collect($data['lostItems'] ?? [])->sum(fn (array $item) => $this->money($item['originalCost'] ?? 0)),
       };
   }
 

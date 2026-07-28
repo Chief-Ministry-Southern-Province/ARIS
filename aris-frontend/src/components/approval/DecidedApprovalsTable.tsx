@@ -31,7 +31,7 @@ export default function DecidedApprovalsTable({
             No Decided Documents
           </h3>
           <p className="mt-2 text-slate-500">
-            No approved or rejected documents match these filters.
+            No recommendations or decisions match these filters.
           </p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function DecidedApprovalsTable({
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       <div className="border-b border-slate-200 px-6 py-5">
         <h2 className="text-lg font-semibold text-slate-900">
-          Approved / Rejected Documents
+          Recommendations / Decisions
         </h2>
         <p className="text-sm text-slate-500 mt-1">
           Open the exact revision associated with each decision.

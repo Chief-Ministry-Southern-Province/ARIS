@@ -5,6 +5,7 @@ import type { Approval } from "@/types/approval.type";
 interface ApprovalDecisionDialogProps {
   approval: Approval;
   action: "approve" | "reject";
+  approvalActionLabel: "Recommend" | "Approve";
   isPending: boolean;
   onClose: () => void;
   onConfirm: (comments: string) => Promise<void>;
@@ -13,6 +14,7 @@ interface ApprovalDecisionDialogProps {
 export default function ApprovalDecisionDialog({
   approval,
   action,
+  approvalActionLabel,
   isPending,
   onClose,
   onConfirm,
@@ -38,7 +40,7 @@ export default function ApprovalDecisionDialog({
       <form onSubmit={submit} className="space-y-5">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">
-            {isReject ? "Reject approval" : "Approve document"}
+            {isReject ? "Reject approval" : `${approvalActionLabel} document`}
           </h2>
           <p className="mt-2 text-sm text-slate-600">
             {approval.reference_number} · Revision {approval.revision}
@@ -67,7 +69,7 @@ export default function ApprovalDecisionDialog({
             Cancel
           </button>
           <button type="submit" disabled={isPending} className={`rounded-lg px-4 py-2 text-sm text-white disabled:opacity-50 ${isReject ? "bg-red-600 hover:bg-red-700" : "bg-[#0F4C81] hover:bg-[#0B3C66]"}`}>
-            {isPending ? "Saving..." : isReject ? "Reject" : "Approve"}
+            {isPending ? "Saving..." : isReject ? "Reject" : approvalActionLabel}
           </button>
         </div>
       </form>

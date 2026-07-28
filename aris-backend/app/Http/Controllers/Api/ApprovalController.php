@@ -28,12 +28,12 @@ class ApprovalController extends Controller
         return ApprovalResource::collection($approvals);
     }
 
-    /** Approved or rejected decisions made by the logged-in approver. */
+    /** Recommended, approved, or rejected decisions made by the logged-in approver. */
     public function decided(Request $request)
     {
         $filters = $request->validate([
             'document_type' => ['nullable', 'in:FR1043,FR1044,FR109'],
-            'status' => ['nullable', 'in:APPROVED,REJECTED'],
+            'status' => ['nullable', 'in:RECOMMENDED,APPROVED,REJECTED'],
             'search' => ['nullable', 'string', 'max:255'],
         ]);
 

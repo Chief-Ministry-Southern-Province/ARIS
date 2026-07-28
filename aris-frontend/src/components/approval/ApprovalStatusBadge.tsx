@@ -16,6 +16,11 @@ export default function ApprovalStatusBadge({ status }: Props) {
       icon: Circle,
       className: "bg-slate-100 text-slate-600",
     },
+    RECOMMENDED: {
+      label: "Recommended",
+      icon: CheckCircle2,
+      className: "bg-blue-100 text-blue-700",
+    },
     APPROVED: {
       label: "Approved",
       icon: CheckCircle2,

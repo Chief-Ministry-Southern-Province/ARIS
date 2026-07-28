@@ -18,7 +18,7 @@ final readonly class DocumentSignatureService
             ->where('accident_case_id', $case->id)
             ->where('document_type', $documentType)
             ->where('revision', $revision)
-            ->where('status', 'APPROVED')
+            ->whereIn('status', ['RECOMMENDED', 'APPROVED'])
             ->with(['approver.roles', 'approver.institution', 'institution', 'signature'])
             ->get();
 

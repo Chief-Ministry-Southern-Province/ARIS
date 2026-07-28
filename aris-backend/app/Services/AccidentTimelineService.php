@@ -33,6 +33,7 @@ class AccidentTimelineService
       'SUBMITTED' => "{$document} {$revisionLabel} submitted for approval.",
       'REVISION_CREATED' => "{$document} {$revisionLabel} created from rejected revision {$sourceRevision}.",
       'RESUBMITTED' => "{$document} {$revisionLabel} resubmitted for approval.",
+      'RECOMMENDED' => "{$document} {$revisionLabel} recommended at step {$step}.",
       'APPROVED' => "{$document} {$revisionLabel} approved at step {$step}.",
       'REJECTED' => "{$document} {$revisionLabel} rejected: {$comments}",
       'WORKFLOW_COMPLETED' => "{$document} {$revisionLabel} approval workflow completed.",

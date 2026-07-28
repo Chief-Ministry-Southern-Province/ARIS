@@ -1,4 +1,4 @@
-import {CheckCircle2,Clock3,FileText,FolderOpen,Upload,UserPlus,XCircle,ShieldCheck,RefreshCcw,ClipboardList,} from "lucide-react";
+import {CheckCircle2,Clock3,FileText,FolderOpen,Upload,UserPlus,XCircle,ShieldCheck,RefreshCcw,ClipboardList,ThumbsUp,} from "lucide-react";
 
 export const TIMELINE_ACTIONS = {
   CASE_CREATED: {
@@ -79,6 +79,12 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-green-100 text-green-700 border-green-200",
   },
 
+  FR1043_RECOMMENDED: {
+    label: "FR104(3) Recommended",
+    icon: ThumbsUp,
+    badge: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+
   FR1043_REJECTED: {
     label: "FR104(3) Rejected",
     icon: XCircle,
@@ -109,6 +115,12 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-green-100 text-green-700 border-green-200",
   },
 
+  FR1044_RECOMMENDED: {
+    label: "FR104(4) Recommended",
+    icon: ThumbsUp,
+    badge: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+
   FR1044_REJECTED: {
     label: "FR104(4) Rejected",
     icon: XCircle,
@@ -131,6 +143,12 @@ export const TIMELINE_ACTIONS = {
     label: "FR109 Approved",
     icon: ShieldCheck,
     badge: "bg-green-100 text-green-700 border-green-200",
+  },
+
+  FR109_RECOMMENDED: {
+    label: "FR109 Recommended",
+    icon: ThumbsUp,
+    badge: "bg-blue-100 text-blue-700 border-blue-200",
   },
 
   FR109_REJECTED: {
