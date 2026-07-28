@@ -9,6 +9,7 @@ enum AuditAction: string
     case DELETE = 'DELETE';
 
     case LOGIN = 'LOGIN';
+    case LOGIN_FAILED = 'LOGIN_FAILED';
     case LOGOUT = 'LOGOUT';
 
     case SUBMIT = 'SUBMIT';

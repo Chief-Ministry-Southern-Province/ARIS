@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->string('module');
 
-            $table->string('entity_type');
+            $table->string('entity_type')->nullable();
 
             $table->unsignedBigInteger('entity_id')->nullable();
 
