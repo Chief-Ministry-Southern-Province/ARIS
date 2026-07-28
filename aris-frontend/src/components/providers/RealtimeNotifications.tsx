@@ -6,8 +6,47 @@ import { useAuth } from "@/context/auth/AuthContext";
 import api from "@/services/api";
 import { queryKeys } from "@/hooks/queryKeys";
 
+type NotificationBroadcast = {
+  id: string | number;
+  title?: string;
+  message?: string;
+  action_url?: string | null;
+  data?: {
+    title?: string;
+    message?: string;
+    url?: string;
+  };
+};
+
 const numberEnv = (value: string | undefined, fallback: number) =>
   Number(value ?? fallback);
+
+const showDesktopNotification = (notification: NotificationBroadcast) => {
+  if (
+    !document.hidden ||
+    !("Notification" in window) ||
+    window.Notification.permission !== "granted"
+  ) {
+    return;
+  }
+
+  const url = notification.data?.url ?? notification.action_url ?? "/notifications";
+  const desktopNotification = new window.Notification(
+    notification.data?.title ?? notification.title ?? "ARIS notification",
+    {
+      body: notification.data?.message ?? notification.message ?? "You have a new notification.",
+      icon: "/pwa-192x192-icon.png",
+      badge: "/pwa-192x192-icon.png",
+      tag: `aris-notification-${notification.id}`,
+    },
+  );
+
+  desktopNotification.onclick = () => {
+    window.focus();
+    window.location.assign(url);
+    desktopNotification.close();
+  };
+};
 
 /** Keeps notification queries current when Reverb publishes to the signed-in user. */
 const RealtimeNotifications = () => {
@@ -42,8 +81,9 @@ const RealtimeNotifications = () => {
       }),
     });
 
-    echo.private(`users.${userId}`).listen(".notification.created", () => {
+    echo.private(`users.${userId}`).listen(".notification.created", (notification: NotificationBroadcast) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      showDesktopNotification(notification);
     });
 
     return () => {

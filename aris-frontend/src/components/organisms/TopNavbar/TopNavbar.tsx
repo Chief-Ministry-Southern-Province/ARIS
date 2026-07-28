@@ -116,7 +116,9 @@ export function TopNavbar({
               <Bell size={18} />
 
               {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-destructive" />
+                <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-destructive px-1 text-center text-[10px] font-semibold leading-5 text-destructive-foreground">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
               )}
             </button>
 

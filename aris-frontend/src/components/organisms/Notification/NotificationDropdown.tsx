@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationItem from "./NotificationItem";
 import { useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
@@ -10,10 +11,19 @@ const NotificationDropdown = () => {
   const navigate = useNavigate();
   const { data: notificationPage, isLoading } = useNotifications();
   const { data: unreadCount = 0 } = useUnreadNotificationCount();
+  const [desktopPermission, setDesktopPermission] = useState<NotificationPermission | "unsupported">(
+    () => ("Notification" in window ? window.Notification.permission : "unsupported"),
+  );
   const notifications = notificationPage?.data.slice(0, 5) ?? [];
 
   const openNotification = (notification: AppNotification) => {
     navigate(notification.data.url ?? notification.action_url ?? "/notifications");
+  };
+
+  const enableDesktopNotifications = async () => {
+    if (!("Notification" in window)) return;
+
+    setDesktopPermission(await window.Notification.requestPermission());
   };
 
   return (
@@ -44,6 +54,8 @@ const NotificationDropdown = () => {
 
       <div className="border-t border-border p-2">
         <button className="w-full rounded-lg py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50" onClick={() => navigate("/notifications")}>View All Notifications</button>
+        {desktopPermission === "default" && <button className="w-full rounded-lg py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50" onClick={enableDesktopNotifications}>Enable desktop alerts</button>}
+        {desktopPermission === "denied" && <p className="px-2 py-1 text-center text-xs text-slate-500">Desktop alerts are blocked in browser settings.</p>}
       </div>
     </div>
   );

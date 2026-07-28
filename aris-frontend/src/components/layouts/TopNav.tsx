@@ -77,7 +77,11 @@ export function TopNav({ onMenuClick }: TopNavProps) {
           title="Notifications"
         >
           <Bell className="w-5 h-5 text-muted-foreground" />
-          {unreadNotificationCount > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />}
+          {unreadNotificationCount > 0 && (
+            <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-destructive px-1 text-center text-[10px] font-semibold leading-5 text-destructive-foreground">
+              {unreadNotificationCount > 99 ? "99+" : unreadNotificationCount}
+            </span>
+          )}
         </button>
 
         {/* User Section */}
