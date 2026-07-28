@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\FR1044Controller;
 use App\Http\Controllers\Api\UserSignatureController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\WorkflowSettingController;
+use App\Http\Controllers\Api\AuditLogController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -43,6 +44,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+
+    Route::get('/audit-logs', [AuditLogController::class, 'index']);
 
     Route::apiResource('users', UserController::class);
 
@@ -142,5 +145,4 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
-
 

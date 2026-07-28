@@ -3,11 +3,18 @@
 namespace App\Services;
 
 use App\Models\WorkflowSetting;
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class WorkflowSettingService
 {
   private const CACHE_KEY = 'workflow_settings';
+
+  public function __construct(private AuditLogService $auditLogs)
+  {
+  }
 
   /**
    * Cache scalar setting data, not Eloquent models/collections. Model objects
@@ -55,9 +62,19 @@ class WorkflowSettingService
     {
         $setting = WorkflowSetting::where('key', $key)->firstOrFail();
 
-        $setting->update([
-            'value' => (string) $value,
-        ]);
+        $oldValue = $setting->value;
+        $storedValue = is_array($value) ? json_encode($value, JSON_THROW_ON_ERROR) : (string) $value;
+
+        $setting->update(['value' => $storedValue]);
+
+        DB::afterCommit(fn () => $this->auditLogs->log(
+            AuditAction::UPDATE,
+            AuditModule::WORKFLOW,
+            $setting,
+            ['key' => $key, 'value' => $oldValue],
+            ['key' => $key, 'value' => $storedValue],
+            'Updated workflow setting '.$key.'.',
+        ));
 
         $this->clearCache();
     } 

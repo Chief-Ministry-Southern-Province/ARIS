@@ -18,13 +18,17 @@ use Illuminate\Support\Facades\Log;
 use App\Models\UserSignature;
 use Illuminate\Validation\ValidationException;
 use App\Services\Notifications\NotificationService;
+use App\Services\AuditLogService;
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 
 class ApprovalService
 {
     public function __construct(
         protected WorkflowResolverService $workflowResolver,
         protected AccidentTimelineService $timelineService,
-        protected NotificationService $notificationService
+        protected NotificationService $notificationService,
+        protected AuditLogService $auditLogs,
     ) {}
 
     /**
@@ -247,6 +251,19 @@ class ApprovalService
                 'user_signature_id' => $signature?->id,
             ]);
 
+            DB::afterCommit(function () use ($approval, $decisionStatus) {
+                $this->auditLogs->log(
+                    $decisionStatus === 'RECOMMENDED' ? AuditAction::RECOMMEND : AuditAction::APPROVE,
+                    AuditModule::APPROVAL,
+                    $approval,
+                    ['status' => 'PENDING'],
+                    ['status' => $decisionStatus, 'comments' => $approval->comments],
+                    $decisionStatus === 'RECOMMENDED'
+                        ? 'Recommended approval step '.$approval->step.'.'
+                        : 'Granted final approval.',
+                );
+            });
+
             if ($nextApproval) {
                 $nextApproval->update([
                     'status' => 'PENDING',
@@ -351,6 +368,17 @@ class ApprovalService
                 'acted_at' => now(),
 
             ]);
+
+            DB::afterCommit(function () use ($approval, $comments) {
+                $this->auditLogs->log(
+                    AuditAction::REJECT,
+                    AuditModule::APPROVAL,
+                    $approval,
+                    ['status' => 'PENDING'],
+                    ['status' => 'REJECTED', 'comments' => $comments],
+                    'Rejected approval step '.$approval->step.'.',
+                );
+            });
 
             if (in_array($approval->document_type, ['FR1043', 'FR1044'], true)) {
                 $document = ($approval->document_type === 'FR1043' ? FR1043::query() : FR1044::query())

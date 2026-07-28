@@ -50,6 +50,10 @@ export const queryKeys = {
     list: (page: number) => ["notifications", "list", page] as const,
     unreadCount: ["notifications", "unread-count"] as const,
   },
+  audit: {
+    all: ["audit-logs"] as const,
+    list: <T extends object>(filters: T) => ["audit-logs", "list", filters] as const,
+  },
   signatures: {
     all: ["signatures"] as const,
     status: ["signatures", "status"] as const,

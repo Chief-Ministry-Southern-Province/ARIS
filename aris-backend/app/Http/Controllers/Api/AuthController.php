@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
+use App\Services\AuditLogService;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuditLogService $auditLogs)
+    {
+    }
+
     public function login(Request $request){
 
         $credentials = $request->validate([
@@ -20,6 +27,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('auth_token')->plainTextToken;
+            $this->auditLogs->log(AuditAction::LOGIN, AuditModule::AUTH, $user, [], [], 'Logged in.', $request);
 
             return response()->json([
                 'message' => 'Login successful',
@@ -31,14 +39,18 @@ class AuthController extends Controller
             ]);
         }
 
+        $this->auditLogs->log(AuditAction::LOGIN_FAILED, AuditModule::AUTH, null, [], [], 'Failed login attempt.', $request);
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     public function logout(Request $request){
 
-        $request->user()
+        $user = $request->user();
+        $user
             ->currentAccessToken()
             ->delete();
+
+        $this->auditLogs->log(AuditAction::LOGOUT, AuditModule::AUTH, $user, [], [], 'Logged out.', $request);
 
         return response()->json(['message' => 'Logged out successfully']);
     }
