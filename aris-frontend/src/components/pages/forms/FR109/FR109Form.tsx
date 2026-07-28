@@ -8,6 +8,7 @@ import { initialFormData } from "./initialFormData";
 import { useGetFR109, useSaveFR109, useSubmitFR109 } from "@/hooks/useFR109";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
+import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
 import DepartmentSection from "@/components/organisms/Forms/FR109/DepartmentSection";
 import ReportSection from "@/components/organisms/Forms/FR109/ReportSection";
 import PropertySection from "@/components/organisms/Forms/FR109/PropertySection";
@@ -269,6 +270,11 @@ export default function FR109Form({
             </div>
           </div>
         </form>
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <DocumentApprovalSignatures approvals={approvalTimeline} />
+        </div>
+        
       </div>
     </div>
   );

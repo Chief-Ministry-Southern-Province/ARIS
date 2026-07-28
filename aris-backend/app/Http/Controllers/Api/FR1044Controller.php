@@ -9,8 +9,10 @@ use App\Http\Resources\FR1044Resource;
 use App\Http\Resources\EvidenceResource;
 use App\Models\AccidentCase;
 use App\Models\FR1044;
+use App\Models\AccidentEvidence;
 use App\Services\FR1044\FR1044Service;
 use App\Services\EvidenceService;
+use App\Services\PDF\FR1044PdfGenerator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,7 +20,8 @@ use App\Http\Controllers\Controller;
 class FR1044Controller extends Controller
 {
     public function __construct(
-        protected FR1044Service $fr1044Service
+        protected FR1044Service $fr1044Service,
+        protected FR1044PdfGenerator $pdfGenerator,
     ) {}
 
     public function attachment(StoreFR1044AttachmentRequest $request, FR1044 $fr1044, EvidenceService $evidenceService): EvidenceResource
@@ -30,6 +33,22 @@ class FR1044Controller extends Controller
             $request->validated('description'),
             $request->user(),
         ));
+    }
+
+    /** Resolve the uploaded file assigned to an FR1044 attachment field. */
+    public function attachmentPreview(FR1044 $fr1044, string $fieldKey): EvidenceResource
+    {
+        abort_unless(in_array($fieldKey, ['policeReportFile', 'courtOrderFile', 'boardReportFile'], true), 404);
+
+        $evidence = AccidentEvidence::query()
+            ->where('accident_id', $fr1044->accidentCase->accident_id)
+            ->where('document_type', 'FR1044')
+            ->where('document_revision', $fr1044->revision)
+            ->where('field_key', $fieldKey)
+            ->latest('id')
+            ->firstOrFail();
+
+        return new EvidenceResource($evidence);
     }
 
     /**
@@ -100,5 +119,11 @@ class FR1044Controller extends Controller
         $fr1044 = $this->fr1044Service->submit($fr1044, $request->user());
 
         return new FR1044Resource($fr1044);
+    }
+
+    /** Download a PDF representation of an FR1044 revision. */
+    public function downloadPdf(FR1044 $fr1044)
+    {
+        return $this->pdfGenerator->download($fr1044->id);
     }
 }

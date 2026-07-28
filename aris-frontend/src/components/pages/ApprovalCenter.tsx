@@ -83,7 +83,7 @@ export default function ApprovalCenter() {
 
       <div className="flex gap-2 border-b border-slate-200">
         <button onClick={() => { setView("pending"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "pending" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Pending Approvals</button>
-        <button onClick={() => { setView("decided"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "decided" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Approved / Rejected Documents</button>
+        <button onClick={() => { setView("decided"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "decided" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Recommendations / Decisions</button>
       </div>
 
       {/* Statistics */}
@@ -103,7 +103,7 @@ export default function ApprovalCenter() {
       {view === "decided" && (
         <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-2">
           <label className="text-sm font-medium text-slate-700">Document type<select value={documentType} onChange={(event) => { setDocumentType(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All document types</option><option value="FR1043">FR1043</option><option value="FR1044">FR1044</option><option value="FR109">FR109</option></select></label>
-          <label className="text-sm font-medium text-slate-700">Decision<select value={decisionStatus} onChange={(event) => { setDecisionStatus(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All decisions</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select></label>
+          <label className="text-sm font-medium text-slate-700">Decision<select value={decisionStatus} onChange={(event) => { setDecisionStatus(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All decisions</option><option value="RECOMMENDED">Recommended</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select></label>
         </div>
       )}
 

@@ -14,6 +14,9 @@ use App\Http\Controllers\Api\CaseHistoryController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
+use App\Http\Controllers\Api\UserSignatureController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\WorkflowSettingController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -34,6 +37,12 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+
+    // Authenticated user's database notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
     Route::apiResource('users', UserController::class);
 
@@ -102,6 +111,8 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::post('/fr1043/{fr1043}/submit',[FR1043Controller::class, 'submit']);
 
+    Route::get('/fr1043/{fr1043}/pdf',[FR1043Controller::class, 'downloadPdf']);
+
     // Protected routes for FR1044
     Route::prefix('cases')->group(function () {
         Route::get('/{accidentCase}/fr1044',[FR1044Controller::class, 'show']);
@@ -111,7 +122,9 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 
     Route::put('/fr1044/{fr1044}',[FR1044Controller::class, 'update']);
     Route::post('/fr1044/{fr1044}/submit',[FR1044Controller::class, 'submit']);
+    Route::get('/fr1044/{fr1044}/pdf',[FR1044Controller::class, 'downloadPdf']);
     Route::post('/fr1044/{fr1044}/attachments',[FR1044Controller::class, 'attachment']);
+    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}',[FR1044Controller::class, 'attachmentPreview']);
 
     //Protected routes for user signature
     Route::post('/user/signature', [UserSignatureController::class, 'store']);
@@ -121,6 +134,13 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
     Route::get('/user/signature/{signature}', [UserSignatureController::class, 'show']);
 
     Route::delete('/user/signature', [UserSignatureController::class, 'destroy']);
+
+    // Protected routes for workflow settings
+    Route::get('/workflow-settings',[WorkflowSettingController::class, 'index']);
+
+    Route::put('/workflow-settings',[WorkflowSettingController::class, 'update']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
+
+

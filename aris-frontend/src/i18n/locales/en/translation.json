@@ -14,7 +14,8 @@
     "analytics": "Analytics",
     "adminPanel": "Admin Panel",
     "notifications": "Notifications",
-    "approvals": "Approvals"
+    "approvals": "Approvals",
+    "signature": "Signature"
   },
   "app": {
     "name": "Accident Reporting System",
@@ -31,7 +32,8 @@
     "updating": "Updating...",
     "loading": "Loading...",
     "select": "Select",
-    "search": "Search"
+    "search": "Search",
+    "approverSignatures": "Approver Signatures"
   },
   "login": {
     "login": "Sign In",
@@ -539,7 +541,8 @@
     "removeSignature": "Remove Signature",
     "uploadSignature": "Upload Signature",
     "saveSignature": "Save Signature",
-    "clear": "Clear"
+    "clear": "Clear",
+    "cancel": "Cancel"
   },
   "evidenceManagement": {
     "title": "Evidence Management",

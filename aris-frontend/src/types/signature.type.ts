@@ -31,6 +31,7 @@ export interface UserListProps {
 export interface SignaturePreviewProps {
   user: Signatory;
   signature?: string;
+  isLoading?: boolean;
 }
 
 export interface SignatureDetailsProps {
@@ -41,13 +42,16 @@ export interface SignatureDetailsProps {
 export interface SignatureActionsProps {
   hasSignature: boolean;
   drawMode: boolean;
+  isSubmitting?: boolean;
   onDrawToggle: () => void;
+  onUpload: (file: File) => void;
   onRemove: () => void;
 }
 
 export interface SignatureCanvasProps {
   onSave: (signature: string) => void;
   onCancel: () => void;
+  isSaving?: boolean;
 }
 
 export interface SignatureStatsProps {

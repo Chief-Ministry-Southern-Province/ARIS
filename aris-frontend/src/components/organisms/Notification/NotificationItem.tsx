@@ -4,6 +4,7 @@ type NotificationItemProps = {
   time: string;
   color: string;
   unread?: boolean;
+  onClick?: () => void;
 };
 
 const NotificationItem = ({
@@ -12,9 +13,10 @@ const NotificationItem = ({
   time,
   color,
   unread = true,
+  onClick,
 }: NotificationItemProps) => {
   return (
-    <button className="w-full text-left px-4 py-3 hover:bg-muted/50 border-b border-border transition-colors">
+    <button type="button" onClick={onClick} className="w-full text-left px-4 py-3 hover:bg-muted/50 border-b border-border transition-colors">
       <div className="flex gap-3">
         <div
           className={`w-2 h-2 rounded-full mt-2 shrink-0 ${color}`}

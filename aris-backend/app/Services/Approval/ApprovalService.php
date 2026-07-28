@@ -8,7 +8,6 @@ use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\User;
-use App\Notifications\FR1043ChangesRequested;
 use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
 use App\Services\Workflow\WorkflowResolverService;
@@ -16,12 +15,16 @@ use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use Illuminate\Support\Facades\Log;
+use App\Models\UserSignature;
+use Illuminate\Validation\ValidationException;
+use App\Services\Notifications\NotificationService;
 
 class ApprovalService
 {
     public function __construct(
         protected WorkflowResolverService $workflowResolver,
-        protected AccidentTimelineService $timelineService
+        protected AccidentTimelineService $timelineService,
+        protected NotificationService $notificationService
     ) {}
 
     /**
@@ -75,7 +78,7 @@ class ApprovalService
         ) {
             logger()->info("1");
 
-            $workflow = $this->workflowResolver->resolve($case);
+            $workflow = $this->workflowResolver->resolve($case, $documentType, $revision);
 
             logger()->info("2");
 
@@ -124,6 +127,11 @@ class ApprovalService
      */
     protected function findApprover(WorkflowStep $step): User 
     {
+        if ($step->approverId) {
+            return User::query()
+                ->role($step->role)
+                ->findOrFail($step->approverId);
+        }
 
         if (
             $step->institution->type === 'MINISTRY'
@@ -185,22 +193,27 @@ class ApprovalService
 
         $accidentCase = $this->resolveApprovalCase($approval);
 
+        // Determine if the approver requires a signature for this approval step
+        $signatureRequired = $user->hasAnyRole([
+            'medical_superintendent',
+            'regional_director',
+            'provincial_director',
+            'secretary',
+        ]);
+
+        $signature = $signatureRequired
+            ? $this->getActiveSignature($user)
+            : null;
+
         DB::transaction(function () use (
             $approval,
             $comments,
             $user,
-            $accidentCase
+            $accidentCase,
+            $signature,
         ) {
 
-            $approval->update([
-
-                'status' => 'APPROVED',
-
-                'comments' => $comments,
-
-                'acted_at' => now(),
-
-            ]);
+            $document = null;
 
             $nextApproval = Approval::query()
 
@@ -208,40 +221,40 @@ class ApprovalService
                     'accident_case_id',
                     $approval->accident_case_id
                 )
-
                 ->where(
                     'document_type',
                     $approval->document_type
                 )
-
                 ->where(
                     'revision',
                     $approval->revision
                 )
-
                 ->where(
                     'step',
                     $approval->step + 1
                 )
-
                 ->first();
 
+            // Intermediate steps recommend the document. Only the final
+            // workflow step gives the document its final approval.
+            $decisionStatus = $nextApproval ? 'RECOMMENDED' : 'APPROVED';
+
+            $approval->update([
+
+                'status' => $decisionStatus,
+                'comments' => $comments,
+                'acted_at' => now(),
+                'user_signature_id' => $signature?->id,
+            ]);
+
             if ($nextApproval) {
-
                 $nextApproval->update([
-
                     'status' => 'PENDING',
-
-                ]);
-
-                /*
-                |--------------------------------------------------------------------------
-                | Later
-                |--------------------------------------------------------------------------
-                |
-                | Notify next approver
-                |
-                */
+                ]);   
+                
+                DB::afterCommit(function () use ($nextApproval) {
+                    $this->notificationService->notifyNextApprover($nextApproval);
+                });
 
             } else {
                 $document = match ($approval->document_type) {
@@ -275,10 +288,11 @@ class ApprovalService
                 $accidentCase,
                 $user,
                 $approval->document_type,
-                'APPROVED',
+                $decisionStatus,
                 $approval->revision,
                 step: $approval->step,
             );
+           
 
             if (!$nextApproval) {
                 $this->timelineService->createDocumentEvent(
@@ -288,6 +302,18 @@ class ApprovalService
                     'WORKFLOW_COMPLETED',
                     $approval->revision,
                 );
+
+                $recipient = $document?->creator;
+
+                if ($document && $recipient) {
+                    DB::afterCommit(function () use ($recipient, $document, $approval) {
+                        $this->notificationService->notifyWorkflowCompleted(
+                            recipient: $recipient,
+                            document: $document,
+                            approval: $approval,
+                        );
+                    });
+                }
             }
 
         });
@@ -320,11 +346,8 @@ class ApprovalService
         ) {
 
             $approval->update([
-
                 'status' => 'REJECTED',
-
                 'comments' => $comments,
-
                 'acted_at' => now(),
 
             ]);
@@ -337,10 +360,6 @@ class ApprovalService
 
                 if ($document) {
                     $document->update(['status' => 'CHANGES_REQUESTED']);
-
-                    if ($approval->document_type === 'FR1043') {
-                        $document->creator->notify(new FR1043ChangesRequested($document, $comments));
-                    }
                 }
             }
 
@@ -352,6 +371,19 @@ class ApprovalService
                 $approval->revision,
                 comments: $comments,
             );
+
+            $recipient = $document?->creator;
+
+            if ($recipient) {
+                DB::afterCommit(function () use ($document, $approval, $comments, $recipient) {
+                    $this->notificationService->notifyRejected(
+                        recipient: $recipient,
+                        document: $document,
+                        approval: $approval,
+                        reason: $comments,
+                    );
+                });
+            }
 
         });
 
@@ -407,6 +439,8 @@ class ApprovalService
 
                 'approver.roles',
 
+                'signature',
+
                 'accidentCase.accident',
 
             ])
@@ -421,7 +455,7 @@ class ApprovalService
     {
         return Approval::query()
             ->where('approver_id', $user->id)
-            ->whereIn('status', ['APPROVED', 'REJECTED'])
+            ->whereIn('status', ['RECOMMENDED', 'APPROVED', 'REJECTED'])
             ->when($documentType, fn ($query) => $query->where('document_type', $documentType))
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($search, function ($query) use ($search) {
@@ -432,6 +466,7 @@ class ApprovalService
                 'approver.roles',
                 'accidentCase.accident',
                 'accidentCase.creator',
+                'signature',
             ])
             ->orderByDesc('acted_at')
             ->paginate(10);
@@ -443,13 +478,15 @@ class ApprovalService
         $counts = Approval::query()
             ->where('approver_id', $user->id)
             ->selectRaw("SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending")
+            ->selectRaw("SUM(CASE WHEN status = 'RECOMMENDED' THEN 1 ELSE 0 END) as recommended")
             ->selectRaw("SUM(CASE WHEN status = 'APPROVED' THEN 1 ELSE 0 END) as approved")
             ->selectRaw("SUM(CASE WHEN status = 'REJECTED' THEN 1 ELSE 0 END) as rejected")
-            ->selectRaw("SUM(CASE WHEN status IN ('PENDING', 'APPROVED', 'REJECTED') THEN 1 ELSE 0 END) as total")
+            ->selectRaw("SUM(CASE WHEN status IN ('PENDING', 'RECOMMENDED', 'APPROVED', 'REJECTED') THEN 1 ELSE 0 END) as total")
             ->first();
 
         return [
             'pending' => (int) $counts->pending,
+            'recommended' => (int) $counts->recommended,
             'approved' => (int) $counts->approved,
             'rejected' => (int) $counts->rejected,
             'total' => (int) $counts->total,
@@ -484,6 +521,7 @@ class ApprovalService
                 'accidentCase.creator',
                 'approver.roles',
                 'institution',
+                'signature',
             ])
 
             ->orderBy('document_type')
@@ -491,5 +529,21 @@ class ApprovalService
             ->orderBy('step')
 
             ->get();
+    }
+
+    protected function getActiveSignature(User $user): UserSignature
+    {
+        $signature = $user->signatures()
+            ->where('is_active', true)
+            ->latest()
+            ->first();
+
+        if (! $signature) {
+            throw ValidationException::withMessages([
+                'signature' => 'Active signature not found. Please upload your signature before approving.',
+            ]);
+        }
+
+        return $signature;
     }
 }

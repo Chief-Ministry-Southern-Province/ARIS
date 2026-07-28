@@ -1,10 +1,11 @@
-import { PenTool } from "lucide-react";
+import { LoaderCircle, PenTool } from "lucide-react";
 import type { SignaturePreviewProps } from "@/types/signature.type";
 import { useTranslation } from "react-i18next";
 
 export default function SignaturePreview({
   user,
   signature,
+  isLoading = false,
 }: SignaturePreviewProps) {
   const { t } = useTranslation();
 
@@ -15,22 +16,19 @@ export default function SignaturePreview({
       </h3>
 
       <div className="min-h-55 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center">
-        {signature ? (
+        {isLoading ? (
           <div className="text-center">
-            {signature.startsWith("data:") ? (
-              <img
-                src={signature}
-                alt="signature"
-                className="max-h-32 mx-auto"
-              />
-            ) : (
-              <div
-                className="text-4xl text-blue-800 italic"
-                style={{ fontFamily: "cursive" }}
-              >
-                {user.name}
-              </div>
-            )}
+            <LoaderCircle className="w-8 h-8 text-blue-600 mx-auto mb-3 animate-spin" />
+
+            <p className="text-sm text-gray-500">Loading signature...</p>
+          </div>
+        ) : signature ? (
+          <div className="text-center">
+            <img
+              src={signature}
+              alt={`${user.name}'s signature`}
+              className="max-h-32 mx-auto"
+            />
 
             <p className="text-sm text-gray-500 mt-3">
               {user.name}

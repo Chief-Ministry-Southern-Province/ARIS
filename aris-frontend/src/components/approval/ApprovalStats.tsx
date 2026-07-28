@@ -1,5 +1,6 @@
 import {
   CheckCircle2,
+  ThumbsUp,
   Clock3,
   FileText,
   XCircle,
@@ -21,6 +22,8 @@ export default function ApprovalStats({
 
   const approved = counts?.approved ?? approvals.filter(a => a.status === "APPROVED").length;
 
+  const recommended = counts?.recommended ?? approvals.filter(a => a.status === "RECOMMENDED").length;
+
   const rejected = counts?.rejected ?? approvals.filter(a => a.status === "REJECTED").length;
 
   const total = counts?.total ?? approvals.length;
@@ -33,6 +36,14 @@ export default function ApprovalStats({
       icon: Clock3,
       color: "text-yellow-600",
       bg: "bg-yellow-100",
+    },
+
+    {
+      title: "Recommended",
+      value: recommended,
+      icon: ThumbsUp,
+      color: "text-blue-600",
+      bg: "bg-blue-100",
     },
 
     {
@@ -63,7 +74,7 @@ export default function ApprovalStats({
 
   return (
 
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
 
       {cards.map(card => {
 

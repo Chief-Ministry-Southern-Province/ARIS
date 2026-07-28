@@ -8,7 +8,7 @@ import Loader from "@/components/atoms/Loader";
 
 import type { updateUserRequest } from "@/types/User.type";
 
-import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
+import { formatRole, rolesForInstitution } from "@/utils/formatRole";
 
 import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import { useUser } from "@/hooks/queries/useUserQueries";
@@ -22,8 +22,6 @@ interface EditUserFormProps {
 
 export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormProps) {
   const { t } = useTranslation();
-
-  const roleList = selectRoleBaseOnUserInstitutionType();
 
   const [user, setUser] = useState<updateUserRequest>({
     name: "",
@@ -82,6 +80,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
   };
 
   const selectedInstitution = institutions.find(inst => inst.id === Number(user.institution_id));
+  const roleList = rolesForInstitution(selectedInstitution?.type);
   const isMinistry = selectedInstitution?.type === "MINISTRY";
   const isSubjectOfficer = user.role === "subject_officer";
   const showDistrictSelection = isMinistry && isSubjectOfficer;

@@ -25,7 +25,8 @@
     "logout": "ඉවත් වන්න",
     "loading": "පූරණය වෙමින්...",
     "select": "තෝරන්න",
-    "search": "සොයන්න"
+    "search": "සොයන්න",
+    "approverSignatures": "අනුමත කරන්නන්ගේ අත්සන්"
   },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",
@@ -529,7 +530,8 @@
     "removeSignature": "අත්සන ඉවත් කරන්න",
     "uploadSignature": "අත්සන උඩුගත කරන්න",
     "saveSignature": "අත්සන සුරකින්න",
-    "clear": "පිරිසිදු කරන්න"
+    "clear": "පිරිසිදු කරන්න",
+    "cancel": "අවලංගු කරන්න"
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",

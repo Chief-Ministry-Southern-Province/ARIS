@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { createFR1044, getFR1044, submitFR1044, updateFR1044 } from "@/services/fr1044.service";
+import { createFR1044, downloadFR1044Pdf, getFR1044, submitFR1044, updateFR1044 } from "@/services/fr1044.service";
 import { queryKeys } from "@/hooks/queryKeys";
 import type { FR104_4FormData, FR1044Response, FR1044Status } from "@/types/FR104_4_types";
 
@@ -39,3 +39,8 @@ export const useSubmitFR1044 = (caseId: number) => {
     },
   });
 };
+
+export const useDownloadFR1044Pdf = () =>
+  useMutation({
+    mutationFn: downloadFR1044Pdf,
+  });

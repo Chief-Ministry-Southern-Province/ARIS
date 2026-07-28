@@ -1,4 +1,4 @@
-import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,FolderClock} from "lucide-react";
+import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,FolderClock,FileSignature} from "lucide-react";
 
 export const FULL_ACCESS_ROLES = [
   "subject_officer",
@@ -10,7 +10,16 @@ export const FULL_ACCESS_ROLES = [
   "secretary",
   "assistant_secretary",
   "senior_assistant_secretary",
+  "treasury_secretary",
 ];
+
+export const SIGNATURE_ACCESS_ROLE = [
+  "medical_superintendent",
+  "regional_director",
+  "provincial_director",
+  "secretary",
+  "treasury_secretary",
+]
 
 export const REPORT_ROLES = [
   "subject_officer",
@@ -70,13 +79,12 @@ export const navItems = [
     label: "nav.notifications",
     roles: NOTIFICATION_ROLES,
   },
-
   {
-    id: "admin",
-    path: "/admin",
-    icon: Settings,
-    label: "nav.adminPanel",
-    roles: [...FULL_ACCESS_ROLES, "system_admin"],
+    id:"signature",
+    path:"/signatures",
+    icon: FileSignature,
+    label: "nav.digitalSignatures",
+    roles: SIGNATURE_ACCESS_ROLE,
   },
   {
     id: "approvals",
@@ -84,5 +92,13 @@ export const navItems = [
     icon: FolderClock,
     label: "nav.approvals",
     roles: FULL_ACCESS_ROLES,
+  },
+
+  {
+    id: "admin",
+    path: "/admin",
+    icon: Settings,
+    label: "nav.adminPanel",
+    roles: [...FULL_ACCESS_ROLES, "system_admin"],
   }
 ];

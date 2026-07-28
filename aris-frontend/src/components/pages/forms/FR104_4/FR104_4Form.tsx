@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { CheckCircle, Printer, Save } from "lucide-react";
+import { CheckCircle, Download, Eye, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FormCard } from "@/components/molecules/FormCard";
 import Loader from "@/components/atoms/Loader";
@@ -19,15 +19,17 @@ import RecommendationsSection from "@/components/organisms/Forms/FR104_4/Recomme
 import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalActionSection";
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { initialFormData } from "./initialFormData";
-import { useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
+import { useDownloadFR1044Pdf, useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
 import { useGetFR1043 } from "@/hooks/useFR1043";
-import { uploadFR1044Attachment } from "@/services/fr1044.service";
+import { getFR1044AttachmentPreview, uploadFR1044Attachment } from "@/services/fr1044.service";
 import type {
   FR104_4FormData,
   FR1044Response,
   FR1044Status,
 } from "@/types/FR104_4_types";
 import type { Approval } from "@/types/approval.type";
+import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
+import PdfPreviewModal from "@/components/organisms/PDF/PdfPreviewModal";
 
 interface Props {
   readOnly?: boolean;
@@ -44,6 +46,9 @@ const badge: Record<FR1044Status, string> = {
   CHANGES_REQUESTED: "bg-red-100 text-red-700",
   APPROVED: "bg-emerald-100 text-emerald-700",
 };
+
+type AttachmentFieldKey = "policeReportFile" | "courtOrderFile" | "boardReportFile";
+type AttachmentEvidenceKey = "policeReportEvidenceId" | "courtOrderEvidenceId" | "boardReportEvidenceId";
 
 export default function FR104_4Form({
   readOnly = false,
@@ -64,15 +69,22 @@ export default function FR104_4Form({
   );
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);
+  const downloadPdfMutation = useDownloadFR1044Pdf();
 
   const displayed = document ?? loaded;
 
   const [data, setData] = useState<FR104_4FormData>(initialFormData);
   const [id, setId] = useState<number | null>(null);
   const [status, setStatus] = useState<FR1044Status | null>(null);
+  const [attachmentPreviewUrls, setAttachmentPreviewUrls] = useState<
+    Partial<Record<AttachmentFieldKey, string>>
+  >({});
+  const [attachmentPreviewsLoading, setAttachmentPreviewsLoading] = useState(false);
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
+  const showAttachmentPreviews = Boolean(id && status && !editable);
 
   const currentApproval =
     approvalTimeline.find((item) => item.status === "PENDING") ??
@@ -85,6 +97,54 @@ export default function FR104_4Form({
       setStatus(displayed.status);
     }
   }, [displayed]);
+
+  useEffect(() => () => {
+    if (pdfPreviewUrl) {
+      URL.revokeObjectURL(pdfPreviewUrl);
+    }
+  }, [pdfPreviewUrl]);
+
+  useEffect(() => {
+    if (!showAttachmentPreviews || !id) {
+      setAttachmentPreviewUrls({});
+      setAttachmentPreviewsLoading(false);
+      return;
+    }
+
+    let active = true;
+    setAttachmentPreviewsLoading(true);
+    const fieldKeys: AttachmentFieldKey[] = [
+      "policeReportFile",
+      "courtOrderFile",
+      "boardReportFile",
+    ];
+
+    Promise.all(
+      fieldKeys.map(async (fieldKey) => {
+        try {
+          const attachment = await getFR1044AttachmentPreview(id, fieldKey);
+          return [fieldKey, attachment.file_url] as const;
+        } catch {
+          return null;
+        }
+      })
+    ).then((attachments) => {
+      if (!active) return;
+
+      setAttachmentPreviewUrls(
+        Object.fromEntries(
+          attachments.filter(
+            (attachment): attachment is readonly [AttachmentFieldKey, string] => attachment !== null
+          )
+        )
+      );
+      setAttachmentPreviewsLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [id, showAttachmentPreviews]);
 
   useEffect(() => {
     if (displayed || !preliminaryReport) return;
@@ -107,6 +167,16 @@ export default function FR104_4Form({
 
   const handleChange = (field: string, value: string | File | null) =>
     setData((previous) => ({ ...previous, [field]: value }));
+
+  const removeAttachment = (
+    fileKey: AttachmentFieldKey,
+    evidenceKey: AttachmentEvidenceKey
+  ) =>
+    setData((previous) => ({
+      ...previous,
+      [fileKey]: null,
+      [evidenceKey]: null,
+    }));
 
   const payloadData = (): FR104_4FormData => ({
     ...data,
@@ -188,21 +258,57 @@ export default function FR104_4Form({
     }
   };
 
+  const pdfDocumentId = displayed?.id ?? id;
+  const pdfFilename = `FR1044-${displayed?.reference_number ?? pdfDocumentId ?? "preview"}.pdf`;
+
+  const downloadPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR104(4) form before downloading its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = pdfFilename;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to download the FR1044 PDF.");
+    }
+  };
+
+  const previewPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR104(4) form before previewing its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      setPdfPreviewUrl(URL.createObjectURL(blob));
+    } catch {
+      toast.error("Unable to generate the FR1044 PDF preview.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR104(4) form..." />;
 
   const cards = [
     ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} isPreliminaryLoading={preliminaryReportLoading} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
-    ["d", "policeInformation", <PoliceInformationSection formData={data} handleChange={handleChange} />],
+    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} previewLoading={Boolean(data.policeReportFile) && attachmentPreviewsLoading} />],
     ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />],
     ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />],
-    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} />],
+    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
     ["h", "investigation", <InvestigationSection formData={data} handleChange={handleChange} />],
     ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />],
     ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />],
     ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />],
-    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} />],
+    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} previewLoading={Boolean(data.boardReportFile) && attachmentPreviewsLoading} />],
     ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
   ] as const;
 
@@ -290,11 +396,15 @@ export default function FR104_4Form({
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
                 <>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}</button>
                   {onDecision && <button type="button" onClick={onDecision} className="px-5 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"><CheckCircle size={18} />Decision</button>}
                   <button type="button" onClick={onBack} className="px-5 py-3 border rounded-lg">Back</button>
                 </>
               ) : (
                 <>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}</button>
                   <button
                     type="submit"
                     disabled={!editable || saving || submit.isPending}
@@ -332,6 +442,19 @@ export default function FR104_4Form({
             </div>
           </div>
         </form>
+
+        {pdfPreviewUrl && (
+          <PdfPreviewModal
+            filename={pdfFilename}
+            pdfUrl={pdfPreviewUrl}
+            onClose={() => setPdfPreviewUrl(null)}
+          />
+        )}
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <DocumentApprovalSignatures approvals={approvalTimeline} />
+        </div>
+        
       </div>
     </div>
   );

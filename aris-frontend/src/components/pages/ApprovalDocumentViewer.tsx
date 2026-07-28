@@ -45,6 +45,8 @@ export default function ApprovalDocumentViewer() {
   const approval = approvals.find((item) => item.id === approvalIdNumber);
 
   const canDecide = approval?.status === "PENDING";
+  const isFinalStep = approval?.step === Math.max(...approvals.map((item) => item.step));
+  const approvalActionLabel = isFinalStep ? "Approve" : "Recommend";
 
   if (isLoading) {
     return <Loader text="Loading approval document..." />;
@@ -79,7 +81,11 @@ export default function ApprovalDocumentViewer() {
           comments: comments || undefined,
         });
 
-        toast.success("Document approved successfully.");
+        toast.success(
+          isFinalStep
+            ? "Document approved successfully."
+            : "Document recommended successfully.",
+        );
       } else {
         await rejectMutation.mutateAsync({
           id: approvalIdNumber,
@@ -149,7 +155,7 @@ export default function ApprovalDocumentViewer() {
                 onClick={() => chooseDecision("approve")}
                 className="flex-1 rounded-xl bg-[#0F4C81] px-5 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#1565C0] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#1565C0] focus:ring-offset-2"
               >
-                ✓ Approve Document
+                ✓ {approvalActionLabel} Document
               </button>
 
               <button
@@ -177,6 +183,7 @@ export default function ApprovalDocumentViewer() {
         <ApprovalDecisionDialog
           approval={approval}
           action={decision}
+          approvalActionLabel={approvalActionLabel}
           isPending={
             approveMutation.isPending || rejectMutation.isPending
           }

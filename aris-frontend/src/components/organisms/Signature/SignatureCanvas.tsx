@@ -1,37 +1,29 @@
-import { useEffect } from "react";
+import { useRef } from "react";
 import { Check, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import SignatureCanvasPad from "react-signature-canvas";
+import { toast } from "react-toastify";
 
 import type { SignatureCanvasProps } from "@/types/signature.type";
-import { useSignatureCanvas } from "@/hooks/useSignatureCanvas";
 
 export default function SignatureCanvas({
   onSave,
   onCancel,
+  isSaving = false,
 }: SignatureCanvasProps) {
-  
   const { t } = useTranslation();
-
-  const {
-    canvasRef,
-    initializeCanvas,
-    startDrawing,
-    draw,
-    stopDrawing,
-    clearCanvas,
-    saveCanvas,
-  } = useSignatureCanvas();
-
-  useEffect(() => {
-    initializeCanvas();
-  }, []);
+  const signaturePadRef = useRef<SignatureCanvasPad>(null);
 
   const handleSave = () => {
-    const signature = saveCanvas();
+    const signaturePad = signaturePadRef.current;
 
-    if (signature) {
-      onSave(signature);
+    if (!signaturePad || signaturePad.isEmpty()) {
+      toast.error("Please draw your signature before saving.");
+
+      return;
     }
+
+    onSave(signaturePad.toDataURL("image/png"));
   };
 
   return (
@@ -43,7 +35,8 @@ export default function SignatureCanvas({
 
         <div className="flex gap-2">
           <button
-            onClick={clearCanvas}
+            onClick={() => signaturePadRef.current?.clear()}
+            disabled={isSaving}
             className="
               flex items-center gap-2
               px-3 py-2
@@ -58,6 +51,7 @@ export default function SignatureCanvas({
 
           <button
             onClick={onCancel}
+            disabled={isSaving}
             className="
               flex items-center gap-2
               px-3 py-2
@@ -73,6 +67,7 @@ export default function SignatureCanvas({
 
           <button
             onClick={handleSave}
+            disabled={isSaving}
             className="
               flex items-center gap-2
               px-3 py-2
@@ -83,29 +78,23 @@ export default function SignatureCanvas({
             "
           >
             <Check size={16} />
-            {t("digitalSignature.saveSignature")}
+            {isSaving ? "Saving..." : t("digitalSignature.saveSignature")}
           </button>
         </div>
       </div>
 
       <div className="border-2 border-blue-200 rounded-xl overflow-hidden">
-        <canvas
-          ref={canvasRef}
-          width={700}
-          height={220}
-          className="
-            w-full
-            bg-slate-50
-            touch-none
-            cursor-crosshair
-          "
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
+        <SignatureCanvasPad
+          ref={signaturePadRef}
+          penColor="#1E40AF"
+          minWidth={1}
+          maxWidth={3}
+          clearOnResize={false}
+          canvasProps={{
+            width: 700,
+            height: 220,
+            className: "w-full h-55 bg-slate-50 touch-none cursor-crosshair",
+          }}
         />
       </div>
 

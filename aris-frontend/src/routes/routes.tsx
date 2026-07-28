@@ -32,7 +32,7 @@ import LazyChart from "@/utils/LazyChart";
 import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 
 import {protectedPage} from "@/routes/protectedPage";
-import {FULL_ACCESS_ROLES, REPORT_ROLES, NOTIFICATION_ROLES} from "@/components/data/navigation";
+import {FULL_ACCESS_ROLES, REPORT_ROLES, NOTIFICATION_ROLES,SIGNATURE_ACCESS_ROLE} from "@/components/data/navigation";
 
 const Analytics = lazy(() => import("@/components/pages/Analytics"));
 
@@ -118,9 +118,9 @@ export const router = createBrowserRouter([
       ),
 
       protectedPage(
-        "/digital-signatures",
+        "/signatures",
         <DigitalSignatures />,
-        FULL_ACCESS_ROLES
+        SIGNATURE_ACCESS_ROLE
       ),
 
       // protectedPage(

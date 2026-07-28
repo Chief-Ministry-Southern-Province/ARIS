@@ -5,6 +5,7 @@ namespace App\Http\Requests\Users;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\Institution;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -37,5 +38,20 @@ class UpdateUserRequest extends FormRequest
             'districts' => 'nullable|array',
             'districts.*' => 'string|in:Galle,Matara,Hambantota',
         ];
+    }
+
+    public function after(): array
+    {
+        return [function ($validator) {
+            if ($this->input('role') !== 'treasury_secretary') {
+                return;
+            }
+
+            $institution = Institution::find($this->integer('institution_id'));
+
+            if (! $institution || $institution->type !== 'MINISTRY') {
+                $validator->errors()->add('institution_id', 'Treasury Secretary must be assigned to a Ministry institution.');
+            }
+        }];
     }
 }
