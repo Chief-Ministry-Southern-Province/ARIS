@@ -6,13 +6,6 @@ import { useAuth } from "@/context/auth/AuthContext";
 import api from "@/services/api";
 import { queryKeys } from "@/hooks/queryKeys";
 
-type BroadcastAuthorizer = {
-  authorize: (
-    socketId: string,
-    callback: (error: Error | null, data: unknown) => void,
-  ) => void;
-};
-
 const numberEnv = (value: string | undefined, fallback: number) =>
   Number(value ?? fallback);
 
@@ -37,7 +30,7 @@ const RealtimeNotifications = () => {
       wssPort: numberEnv(import.meta.env.VITE_REVERB_PORT, 443),
       forceTLS: scheme === "https",
       enabledTransports: ["ws", "wss"],
-      authorizer: (channel): BroadcastAuthorizer => ({
+      authorizer: (channel) => ({
         authorize: (socketId, callback) => {
           api.post("/broadcasting/auth", {
             socket_id: socketId,
