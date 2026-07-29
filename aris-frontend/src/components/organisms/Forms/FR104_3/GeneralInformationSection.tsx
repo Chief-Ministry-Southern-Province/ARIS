@@ -32,6 +32,13 @@ const GeneralInformationSection = ({
         />
       </FormField>
 
+      <FormField label={t("fr104_3.secretaryToMinistryOf")}>
+        <InputField
+          value={formData.secretaryOfMinistry}
+          onChange={(e) => handleChange("secretaryOfMinistry", e.target.value)}
+        />
+      </FormField>
+
       <FormField label={t("fr104_3.date")}>
         <InputField
           type="date"

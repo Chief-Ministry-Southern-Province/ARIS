@@ -398,7 +398,7 @@
                 <td class="ministry-line compact">
                     <span class="label-local" lang="si">අමාත්‍යාංශයේ ලේකම්</span> /
                     <span class="label-local" lang="ta">அமைச்சின் செயலாளர்</span> /
-                    <span class="label-local">Secretary to the Ministry of</span>&nbsp;&nbsp;<span class="dotted-value">{{ $text(data_get($documentData, 'ministry', ''), 50) }}</span>
+                    <span class="label-local">Secretary to the Ministry of</span>&nbsp;&nbsp;<span class="dotted-value">{{ $text(data_get($documentData, 'secretaryOfMinistry', ''), 50) }}</span>
                 </td>
             </tr>
             <tr>

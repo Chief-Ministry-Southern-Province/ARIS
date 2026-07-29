@@ -3,7 +3,8 @@ import type { FR104_4FormData } from "@/types/FR104_4_types";
 export const initialFormData: FR104_4FormData = {
   // General Information
   referenceNo: "",
-  ministry: "",
+  department: "",
+  secretaryOfMinistry: "",
   lossDate: "",
   lossTime: "",
   location: "",

@@ -41,6 +41,12 @@ class StoreFR1043Request extends FormRequest
                 'max:255'
             ],
 
+            'data.secretaryOfMinistry' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
             'data.date' => [
                 'required',
                 'date'

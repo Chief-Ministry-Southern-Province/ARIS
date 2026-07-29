@@ -92,7 +92,8 @@ export default function FR104_4Form({
 
   useEffect(() => {
     if (displayed) {
-      setData(displayed.data);
+      const { ministry: legacyMinistry, ...currentData } = displayed.data as FR104_4FormData & { ministry?: string };
+      setData({ ...currentData, secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "" });
       setId(displayed.id);
       setStatus(displayed.status);
     }

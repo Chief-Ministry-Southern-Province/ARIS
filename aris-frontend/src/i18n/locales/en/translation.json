@@ -219,6 +219,8 @@
 
     "generalInformation": "General Information",
     "department": "Department / Corporation",
+    "secretaryToMinistryOf": "Secretary to the Ministry of",
+    "secretaryName": "Secretary's Name",
     "date": "Date",
     "place": "Place",
     "loss": "Loss",
@@ -301,6 +303,9 @@
     "generalInformation": {
       "referenceNo": "Reference Number",
       "ministry": "Ministry / Department",
+      "department": "Department / Corporation",
+      "secretaryToMinistryOf": "Secretary to the Ministry of",
+      "secretaryName": "Secretary's Name",
       "lossDate": "Date of Loss",
       "lossTime": "Time of Loss",
       "location": "Location",

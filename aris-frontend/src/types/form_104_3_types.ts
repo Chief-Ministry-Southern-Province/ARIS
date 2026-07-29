@@ -12,6 +12,7 @@ export interface Officer {
 
 export interface FR1043FormData {
   department: string;
+  secretaryOfMinistry: string;
   date: string;
   place: string;
 

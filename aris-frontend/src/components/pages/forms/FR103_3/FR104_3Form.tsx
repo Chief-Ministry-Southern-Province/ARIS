@@ -64,6 +64,7 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
 
   const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
+    secretaryOfMinistry: "",
     date: "",
     place: "",
 
@@ -221,8 +222,8 @@ useEffect(() => {
     }
     // Older drafts may contain the retired top-level loss value. Do not send it
     // back when the user saves an updated draft.
-    const { loss: _retiredLoss, ...currentData } = displayedForm.data as FR1043FormData & { loss?: unknown };
-    setFormData(currentData);
+    const { loss: _retiredLoss, ministry: legacyMinistry, ...currentData } = displayedForm.data as FR1043FormData & { loss?: unknown; ministry?: string };
+    setFormData({ ...currentData, secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "" });
     setFormId(displayedForm.id);
     setFormStatus(displayedForm.status);
   }, [displayedForm]);

@@ -37,8 +37,8 @@ class StoreFR1044Request extends FormRequest
 
             // Part A - General Information (items 1-3, header)
             'data.referenceNo' => ['nullable', 'string', 'max:100'],
-            
-            'data.ministry' => ['nullable', 'string', 'max:255'],
+            'data.department' => ['nullable', 'string', 'max:255'],
+            'data.secretaryOfMinistry' => ['nullable', 'string', 'max:255'],
             'data.lossDate' => ['nullable', 'date'],
             'data.lossTime' => ['nullable', 'date_format:H:i'],
             'data.location' => ['nullable', 'string', 'max:255'],
@@ -145,7 +145,8 @@ class StoreFR1044Request extends FormRequest
     public function attributes(): array
     {
         return [
-            'data.ministry' => 'ministry/department',
+            'data.department' => 'department/corporation',
+            'data.secretaryOfMinistry' => 'secretary to the ministry of',
             'data.lossDate' => 'date of loss',
             'data.lossTime' => 'time of loss',
             'data.isDueToFraudNegligence' => 'fraud/negligence determination',

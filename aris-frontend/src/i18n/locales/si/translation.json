@@ -209,6 +209,8 @@
 
     "generalInformation": "සාමාන්‍ය තොරතුරු",
     "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+    "secretaryToMinistryOf": "අමාත්‍යාංශයේ ලේකම් වෙත",
+    "secretaryName": "ලේකම්ගේ නම",
     "date": "දිනය",
     "place": "ස්ථානය",
     "loss": "අලාභය",
@@ -291,6 +293,9 @@
     "generalInformation": {
       "referenceNo": "යොමු අංකය",
       "ministry": "අමාත්‍යාංශය / දෙපාර්තමේන්තුව",
+      "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+      "secretaryToMinistryOf": "අමාත්‍යාංශයේ ලේකම් වෙත",
+      "secretaryName": "ලේකම්ගේ නම",
       "lossDate": "අලාභ දිනය",
       "lossTime": "අලාභ වූ වේලාව",
       "location": "ස්ථානය",
