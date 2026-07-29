@@ -14,7 +14,6 @@ export interface FR1043FormData {
   department: string;
   date: string;
   place: string;
-  loss: string;
 
   natureOfLoss: string;
   causeOfLoss: string;

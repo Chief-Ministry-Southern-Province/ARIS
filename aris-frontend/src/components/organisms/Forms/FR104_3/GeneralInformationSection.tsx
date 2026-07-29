@@ -54,14 +54,6 @@ const GeneralInformationSection = ({
         />
       </FormField>
 
-      <FormField label={t("fr104_3.loss")}>
-        <InputField
-          value={formData.loss}
-          onChange={(e) =>
-            handleChange("loss", e.target.value)
-          }
-        />
-      </FormField>
     </div>
   );
 };

@@ -1,19 +1,13 @@
 import { InputField } from "@/components/atoms/InputField";
-import type {
-  FR104_3Data,
-  Officer,
-} from "@/types/form_104_3_types";
+import type { FR104_3Data, Officer } from "@/types/form_104_3_types";
 import { useTranslation } from "react-i18next";
 import { Plus, Trash2, User } from "lucide-react";
+import { FormField } from "@/components/molecules/FormField";
 
 interface OfficersSectionProps {
   formData: FR104_3Data;
   addOfficer: () => void;
-  updateOfficer: (
-    index: number,
-    field: keyof Officer,
-    value: string
-  ) => void;
+  updateOfficer: (index: number, field: keyof Officer, value: string) => void;
   removeOfficer: (index: number) => void;
 }
 
@@ -36,12 +30,15 @@ const OfficersSection = ({
           className="
             flex items-center justify-center gap-2
             px-4 py-2
-            text-blue-600
-            rounded-xl
-            transition
+            text-sm font-medium
+            text-sky-700 bg-sky-50
+            border border-sky-200
+            rounded-lg
+            hover:bg-sky-100
+            transition-colors
           "
         >
-          <Plus size={16} />
+          <Plus size={18} />
           {t("fr104_3.addOfficer")}
         </button>
       </div>
@@ -62,62 +59,54 @@ const OfficersSection = ({
             {/* Card Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <User
-                  size={18}
-                  className="text-blue-600"
-                />
-
-                <h4 className="font-medium text-slate-800">
-                  Officer #{index + 1}
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+                  <User size={14} />
+                </span>
+                <h4 className="font-medium text-slate-700">
+                  {t("fr104_3.officer")} #{index + 1}
                 </h4>
               </div>
 
-              <button
-                type="button"
-                onClick={() => removeOfficer(index)}
-                className="
-                  flex items-center justify-center
-                  w-9 h-9
-                  rounded-lg
-                  text-red-600
-                  hover:bg-red-50
-                  transition
-                "
-                title={t("fr104_3.remove")}
-              >
-                <Trash2 size={18} />
-              </button>
+              {officers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeOfficer(index)}
+                  className="
+                    flex items-center justify-center
+                    w-9 h-9
+                    rounded-lg
+                    text-red-600
+                    hover:bg-red-50
+                    transition-colors
+                  "
+                  title={t("fr104_3.remove")}
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
             </div>
 
             {/* Form Fields */}
             <div className="grid gap-4 md:grid-cols-2">
-              <InputField
-                value={officer.name}
-                onChange={(e) =>
-                  updateOfficer(
-                    index,
-                    "name",
-                    e.target.value
-                  )
-                }
-                placeholder={t(
-                  "fr104_3.officerName"
-                )}
-              />
+              <FormField label={t("fr104_3.officerName")}>
+                <InputField
+                  value={officer.name}
+                  onChange={(e) =>
+                    updateOfficer(index, "name", e.target.value)
+                  }
+                  placeholder={t("fr104_3.officerName")}
+                />
+              </FormField>
 
-              <InputField
-                value={officer.designation}
-                onChange={(e) =>
-                  updateOfficer(
-                    index,
-                    "designation",
-                    e.target.value
-                  )
-                }
-                placeholder={t(
-                  "fr104_3.designation"
-                )}
-              />
+              <FormField label={t("fr104_3.designation")}>
+                <InputField
+                  value={officer.designation}
+                  onChange={(e) =>
+                    updateOfficer(index, "designation", e.target.value)
+                  }
+                  placeholder={t("fr104_3.designation")}
+                />
+              </FormField>
             </div>
           </div>
         ))}

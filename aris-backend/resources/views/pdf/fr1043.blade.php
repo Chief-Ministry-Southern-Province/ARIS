@@ -425,14 +425,12 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="width: 76mm; height: 8mm;"><span class="label-local" lang="si">2. අලාභය</span><br><span class="label-local" lang="ta">2. இழப்பு</span><br><span class="label-local">Loss</span></td>
-                <td class="field-topic-cell" style="width: 42mm; height: 8mm;"><span class="label-local" lang="si">දිනය</span> / <span class="label-local" lang="ta">திகதி</span><br><span class="label-local">Date</span></td>
-                <td class="field-topic-cell" style="width: 82mm; height: 8mm;"><span class="label-local" lang="si">ස්ථානය</span> / <span class="label-local" lang="ta">இடம்</span><br><span class="label-local">Place</span></td>
+                <td class="field-topic-cell" style="width: 80mm; height: 8mm;"><span class="label-local" lang="si">2. දිනය</span> / <span class="label-local" lang="ta">2. திகதி</span><br><span class="label-local">2. Date</span></td>
+                <td class="field-topic-cell" style="width: 120mm; height: 8mm;"><span class="label-local" lang="si">ස්ථානය</span> / <span class="label-local" lang="ta">இடம்</span><br><span class="label-local">Place</span></td>
             </tr>
             <tr>
-                <td class="field-content-cell" style="width: 76mm; height: 12mm;">{{ $text(data_get($documentData, 'lossDetails', data_get($documentData, 'loss', '')), 180) }}</td>
-                <td class="field-content-cell" style="width: 42mm; height: 12mm;">{{ $text(data_get($documentData, 'lossDate', data_get($documentData, 'date', '')), 30) }}</td>
-                <td class="field-content-cell" style="width: 82mm; height: 12mm;">{{ $text(data_get($documentData, 'lossPlace', data_get($documentData, 'place', '')), 60) }}</td>
+                <td class="field-content-cell" style="width: 80mm; height: 12mm;">{{ $text(data_get($documentData, 'date', ''), 30) }}</td>
+                <td class="field-content-cell" style="width: 120mm; height: 12mm;">{{ $text(data_get($documentData, 'place', ''), 100) }}</td>
             </tr>
         </table>
 

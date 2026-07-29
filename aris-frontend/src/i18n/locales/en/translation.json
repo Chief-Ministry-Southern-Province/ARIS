@@ -233,6 +233,8 @@
     "action": "Action",
     "addItem": "Add Item",
     "removeItem": "Remove",
+    "grandTotal": "Grand Total",
+    "item": "Item",
 
     "causeOfLoss": "Cause of Loss",
 
@@ -241,6 +243,7 @@
     "designation": "Designation",
     "addOfficer": "Add Officer",
     "removeOfficer": "Remove",
+    "officer": "Officer",
 
     "policeStation": "Police Station",
     "dateReported": "Date Reported",

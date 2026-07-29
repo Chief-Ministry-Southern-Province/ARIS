@@ -7,6 +7,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateFR1043Request extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $data = $this->input('data');
+
+        if (is_array($data)) {
+            unset($data['loss']);
+            $this->merge(['data' => $data]);
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -44,11 +54,6 @@ class UpdateFR1043Request extends FormRequest
                 'required',
                 'string',
                 'max:255'
-            ],
-
-            'data.loss' => [
-                'nullable',
-                'string'
             ],
 
             'data.natureOfLoss' => [

@@ -223,6 +223,8 @@
     "action": "ක්‍රියාව",
     "addItem": "භාණ්ඩයක් එක් කරන්න",
     "removeItem": "ඉවත් කරන්න",
+    "grandTotal": "මුළු එකතුව",
+    "item": "භාණ්ඩය",
 
     "causeOfLoss": "අලාභයට හේතුව",
 
@@ -231,6 +233,7 @@
     "designation": "තනතුර",
     "addOfficer": "නිලධාරියෙකු එක් කරන්න",
     "removeOfficer": "ඉවත් කරන්න",
+    "officer":"නිලධාරියා",
 
     "policeStation": "පොලිස් ස්ථානය",
     "dateReported": "වාර්තා කළ දිනය",
