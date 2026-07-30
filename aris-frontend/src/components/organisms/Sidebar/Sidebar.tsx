@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import {swalConfirm} from "@/utils/swal";
 
 import { navItems } from "../../data/navigation";
+import { canAccessAdminPanel } from "@/components/data/navigation";
 import {useLogout} from "@/hooks/useAuth"
 
 import { useAuth } from "@/context/auth/AuthContext";
@@ -22,15 +23,19 @@ interface SidebarProps {
 export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
   const { t } = useTranslation();
 
-  const { role, name } = useAuth();
+  const { role, name, institutionType } = useAuth();
   const userName = name || "User";
   const userRole = getUserRole(role[0] || "");
   const userInitial = userName.charAt(0).toUpperCase();
   //console.log("Role in sidebar:", role);
   
-  const filteredNavItems = navItems.filter((item) =>
-    item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)))
-  );
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.id === "admin") {
+      return canAccessAdminPanel(role, institutionType);
+    }
+
+    return item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)));
+  });
 
   const navigate = useNavigate();
 

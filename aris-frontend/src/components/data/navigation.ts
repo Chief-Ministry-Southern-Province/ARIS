@@ -26,6 +26,21 @@ export const REPORT_ROLES = [
   "driver",
 ];
 
+export const ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS = [
+  "RDHS",
+  "PDHS",
+  "BASE_HOSPITAL",
+];
+
+export const canAccessAdminPanel = (
+  roles: string[],
+  institutionType: string | null,
+) =>
+  roles.includes("system_admin") ||
+  (roles.includes("subject_officer") &&
+    institutionType !== null &&
+    ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS.includes(institutionType));
+
 export const NOTIFICATION_ROLES = [
   ...FULL_ACCESS_ROLES,
   "driver",
@@ -99,6 +114,6 @@ export const navItems = [
     path: "/admin",
     icon: Settings,
     label: "nav.adminPanel",
-    roles: [...FULL_ACCESS_ROLES, "system_admin"],
+    roles: ["subject_officer", "system_admin"],
   }
 ];
