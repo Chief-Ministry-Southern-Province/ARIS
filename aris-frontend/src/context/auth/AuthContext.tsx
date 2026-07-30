@@ -1,10 +1,32 @@
 /* eslint-disable react-refresh/only-export-components */
-import {createContext,useState,type ReactNode,useContext,} from "react";
-import { setAuthToken } from "@/services/api";
-import type { LoginResponse } from "@/services/auth.service";
+import {createContext,useEffect,useState,type ReactNode,useContext,} from "react";
+import { getProfile, type LoginResponse } from "@/services/auth.service";
+import type { ProfileResponse } from "@/types/User.type";
+
+type AuthSession = {
+  role: string[];
+  id: number | null;
+  name: string | null;
+  institutionType: string | null;
+};
+
+const emptySession: AuthSession = {
+  role: [],
+  id: null,
+  name: null,
+  institutionType: null,
+};
+
+const profileToSession = ({ user, role }: ProfileResponse): AuthSession => ({
+  role,
+  id: user.id,
+  name: user.name,
+  institutionType: user.institution?.type ?? null,
+});
 
 interface AuthContextType {
-  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   role: string[];
   id: number | null;
   name: string | null;
@@ -20,38 +42,50 @@ export const AuthProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [role, setRole] = useState<string[]>([]);
-  const [id, setId] = useState<number | null>(null);
-  const [name, setName] = useState<string | null>(null);
-  const [institutionType, setInstitutionType] = useState<string | null>(null);
+  const [session, setSession] = useState<AuthSession>(emptySession);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    getProfile()
+      .then((profile) => {
+        if (active) setSession(profileToSession(profile));
+      })
+      .catch(() => {
+        if (active) setSession(emptySession);
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const loginUser = (response: LoginResponse) => {
-    setAuthToken(response.token);
-    setToken(response.token);
-    setRole(response.role ?? []);
-    setId(response.id ?? null);
-    setName(response.name ?? null);
-    setInstitutionType(response.institutionType ?? null);
+    setSession({
+      role: response.role,
+      id: response.id,
+      name: response.name ?? null,
+      institutionType: response.institutionType ?? null,
+    });
   };
 
   const logoutUser = () => {
-    setAuthToken(null);
-    setToken(null);
-    setRole([]);
-    setId(null);
-    setName(null);
-    setInstitutionType(null);
+    setSession(emptySession);
   };
 
   return (
     <AuthContext.Provider
       value={{
-        token,
-        role: role.map((r) => r[0].toLowerCase() + r.slice(1)),
-        id,
-        name,
-        institutionType,
+        isAuthenticated: session.id !== null,
+        isLoading,
+        role: session.role.map((r) => r[0].toLowerCase() + r.slice(1)),
+        id: session.id,
+        name: session.name,
+        institutionType: session.institutionType,
         loginUser,
         logoutUser,
       }}

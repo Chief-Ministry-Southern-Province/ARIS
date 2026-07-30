@@ -25,15 +25,14 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $request->session()->regenerate();
+            $user = $request->user();
             $this->auditLogs->log(AuditAction::LOGIN, AuditModule::AUTH, $user, [], [], 'Logged in.', $request);
 
             return response()->json([
                 'message' => 'Login successful',
                 'id' => $user->id,
                 'name' => $user->name,
-                'token' => $token,
                 'role' => $user->getRoleNames(),
                 'institutionType' => $user->institution->type ?? null,
             ]);
@@ -46,11 +45,10 @@ class AuthController extends Controller
     public function logout(Request $request){
 
         $user = $request->user();
-        $user
-            ->currentAccessToken()
-            ->delete();
-
         $this->auditLogs->log(AuditAction::LOGOUT, AuditModule::AUTH, $user, [], [], 'Logged out.', $request);
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out successfully']);
     }

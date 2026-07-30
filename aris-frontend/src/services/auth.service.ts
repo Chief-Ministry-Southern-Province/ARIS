@@ -1,8 +1,7 @@
-import api from "./api";
+import api, { API_ORIGIN } from "./api";
 import type{ProfileResponse} from '../types/User.type';
 
 export interface LoginResponse {
-  token: string;
   role: string[];
   id: number;
   name?: string;
@@ -10,6 +9,7 @@ export interface LoginResponse {
 }
 
 export const login = async (nic: string, password: string): Promise<LoginResponse> => {
+  await api.get("/sanctum/csrf-cookie", { baseURL: API_ORIGIN });
   const response = await api.post("/login", { 
     nic, 
     password 

@@ -6,10 +6,14 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-  const { token, role } = useAuth();
+  const { isAuthenticated, isLoading, role } = useAuth();
   const location = useLocation();
 
-  if (!token) {
+  if (isLoading) {
+    return null;
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
