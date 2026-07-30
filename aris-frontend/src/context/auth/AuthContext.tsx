@@ -1,10 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
 import {createContext,useState,type ReactNode,useContext,} from "react";
+import { setAuthToken } from "@/services/api";
+import type { LoginResponse } from "@/services/auth.service";
 
 interface AuthContextType {
   token: string | null;
   role: string[];
-  user: (token: string, role: string[]) => void;
+  id: number | null;
+  name: string | null;
+  institutionType: string | null;
+  loginUser: (response: LoginResponse) => void;
   logoutUser: () => void;
 }
 
@@ -15,28 +20,28 @@ export const AuthProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
-  );
+  const [token, setToken] = useState<string | null>(null);
+  const [role, setRole] = useState<string[]>([]);
+  const [id, setId] = useState<number | null>(null);
+  const [name, setName] = useState<string | null>(null);
+  const [institutionType, setInstitutionType] = useState<string | null>(null);
 
-  const [role, setRole] = useState<string[]>(
-    JSON.parse(localStorage.getItem("role") || "[]")
-  );
-
-  const user = (token: string, role: string[]) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", JSON.stringify(role));
-
-    setToken(token);
-    setRole(role);
+  const loginUser = (response: LoginResponse) => {
+    setAuthToken(response.token);
+    setToken(response.token);
+    setRole(response.role ?? []);
+    setId(response.id ?? null);
+    setName(response.name ?? null);
+    setInstitutionType(response.institutionType ?? null);
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-
+    setAuthToken(null);
     setToken(null);
     setRole([]);
+    setId(null);
+    setName(null);
+    setInstitutionType(null);
   };
 
   return (
@@ -44,7 +49,10 @@ export const AuthProvider = ({
       value={{
         token,
         role: role.map((r) => r[0].toLowerCase() + r.slice(1)),
-        user,
+        id,
+        name,
+        institutionType,
+        loginUser,
         logoutUser,
       }}
     >

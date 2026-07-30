@@ -1,14 +1,12 @@
 import  { useState } from "react";
-import {Shield,Eye,EyeOff,Globe,Lock,User,AlertCircle,CheckCircle} from "lucide-react";
+import {Eye,EyeOff,Globe,Lock,User,AlertCircle,CheckCircle} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {useLogin} from "@/hooks/useAuth"
 import { toast } from "react-toastify";
-import {useAuth} from "@/context/auth/AuthContext";
+import arisLogo from "@/assets/aris-logo1.png";
 
 function Login() {
-
-  const {user} = useAuth();
 
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -34,7 +32,6 @@ function Login() {
     try {
 
       const response = await loginUser(username, password, rememberMe);
-      user(response.token, response.role);
 
       toast.success("Login successful");
 
@@ -70,8 +67,12 @@ function Login() {
 
         <div className="relative z-10 max-w-xl">
           <div className="flex items-center gap-5 mb-10">
-            <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
-              <Shield className="w-12 h-12 text-white" />
+            <div className="w-28 h-28 rounded-3xl bg-[#082e75]/70 backdrop-blur-md border border-cyan-200/30 flex items-center justify-center shadow-2xl overflow-hidden ring-1 ring-white/10">
+              <img
+                src={arisLogo}
+                alt="ARIS logo"
+                className="h-full w-full scale-125 object-cover"
+              />
             </div>
 
             <div>
@@ -122,8 +123,12 @@ function Login() {
         <div className="w-full max-w-md">
           {/* MOBILE HEADER */}
           <div className="lg:hidden text-center mb-8 text-white">
-            <div className="w-20 h-20 mx-auto rounded-3xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center mb-4">
-              <Shield className="w-10 h-10" />
+            <div className="w-20 h-20 mx-auto rounded-3xl bg-[#082e75]/70 backdrop-blur-md border border-cyan-200/30 flex items-center justify-center mb-4 overflow-hidden ring-1 ring-white/10">
+              <img
+                src={arisLogo}
+                alt="ARIS logo"
+                className="h-full w-full scale-125 object-cover"
+              />
             </div>
 
             <h1 className="text-4xl font-black">

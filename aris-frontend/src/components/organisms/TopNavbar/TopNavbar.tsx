@@ -13,6 +13,7 @@ import { navItems } from "@/components/data/navigation";
 import NotificationDropdown from "@/components/organisms/Notification/NotificationDropdown";
 import UserMenu from "@/components/organisms/TopNavbar/UserMenu";
 import { useUnreadNotificationCount } from "@/hooks/useNotifications";
+import arisLogo from "@/assets/aris-logo1.png";
 
 interface TopNavbarProps {
   userName: string;
@@ -87,14 +88,24 @@ export function TopNavbar({
             <Menu size={20} />
           </button>
 
-          <div className="min-w-0">
-            <h2 className="text-sm font-bold text-foreground truncate">
-              {t("app.title")}
-            </h2>
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-11 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#082e75] ring-1 ring-blue-200 shadow-md">
+              <img
+                src={arisLogo}
+                alt="ARIS logo"
+                className="h-full w-full scale-[1.65] object-cover object-center"
+              />
+            </div>
 
-            <p className="hidden sm:block text-xs text-muted-foreground truncate">
-              {t("app.subtitle")}
-            </p>
+            <div className="min-w-0">
+              <h2 className="text-sm font-bold text-foreground truncate">
+                {t("app.title")}
+              </h2>
+
+              <p className="hidden sm:block text-xs text-muted-foreground truncate">
+                {t("app.subtitle")}
+              </p>
+            </div>
           </div>
         </div>
 

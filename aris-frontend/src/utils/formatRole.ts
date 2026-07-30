@@ -18,5 +18,5 @@ export const rolesForInstitution = (institutionType?: string) => {
   }
 };
 
-export const selectRoleBaseOnUserInstitutionType = () =>
-  rolesForInstitution(localStorage.getItem("institutionType") ?? undefined);
+export const selectRoleBaseOnUserInstitutionType = (institutionType?: string | null) =>
+  rolesForInstitution(institutionType ?? undefined);

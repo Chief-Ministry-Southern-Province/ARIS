@@ -1,9 +1,6 @@
 import { INSTITUTION_TYPE_OPTIONS } from "@/constants/institutionTypes";
 
-export const selectInstitutionType = (): string[] => {
-
-  const role = localStorage.getItem("role")?.[0] || "";
-  const institutionType = localStorage.getItem("institutionType") || "";
+export const selectInstitutionType = (role: string, institutionType?: string | null): string[] => {
 
   switch (role) {
     case "system_admin":

@@ -1,7 +1,15 @@
 import api from "./api";
 import type{ProfileResponse} from '../types/User.type';
 
-export const login = async (nic: string, password: string) => {
+export interface LoginResponse {
+  token: string;
+  role: string[];
+  id: number;
+  name?: string;
+  institutionType?: string;
+}
+
+export const login = async (nic: string, password: string): Promise<LoginResponse> => {
   const response = await api.post("/login", { 
     nic, 
     password 
@@ -17,7 +25,6 @@ export const getProfile = async (): Promise<ProfileResponse> => {
 
 export const logout = async () => {
   const response = await api.post("/logout");
-  localStorage.removeItem("token");
   return response.data;
 }
 

@@ -1,5 +1,11 @@
 import axios from "axios";
 
+let authToken: string | null = null;
+
+export const setAuthToken = (token: string | null) => {
+  authToken = token;
+};
+
 const api = axios.create({
   //baseURL:"https://aris-api.hopto.org/api",
   baseURL: 'http://localhost:8000/api',
@@ -7,10 +13,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (authToken) {
+    config.headers.Authorization = `Bearer ${authToken}`;
   }
 
   if (!(config.data instanceof FormData) && !config.headers["Content-Type"]) {
