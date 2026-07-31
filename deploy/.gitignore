@@ -1,0 +1,4 @@
+# Real deployment values and Let's Encrypt certificates are server-only.
+.env
+certbot/conf/
+certbot/www/

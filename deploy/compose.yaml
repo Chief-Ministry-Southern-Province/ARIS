@@ -1,0 +1,57 @@
+services:
+  asset-init:
+    image: ${API_IMAGE}:${IMAGE_TAG}
+    command: ["/bin/sh", "-c", "rm -rf /shared/* && cp -a /var/www/html/public/. /shared/"]
+    volumes:
+      - laravel_public:/shared
+    restart: "no"
+
+  nginx:
+    image: ${WEB_IMAGE}:${IMAGE_TAG}
+    depends_on:
+      asset-init:
+        condition: service_completed_successfully
+      api:
+        condition: service_started
+      reverb:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - laravel_public:/var/www/html/public:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+    restart: unless-stopped
+
+  api:
+    image: ${API_IMAGE}:${IMAGE_TAG}
+    env_file:
+      - ../aris-backend/.env
+    volumes:
+      - aris_storage:/var/www/html/storage
+      - ${MYSQL_SOCKET_HOST}:/var/run/mysqld/mysqld.sock
+    restart: unless-stopped
+
+  worker:
+    image: ${API_IMAGE}:${IMAGE_TAG}
+    command: php artisan queue:work --tries=3 --timeout=120 --sleep=3
+    env_file:
+      - ../aris-backend/.env
+    volumes:
+      - aris_storage:/var/www/html/storage
+      - ${MYSQL_SOCKET_HOST}:/var/run/mysqld/mysqld.sock
+    restart: unless-stopped
+
+  reverb:
+    image: ${API_IMAGE}:${IMAGE_TAG}
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    env_file:
+      - ../aris-backend/.env
+    volumes:
+      - aris_storage:/var/www/html/storage
+    restart: unless-stopped
+
+volumes:
+  laravel_public:
+  aris_storage:

@@ -1,0 +1,12 @@
+# Do not send local dependencies, secrets, caches, or Git history to Docker builds.
+**/node_modules
+**/vendor
+**/.env
+**/.env.*
+!**/.env.example
+**/dist
+**/storage/logs
+**/bootstrap/cache
+.git
+.codex
+.agents
