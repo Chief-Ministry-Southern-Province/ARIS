@@ -3,6 +3,7 @@ import { useChangePassword } from "@/hooks/useAuth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/auth/AuthContext";
 
 export default function ChangePassword() {
   const [form, setForm] = useState({
@@ -16,6 +17,7 @@ export default function ChangePassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
   const { changePasswordUser, loading, error } = useChangePassword();
 
   const handleChange = (
@@ -45,6 +47,7 @@ export default function ChangePassword() {
       );
 
       toast.success("Password changed successfully");
+      logoutUser();
 
       setTimeout(() => {
         navigate("/login");

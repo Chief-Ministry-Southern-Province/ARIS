@@ -59,7 +59,7 @@ export const resetPassword = async (mobile: string,otp: string,password: string,
   return api.post("/forgot-password/reset-password", {
     mobile,
     otp,
-    password,
-    password_confirmation,
+    new_password: password,
+    new_password_confirmation: password_confirmation,
   });
 };

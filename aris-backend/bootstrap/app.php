@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'institution.assigned' => EnsureInstitutionAssigned::class,
+            'role.session.timeout' => \App\Http\Middleware\EnforceRoleSessionTimeout::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
