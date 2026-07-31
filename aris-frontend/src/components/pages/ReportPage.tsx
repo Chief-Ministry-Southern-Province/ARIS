@@ -23,7 +23,7 @@ const ReportPage = () => {
 
   const { t } = useTranslation();
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
-  const { role } = useAuth();
+  const { role, id: userId } = useAuth();
   const isDriver = role.includes("driver");
 
   const [vehicleSearch, setVehicleSearch] = useState("");
@@ -32,7 +32,6 @@ const ReportPage = () => {
   const { mutateAsync: createAccidentData, isPending: submitting, error: submitMutationError } = useCreateAccidentMutation();
   const submitError = submitMutationError instanceof Error ? submitMutationError.message : "";
 
-  const userId = Number(localStorage.getItem("id"));
 
   const [form, setForm] = useState({
     date: "",
@@ -62,7 +61,7 @@ const ReportPage = () => {
 
     setForm(prev => ({
         ...prev,
-        driver_id: String(userId),
+        driver_id: userId === null ? "" : String(userId),
         vehicle_id: String(assignedVehicle.id),
     }));
 }, [vehicles, userId, isDriver]);

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Otp;
 use App\Models\User;
 use App\Services\TwilioService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class ForgotPasswordController extends Controller
 {
@@ -71,8 +74,6 @@ class ForgotPasswordController extends Controller
             ], 400);
         }
 
-        $otpRecord->update(['is_used' => true]);
-
         return response()->json([
             'message' => 'OTP verified successfully.'
         ]);
@@ -111,10 +112,22 @@ class ForgotPasswordController extends Controller
             ], 404);
         }
 
-        $user->password = bcrypt($request->new_password);
-        $user->save();
+        DB::transaction(function () use ($user, $request, $otpRecord) {
+            $user->password = Hash::make($request->new_password);
+            $user->save();
 
-        $otpRecord->update(['is_used' => true]);
+            // Revoke every existing login for this user after a password reset.
+            DB::table(config('session.table', 'sessions'))
+                ->where('user_id', $user->id)
+                ->delete();
+
+            $otpRecord->update(['is_used' => true]);
+        });
+
+        // If the reset was requested from an already logged-in browser, end it too.
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Password reset successfully.'

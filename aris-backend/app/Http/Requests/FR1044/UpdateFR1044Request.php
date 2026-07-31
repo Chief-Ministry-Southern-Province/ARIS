@@ -42,7 +42,8 @@ class UpdateFR1044Request extends FormRequest
             'data.referenceNo' => ['sometimes', 'nullable', 'string', 'max:100'],
             // Saving an existing FR1044 draft sends the entire frontend form,
             // including fields that may not have been completed yet.
-            'data.ministry' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'data.department' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'data.secretaryOfMinistry' => ['sometimes', 'nullable', 'string', 'max:255'],
             'data.lossDate' => ['sometimes', 'nullable', 'date'],
             'data.lossTime' => ['sometimes', 'nullable', 'date_format:H:i'],
             'data.location' => ['sometimes', 'nullable', 'string', 'max:255'],
@@ -149,7 +150,8 @@ class UpdateFR1044Request extends FormRequest
     public function attributes(): array
     {
         return [
-            'data.ministry' => 'ministry/department',
+            'data.department' => 'department/corporation',
+            'data.secretaryOfMinistry' => 'secretary to the ministry of',
             'data.lossDate' => 'date of loss',
             'data.lossTime' => 'time of loss',
             'data.isDueToFraudNegligence' => 'fraud/negligence determination',

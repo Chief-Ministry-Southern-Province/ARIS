@@ -20,11 +20,18 @@ export default function GeneralInformationSection({
   return (
     <div className="grid md:grid-cols-2 gap-4">
 
-      <FormField label={t("fr104_4.generalInformation.ministry")}>
+      <FormField label={t("fr104_4.generalInformation.department")}>
         <InputField
-          value={formData.ministry}
+          value={formData.department}
+          onChange={(e) => handleChange("department", e.target.value)}
+        />
+      </FormField>
+
+      <FormField label={t("fr104_4.generalInformation.secretaryToMinistryOf")}>
+        <InputField
+          value={formData.secretaryOfMinistry}
           onChange={(e) =>
-            handleChange("ministry", e.target.value)
+            handleChange("secretaryOfMinistry", e.target.value)
           }
         />
       </FormField>

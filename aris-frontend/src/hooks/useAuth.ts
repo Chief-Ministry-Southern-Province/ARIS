@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { changePassword, getProfile, login, logout, resetPassword, sendOtp, verifyOtp } from "@/services/auth.service";
 import { queryKeys } from "@/hooks/queryKeys";
+import { useAuth } from "@/context/auth/AuthContext";
 
 const profileKey = queryKeys.auth.profile;
 
@@ -14,6 +15,7 @@ export const useProfile = () => useQuery({
 });
 
 export const useLogin = () => {
+  const { loginUser: setAuthenticatedUser } = useAuth();
   const mutation = useMutation({
     mutationFn: ({ nic, password }: { nic: string; password: string }) => login(nic, password),
   });
@@ -21,11 +23,7 @@ export const useLogin = () => {
   return {
     loginUser: async (nic: string, password: string, rememberMe: boolean) => {
       const response = await mutation.mutateAsync({ nic, password });
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("institutionType", response.institutionType ?? "");
-      localStorage.setItem("id", String(response.id));
-      if (response.name) localStorage.setItem("name", response.name);
-      if (response.role) localStorage.setItem("role", JSON.stringify(response.role));
+      setAuthenticatedUser(response);
       if (rememberMe) localStorage.setItem("rememberedUsername", nic);
       else localStorage.removeItem("rememberedUsername");
       return response;
@@ -37,11 +35,11 @@ export const useLogin = () => {
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
+  const { logoutUser: clearAuthenticatedUser } = useAuth();
   const mutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
+      clearAuthenticatedUser();
       queryClient.removeQueries({ queryKey: ["auth"] });
     },
   });

@@ -40,7 +40,8 @@ export interface RecoveryItem {
 export interface FR104_4FormData {
   // General Information (items 1-3, header block)
   referenceNo: string;
-  ministry: string;
+  department: string;
+  secretaryOfMinistry: string;
   lossDate: string;
   lossTime: string;
   location: string;

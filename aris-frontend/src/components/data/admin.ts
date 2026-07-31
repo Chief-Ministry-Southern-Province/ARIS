@@ -4,8 +4,8 @@ export const adminTabs = [
   { id: "users", icon: Users, label: "Users",  i18n: "adminPanel.tabs.users" },
   { id: "institutions", icon: Building, label: "Institutions", i18n: "adminPanel.tabs.institutions" },
   { id: "vehicles", icon: Car, label: "Vehicles", i18n: "adminPanel.tabs.vehicles" },
-  { id: "workflow", icon: GitBranch, label: "Workflow Rules", i18n: "adminPanel.tabs.workflow" },
-  { id: "audit", icon: FileText, label: "Audit Logs", i18n: "adminPanel.tabs.audit" },
+  { id: "workflow", icon: GitBranch, label: "Workflow Rules", i18n: "adminPanel.tabs.workflow", roles: ["system_admin"] },
+  { id: "audit", icon: FileText, label: "Audit Logs", i18n: "adminPanel.tabs.audit", roles: ["system_admin"] },
 ];
 
 

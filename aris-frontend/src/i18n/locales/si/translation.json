@@ -209,6 +209,8 @@
 
     "generalInformation": "සාමාන්‍ය තොරතුරු",
     "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+    "secretaryToMinistryOf": "අමාත්‍යාංශයේ ලේකම් වෙත",
+    "secretaryName": "ලේකම්ගේ නම",
     "date": "දිනය",
     "place": "ස්ථානය",
     "loss": "අලාභය",
@@ -223,6 +225,8 @@
     "action": "ක්‍රියාව",
     "addItem": "භාණ්ඩයක් එක් කරන්න",
     "removeItem": "ඉවත් කරන්න",
+    "grandTotal": "මුළු එකතුව",
+    "item": "භාණ්ඩය",
 
     "causeOfLoss": "අලාභයට හේතුව",
 
@@ -231,6 +235,7 @@
     "designation": "තනතුර",
     "addOfficer": "නිලධාරියෙකු එක් කරන්න",
     "removeOfficer": "ඉවත් කරන්න",
+    "officer":"නිලධාරියා",
 
     "policeStation": "පොලිස් ස්ථානය",
     "dateReported": "වාර්තා කළ දිනය",
@@ -288,6 +293,9 @@
     "generalInformation": {
       "referenceNo": "යොමු අංකය",
       "ministry": "අමාත්‍යාංශය / දෙපාර්තමේන්තුව",
+      "department": "දෙපාර්තමේන්තුව / සංස්ථාව",
+      "secretaryToMinistryOf": "අමාත්‍යාංශයේ ලේකම් වෙත",
+      "secretaryName": "ලේකම්ගේ නම",
       "lossDate": "අලාභ දිනය",
       "lossTime": "අලාභ වූ වේලාව",
       "location": "ස්ථානය",

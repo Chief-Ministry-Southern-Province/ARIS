@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Services\AuditLogService;
@@ -25,15 +26,15 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $request->session()->regenerate();
+            $request->session()->put('role_session_last_activity', now()->timestamp);
+            $user = $request->user();
             $this->auditLogs->log(AuditAction::LOGIN, AuditModule::AUTH, $user, [], [], 'Logged in.', $request);
 
             return response()->json([
                 'message' => 'Login successful',
                 'id' => $user->id,
                 'name' => $user->name,
-                'token' => $token,
                 'role' => $user->getRoleNames(),
                 'institutionType' => $user->institution->type ?? null,
             ]);
@@ -46,11 +47,10 @@ class AuthController extends Controller
     public function logout(Request $request){
 
         $user = $request->user();
-        $user
-            ->currentAccessToken()
-            ->delete();
-
         $this->auditLogs->log(AuditAction::LOGOUT, AuditModule::AUTH, $user, [], [], 'Logged out.', $request);
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
@@ -97,7 +97,17 @@ class AuthController extends Controller
         $user->password = Hash::make($validatedData['new_password']);
         $user->save();
 
-        return response()->json(['message' => 'Password changed successfully']);
+        DB::table(config('session.table', 'sessions'))
+            ->where('user_id', $user->id)
+            ->delete();
+
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'message' => 'Password changed successfully. Please log in again.',
+        ]);
     }
 
 }

@@ -219,6 +219,8 @@
 
     "generalInformation": "General Information",
     "department": "Department / Corporation",
+    "secretaryToMinistryOf": "Secretary to the Ministry of",
+    "secretaryName": "Secretary's Name",
     "date": "Date",
     "place": "Place",
     "loss": "Loss",
@@ -233,6 +235,8 @@
     "action": "Action",
     "addItem": "Add Item",
     "removeItem": "Remove",
+    "grandTotal": "Grand Total",
+    "item": "Item",
 
     "causeOfLoss": "Cause of Loss",
 
@@ -241,6 +245,7 @@
     "designation": "Designation",
     "addOfficer": "Add Officer",
     "removeOfficer": "Remove",
+    "officer": "Officer",
 
     "policeStation": "Police Station",
     "dateReported": "Date Reported",
@@ -298,6 +303,9 @@
     "generalInformation": {
       "referenceNo": "Reference Number",
       "ministry": "Ministry / Department",
+      "department": "Department / Corporation",
+      "secretaryToMinistryOf": "Secretary to the Ministry of",
+      "secretaryName": "Secretary's Name",
       "lossDate": "Date of Loss",
       "lossTime": "Time of Loss",
       "location": "Location",

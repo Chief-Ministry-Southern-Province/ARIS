@@ -28,7 +28,7 @@ Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 've
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 
-Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
+Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned'])->group(function () {
 
     // Protected routes for authenticated users with assigned institutions
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -145,4 +145,3 @@ Route::middleware(['auth:sanctum','institution.assigned'])->group(function () {
 });
 
 Route::get('/phpinfo', fn () => phpinfo());
-

@@ -6,6 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFR1043Request extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $data = $this->input('data');
+
+        if (is_array($data)) {
+            unset($data['loss']);
+            $this->merge(['data' => $data]);
+        }
+    }
+
     public function authorize(): bool
     {
         return true;
@@ -31,6 +41,12 @@ class StoreFR1043Request extends FormRequest
                 'max:255'
             ],
 
+            'data.secretaryOfMinistry' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
             'data.date' => [
                 'required',
                 'date'
@@ -40,11 +56,6 @@ class StoreFR1043Request extends FormRequest
                 'required',
                 'string',
                 'max:255'
-            ],
-
-            'data.loss' => [
-                'nullable',
-                'string'
             ],
 
             'data.natureOfLoss' => [

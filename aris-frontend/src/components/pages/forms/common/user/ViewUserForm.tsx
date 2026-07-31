@@ -5,6 +5,7 @@ import { FormField } from "@/components/molecules/FormField";
 import { useUser } from "@/hooks/queries/useUserQueries";
 import {formatRole,selectRoleBaseOnUserInstitutionType,} from "@/utils/formatRole";
 import Loader from "@/components/atoms/Loader";
+import { useAuth } from "@/context/auth/AuthContext";
 
 interface ViewUserFormProps {
   onClose: () => void;
@@ -13,8 +14,9 @@ interface ViewUserFormProps {
 
 export default function ViewUserForm({onClose,userId}: ViewUserFormProps) {
   const { t } = useTranslation();
+  const { institutionType } = useAuth();
 
-  const roleList = selectRoleBaseOnUserInstitutionType();
+  const roleList = selectRoleBaseOnUserInstitutionType(institutionType);
 
   const { data: user, isLoading: loading, error: queryError } = useUser(Number(userId));
   const error = queryError instanceof Error ? queryError.message : "";
