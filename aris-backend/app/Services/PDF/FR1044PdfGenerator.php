@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 class FR1044PdfGenerator implements PdfGeneratorInterface
 {
     public function __construct(
-        protected PdfService $pdfService,
+        protected PDFService $pdfService,
     ) {
     }
 

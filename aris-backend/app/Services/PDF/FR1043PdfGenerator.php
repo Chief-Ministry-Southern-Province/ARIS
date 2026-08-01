@@ -11,7 +11,7 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
 {
     public function __construct(
         protected DocumentSignatureService $documentSignatureService,
-        protected PdfService $pdfService,
+        protected PDFService $pdfService,
     ) {
     }
 
