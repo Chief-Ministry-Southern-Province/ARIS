@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Services\AuditLogService;
+use App\Models\PushSubscription;
 
 class AuthController extends Controller
 {
@@ -48,6 +49,7 @@ class AuthController extends Controller
 
         $user = $request->user();
         $this->auditLogs->log(AuditAction::LOGOUT, AuditModule::AUTH, $user, [], [], 'Logged out.', $request);
+        PushSubscription::query()->where('user_id', $user->id)->delete();
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -100,6 +102,8 @@ class AuthController extends Controller
         DB::table(config('session.table', 'sessions'))
             ->where('user_id', $user->id)
             ->delete();
+
+        PushSubscription::query()->where('user_id', $user->id)->delete();
 
         Auth::guard('web')->logout();
         $request->session()->invalidate();

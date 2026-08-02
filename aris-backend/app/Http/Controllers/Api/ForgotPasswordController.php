@@ -10,6 +10,7 @@ use App\Services\TwilioService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\PushSubscription;
 
 class ForgotPasswordController extends Controller
 {
@@ -120,6 +121,8 @@ class ForgotPasswordController extends Controller
             DB::table(config('session.table', 'sessions'))
                 ->where('user_id', $user->id)
                 ->delete();
+
+            PushSubscription::query()->where('user_id', $user->id)->delete();
 
             $otpRecord->update(['is_used' => true]);
         });
