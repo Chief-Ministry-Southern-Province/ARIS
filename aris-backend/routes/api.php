@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\UserSignatureController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\WorkflowSettingController;
 use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\PushSubscriptionController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -44,6 +45,11 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+
+    // Push-subscription endpoints never expose endpoint or encryption keys.
+    Route::get('/push-subscriptions/status', [PushSubscriptionController::class, 'status']);
+    Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store']);
+    Route::delete('/push-subscriptions', [PushSubscriptionController::class, 'destroy']);
 
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
 

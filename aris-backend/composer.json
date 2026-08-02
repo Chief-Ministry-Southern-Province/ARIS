@@ -12,6 +12,7 @@
         "laravel/reverb": "1.11",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
+        "minishlink/web-push": "^8.0",
         "mpdf/mpdf": "8.2.6",
         "spatie/laravel-permission": "^8.0",
         "twilio/sdk": "^8.11"

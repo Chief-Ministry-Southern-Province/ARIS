@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationItem from "./NotificationItem";
 import { useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
 import type { AppNotification } from "@/types/notification.type";
+import { disableWebPush, enableWebPush, isWebPushEnabled, supportsWebPush } from "@/services/webPush.service";
 
 const formatTime = (value: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
@@ -14,6 +15,9 @@ const NotificationDropdown = () => {
   const [desktopPermission, setDesktopPermission] = useState<NotificationPermission | "unsupported">(
     () => ("Notification" in window ? window.Notification.permission : "unsupported"),
   );
+  const [webPushEnabled, setWebPushEnabled] = useState(false);
+  const [webPushBusy, setWebPushBusy] = useState(false);
+  const [webPushError, setWebPushError] = useState<string | null>(null);
   const notifications = notificationPage?.data.slice(0, 5) ?? [];
 
   const openNotification = (notification: AppNotification) => {
@@ -25,6 +29,39 @@ const NotificationDropdown = () => {
 
     setDesktopPermission(await window.Notification.requestPermission());
   };
+
+  const enableBackgroundAlerts = async () => {
+    setWebPushBusy(true);
+    setWebPushError(null);
+
+    try {
+      await enableWebPush();
+      setDesktopPermission("granted");
+      setWebPushEnabled(true);
+    } catch (error) {
+      setWebPushError(error instanceof Error ? error.message : "Unable to enable background alerts.");
+    } finally {
+      setWebPushBusy(false);
+    }
+  };
+
+  const disableBackgroundAlerts = async () => {
+    setWebPushBusy(true);
+    setWebPushError(null);
+
+    try {
+      await disableWebPush();
+      setWebPushEnabled(false);
+    } catch {
+      setWebPushError("Unable to disable background alerts. Please try again.");
+    } finally {
+      setWebPushBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    void isWebPushEnabled().then(setWebPushEnabled).catch(() => undefined);
+  }, []);
 
   return (
     <div className="absolute right-0 top-12 z-50 w-80 overflow-hidden rounded-xl border border-border bg-card shadow-xl">
@@ -54,8 +91,14 @@ const NotificationDropdown = () => {
 
       <div className="border-t border-border p-2">
         <button className="w-full rounded-lg py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50" onClick={() => navigate("/notifications")}>View All Notifications</button>
-        {desktopPermission === "default" && <button className="w-full rounded-lg py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50" onClick={enableDesktopNotifications}>Enable desktop alerts</button>}
+        {desktopPermission === "default" && <button className="w-full rounded-lg py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50" onClick={enableDesktopNotifications}>Enable in-app alerts</button>}
+        {supportsWebPush() && desktopPermission !== "denied" && (
+          <button className="w-full rounded-lg py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-60" disabled={webPushBusy} onClick={webPushEnabled ? disableBackgroundAlerts : enableBackgroundAlerts}>
+            {webPushBusy ? "Saving..." : webPushEnabled ? "Disable background alerts" : "Enable background alerts"}
+          </button>
+        )}
         {desktopPermission === "denied" && <p className="px-2 py-1 text-center text-xs text-slate-500">Desktop alerts are blocked in browser settings.</p>}
+        {webPushError && <p className="px-2 py-1 text-center text-xs text-red-600">{webPushError}</p>}
       </div>
     </div>
   );
