@@ -14,7 +14,6 @@ use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
-use Illuminate\Support\Facades\Log;
 use App\Models\UserSignature;
 use Illuminate\Validation\ValidationException;
 use App\Services\Notifications\NotificationService;
@@ -80,20 +79,15 @@ class ApprovalService
             $documentType,
             $revision
         ) {
-            logger()->info("1");
-
             $workflow = $this->workflowResolver->resolve($case, $documentType, $revision);
 
-            logger()->info("2");
-
-            // $workflow = $this->workflowResolver
-            //     ->resolve($case);
+            $firstPendingApproval = null;
 
             foreach ($workflow as $step) {
 
                 $approver = $this->findApprover($step);
 
-                Approval::create([
+                $approval = Approval::create([
 
                     'accident_case_id' => $case->id,
 
@@ -112,17 +106,17 @@ class ApprovalService
                         : 'WAITING',
 
                 ]);
+
+                if ($approval->status === 'PENDING') {
+                    $firstPendingApproval = $approval;
+                }
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Later
-            |--------------------------------------------------------------------------
-            |
-            | Timeline
-            | Notification
-            |
-            */
+            if ($firstPendingApproval) {
+                DB::afterCommit(function () use ($firstPendingApproval) {
+                    $this->notificationService->notifyNextApprover($firstPendingApproval);
+                });
+            }
         });
     }
 
