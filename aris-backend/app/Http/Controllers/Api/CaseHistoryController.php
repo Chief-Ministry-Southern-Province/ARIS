@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Services\AccidentTimelineService;
 use App\Http\Resources\CaseHistoryResource;
 use App\Http\Controllers\Controller;
-use App\Models\AccidentCase;;
+use App\Models\AccidentCase;
+use App\Models\CaseHistory;
 
 class CaseHistoryController extends Controller
 {
@@ -19,6 +20,8 @@ class CaseHistoryController extends Controller
 
     public function index(Request $request, AccidentCase $accidentCase)
     {
+        $this->authorize('viewForCase', [CaseHistory::class, $accidentCase]);
+
         $timeline = $this->accidentTimelineService->getTimelineForCase($accidentCase);
 
         return CaseHistoryResource::collection($timeline);

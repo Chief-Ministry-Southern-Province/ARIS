@@ -12,6 +12,8 @@ class PushSubscriptionController extends Controller
 {
     public function status(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', PushSubscription::class);
+
         return response()->json([
             'subscribed' => PushSubscription::query()
                 ->where('user_id', $request->user()->id)
@@ -24,16 +26,25 @@ class PushSubscriptionController extends Controller
         $validated = $request->validated();
         $endpointHash = hash('sha256', $validated['endpoint']);
 
-        PushSubscription::query()->updateOrCreate(
-            ['endpoint_hash' => $endpointHash],
-            [
+        $subscription = PushSubscription::query()
+            ->where('endpoint_hash', $endpointHash)
+            ->first();
+
+        $attributes = [
                 'user_id' => $request->user()->id,
                 'endpoint' => $validated['endpoint'],
                 'public_key' => $validated['keys']['p256dh'],
                 'auth_token' => $validated['keys']['auth'],
                 'content_encoding' => $validated['contentEncoding'] ?? 'aes128gcm',
-            ],
-        );
+        ];
+
+        if ($subscription) {
+            $this->authorize('update', $subscription);
+            $subscription->update($attributes);
+        } else {
+            $this->authorize('create', PushSubscription::class);
+            PushSubscription::create(['endpoint_hash' => $endpointHash, ...$attributes]);
+        }
 
         return response()->json(['message' => 'Push notifications enabled.'], 201);
     }
@@ -42,10 +53,15 @@ class PushSubscriptionController extends Controller
     {
         $endpoint = $request->validate(['endpoint' => ['required', 'url', 'max:4096']])['endpoint'];
 
-        PushSubscription::query()
+        $subscription = PushSubscription::query()
             ->where('user_id', $request->user()->id)
             ->where('endpoint_hash', hash('sha256', $endpoint))
-            ->delete();
+            ->first();
+
+        if ($subscription) {
+            $this->authorize('delete', $subscription);
+            $subscription->delete();
+        }
 
         return response()->json(['message' => 'Push notifications disabled.']);
     }
