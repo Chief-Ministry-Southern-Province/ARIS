@@ -3,6 +3,11 @@ import type { PaginatedResponse } from "@/types/Pagination.type";
 
 import type { AccidentCase, CaseStage, CaseStatus } from "@/types/AccidentCase.type";
 
+type LaravelPaginatedResource<T> = {
+  data: T[];
+  meta: Omit<PaginatedResponse<T>, "data">;
+};
+
 export const getAccidentCases = async (
   page: number = 1,
   caseNumber: string = "",
@@ -10,7 +15,7 @@ export const getAccidentCases = async (
   stage: CaseStage | "" = "",
 ): Promise<PaginatedResponse<AccidentCase>> => {
 
-  const response = await api.get("/cases", {
+  const response = await api.get<LaravelPaginatedResource<AccidentCase>>("/cases", {
     params: {
       page,
       case_number: caseNumber || undefined,
@@ -19,7 +24,10 @@ export const getAccidentCases = async (
     },
   });
 
-  return response.data;
+  return {
+    data: response.data.data,
+    ...response.data.meta,
+  };
 };
 
 export const getAccidentCase = async (id: number) => {
