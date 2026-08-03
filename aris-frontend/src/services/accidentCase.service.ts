@@ -1,17 +1,21 @@
 import api from "./api";
 import type { PaginatedResponse } from "@/types/Pagination.type";
 
-import type {AccidentCase} from "@/types/AccidentCase.type";
+import type { AccidentCase, CaseStage, CaseStatus } from "@/types/AccidentCase.type";
 
 export const getAccidentCases = async (
   page: number = 1,
-  search: string = "",
+  caseNumber: string = "",
+  status: CaseStatus | "" = "",
+  stage: CaseStage | "" = "",
 ): Promise<PaginatedResponse<AccidentCase>> => {
 
   const response = await api.get("/cases", {
     params: {
       page,
-      search,
+      case_number: caseNumber || undefined,
+      status: status || undefined,
+      stage: stage || undefined,
     },
   });
 
