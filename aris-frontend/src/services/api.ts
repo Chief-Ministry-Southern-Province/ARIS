@@ -1,18 +1,16 @@
 import axios from "axios";
 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api";
+export const API_ORIGIN = new URL(API_BASE_URL).origin;
+
 const api = axios.create({
-  //baseURL:"https://aris-api.hopto.org/api",
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_BASE_URL,
   timeout: 1200000,
+  withCredentials: true,
+  withXSRFToken: true,
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
   if (!(config.data instanceof FormData) && !config.headers["Content-Type"]) {
     config.headers["Content-Type"] = "application/json";
   }

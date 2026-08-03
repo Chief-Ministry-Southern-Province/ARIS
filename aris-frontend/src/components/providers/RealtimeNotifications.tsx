@@ -50,12 +50,11 @@ const showDesktopNotification = (notification: NotificationBroadcast) => {
 
 /** Keeps notification queries current when Reverb publishes to the signed-in user. */
 const RealtimeNotifications = () => {
-  const { token } = useAuth();
+  const { isAuthenticated, id: userId } = useAuth();
   const queryClient = useQueryClient();
-  const userId = localStorage.getItem("id");
 
   useEffect(() => {
-    if (!token || !userId || !import.meta.env.VITE_REVERB_APP_KEY) {
+    if (!isAuthenticated || !userId || !import.meta.env.VITE_REVERB_APP_KEY) {
       return;
     }
 
@@ -90,7 +89,7 @@ const RealtimeNotifications = () => {
       echo.leave(`users.${userId}`);
       echo.disconnect();
     };
-  }, [queryClient, token, userId]);
+  }, [isAuthenticated, queryClient, userId]);
 
   return null;
 };

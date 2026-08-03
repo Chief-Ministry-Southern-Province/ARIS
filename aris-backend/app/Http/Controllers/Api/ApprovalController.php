@@ -91,6 +91,7 @@ class ApprovalController extends Controller
      */
     public function document(Approval $approval)
     {
+        $this->authorize('view', $approval);
         return $this->approvalService->getDocument($approval);
     }
 
@@ -99,6 +100,8 @@ class ApprovalController extends Controller
      */
     public function approve(ApproveRequest $request,Approval $approval) 
     {
+        $this->authorize('approve', $approval);
+
         $approval = $this->approvalService
             ->approve(
                 approval: $approval,
@@ -114,6 +117,7 @@ class ApprovalController extends Controller
      */
     public function reject(RejectRequest $request,Approval $approval) 
     {
+        $this->authorize('reject', $approval);
         $approval = $this->approvalService
             ->reject(
                 approval: $approval,

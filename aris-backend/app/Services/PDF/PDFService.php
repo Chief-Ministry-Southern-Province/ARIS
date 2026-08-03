@@ -11,7 +11,7 @@ use Mpdf\Config\FontVariables;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 
-final class PdfService
+final class PDFService
 {
     /**
      * Render a Blade view as a UTF-8 PDF string.

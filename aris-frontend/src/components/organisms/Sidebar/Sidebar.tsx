@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Shield, Home, LogOut, ChevronRight, X,} from "lucide-react";
+import {Home, LogOut, ChevronRight, X,} from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {swalConfirm} from "@/utils/swal";
 
 import { navItems } from "../../data/navigation";
+import { canAccessAdminPanel } from "@/components/data/navigation";
 import {useLogout} from "@/hooks/useAuth"
 
 import { useAuth } from "@/context/auth/AuthContext";
+import arisLogo from "@/assets/aris-logo1.png";
+import { getUserRole } from "@/utils/getUserRole";
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -20,12 +23,19 @@ interface SidebarProps {
 export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
   const { t } = useTranslation();
 
-  const { role } = useAuth();
+  const { role, name, institutionType } = useAuth();
+  const userName = name || "User";
+  const userRole = getUserRole(role[0] || "");
+  const userInitial = userName.charAt(0).toUpperCase();
   //console.log("Role in sidebar:", role);
   
-  const filteredNavItems = navItems.filter((item) =>
-    item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)))
-  );
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.id === "admin") {
+      return canAccessAdminPanel(role, institutionType);
+    }
+
+    return item.roles.some((r) => role.includes(r[0].toLowerCase() + r.slice(1)));
+  });
 
   const navigate = useNavigate();
 
@@ -84,8 +94,12 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
         <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border shrink-0"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sidebar-primary/20 border border-sidebar-primary/30 flex items-center justify-center">
-              <Shield className="text-sidebar-primary" />
+            <div className="w-12 h-12 shrink-0 rounded-2xl bg-[#082e75] border border-cyan-200/30 flex items-center justify-center overflow-hidden shadow-lg ring-1 ring-white/15">
+              <img
+                src={arisLogo}
+                alt="ARIS logo"
+                className="h-full w-full scale-[1.7] object-cover object-center"
+              />
             </div>
 
             {!collapsed && (
@@ -282,16 +296,16 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
           <div className="p-3 border-t border-sidebar-border shrink-0 bg-sidebar-primary/20 border ">
             <div className="flex items-center gap-3 p-2 rounded-xl bg-sidebar-primary/20 border border-sidebar-primary/30">
               <div className="w-8 h-8 rounded-full bg-warning text-black flex items-center justify-center font-bold">
-                A
+                {userInitial}
               </div>
 
               <div className="min-w-0 ">
                 <p className="text-xs font-semibold truncate">
-                  Admin User
+                  {userName}
                 </p>
 
                 <p className="text-xs text-white/80 truncate">
-                  System Administrator
+                  {userRole}
                 </p>
               </div>
             </div>

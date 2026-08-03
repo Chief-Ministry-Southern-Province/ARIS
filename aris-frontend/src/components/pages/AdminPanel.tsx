@@ -6,10 +6,16 @@ import VehicleTab from "@/components/organisms/AdminPanel/VehicleTab";
 import AuditLogTab from "@/components/organisms/AdminPanel/AuditLogTab";
 import WorkflowSettingTab from "@/components/organisms/AdminPanel/WorkflowSettingTab";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/auth/AuthContext";
 
 function AdminPanel() {
 
   const {t} = useTranslation();
+  const { role } = useAuth();
+
+  const visibleTabs = adminTabs.filter((tab) =>
+    !tab.roles || tab.roles.some((allowedRole) => role.includes(allowedRole)),
+  );
 
   const [activeTab, setActiveTab] = useState("users");
 
@@ -23,7 +29,7 @@ function AdminPanel() {
       {/* Tab Navigation */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="flex overflow-x-auto border-b border-gray-100">
-          {adminTabs.map(tab => (
+          {visibleTabs.map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-blue-600 text-blue-700 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
               <tab.icon className="w-4 h-4" />
@@ -49,12 +55,12 @@ function AdminPanel() {
           )}
 
           {/* Workflow Settings */}
-          {activeTab === "workflow" && (
+          {role.includes("system_admin") && activeTab === "workflow" && (
             <WorkflowSettingTab />
           )}
 
           {/* Audit Logs */}
-          {activeTab === "audit" && (
+          {role.includes("system_admin") && activeTab === "audit" && (
             <AuditLogTab />
           )}
         </div>

@@ -3,9 +3,11 @@ import {Shield,User,Smartphone,Lock,CheckCircle,} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSendOtp,useVerifyOtp,useResetPassword } from "@/hooks/useAuth";
+import { useAuth } from "@/context/auth/AuthContext";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+  const { logoutUser } = useAuth();
 
   const [step, setStep] = useState(1);
 
@@ -108,6 +110,8 @@ export default function ForgotPassword() {
       toast.success(
         "Password reset successfully"
       );
+
+      logoutUser();
 
       setTimeout(() => {
         navigate("/login");

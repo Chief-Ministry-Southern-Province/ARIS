@@ -9,8 +9,9 @@ import {getUserRole} from "@/utils/getUserRole";
 export default function RootLayout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { role } = useAuth();
-  const userName = localStorage.getItem("name") || "User";
+  const { role, name } = useAuth();
+  const userName = name || "User";
+  const userAvatar = userName.charAt(0).toUpperCase();
 
   return (
     <div
@@ -29,7 +30,7 @@ export default function RootLayout() {
         <TopNavbar
           userName={userName}
           userRole={getUserRole(role[0] || "")}
-          userAvatar="A"
+          userAvatar={userAvatar}
           onMenuClick={() =>
             setSidebarOpen(true)
           }

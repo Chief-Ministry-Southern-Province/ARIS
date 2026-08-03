@@ -13,6 +13,9 @@ export default defineConfig({
     
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        importScripts: ['push-notifications.js'],
+      },
 
       includeAssets: [
         'favicon.ico',

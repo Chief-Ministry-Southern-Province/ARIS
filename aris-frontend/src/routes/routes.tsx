@@ -32,7 +32,13 @@ import LazyChart from "@/utils/LazyChart";
 import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 
 import {protectedPage} from "@/routes/protectedPage";
-import {FULL_ACCESS_ROLES, REPORT_ROLES, NOTIFICATION_ROLES,SIGNATURE_ACCESS_ROLE} from "@/components/data/navigation";
+import {
+  ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS,
+  FULL_ACCESS_ROLES,
+  REPORT_ROLES,
+  NOTIFICATION_ROLES,
+  SIGNATURE_ACCESS_ROLE,
+} from "@/components/data/navigation";
 
 const Analytics = lazy(() => import("@/components/pages/Analytics"));
 
@@ -102,7 +108,11 @@ export const router = createBrowserRouter([
       protectedPage(
         "/admin",
         <AdminPanel />,
-        [...FULL_ACCESS_ROLES, "system_admin"],
+        ["subject_officer", "system_admin"],
+        {
+          allowedInstitutionTypes: ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS,
+          institutionTypeBypassRoles: ["system_admin"],
+        },
       ),
 
       protectedPage(

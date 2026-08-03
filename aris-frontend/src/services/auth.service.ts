@@ -1,7 +1,15 @@
-import api from "./api";
+import api, { API_ORIGIN } from "./api";
 import type{ProfileResponse} from '../types/User.type';
 
-export const login = async (nic: string, password: string) => {
+export interface LoginResponse {
+  role: string[];
+  id: number;
+  name?: string;
+  institutionType?: string;
+}
+
+export const login = async (nic: string, password: string): Promise<LoginResponse> => {
+  await api.get("/sanctum/csrf-cookie", { baseURL: API_ORIGIN });
   const response = await api.post("/login", { 
     nic, 
     password 
@@ -17,7 +25,6 @@ export const getProfile = async (): Promise<ProfileResponse> => {
 
 export const logout = async () => {
   const response = await api.post("/logout");
-  localStorage.removeItem("token");
   return response.data;
 }
 
@@ -52,7 +59,7 @@ export const resetPassword = async (mobile: string,otp: string,password: string,
   return api.post("/forgot-password/reset-password", {
     mobile,
     otp,
-    password,
-    password_confirmation,
+    new_password: password,
+    new_password_confirmation: password_confirmation,
   });
 };

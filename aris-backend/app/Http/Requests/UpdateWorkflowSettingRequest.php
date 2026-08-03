@@ -12,7 +12,7 @@ class UpdateWorkflowSettingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->user()->hasRole('system_admin');
+        return $this->user()?->can('updateAny', WorkflowSetting::class) ?? false;
     }
 
     /**

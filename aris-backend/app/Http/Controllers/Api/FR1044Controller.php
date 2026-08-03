@@ -26,6 +26,8 @@ class FR1044Controller extends Controller
 
     public function attachment(StoreFR1044AttachmentRequest $request, FR1044 $fr1044, EvidenceService $evidenceService): EvidenceResource
     {
+        $this->authorize('attach', $fr1044);
+
         return new EvidenceResource($evidenceService->uploadForFR1044(
             $fr1044,
             $request->file('file'),
@@ -38,6 +40,8 @@ class FR1044Controller extends Controller
     /** Resolve the uploaded file assigned to an FR1044 attachment field. */
     public function attachmentPreview(FR1044 $fr1044, string $fieldKey): EvidenceResource
     {
+        $this->authorize('view', $fr1044);
+
         abort_unless(in_array($fieldKey, ['policeReportFile', 'courtOrderFile', 'boardReportFile'], true), 404);
 
         $evidence = AccidentEvidence::query()
@@ -56,6 +60,8 @@ class FR1044Controller extends Controller
      */
     public function show(AccidentCase $accidentCase)
     {
+        $this->authorize('viewForCase', [FR1044::class, $accidentCase]);
+
         $fr1044 = $this->fr1044Service
             ->getLatest($accidentCase);
 
@@ -73,6 +79,8 @@ class FR1044Controller extends Controller
      */
     public function history(AccidentCase $accidentCase)
     {
+        $this->authorize('viewForCase', [FR1044::class, $accidentCase]);
+
         return FR1044Resource::collection(
             $this->fr1044Service->getHistory($accidentCase)
         );
@@ -83,6 +91,8 @@ class FR1044Controller extends Controller
      */
     public function store(StoreFR1044Request $request,AccidentCase $accidentCase) 
     {
+        $this->authorize('create', [FR1044::class, $accidentCase]);
+
         $fr1044 = $this->fr1044Service->createDraft(
 
             case: $accidentCase,
@@ -101,6 +111,8 @@ class FR1044Controller extends Controller
      */
     public function update(UpdateFR1044Request $request,FR1044 $fr1044) 
     {
+        $this->authorize('update', $fr1044);
+
         $fr1044 = $this->fr1044Service->updateDraft(
 
             fr1044: $fr1044,
@@ -116,6 +128,8 @@ class FR1044Controller extends Controller
      */
     public function submit(Request $request, FR1044 $fr1044)
     {
+        $this->authorize('submit', $fr1044);
+
         $fr1044 = $this->fr1044Service->submit($fr1044, $request->user());
 
         return new FR1044Resource($fr1044);
@@ -124,6 +138,8 @@ class FR1044Controller extends Controller
     /** Download a PDF representation of an FR1044 revision. */
     public function downloadPdf(FR1044 $fr1044)
     {
+        $this->authorize('view', $fr1044);
+
         return $this->pdfGenerator->download($fr1044->id);
     }
 }

@@ -16,6 +16,7 @@ use App\Notifications\WorkflowCompletedNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Events\UserNotificationCreated;
+use App\Jobs\SendWebPushNotification;
 
 class NotificationService
 {
@@ -24,6 +25,7 @@ private function storeAndBroadcast(array $attributes): UserNotification
     $notification = UserNotification::create($attributes);
 
     UserNotificationCreated::dispatch($notification);
+    SendWebPushNotification::dispatch($notification)->afterCommit();
 
     return $notification;
 }

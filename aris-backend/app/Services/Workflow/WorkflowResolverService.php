@@ -21,15 +21,11 @@ class WorkflowResolverService
 
   public function resolve(AccidentCase $case, string $documentType, int $revision): array
   {
-      $case->loadMissing(['institution.parentInstitution', 'accident']);
+      $case->loadMissing(['institution.parentInstitution', 'accident.vehicle.institution']);
       $institution = $case->institution;
-      $district = $case->accident?->district ?? $institution->district;
-
-      if (! $district) {
-          throw ValidationException::withMessages([
-              'workflow' => 'A district is required to resolve the Ministry approval workflow.',
-          ]);
-      }
+      // Ministry subject-officer assignment follows the vehicle owner's institution,
+      // not the geographical district where the accident occurred.
+      $vehicleInstitutionDistrict = trim((string) $case->accident?->vehicle?->institution?->district);
 
       [$steps, $ministry] = match ($institution->type) {
           'PDHS' => [$this->resolveProvincial($institution), $institution->parentInstitution],
@@ -50,7 +46,13 @@ class WorkflowResolverService
       $configuration = $this->thresholdConfiguration();
 
       if ($lossAmount > $configuration['pdhs_threshold']) {
-          $steps = [...$steps, ...$this->resolveMinistry($ministry, $district, 1)];
+          if ($vehicleInstitutionDistrict === '') {
+              throw ValidationException::withMessages([
+                  'workflow' => 'The accident vehicle institution must have a district before resolving the Ministry approval workflow.',
+              ]);
+          }
+
+          $steps = [...$steps, ...$this->resolveMinistry($ministry, $vehicleInstitutionDistrict, 1)];
       }
 
       if ($lossAmount > $configuration['ministry_threshold']) {
