@@ -6,7 +6,7 @@ export const queryKeys = {
   },
   cases: {
     all: ["cases"] as const,
-    list: (page: number, search = "") => ["cases", "list", { page, search }] as const,
+    list: (page: number, caseNumber = "", status = "", stage = "") => ["cases", "list", { page, caseNumber, status, stage }] as const,
     detail: (id: number) => ["cases", "detail", id] as const,
   },
   vehicles: {

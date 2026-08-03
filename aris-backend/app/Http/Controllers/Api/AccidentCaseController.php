@@ -8,6 +8,7 @@ use App\Models\AccidentCase;
 use App\Services\AccidentCaseService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AccidentCaseController extends Controller
 {
@@ -20,7 +21,29 @@ class AccidentCaseController extends Controller
 
     public function index(Request $request)
     {
-        $cases = $this->accidentCaseService->getAll($request->search);
+        $filters = $request->validate([
+            'case_number' => ['nullable', 'string', 'max:50'],
+            'status' => ['nullable', Rule::in([
+                'OPEN',
+                'IN_PROGRESS',
+                'ON_HOLD',
+                'COMPLETED',
+                'CLOSED',
+            ])],
+            'stage' => ['nullable', Rule::in([
+                'ACCIDENT_REPORTED',
+                'FR1043',
+                'FR1044',
+                'FR109',
+                'CLOSED',
+            ])],
+        ]);
+
+        $cases = $this->accidentCaseService->getAll(
+            $filters['case_number'] ?? null,
+            $filters['status'] ?? null,
+            $filters['stage'] ?? null,
+        );
 
         return AccidentCaseResource::collection($cases);
     }

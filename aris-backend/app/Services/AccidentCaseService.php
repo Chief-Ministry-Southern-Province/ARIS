@@ -213,7 +213,11 @@ class AccidentCaseService
             ->first();
     }
 
-   public function getAll(?string $search = null): LengthAwarePaginator
+    public function getAll(
+        ?string $caseNumber = null,
+        ?string $status = null,
+        ?string $stage = null,
+    ): LengthAwarePaginator
     {
         return AccidentCase::query()
             ->with([
@@ -222,43 +226,26 @@ class AccidentCaseService
                 'assignee',
                 'institution',
             ])
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
+            ->when($caseNumber, function ($query) use ($caseNumber) {
+                $caseNumber = trim($caseNumber);
 
-                    // Accident Case fields
-                    $q->where('case_number', 'like', "%{$search}%")
-                        ->orWhere('status', 'like', "%{$search}%")
-                        ->orWhere('priority', 'like', "%{$search}%")
-                        ->orWhere('current_stage', 'like', "%{$search}%")
+                $query->where(function ($caseQuery) use ($caseNumber) {
+                    if (ctype_digit($caseNumber)) {
+                        $caseQuery->whereKey((int) $caseNumber);
+                    }
 
-                        // Accident fields
-                        ->orWhereHas('accident', function ($accident) use ($search) {
-                            $accident
-                                ->where('id', 'like', "%{$search}%");
-                                // Add other accident columns here
-                                // ->orWhere('accident_number', 'like', "%{$search}%")
-                                // ->orWhere('vehicle_number', 'like', "%{$search}%")
-                                // ->orWhere('location', 'like', "%{$search}%");
-                        })
-
-                        // Creator
-                        ->orWhereHas('creator', function ($creator) use ($search) {
-                            $creator->where('name', 'like', "%{$search}%");
-                        })
-
-                        // Assignee
-                        ->orWhereHas('assignee', function ($assignee) use ($search) {
-                            $assignee->where('name', 'like', "%{$search}%");
-                        })
-
-                        // Institution
-                        ->orWhereHas('institution', function ($institution) use ($search) {
-                            $institution->where('name', 'like', "%{$search}%");
-                        });
+                    $caseQuery->orWhere(
+                        'case_number',
+                        'like',
+                        '%' . addcslashes($caseNumber, '\\%_') . '%',
+                    );
                 });
             })
+            ->when($status, fn ($query) => $query->where('status', $status))
+            ->when($stage, fn ($query) => $query->where('current_stage', $stage))
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
     }
 
     public function findById(int $id): AccidentCase

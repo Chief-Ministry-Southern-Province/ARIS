@@ -4,6 +4,7 @@ import { Search, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FolderSearch, Download, Loader2 } from "lucide-react";
 import { useCases } from "@/hooks/queries/useCaseQueries";
+import type { CaseStage, CaseStatus } from "@/types/AccidentCase.type";
 
 export function CaseManagement() {
 
@@ -32,11 +33,16 @@ export function CaseManagement() {
     "URGENT": "bg-red-100 text-red-700",
   };
 
-  const [search, setSearch] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedSeverity, setSelectedSeverity] = useState("");
+  const [caseNumber, setCaseNumber] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState<CaseStatus | "">("");
+  const [selectedStage, setSelectedStage] = useState<CaseStage | "">("");
   const [page, setPage] = useState(1);
-  const { data, isLoading: loading, error: queryError } = useCases(page, search);
+  const { data, isLoading: loading, error: queryError } = useCases(
+    page,
+    caseNumber,
+    selectedStatus,
+    selectedStage,
+  );
   const accidentCases = data?.data ?? [];
   const currentPage = data?.current_page ?? page;
   const lastPage = data?.last_page ?? 1;
@@ -81,42 +87,41 @@ export function CaseManagement() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
         <div className="flex flex-wrap gap-3 items-center">
 
-          {/* Search */}
           <div className="relative flex-1 min-w-56">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-
             <input
-              type="text"
-              placeholder={`${t("caseManagement.search")}...`}
-              value={search}
-              onChange={(e) =>
-                (setPage(1), setSearch(e.target.value))
-              }
+              type="search"
+              placeholder="Search by case ID or case number"
+              value={caseNumber}
+              onChange={(event) => {
+                setPage(1);
+                setCaseNumber(event.target.value);
+              }}
               className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Severity Filter */}
+          {/* Stage Filter */}
           <select
-            value={selectedSeverity}
+            value={selectedStage}
             onChange={(e) =>
-                (setPage(1), setSelectedSeverity(e.target.value))
+                (setPage(1), setSelectedStage(e.target.value as CaseStage | ""))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">
-              All Severity
-            </option>
-            <option value="MINOR">Minor</option>
-            <option value="MAJOR">Major</option>
-            <option value="FATAL">Fatal</option>
+            <option value="">All Stages</option>
+            <option value="ACCIDENT_REPORTED">Accident Reported</option>
+            <option value="FR1043">FR1043</option>
+            <option value="FR1044">FR1044</option>
+            <option value="FR109">FR109</option>
+            <option value="CLOSED">Closed</option>
           </select>
 
           {/* Status Filter */}
           <select
             value={selectedStatus}
             onChange={(e) =>
-                (setPage(1), setSelectedStatus(e.target.value))
+                (setPage(1), setSelectedStatus(e.target.value as CaseStatus | ""))
             }
             className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
