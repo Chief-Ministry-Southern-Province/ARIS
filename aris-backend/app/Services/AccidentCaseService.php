@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\Notifications\NotificationService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class AccidentCaseService
 {
@@ -56,8 +57,21 @@ class AccidentCaseService
         return $case;
     }
 
-    public function assign(AccidentCase $case, User $subjectOfficer): AccidentCase
+    public function assign(AccidentCase $case, User $subjectOfficer, User $actor): AccidentCase
     {
+        if (! in_array($case->status, ['OPEN', 'IN_PROGRESS'], true)) {
+            throw ValidationException::withMessages([
+                'status' => 'Only open or in-progress cases can be assigned.',
+            ]);
+        }
+
+        if (! $subjectOfficer->hasRole('subject_officer')
+            || ! app(InstitutionService::class)->canAccessInstitution($subjectOfficer, $case->institution)) {
+            throw ValidationException::withMessages([
+                'assigned_to' => 'The assignee must be a subject officer who can access this case.',
+            ]);
+        }
+
         $oldAssignee = $case->assigned_to;
 
         $case->update([
@@ -67,7 +81,7 @@ class AccidentCaseService
 
         $this->timelineService->create(
             accidentCase: $case,
-            user: auth()->user(),
+            user: $actor,
             action: 'ASSIGNED',
             description: "Case assigned to {$subjectOfficer->name}",
             oldValue: ['assigned_to' => $oldAssignee],
@@ -77,82 +91,12 @@ class AccidentCaseService
         return $case;
     }
 
-    public function changeStage(AccidentCase $case, string $stage): AccidentCase
-    {
-        $old = $case->current_stage;
-
-        $case->update([
-            'current_stage' => $stage,
-        ]);
-
-        $this->timelineService->create(
-            accidentCase: $case,
-            user: auth()->user(),
-            action: 'STAGE_CHANGED',
-            description: "Stage changed from {$old} to {$stage}",
-            oldValue: ['stage' => $old],
-            newValue: ['stage' => $stage],
-        );
-
-        return $case;
-    }
-
-    public function changeStatus(AccidentCase $case, string $status): AccidentCase
-    {
-        $old = $case->status;
-
-        $case->update([
-            'status' => $status,
-        ]);
-
-        $this->timelineService->create(
-            accidentCase: $case,
-            user: auth()->user(),
-            action: 'STATUS_CHANGED',
-            description: "Status changed from {$old} to {$status}",
-            oldValue: ['status' => $old],
-            newValue: ['status' => $status],
-        );
-
-        return $case;
-    }
-
-    public function close(AccidentCase $case): AccidentCase
-    {
-        $case->update([
-            'current_stage' => 'CLOSED',
-            'status' => 'CLOSED',
-            'closed_at' => now(),
-        ]);
-
-        $this->timelineService->create(
-            accidentCase: $case,
-            user: auth()->user(),
-            action: 'CASE_CLOSED',
-            description: "Case {$case->case_number} closed",
-        );
-
-        return $case;
-    }
-
     public function update(AccidentCase $case, array $data): AccidentCase
     {
-        $old = $case->only(['assigned_to', 'priority', 'status', 'current_stage']);
-
-        if (isset($data['assigned_to'])) {
-            $case->assigned_to = $data['assigned_to'];
-        }
+        $old = $case->only(['priority']);
 
         if (isset($data['priority'])) {
             $case->priority = $data['priority'];
-        }
-
-        if (isset($data['status'])) {
-            $case->status = $data['status'];
-        }
-
-        if (isset($data['current_stage'])) {
-            $case->current_stage = $data['current_stage'];
         }
 
         $case->save();
@@ -163,7 +107,7 @@ class AccidentCaseService
             action: 'CASE_UPDATED',
             description: 'Case details updated',
             oldValue: $old,
-            newValue: $case->only(['assigned_to', 'priority', 'status', 'current_stage']),
+            newValue: $case->only(['priority']),
         );
 
         return $case->fresh();

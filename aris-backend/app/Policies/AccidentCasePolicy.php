@@ -4,8 +4,6 @@ namespace App\Policies;
 
 use App\Models\AccidentCase;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-
 use App\Services\InstitutionService;
 
 class AccidentCasePolicy
@@ -15,13 +13,13 @@ class AccidentCasePolicy
      */
     public function viewAny(User $user): bool
     {
-        if ($user->hasRole(['system_admin','driver'])) {
+        if ($user->hasRole('driver')) {
             return false;
         }
 
         return app(InstitutionService::class)
-            ->accessibleInstitutionIds($user->institution_id)
-            ->isNotEmpty();
+            ->accessibleInstitutionIds($user)
+            !== [];
     }
 
     /**
@@ -29,13 +27,13 @@ class AccidentCasePolicy
      */
     public function view(User $user, AccidentCase $accidentCase): bool
     {
-        if ($user->hasRole(['system_admin','driver'])) {
+        if ($user->hasRole('driver')) {
             return false;
         }
 
         return app(InstitutionService::class)
-            ->accessibleInstitutionIds($user->institution_id)
-            ->contains($accidentCase->institution_id);
+            ->accessibleInstitutionIds($user)
+            && app(InstitutionService::class)->canAccessInstitution($user, $accidentCase->institution);
     }
 
     /**
@@ -45,8 +43,8 @@ class AccidentCasePolicy
     {
         return $user->hasRole(["subject_officer", "driver"]) &&
                 app(InstitutionService::class)
-                ->accessibleInstitutionIds($user->institution_id)
-                ->isNotEmpty();
+                ->accessibleInstitutionIds($user)
+                !== [];
     }
 
     /** 
@@ -54,10 +52,14 @@ class AccidentCasePolicy
      */
     public function update(User $user, AccidentCase $accidentCase): bool
     {
-        return $user->hasRole("subject_officer") &&
-                app(InstitutionService::class)
-                    ->accessibleInstitutionIds($user->institution_id)
-                    ->contains($accidentCase->institution_id);
+        return $this->canAccessCase($user, $accidentCase)
+            && $user->hasAnyRole(['system_admin', 'subject_officer']);
+    }
+
+    public function assign(User $user, AccidentCase $accidentCase): bool
+    {
+        return $this->update($user, $accidentCase)
+            && in_array($accidentCase->status, ['OPEN', 'IN_PROGRESS'], true);
     }
 
     /**
@@ -65,10 +67,8 @@ class AccidentCasePolicy
      */
     public function delete(User $user, AccidentCase $accidentCase): bool
     {
-        return $user->hasRole("subject_officer") &&
-                app(InstitutionService::class)
-                    ->accessibleInstitutionIds($user->institution_id)
-                    ->contains($accidentCase->institution_id);
+        return $user->hasRole('subject_officer')
+            && $this->canAccessCase($user, $accidentCase);
     }
 
     /**
@@ -85,5 +85,11 @@ class AccidentCasePolicy
     public function forceDelete(User $user, AccidentCase $accidentCase): bool
     {
         return false;
+    }
+
+    private function canAccessCase(User $user, AccidentCase $accidentCase): bool
+    {
+        return ! $user->hasRole('driver')
+            && app(InstitutionService::class)->canAccessInstitution($user, $accidentCase->institution);
     }
 }

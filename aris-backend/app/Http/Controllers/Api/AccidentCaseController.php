@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\AccidentCase\UpdateAccidentCaseRequest;
+use App\Http\Requests\AccidentCase\AssignAccidentCaseRequest;
 use App\Http\Resources\AccidentCaseResource;
 use App\Models\AccidentCase;
+use App\Models\User;
 use App\Services\AccidentCaseService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,14 +23,14 @@ class AccidentCaseController extends Controller
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', AccidentCase::class);
+
         $filters = $request->validate([
             'case_number' => ['nullable', 'string', 'max:50'],
             'status' => ['nullable', Rule::in([
                 'OPEN',
                 'IN_PROGRESS',
-                'ON_HOLD',
                 'COMPLETED',
-                'CLOSED',
             ])],
             'stage' => ['nullable', Rule::in([
                 'ACCIDENT_REPORTED',
@@ -48,16 +50,35 @@ class AccidentCaseController extends Controller
         return AccidentCaseResource::collection($cases);
     }
 
-    public function show(int $id)
+    public function show(AccidentCase $accidentCase)
     {
-        $case = $this->accidentCaseService->findById($id);
+        $this->authorize('view', $accidentCase);
+
+        $case = $this->accidentCaseService->findById($accidentCase->id);
 
         return new AccidentCaseResource($case);
     }
 
-    public function update(UpdateAccidentCaseRequest $request,AccidentCase $accidentCase) {
+    public function update(UpdateAccidentCaseRequest $request, AccidentCase $accidentCase)
+    {
+        $this->authorize('update', $accidentCase);
+
         $this->accidentCaseService->update($accidentCase, $request->validated());
 
         return new AccidentCaseResource($accidentCase);
     }
+
+    public function assign(AssignAccidentCaseRequest $request, AccidentCase $accidentCase)
+    {
+        $this->authorize('assign', $accidentCase);
+
+        $case = $this->accidentCaseService->assign(
+            $accidentCase,
+            User::findOrFail($request->integer('assigned_to')),
+            $request->user(),
+        );
+
+        return new AccidentCaseResource($case);
+    }
+
 }

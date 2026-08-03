@@ -1,6 +1,7 @@
 export type TimelineAction =
   | "CASE_CREATED"
   | "CASE_ASSIGNED"
+  | "CASE_COMPLETED"
   | "CASE_CLOSED"
   | "ACCIDENT_REPORTED"
   | "EVIDENCE_UPLOADED"
