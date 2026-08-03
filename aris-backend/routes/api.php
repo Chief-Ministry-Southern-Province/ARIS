@@ -87,6 +87,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/cases/{accidentCase}',[AccidentCaseController::class, 'show']);
 
     Route::put('/cases/{accidentCase}',[AccidentCaseController::class, 'update']);
+    Route::post('/cases/{accidentCase}/assign', [AccidentCaseController::class, 'assign']);
 
     // Protected routes for case history
     Route::get('/cases/{accidentCase}/history',[CaseHistoryController::class, 'index']);

@@ -212,6 +212,7 @@ class ApprovalService
         ) {
 
             $document = null;
+            $caseStatusBeforeCompletion = null;
 
             $nextApproval = Approval::query()
 
@@ -289,7 +290,12 @@ class ApprovalService
                     }
 
                     if ($approval->document_type === 'FR1044') {
-                        $accidentCase->update(['current_stage' => 'FR109']);
+                        $caseStatusBeforeCompletion = $accidentCase->status;
+
+                        $accidentCase->update([
+                            'current_stage' => 'FR109',
+                            'status' => 'COMPLETED',
+                        ]);
                     }
                 }
 
@@ -306,6 +312,17 @@ class ApprovalService
            
 
             if (!$nextApproval) {
+                if ($approval->document_type === 'FR1044' && $document) {
+                    $this->timelineService->create(
+                        accidentCase: $accidentCase,
+                        user: $user,
+                        action: 'CASE_COMPLETED',
+                        description: 'Case completed after final FR1044 approval.',
+                        oldValue: ['status' => $caseStatusBeforeCompletion ?? 'IN_PROGRESS'],
+                        newValue: ['status' => 'COMPLETED', 'current_stage' => 'FR109'],
+                    );
+                }
+
                 $this->timelineService->createDocumentEvent(
                     $accidentCase,
                     $user,

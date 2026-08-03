@@ -4,7 +4,7 @@ namespace App\Http\Requests\AccidentCase;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAccidentCaseRequest extends FormRequest
+class AssignAccidentCaseRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,11 +14,7 @@ class UpdateAccidentCaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-
-            'priority' => [
-                'nullable',
-                'in:LOW,MEDIUM,HIGH,URGENT'
-            ],
+            'assigned_to' => ['required', 'integer', 'exists:users,id'],
         ];
     }
 }

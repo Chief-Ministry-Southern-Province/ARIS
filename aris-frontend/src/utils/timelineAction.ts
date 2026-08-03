@@ -19,6 +19,12 @@ export const TIMELINE_ACTIONS = {
     badge: "bg-gray-200 text-gray-800 border-gray-300",
   },
 
+  CASE_COMPLETED: {
+    label: "Case Completed",
+    icon: CheckCircle2,
+    badge: "bg-green-100 text-green-700 border-green-200",
+  },
+
   ACCIDENT_REPORTED: {
     label: "Accident Reported",
     icon: ClipboardList,

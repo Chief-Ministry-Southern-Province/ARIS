@@ -12,9 +12,7 @@ export type CaseStage =
 export type CaseStatus =
   | "OPEN"
   | "IN_PROGRESS"
-  | "ON_HOLD"
-  | "COMPLETED"
-  | "CLOSED";
+  | "COMPLETED";
 
 export type CasePriority =
   | "LOW"

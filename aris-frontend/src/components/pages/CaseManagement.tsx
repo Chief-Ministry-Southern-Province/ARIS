@@ -15,9 +15,7 @@ export function CaseManagement() {
   const statusBadgeColors: Record<string, string> = {
     "OPEN": "bg-yellow-100 text-yellow-800",
     "IN_PROGRESS": "bg-blue-100 text-blue-800",
-    "ON_HOLD": "bg-orange-100 text-orange-800",
     "COMPLETED": "bg-green-100 text-green-800",
-    "CLOSED": "bg-gray-100 text-gray-800",
   };
 
   const severityBadgeColors: Record<string, string> = {
@@ -114,7 +112,6 @@ export function CaseManagement() {
             <option value="FR1043">FR1043</option>
             <option value="FR1044">FR1044</option>
             <option value="FR109">FR109</option>
-            <option value="CLOSED">Closed</option>
           </select>
 
           {/* Status Filter */}
@@ -131,9 +128,7 @@ export function CaseManagement() {
 
             <option value="OPEN">Open</option>
             <option value="IN_PROGRESS">In Progress</option>
-            <option value="ON_HOLD">On Hold</option>
             <option value="COMPLETED">Completed</option>
-            <option value="CLOSED">Closed</option>
           </select>
 
           <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
