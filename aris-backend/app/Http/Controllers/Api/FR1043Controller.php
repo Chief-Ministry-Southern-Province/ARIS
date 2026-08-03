@@ -24,6 +24,8 @@ class FR1043Controller extends Controller
      */
     public function show(AccidentCase $accidentCase)
     {
+        $this->authorize('viewForCase', [FR1043::class, $accidentCase]);
+
         $fr1043 = $this->fr1043Service
             ->getLatest($accidentCase);
 
@@ -41,6 +43,8 @@ class FR1043Controller extends Controller
      */
     public function history(AccidentCase $accidentCase)
     {
+        $this->authorize('viewForCase', [FR1043::class, $accidentCase]);
+
         return FR1043Resource::collection(
             $this->fr1043Service->getHistory($accidentCase)
         );
@@ -51,6 +55,8 @@ class FR1043Controller extends Controller
      */
     public function store(StoreFR1043Request $request,AccidentCase $accidentCase) 
     {
+        $this->authorize('create', [FR1043::class, $accidentCase]);
+
         $fr1043 = $this->fr1043Service->createDraft(
 
             case: $accidentCase,
@@ -69,6 +75,8 @@ class FR1043Controller extends Controller
      */
     public function update(UpdateFR1043Request $request,FR1043 $fr1043) 
     {
+        $this->authorize('update', $fr1043);
+
         $fr1043 = $this->fr1043Service->updateDraft(
 
             fr1043: $fr1043,
@@ -84,6 +92,8 @@ class FR1043Controller extends Controller
      */
     public function submit(Request $request, FR1043 $fr1043)
     {
+        $this->authorize('submit', $fr1043);
+
         $fr1043 = $this->fr1043Service->submit($fr1043, $request->user());
 
         return new FR1043Resource($fr1043);
@@ -92,6 +102,8 @@ class FR1043Controller extends Controller
     /** Download a PDF representation of an FR1043 revision and its approvals. */
     public function downloadPdf(FR1043 $fr1043)
     {
+        $this->authorize('view', $fr1043);
+
         return $this->pdfGenerator->download($fr1043->id);
     }
 }
