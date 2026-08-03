@@ -46,7 +46,7 @@ class FR1043Policy
 
     private function canAccessCase(User $user, AccidentCase $accidentCase): bool
     {
-        return ! ! $user->hasAnyRole(['driver', 'system_admin'])
+        return ! $user->hasAnyRole(['driver', 'system_admin'])
             && app(InstitutionService::class)->canAccessInstitution($user, $accidentCase->institution);
     }
 }

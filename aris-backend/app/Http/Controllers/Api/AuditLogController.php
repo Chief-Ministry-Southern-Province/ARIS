@@ -6,6 +6,7 @@ use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuditLogResource;
+use App\Models\AuditLog;
 use App\Services\AuditLogService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -18,7 +19,7 @@ class AuditLogController extends Controller
 
     public function index(Request $request)
     {
-        abort_unless($request->user()?->hasRole('system_admin'), 403);
+        $this->authorize('viewAny', AuditLog::class);
 
         $filters = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],

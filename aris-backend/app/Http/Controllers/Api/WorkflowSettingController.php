@@ -18,6 +18,8 @@ class WorkflowSettingController extends Controller
 
     public function index()
     {
+        $this->authorize('viewAny', WorkflowSetting::class);
+
         return WorkflowSettingResource::collection(
             WorkflowSetting::orderBy('key')->get()
         );
@@ -26,6 +28,7 @@ class WorkflowSettingController extends Controller
     public function update(
         UpdateWorkflowSettingRequest $request
     ): JsonResponse {
+        $this->authorize('updateAny', WorkflowSetting::class);
 
         foreach ($request->validated()['settings'] as $setting) {
 
