@@ -67,11 +67,19 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
             'signatures' => $signatures,
             'headSignature' => $this->firstSignatureForRoles(
                 $signatures,
-                ['Head of Department', 'Chairman of Corporation', 'medical_superintendent'],
+                ['head of department', 'chairman of corporation', 'medical superintendent'],
             ),
             'secretarySignature' => $this->firstSignatureForRoles(
                 $signatures,
-                ['Secretary', 'secretary'],
+                ['secretary'],
+            ),
+            'pdhsSignature' => $this->firstSignatureForRoles(
+                $signatures,
+                ['provincial director'],
+            ),
+            'treasurySignature' => $this->firstSignatureForRoles(
+                $signatures,
+                ['treasury secretary'],
             ),
         ];
     }
@@ -80,7 +88,9 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
     private function firstSignatureForRoles(array $signatures, array $roles): ?array
     {
         foreach ($signatures as $signature) {
-            if (in_array($signature['role'] ?? null, $roles, true)) {
+            $signatureRole = strtolower(str_replace('_', ' ', trim((string) ($signature['role'] ?? ''))));
+
+            if (in_array($signatureRole, $roles, true)) {
                 return $signature;
             }
         }

@@ -502,6 +502,30 @@ useEffect(() => {
                   </button>
               </>
             ) : <>
+            {displayedForm?.id && (
+              <>
+                <button
+                  type="button"
+                  onClick={downloadPdf}
+                  disabled={downloadPdfMutation.isPending}
+                  className="order-2 sm:order-5 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"
+                >
+                  <Download size={18} />
+                  {downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={previewPdf}
+                  disabled={downloadPdfMutation.isPending}
+                  className="order-2 sm:order-6 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"
+                >
+                  <Eye size={18} />
+                  {downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}
+                </button>
+              </>
+            )}
+
             {/* Submit */}
             <button
               type="submit"

@@ -219,8 +219,15 @@
         }
 
         .item-area {
-            height: 72mm;
+            height: 65mm;
             padding: 2mm;
+        }
+
+        .item-total-row {
+            height: 7mm;
+            font-size: 9pt;
+            font-weight: bold;
+            padding: 1.5mm 2mm;
         }
 
         .item-line {
@@ -290,16 +297,52 @@
             border-bottom: 0.25mm dotted #000;
         }
 
-        .signature-card-grid td {
+        .signature-layout td {
             border: 0;
-            padding: 2mm;
-            text-align: center;
+            padding: 0;
             vertical-align: top;
         }
 
+        .signature-block {
+            min-height: 19mm;
+            padding-bottom: 3mm;
+        }
+
+        .signature-separator-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1mm 0 3mm;
+        }
+
+        .signature-separator-table td {
+            border-top: 0.35mm solid #000 !important;
+            height: 0;
+            padding: 0;
+        }
+
+        .signature-row {
+            width: 100%;
+        }
+
+        .signature-row td {
+            border: 0;
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .signature-date {
+            font-size: 8.5pt;
+            line-height: 1.15;
+            text-align: left;
+        }
+
+        .signature-content {
+            text-align: right;
+        }
+
         .approval-signature-image {
-            width: 52mm;
-            height: 20mm;
+            width: 46mm;
+            height: 12mm;
             object-fit: contain;
         }
 
@@ -344,6 +387,12 @@
             ->values()
             ->take(5);
         $itemSlots = $items->pad(5, []);
+        $number = static fn (mixed $value): float => (float) preg_replace('/[^0-9.\-]/', '', (string) $value ?: '0');
+        $totalItemValue = $items->sum(static function ($item) use ($number): float {
+            $quantity = $number(data_get($item, 'quantity', 1));
+
+            return $number(data_get($item, 'value', 0)) * ($quantity > 0 ? $quantity : 1);
+        });
 
         $officers = collect(data_get($documentData, 'officers', []))
             ->filter(static fn ($officer): bool => is_array($officer) || is_object($officer))
@@ -425,12 +474,17 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="width: 80mm; height: 8mm;"><span class="label-local" lang="si">2. දිනය</span> / <span class="label-local" lang="ta">2. திகதி</span><br><span class="label-local">2. Date</span></td>
-                <td class="field-topic-cell" style="width: 120mm; height: 8mm;"><span class="label-local" lang="si">ස්ථානය</span> / <span class="label-local" lang="ta">இடம்</span><br><span class="label-local">Place</span></td>
+                <td class="field-topic-cell" rowspan="2" style="width: 76mm; height: 31mm; vertical-align: middle;">
+                    <span class="label-local" lang="si">2. අලාභය</span><br>
+                    <span class="label-local" lang="ta">2. இழப்பு</span><br>
+                    <span class="label-local">2. Loss</span>
+                </td>
+                <td class="field-topic-cell" style="width: 45mm; height: 11mm; text-align: center;"><span class="label-local" lang="si">දිනය</span> / <span class="label-local" lang="ta">திகதி</span> / <span class="label-local">Date</span></td>
+                <td class="field-topic-cell" style="width: 79mm; height: 11mm; text-align: center;"><span class="label-local" lang="si">ස්ථානය</span> / <span class="label-local" lang="ta">இடம்</span> / <span class="label-local">Place</span></td>
             </tr>
             <tr>
-                <td class="field-content-cell" style="width: 80mm; height: 12mm;">{{ $text(data_get($documentData, 'date', ''), 30) }}</td>
-                <td class="field-content-cell" style="width: 120mm; height: 12mm;">{{ $text(data_get($documentData, 'place', ''), 100) }}</td>
+                <td class="field-content-cell" style="width: 45mm; height: 20mm; text-align: center;">{{ $text(data_get($documentData, 'date', ''), 30) }}</td>
+                <td class="field-content-cell" style="width: 79mm; height: 20mm;">{{ $text(data_get($documentData, 'place', ''), 100) }}</td>
             </tr>
         </table>
 
@@ -439,11 +493,13 @@
                 <td class="h-26 compact" style="width: 44mm;">
                     <div class="field-title">
                         <span class="label-local" lang="si">3. අලාභයේ ස්වභාවය</span><br>
-                        <span class="label-local" lang="ta">   இழப்பின் தன்மை</span><br>
+                        <span class="label-local" lang="ta">இழப்பின் தன்மை</span><br>
                         <span class="label-local">Nature of Loss</span>
                     </div>
                 </td>
-                <td class="h-26 response" style="width: 156mm;">{{ $text(data_get($documentData, 'natureOfLoss', ''), 180) }}</td>
+                <td class="h-26 response" style="width: 156mm;">
+                    {{ $text(data_get($documentData, 'natureOfLoss', ''), 180) }}
+                </td>
             </tr>
         </table>
 
@@ -492,6 +548,14 @@
                     @endforeach
                 </td>
             </tr>
+            <tr>
+                <td colspan="3" class="item-total-row" style="text-align: right;">
+                    <span lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total Value
+                </td>
+                <td class="item-total-row" style="text-align: right;">
+                    {{ number_format($totalItemValue, 2) }}
+                </td>
+            </tr>
         </table>
 
         <table class="page-break-avoid">
@@ -536,21 +600,23 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="h-23" style="width: 100mm;">
-                    <div class="field-title">
-                        <span class="label-local" lang="si">6. පොලිස් ස්ථානයේ නම</span><br>
-                        <span class="label-local" lang="ta">   பொலிஸ் நிலையத்தின் பெயர்</span><br>
-                        <span class="label-local">Name of Police Station</span>
-                    </div>
-                    <div class="response">{{ $text(data_get($documentData, 'policeStation', ''), 110) }}</div>
+                <th class="h-13 table-header header-cell" style="width: 100mm;">
+                    <span lang="si">6. පොලිස් ස්ථානයේ නම</span><br>
+                    <span lang="ta">පொலிஸ் நிலையத்தின் பெயர்</span><br>
+                    Name of Police Station
+                </th>
+                <th class="h-13 table-header header-cell" style="width: 100mm;">
+                    <span lang="si">පොලිසියට වාර්තා කළ දිනය</span><br>
+                    <span lang="ta">பொலிஸாருக்கு அறிவித்த திகதி</span><br>
+                    Date reported to Police
+                </th>
+            </tr>
+            <tr>
+                <td class="h-12 response" style="width: 100mm;">
+                    {{ $text(data_get($documentData, 'policeStation', ''), 110) }}
                 </td>
-                <td class="h-23" style="width: 100mm;">
-                    <div class="field-title">
-                        <span class="label-local" lang="si">පොලිසියට වාර්තා කළ දිනය</span><br>
-                        <span class="label-local" lang="ta">பொலிஸாருக்கு அறிவித்த திகதி</span><br>
-                        <span class="label-local">Date reported to Police</span>
-                    </div>
-                    <div class="response">{{ $text(data_get($documentData, 'policeReportDate', ''), 35) }}</div>
+                <td class="h-12 response" style="width: 100mm;">
+                    {{ $text(data_get($documentData, 'policeReportDate', ''), 35) }}
                 </td>
             </tr>
         </table>
@@ -582,31 +648,49 @@
             </tr>
         </table>
 
-        <table class="no-border signature-card-grid page-break-avoid"
-            style="margin-top: 16mm;"
-        >
-            @forelse (array_chunk($signatures, 3) as $signatureRow)
-                <tr>
-                    @foreach ($signatureRow as $signature)
-                        <td style="width: 66.66mm;">
-                            @if (data_get($signature, 'signature_data_uri'))
-                                <img class="approval-signature-image" src="{{ data_get($signature, 'signature_data_uri') }}" alt="{{ $text(data_get($signature, 'name', 'Approver'), 50) }} signature"><br>
-                            @else
-                                <div class="signature-line"></div>
-                            @endif
-                            <span class="signature-card-name">{{ $text(data_get($signature, 'name', ''), 55) }}</span><br>
-                            <span class="signature-card-institution">{{ $text(data_get($signature, 'institution', ''), 55) }}</span><br>
-                            <span class="signature-card-role">{{ $text(data_get($signature, 'role', ''), 55) }}</span><br>
-                            <span class="signature-card-date">{{ $text(data_get($signature, 'approved_at', ''), 30) }}</span>
-                        </td>
+        @php
+            $signatureRows = [
+                ['signature' => $headSignature, 'label' => 'Head of Department / Chairman of Corporation', 'always_show' => true],
+                ['signature' => $pdhsSignature, 'label' => 'Provincial Director of Health Services', 'always_show' => false],
+                ['signature' => $secretarySignature, 'label' => 'Secretary to the Ministry of ' . $text(data_get($documentData, 'secretaryOfMinistry', ''), 45), 'always_show' => true],
+                ['signature' => $treasurySignature, 'label' => 'Treasury Secretary', 'always_show' => false],
+            ];
+        @endphp
+
+        <table class="no-border signature-layout page-break-avoid" style="margin-top: 12mm;">
+            <tr>
+                <td style="width: 200mm;">
+                    @foreach ($signatureRows as $signatureRow)
+                        @if ($signatureRow['always_show'] || data_get($signatureRow['signature'], 'signature_data_uri'))
+                            <div class="signature-block">
+                                <table class="no-border signature-row">
+                                    <tr>
+                                        <td class="signature-date" style="width: 45mm;">
+                                            <span lang="si">දිනය</span><br>
+                                            <span lang="ta">திகதி</span><br>
+                                            Date<br>
+                                            {{ $text(data_get($signatureRow['signature'], 'approved_at', ''), 30) }}
+                                        </td>
+                                        <td class="signature-content" style="width: 155mm;">
+                                            @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                <img class="approval-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature"><br>
+                                            @else
+                                                <div class="signature-line" style="width: 65mm; margin-left: auto;"></div>
+                                            @endif
+                                            <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
+                                            <span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution', ''), 55) }}</span><br>
+                                            <span class="signature-label">{{ $signatureRow['label'] }}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <table class="signature-separator-table" style="width: 200mm;">
+                                <tr><td style="width: 200mm;">&nbsp;</td></tr>
+                            </table>
+                        @endif
                     @endforeach
-                    @for ($emptyCard = count($signatureRow); $emptyCard < 3; $emptyCard++)
-                        <td style="width: 66.66mm;"></td>
-                    @endfor
-                </tr>
-            @empty
-                <tr><td style="width: 200mm;">No approved signatures available.</td></tr>
-            @endforelse
+                </td>
+            </tr>
         </table>
 
     </div>
