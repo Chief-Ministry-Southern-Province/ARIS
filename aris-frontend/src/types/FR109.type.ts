@@ -62,11 +62,15 @@ export interface FR109FormData {
 }
 
 export interface FR109Response {
+  document_type: "FR109";
   id: number;
   reference_number: string;
   revision: number;
   status: FR109Status;
   submitted_at?: string | null;
+  approved_at?: string | null;
+  case: { id: number; case_number: string };
+  creator: { id: number; name: string };
   data: FR109FormData;
 }
 

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CaseHistoryController;
 use App\Http\Controllers\Api\ApprovalController;
 use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
+use App\Http\Controllers\Api\FR109Controller;
 use App\Http\Controllers\Api\UserSignatureController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\WorkflowSettingController;
@@ -135,6 +136,11 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/fr1044/{fr1044}/pdf',[FR1044Controller::class, 'downloadPdf']);
     Route::post('/fr1044/{fr1044}/attachments',[FR1044Controller::class, 'attachment']);
     Route::get('/fr1044/{fr1044}/attachments/{fieldKey}',[FR1044Controller::class, 'attachmentPreview']);
+
+    // Protected routes for FR109
+    Route::get('/cases/{accidentCase}/fr109', [FR109Controller::class, 'show']);
+    Route::post('/cases/{accidentCase}/fr109', [FR109Controller::class, 'save']);
+    Route::post('/cases/{accidentCase}/fr109/submit', [FR109Controller::class, 'submit']);
 
     //Protected routes for user signature
     Route::post('/user/signature', [UserSignatureController::class, 'store']);

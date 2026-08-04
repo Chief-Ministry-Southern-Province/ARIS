@@ -17,6 +17,7 @@ const invalidate = (queryClient: ReturnType<typeof useQueryClient>, caseId?: num
   queryClient.invalidateQueries({ queryKey: ["timeline"] });
   if (caseId) queryClient.invalidateQueries({ queryKey: queryKeys.fr1043(caseId) });
   if (caseId) queryClient.invalidateQueries({ queryKey: queryKeys.fr1044(caseId) });
+  if (caseId) queryClient.invalidateQueries({ queryKey: queryKeys.fr109(caseId) });
 };
 
 export const useApprove = (caseId?: number) => {

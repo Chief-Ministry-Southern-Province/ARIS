@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
+import FR109Form from "@/components/pages/forms/FR109/FR109Form";
 import ApprovalDecisionDialog from "@/components/approval/ApprovalDecisionDialog";
 import Loader from "@/components/atoms/Loader";
 import Modal from "@/components/molecules/Modal";
@@ -110,8 +111,15 @@ export default function ApprovalDocumentViewer() {
       }
     : {};
 
-  const form =
-    document.document_type === "FR1044" ? (
+  const form = document.document_type === "FR109" ? (
+    <FR109Form
+      readOnly
+      document={document}
+      approvalTimeline={approvals}
+      onBack={() => navigate("/approvals")}
+      {...decisionProps}
+    />
+  ) : document.document_type === "FR1044" ? (
       <FR104_4Form
         readOnly
         document={document}

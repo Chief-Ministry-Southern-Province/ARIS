@@ -35,6 +35,7 @@ import {protectedPage} from "@/routes/protectedPage";
 import {
   ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS,
   CHIEF_ACCOUNTANT_ACCESS_ROLES,
+  FR109_APPROVAL_ACCESS_ROLES,
   FULL_ACCESS_ROLES,
   REPORT_ROLES,
   NOTIFICATION_ROLES,
@@ -142,12 +143,12 @@ export const router = createBrowserRouter([
       protectedPage(
         "/approvals",
         <ApprovalCenter />,
-        FULL_ACCESS_ROLES
+        FR109_APPROVAL_ACCESS_ROLES
       ),
       protectedPage(
         "/approvals/:approvalId",
         <ApprovalDocumentViewer />,
-        FULL_ACCESS_ROLES
+        FR109_APPROVAL_ACCESS_ROLES
       ),
       protectedPage(
         "/cases/:caseId/details",

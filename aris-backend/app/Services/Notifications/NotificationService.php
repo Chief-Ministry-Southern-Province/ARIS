@@ -8,6 +8,7 @@ use App\Models\Accident;
 use App\Models\Institution;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 use App\Models\Notification as UserNotification;
 use App\Notifications\DocumentRejectedNotification;
 use App\Notifications\NextApprovalNotification;
@@ -88,6 +89,10 @@ public function notifyNextApprover(Approval $approval): void
             ->where('revision', $approval->revision)
             ->value('reference_number'),
         'FR1044' => FR1044::query()
+            ->where('accident_case_id', $approval->accident_case_id)
+            ->where('revision', $approval->revision)
+            ->value('reference_number'),
+        'FR109' => FR109::query()
             ->where('accident_case_id', $approval->accident_case_id)
             ->where('revision', $approval->revision)
             ->value('reference_number'),

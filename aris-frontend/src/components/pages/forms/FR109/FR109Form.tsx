@@ -22,6 +22,7 @@ interface Props {
   document?: FR109Response;
   approvalTimeline?: Approval[];
   onBack?: () => void;
+  onDecision?: () => void;
 }
 
 type LegacyWriteOffFields = {
@@ -44,6 +45,7 @@ export default function FR109Form({
   document,
   approvalTimeline = [],
   onBack,
+  onDecision,
 }: Props) {
   const { t } = useTranslation();
   const { caseId } = useParams();
@@ -242,13 +244,24 @@ export default function FR109Form({
           <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="px-5 py-3 border rounded-lg"
-                >
-                  Back
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    className="px-5 py-3 border rounded-lg"
+                  >
+                    Back
+                  </button>
+                  {onDecision && (
+                    <button
+                      type="button"
+                      onClick={onDecision}
+                      className="px-5 py-3 bg-blue-800 text-white rounded-lg"
+                    >
+                      Decision
+                    </button>
+                  )}
+                </>
               ) : (
                 <>
                   <button

@@ -7,9 +7,11 @@ use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 use App\Models\User;
 use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
+use App\Http\Resources\FR109Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +49,12 @@ class ApprovalService
             ),
             'FR1044' => new FR1044Resource(
                 FR1044::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->firstOrFail()
+            ),
+            'FR109' => new FR109Resource(
+                FR109::query()
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->firstOrFail()
@@ -272,6 +280,7 @@ class ApprovalService
                 $document = match ($approval->document_type) {
                     'FR1043' => FR1043::query(),
                     'FR1044' => FR1044::query(),
+                    'FR109' => FR109::query(),
                     default => null,
                 };
 
@@ -391,8 +400,12 @@ class ApprovalService
                 );
             });
 
-            if (in_array($approval->document_type, ['FR1043', 'FR1044'], true)) {
-                $document = ($approval->document_type === 'FR1043' ? FR1043::query() : FR1044::query())
+            if (in_array($approval->document_type, ['FR1043', 'FR1044', 'FR109'], true)) {
+                $document = (match ($approval->document_type) {
+                    'FR1043' => FR1043::query(),
+                    'FR1044' => FR1044::query(),
+                    'FR109' => FR109::query(),
+                })
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->first();

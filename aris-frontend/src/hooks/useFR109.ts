@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/hooks/queryKeys";
 import { getFR109, saveFR109, submitFR109 } from "@/services/fr109.service";
 import type { FR109FormData, FR109Response } from "@/types/FR109.type";
 
 const useGetFR109 = (caseId: string) => {
   const { data, isLoading, error } = useQuery<FR109Response, Error>({
-    queryKey: ["fr109", caseId],
+    queryKey: queryKeys.fr109(Number(caseId)),
     queryFn: () => getFR109(caseId),
     enabled: !!caseId,
     retry: false,
@@ -19,7 +20,7 @@ const useSaveFR109 = (caseId: string) => {
   return useMutation<FR109Response, Error, FR109FormData>({
     mutationFn: (formData: FR109FormData) => saveFR109(caseId, formData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fr109", caseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
     },
   });
 };
@@ -30,7 +31,7 @@ const useSubmitFR109 = (caseId: string) => {
   return useMutation<FR109Response, Error, FR109FormData>({
     mutationFn: (formData: FR109FormData) => submitFR109(caseId, formData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["fr109", caseId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
     },
   });
 };

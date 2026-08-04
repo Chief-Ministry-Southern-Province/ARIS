@@ -18,6 +18,11 @@ export const CHIEF_ACCOUNTANT_ACCESS_ROLES = [
   "chief_accountant",
 ];
 
+export const FR109_APPROVAL_ACCESS_ROLES = [
+  ...FULL_ACCESS_ROLES,
+  "chief_accountant",
+];
+
 export const SIGNATURE_ACCESS_ROLE = [
   "medical_superintendent",
   "regional_director",
@@ -111,7 +116,7 @@ export const navItems = [
     path: "/approvals",
     icon: FolderClock,
     label: "nav.approvals",
-    roles: FULL_ACCESS_ROLES,
+    roles: FR109_APPROVAL_ACCESS_ROLES,
   },
 
   {
