@@ -653,7 +653,7 @@
                 ['signature' => $headSignature, 'label' => 'Head of Department / Chairman of Corporation', 'always_show' => true],
                 ['signature' => $pdhsSignature, 'label' => 'Provincial Director of Health Services', 'always_show' => false],
                 ['signature' => $secretarySignature, 'label' => 'Secretary to the Ministry of ' . $text(data_get($documentData, 'secretaryOfMinistry', ''), 45), 'always_show' => true],
-                ['signature' => $treasurySignature, 'label' => 'Treasury Secretary', 'always_show' => false],
+                ['signature' => $chiefSecretarySignature, 'label' => 'Chief Secretary', 'always_show' => false],
             ];
         @endphp
 

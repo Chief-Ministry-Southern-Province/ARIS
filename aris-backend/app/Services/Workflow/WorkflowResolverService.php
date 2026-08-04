@@ -56,7 +56,7 @@ class WorkflowResolverService
       }
 
       if ($lossAmount > $configuration['ministry_threshold']) {
-          $steps[] = $this->resolveTreasurySecretary();
+          $steps[] = $this->resolveChiefSecretary();
       }
 
       return $this->renumber($steps);
@@ -110,10 +110,10 @@ class WorkflowResolverService
       return (float) preg_replace('/[^0-9.\-]/', '', (string) $value ?: '0');
   }
 
-  private function resolveTreasurySecretary(): WorkflowStep
+  private function resolveChiefSecretary(): WorkflowStep
   {
       $user = User::query()
-          ->role('treasury_secretary')
+          ->role('chief_secretary')
           ->whereHas('institution', fn ($query) => $query->where('type', 'MINISTRY'))
           ->with('institution')
           ->orderBy('id')
@@ -121,14 +121,14 @@ class WorkflowResolverService
 
       if (! $user || ! $user->institution) {
           throw ValidationException::withMessages([
-              'workflow' => 'Create a Treasury Secretary user with an assigned institution before submitting a loss above the Ministry threshold.',
+              'workflow' => 'Create a Chief Secretary user with an assigned Ministry institution before submitting a loss above the Ministry threshold.',
           ]);
       }
 
       return new WorkflowStep(
           step: 1,
           institution: $user->institution,
-          role: 'treasury_secretary',
+          role: 'chief_secretary',
           approverId: $user->id,
       );
   }

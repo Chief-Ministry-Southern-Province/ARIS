@@ -77,9 +77,9 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
                 $signatures,
                 ['provincial director'],
             ),
-            'treasurySignature' => $this->firstSignatureForRoles(
+            'chiefSecretarySignature' => $this->firstSignatureForRoles(
                 $signatures,
-                ['treasury secretary'],
+                ['chief secretary'],
             ),
         ];
     }

@@ -10,7 +10,12 @@ export const FULL_ACCESS_ROLES = [
   "secretary",
   "assistant_secretary",
   "senior_assistant_secretary",
-  "treasury_secretary",
+  "chief_secretary",
+];
+
+export const CHIEF_ACCOUNTANT_ACCESS_ROLES = [
+  ...FULL_ACCESS_ROLES,
+  "chief_accountant",
 ];
 
 export const SIGNATURE_ACCESS_ROLE = [
@@ -18,7 +23,7 @@ export const SIGNATURE_ACCESS_ROLE = [
   "regional_director",
   "provincial_director",
   "secretary",
-  "treasury_secretary",
+  "chief_secretary",
 ]
 
 export const REPORT_ROLES = [
@@ -42,7 +47,7 @@ export const canAccessAdminPanel = (
     ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS.includes(institutionType));
 
 export const NOTIFICATION_ROLES = [
-  ...FULL_ACCESS_ROLES,
+  ...CHIEF_ACCOUNTANT_ACCESS_ROLES,
   "driver",
 ];
 
@@ -52,7 +57,7 @@ export const navItems = [
     path: "/dashboard",
     icon: LayoutDashboard,
     label: "nav.dashboard",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {
@@ -68,7 +73,7 @@ export const navItems = [
     path: "/cases",
     icon: FolderOpen,
     label: "nav.caseManagement",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {
@@ -76,7 +81,7 @@ export const navItems = [
     path: "/evidence",
     icon: FileSearch,
     label: "nav.evidence",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {
@@ -84,7 +89,7 @@ export const navItems = [
     path: "/analytics",
     icon: BarChart2,
     label: "nav.analytics",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {

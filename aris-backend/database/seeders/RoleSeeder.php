@@ -24,6 +24,7 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'secretary']);
         Role::firstOrCreate(['name' => 'assistant_secretary']);
         Role::firstOrCreate(['name' => 'senior_assistant_secretary']);
-        Role::firstOrCreate(['name' => 'treasury_secretary']);
+        Role::firstOrCreate(['name' => 'chief_secretary']);
+        Role::firstOrCreate(['name' => 'chief_accountant']);
     }
 }

@@ -201,7 +201,7 @@ class ApprovalService
 
         $signature = $signatureRequired
             ? $this->getActiveSignature($user)
-            : ($user->hasRole('treasury_secretary') ? $this->getOptionalSignature($user) : null);
+            : ($user->hasRole('chief_secretary') ? $this->getOptionalSignature($user) : null);
 
         DB::transaction(function () use (
             $approval,

@@ -34,6 +34,7 @@ import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 import {protectedPage} from "@/routes/protectedPage";
 import {
   ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS,
+  CHIEF_ACCOUNTANT_ACCESS_ROLES,
   FULL_ACCESS_ROLES,
   REPORT_ROLES,
   NOTIFICATION_ROLES,
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/dashboard",
         <DashboardPage />,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -80,13 +81,13 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases",
         <CaseManagement />,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
         "/evidence",
         <EvidencePage />,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -96,7 +97,7 @@ export const router = createBrowserRouter([
             <Analytics />
           </LazyChart>
         </Suspense>,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -118,13 +119,13 @@ export const router = createBrowserRouter([
       protectedPage(
         "/profile",
         <MyProfile />,
-        [...FULL_ACCESS_ROLES, "driver","system_admin"],
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
         "/change-password",
         <ChangePassword />,
-        [...FULL_ACCESS_ROLES, "driver","system_admin"],
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
@@ -151,12 +152,12 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases/:caseId/details",
         <CaseDetails />,  
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
       protectedPage(
         "/vehicles/:vehicleId",
         <VehicleDetails />,  
-        [...FULL_ACCESS_ROLES,"system_admin"]
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES,"system_admin"]
       ),
       protectedPage(
         "/cases/:caseId/FR104-3/generate",

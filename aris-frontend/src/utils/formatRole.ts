@@ -6,9 +6,9 @@ export const formatRole = (role: string) => {
 export const rolesForInstitution = (institutionType?: string) => {
   switch (institutionType) {
     case "MINISTRY":
-      return ["subject_officer", "secretary", "assistant_secretary", "senior_assistant_secretary", "treasury_secretary", "administrative_officer", "driver"];
+      return ["subject_officer", "secretary", "assistant_secretary", "senior_assistant_secretary", "chief_secretary", "administrative_officer", "driver"];
     case "PDHS":
-      return ["administrative_officer", "deputy_director", "provincial_director", "driver"];
+      return ["administrative_officer", "deputy_director", "provincial_director", "chief_accountant", "driver"];
     case "RDHS":
       return ["administrative_officer", "regional_director", "driver"];
     case "BASE_HOSPITAL":

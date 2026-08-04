@@ -43,14 +43,21 @@ class UpdateUserRequest extends FormRequest
     public function after(): array
     {
         return [function ($validator) {
-            if ($this->input('role') !== 'treasury_secretary') {
+            $requiredInstitutionType = match ($this->input('role')) {
+                'chief_secretary' => 'MINISTRY',
+                'chief_accountant' => 'PDHS',
+                default => null,
+            };
+
+            if (! $requiredInstitutionType) {
                 return;
             }
 
             $institution = Institution::find($this->integer('institution_id'));
 
-            if (! $institution || $institution->type !== 'MINISTRY') {
-                $validator->errors()->add('institution_id', 'Treasury Secretary must be assigned to a Ministry institution.');
+            if (! $institution || $institution->type !== $requiredInstitutionType) {
+                $roleName = $this->input('role') === 'chief_accountant' ? 'Chief Accountant' : 'Chief Secretary';
+                $validator->errors()->add('institution_id', "{$roleName} must be assigned to a {$requiredInstitutionType} institution.");
             }
         }];
     }
