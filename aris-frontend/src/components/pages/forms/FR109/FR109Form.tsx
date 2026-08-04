@@ -15,9 +15,7 @@ import PropertySection from "@/components/organisms/Forms/FR109/PropertySection"
 import ValueOfLossSection from "@/components/organisms/Forms/FR109/ValueOfLossSection";
 import NonRecoverySection from "@/components/organisms/Forms/FR109/NonRecoverySection";
 import LegalActionSection from "@/components/organisms/Forms/FR109/LegalActionSection";
-import HeadDepartmentSection from "@/components/organisms/Forms/FR109/HeadDepartmentSection";
-import ChiefAccountingSection from "@/components/organisms/Forms/FR109/ChiefAccountingSection";
-import WriteOffDecisionSection from "@/components/organisms/Forms/FR109/WriteOffDecisionSection";
+import WriteOffRegisterSection from "@/components/organisms/Forms/FR109/WriteOffRegisterSection";
 
 interface Props {
   readOnly?: boolean;
@@ -25,6 +23,13 @@ interface Props {
   approvalTimeline?: Approval[];
   onBack?: () => void;
 }
+
+type LegacyWriteOffFields = {
+  stockBookFolio?: string;
+  inventoryBookFolio?: string;
+  fixedAssetsRegisterFolio?: string;
+  ledgerFolio?: string;
+};
 
 const badge: Record<FR109Status, string> = {
   DRAFT: "bg-slate-100 text-slate-700",
@@ -64,7 +69,31 @@ export default function FR109Form({
 
   useEffect(() => {
     if (displayed) {
-      setData(displayed.data);
+      const formData = displayed.data as FR109FormData & LegacyWriteOffFields;
+      const {
+        stockBookFolio,
+        inventoryBookFolio,
+        fixedAssetsRegisterFolio,
+        ledgerFolio,
+        ...currentData
+      } = formData;
+      const legacyEntry = {
+        stockBookFolio: stockBookFolio ?? "",
+        inventoryBookFolio: inventoryBookFolio ?? "",
+        fixedAssetsRegisterFolio: fixedAssetsRegisterFolio ?? "",
+        ledgerFolio: ledgerFolio ?? "",
+      };
+      const hasLegacyEntry = Object.values(legacyEntry).some(Boolean);
+
+      setData({
+        ...initialFormData,
+        ...currentData,
+        writeOffEntries: formData.writeOffEntries?.length
+          ? formData.writeOffEntries
+          : hasLegacyEntry
+            ? [legacyEntry]
+            : initialFormData.writeOffEntries,
+      });
       setStatus(displayed.status);
     }
   }, [displayed]);
@@ -203,20 +232,9 @@ export default function FR109Form({
               setFormData={setData}
             />
 
-            <HeadDepartmentSection
+            <WriteOffRegisterSection
               formData={data}
               setFormData={setData}
-            />
-
-            <ChiefAccountingSection
-              formData={data}
-              setFormData={setData}
-            />
-
-            <WriteOffDecisionSection
-              formData={data}
-              setFormData={setData}
-              editable={editable}
             />
 
           </fieldset>

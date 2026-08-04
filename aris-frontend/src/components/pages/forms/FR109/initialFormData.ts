@@ -26,26 +26,14 @@ export const initialFormData: FR109FormData = {
   reasonsForNonRecovery: "",
   actionTakenDetails: "",
   resultsOfAction: "",
-  chiefAccountantDate: "",
-  chiefAccountantSignature: "",
-
-  headOfDeptSecretaryMinistry: "",
-  headOfDeptDate: "",
-
-  chiefAccountingSerialNo: "",
-  chiefAccountingRefNo: "",
-  chiefAccountingDate: "",
-  chiefAccountingSecretaryMinistry: "",
-
-  writeOffSecretaryMinistry: "",
-  writeOffRefNo: "",
-  writeOffDate: "",
-  writeOffStatus: "",
-
-  stockBookFolio: "",
-  inventoryBookFolio: "",
-  fixedAssetsRegisterFolio: "",
-  ledgerFolio: "",
+  writeOffEntries: [
+    {
+      stockBookFolio: "",
+      inventoryBookFolio: "",
+      fixedAssetsRegisterFolio: "",
+      ledgerFolio: "",
+    },
+  ],
 
   refNo: "",
 };

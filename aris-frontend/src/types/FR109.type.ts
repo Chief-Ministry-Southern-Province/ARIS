@@ -16,6 +16,13 @@ export interface SurchargedOfficer {
   balanceNotRecovered: string;
 }
 
+export interface WriteOffEntry {
+  stockBookFolio: string;
+  inventoryBookFolio: string;
+  fixedAssetsRegisterFolio: string;
+  ledgerFolio: string;
+}
+
 export interface FR109FormData {
   // 1. Department
   department: string;
@@ -48,30 +55,8 @@ export interface FR109FormData {
   reasonsForNonRecovery: string;
   actionTakenDetails: string;
   resultsOfAction: string;
-  chiefAccountantDate: string;
-  chiefAccountantSignature: string;
-
-  // 9. Head of Department order
-  headOfDeptSecretaryMinistry: string;
-  headOfDeptDate: string;
-
-  // 10. Chief Accounting Officer order
-  chiefAccountingSerialNo: string;
-  chiefAccountingRefNo: string;
-  chiefAccountingDate: string;
-  chiefAccountingSecretaryMinistry: string;
-
-  // 11. Write off decision
-  writeOffSecretaryMinistry: string;
-  writeOffRefNo: string;
-  writeOffDate: string;
-  writeOffStatus: "" | "AUTHORISED" | "NOT_APPROVED";
-
   // 12. Write off noted in
-  stockBookFolio: string;
-  inventoryBookFolio: string;
-  fixedAssetsRegisterFolio: string;
-  ledgerFolio: string;
+  writeOffEntries: WriteOffEntry[];
 
   refNo?: string;
 }
