@@ -44,7 +44,7 @@ export const RecentActivities = () => {
   const activities = statistics?.recent_activities ?? [];
 
   return (
-    <div className="min-h-[365px] rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <div className="mb-5 flex items-center justify-between">
         <h3 className="text-lg font-bold text-slate-900">
           {t("dashboard.recentActivities")}
@@ -59,9 +59,9 @@ export const RecentActivities = () => {
           ))}
         </div>
       ) : activities.length ? (
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 gap-x-10 gap-y-4 xl:grid-cols-2">
           {activities.map((activity) => (
-            <div key={activity.id} className="flex items-start gap-3">
+            <div key={activity.id} className="flex items-start gap-3 rounded-xl px-1 py-1 transition-colors hover:bg-slate-50">
               <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-100 bg-slate-50">
                 {activityIcons[selectIcon(activity.action)]}
               </div>

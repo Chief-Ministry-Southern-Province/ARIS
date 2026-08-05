@@ -34,7 +34,7 @@ class DashboardService
         $fiscalAccidents = Accident::query()
             ->whereIn('institution_id', $institutionIds)
             ->whereBetween('accident_date', [$fiscalYearStart->toDateString(), $fiscalYearEnd->toDateString()])
-            ->get(['id', 'vehicle_id', 'accident_date']);
+            ->get(['id', 'vehicle_id', 'accident_date', 'latitude', 'longitude', 'location']);
 
         $accessibleVehicles = Vehicle::query()
             ->whereIn('institution_id', $institutionIds)
@@ -70,6 +70,9 @@ class DashboardService
             'vehicle_risks' => $this->vehicleRisks($fiscalAccidents, $accessibleVehicles),
             'recent_activities' => $this->recentActivities($institutionIds),
             'recent_cases' => $this->recentCases($caseScope),
+            'hotspots' => $this->hotspots($fiscalAccidents),
+            'overdue_approvals' => $this->overdueApprovals($user),
+            'case_stage_funnel' => $this->caseStageFunnel($caseScope),
             'fiscal_year_start' => $fiscalYearStart->toDateString(),
             'fiscal_year_end' => $fiscalYearEnd->toDateString(),
         ];
@@ -198,5 +201,99 @@ class DashboardService
                 'status' => $case->status,
             ])
             ->all();
+    }
+
+    private function hotspots($accidents): array
+    {
+        return $accidents
+            ->filter(fn (Accident $accident) => $this->hasSriLankanCoordinates($accident))
+            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2) . ':' . round((float) $accident->longitude, 2))
+            ->map(function ($nearbyAccidents) {
+                $count = $nearbyAccidents->count();
+
+                return [
+                    'id' => $nearbyAccidents->first()->id,
+                    'name' => $nearbyAccidents->pluck('location')->filter()->first() ?: 'Accident hotspot',
+                    'latitude' => round((float) $nearbyAccidents->avg('latitude'), 6),
+                    'longitude' => round((float) $nearbyAccidents->avg('longitude'), 6),
+                    'count' => $count,
+                    'risk' => $count >= 5 ? 'HIGH' : ($count >= 3 ? 'MEDIUM' : 'LOW'),
+                ];
+            })
+            ->sortByDesc('count')
+            ->take(10)
+            ->values()
+            ->all();
+    }
+
+    private function hasSriLankanCoordinates(Accident $accident): bool
+    {
+        if ($accident->latitude === null || $accident->longitude === null) {
+            return false;
+        }
+
+        return (float) $accident->latitude >= 5.8
+            && (float) $accident->latitude <= 10.1
+            && (float) $accident->longitude >= 79.5
+            && (float) $accident->longitude <= 82.1;
+    }
+
+    private function overdueApprovals(User $user): array
+    {
+        $now = now();
+
+        return Approval::query()
+            ->where('approver_id', $user->id)
+            ->where('status', 'PENDING')
+            ->where('updated_at', '<=', $now->copy()->subHours(24))
+            ->with([
+                'accidentCase:id,case_number',
+                'approver:id,name',
+            ])
+            ->orderBy('updated_at')
+            ->limit(5)
+            ->get(['id', 'accident_case_id', 'document_type', 'revision', 'step', 'approver_id', 'updated_at'])
+            ->map(fn (Approval $approval) => [
+                'id' => $approval->id,
+                'case_number' => $approval->accidentCase?->case_number,
+                'document_type' => $approval->document_type,
+                'revision' => $approval->revision,
+                'step' => $approval->step,
+                'approver_name' => $approval->approver?->name,
+                'waiting_hours' => $approval->updated_at->diffInHours($now),
+            ])
+            ->all();
+    }
+
+    private function caseStageFunnel($caseScope): array
+    {
+        $stageCounts = (clone $caseScope)
+            ->where('status', '!=', 'COMPLETED')
+            ->selectRaw('current_stage, COUNT(*) as total')
+            ->groupBy('current_stage')
+            ->pluck('total', 'current_stage');
+
+        $stages = [
+            'ACCIDENT_REPORTED' => 'Accident Reported',
+            'FR1043' => 'FR1043',
+            'FR1044' => 'FR1044',
+            'FR109' => 'FR109',
+        ];
+
+        $funnel = collect($stages)
+            ->map(fn (string $label, string $stage) => [
+                'stage' => $stage,
+                'label' => $label,
+                'count' => (int) ($stageCounts[$stage] ?? 0),
+            ])
+            ->values();
+
+        $funnel->push([
+            'stage' => 'COMPLETED',
+            'label' => 'Completed',
+            'count' => (clone $caseScope)->where('status', 'COMPLETED')->count(),
+        ]);
+
+        return $funnel->all();
     }
 }

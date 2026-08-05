@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useDashboardStatistics } from "@/hooks/useDashboard";
 
@@ -20,6 +20,7 @@ const stageLabels: Record<string, string> = {
 
 export const RecentCasesTable = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data: statistics, isLoading } = useDashboardStatistics();
   const cases = statistics?.recent_cases ?? [];
 
@@ -63,7 +64,18 @@ export const RecentCasesTable = () => {
                 };
 
                 return (
-                  <tr key={caseItem.id} className="cursor-pointer transition-colors hover:bg-blue-50/30">
+                  <tr
+                    key={caseItem.id}
+                    tabIndex={0}
+                    onClick={() => navigate(`/cases/${caseItem.id}/details`)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        navigate(`/cases/${caseItem.id}/details`);
+                      }
+                    }}
+                    className="cursor-pointer transition-colors hover:bg-blue-50/30 focus:bg-blue-50/50 focus:outline-none"
+                  >
                     <td className="px-4 py-3">
                       <span className="font-mono text-xs font-bold text-blue-800">{caseItem.case_number}</span>
                     </td>

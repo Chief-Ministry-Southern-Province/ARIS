@@ -50,7 +50,16 @@
     "vehicleRisk": "වාහන අවදානම්",
     "locationRisks": "ස්ථානයේ අවදානම්",
     "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
-    "recentActivities": "අලුත් ක්‍රියාකාරකම්"
+    "recentActivities": "අලුත් ක්‍රියාකාරකම්",
+    "overdueApprovals": "කල් ඉකුත් වූ අනුමැතීන්",
+    "overdueApprovalsSubtitle": "පැය 24ක් හෝ ඊට වැඩි කාලයක් සමාලෝචනය බලාපොරොත්තු වන අනුමැතීන්.",
+    "unassignedApprover": "අනුමත කරන්නෙකු පවරා නැත",
+    "step": "පියවර {{step}}",
+    "noOverdueApprovals": "කල් ඉකුත් වූ අනුමැතීන් නොමැත.",
+    "caseStageFunnel": "නඩු පියවර ප්‍රවාහය",
+    "caseStageFunnelSubtitle": "ප්‍රවේශ විය හැකි නඩු දැනට පවතින පියවර.",
+    "stageAccidentReported": "අනතුර වාර්තා කරන ලදී",
+    "stageCompleted": "සම්පූර්ණ කරන ලදී"
   },
   "report": {
     "title": "නව අනතුරු වාර්තාව",

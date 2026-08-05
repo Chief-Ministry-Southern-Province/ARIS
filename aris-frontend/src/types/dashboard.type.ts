@@ -30,6 +30,31 @@ export interface RecentCasePoint {
   status: string;
 }
 
+export interface DashboardHotspotPoint {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  count: number;
+  risk: "HIGH" | "MEDIUM" | "LOW";
+}
+
+export interface OverdueApprovalPoint {
+  id: number;
+  case_number: string | null;
+  document_type: string;
+  revision: number;
+  step: number;
+  approver_name: string | null;
+  waiting_hours: number;
+}
+
+export interface CaseStageFunnelPoint {
+  stage: string;
+  label: string;
+  count: number;
+}
+
 export interface DashboardStatistics {
   total_incidents: number;
   open_investigations: number;
@@ -41,6 +66,9 @@ export interface DashboardStatistics {
   vehicle_risks: VehicleRiskPoint[];
   recent_activities: RecentActivityPoint[];
   recent_cases: RecentCasePoint[];
+  hotspots: DashboardHotspotPoint[];
+  overdue_approvals: OverdueApprovalPoint[];
+  case_stage_funnel: CaseStageFunnelPoint[];
   fiscal_year_start: string;
   fiscal_year_end: string;
 }

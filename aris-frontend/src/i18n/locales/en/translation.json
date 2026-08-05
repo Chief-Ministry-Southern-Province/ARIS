@@ -85,7 +85,16 @@
     "vehicleRisk": "Vehicle Risk",
     "locationRisks": "Location Risks",
     "accidentHotspotMp": "Accident Hotspot Map",
-    "recentActivities": "Recent Activity"
+    "recentActivities": "Recent Activity",
+    "overdueApprovals": "Overdue Approvals",
+    "overdueApprovalsSubtitle": "Pending review for 24 hours or more.",
+    "unassignedApprover": "Unassigned approver",
+    "step": "Step {{step}}",
+    "noOverdueApprovals": "No overdue approvals.",
+    "caseStageFunnel": "Case Stage Funnel",
+    "caseStageFunnelSubtitle": "Where accessible cases are currently progressing.",
+    "stageAccidentReported": "Accident Reported",
+    "stageCompleted": "Completed"
   },
   "report": {
     "title": "Report New Accident",
