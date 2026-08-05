@@ -5,11 +5,13 @@ import { HotspotMapCard } from "@/components/organisms/Dashboard/HotspotMap";
 import { VehicleRisks } from "@/components/organisms/Dashboard/VehicleRisks";
 import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
 import AwaitingCases from "../organisms/workflow/AwaitingCases";
+import { useDashboardStatistics } from "@/hooks/useDashboard";
 
 import { t } from "i18next";
 import { AlertTriangle,LayoutDashboard } from "lucide-react";
 
 export default function DashboardPage() {
+  const { data: statistics } = useDashboardStatistics();
 
   return (
     <div className="space-y-6">
@@ -53,12 +55,12 @@ export default function DashboardPage() {
       </div>
 
       <DashboardStats
-        totalIncidents={47}
-        openInvestigations={12}
-        pendingApprovals={8}
-        completedCases={27}
-        totalLosses={150000}
-        recoveries={50000}
+        totalIncidents={statistics?.total_incidents ?? 0}
+        openInvestigations={statistics?.open_investigations ?? 0}
+        pendingApprovals={statistics?.pending_approvals ?? 0}
+        completedCases={statistics?.completed_cases ?? 0}
+        totalLosses={statistics?.total_losses ?? 0}
+        recoveries={statistics?.recoveries ?? 0}
       />
 
       <AccidentTrendChart />
