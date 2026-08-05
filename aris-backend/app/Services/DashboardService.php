@@ -69,6 +69,7 @@ class DashboardService
             'accident_trends' => $this->monthlyTrends($fiscalAccidents, $latestWriteOffReports, $fiscalYearStart, $fiscalYearEnd),
             'vehicle_risks' => $this->vehicleRisks($fiscalAccidents, $accessibleVehicles),
             'recent_activities' => $this->recentActivities($institutionIds),
+            'recent_cases' => $this->recentCases($caseScope),
             'fiscal_year_start' => $fiscalYearStart->toDateString(),
             'fiscal_year_end' => $fiscalYearEnd->toDateString(),
         ];
@@ -171,6 +172,30 @@ class DashboardService
                 'case_number' => $history->accidentCase?->case_number,
                 'user_name' => $history->user?->name,
                 'created_at' => $history->created_at?->toISOString(),
+            ])
+            ->all();
+    }
+
+    private function recentCases($caseScope): array
+    {
+        return (clone $caseScope)
+            ->where('created_at', '>=', now()->subDays(30))
+            ->with([
+                'accident:id,reference_number,location,accident_date',
+                'institution:id,name',
+            ])
+            ->latest()
+            ->limit(5)
+            ->get(['id', 'case_number', 'status', 'current_stage', 'institution_id', 'accident_id', 'created_at'])
+            ->map(fn (AccidentCase $case) => [
+                'id' => $case->id,
+                'case_number' => $case->case_number,
+                'incident' => $case->accident?->reference_number,
+                'location' => $case->accident?->location,
+                'accident_date' => $case->accident?->accident_date?->toDateString(),
+                'institution' => $case->institution?->name,
+                'stage' => $case->current_stage,
+                'status' => $case->status,
             ])
             ->all();
     }
