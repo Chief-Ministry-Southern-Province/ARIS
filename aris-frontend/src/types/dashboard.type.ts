@@ -10,6 +10,15 @@ export interface VehicleRiskPoint {
   risk: number;
 }
 
+export interface RecentActivityPoint {
+  id: number;
+  action: string;
+  description: string;
+  case_number: string | null;
+  user_name: string | null;
+  created_at: string;
+}
+
 export interface DashboardStatistics {
   total_incidents: number;
   open_investigations: number;
@@ -19,6 +28,7 @@ export interface DashboardStatistics {
   recoveries: number;
   accident_trends: DashboardTrendPoint[];
   vehicle_risks: VehicleRiskPoint[];
+  recent_activities: RecentActivityPoint[];
   fiscal_year_start: string;
   fiscal_year_end: string;
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Accident;
 use App\Models\AccidentCase;
 use App\Models\Approval;
+use App\Models\CaseHistory;
 use App\Models\FR109;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -67,6 +68,7 @@ class DashboardService
             ),
             'accident_trends' => $this->monthlyTrends($fiscalAccidents, $latestWriteOffReports, $fiscalYearStart, $fiscalYearEnd),
             'vehicle_risks' => $this->vehicleRisks($fiscalAccidents, $accessibleVehicles),
+            'recent_activities' => $this->recentActivities($institutionIds),
             'fiscal_year_start' => $fiscalYearStart->toDateString(),
             'fiscal_year_end' => $fiscalYearEnd->toDateString(),
         ];
@@ -148,6 +150,28 @@ class DashboardService
             ->sort(fn (array $left, array $right) => [$right['risk'], $right['incidents']] <=> [$left['risk'], $left['incidents']])
             ->take(5)
             ->values()
+            ->all();
+    }
+
+    private function recentActivities(array $institutionIds): array
+    {
+        return CaseHistory::query()
+            ->whereHas('accidentCase', fn ($query) => $query->whereIn('institution_id', $institutionIds))
+            ->with([
+                'user:id,name',
+                'accidentCase:id,case_number',
+            ])
+            ->latest()
+            ->limit(6)
+            ->get(['id', 'accident_case_id', 'user_id', 'action', 'description', 'created_at'])
+            ->map(fn (CaseHistory $history) => [
+                'id' => $history->id,
+                'action' => $history->action,
+                'description' => $history->description ?: "Case {$history->accidentCase?->case_number} updated.",
+                'case_number' => $history->accidentCase?->case_number,
+                'user_name' => $history->user?->name,
+                'created_at' => $history->created_at?->toISOString(),
+            ])
             ->all();
     }
 }
