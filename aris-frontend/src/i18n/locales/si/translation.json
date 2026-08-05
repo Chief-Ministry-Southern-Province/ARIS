@@ -2,7 +2,7 @@
   "nav": {
     "dashboard": "ප්‍රධාන පුවරුව",
     "reportAccident": "අනතුරු වාර්තා කිරීම",
-    "caseManagement": "නඩු කළමනාකරණය",
+    "caseManagement": "සිද්ධි කළමනාකරණය",
     "evidence": "සාක්ෂි",
     "investigation": "විමර්ශනය",
     "governmentForms": "රජයේ ආකෘති",
@@ -34,12 +34,12 @@
     "totalIncidents": "මුළු සිදුවීම්",
     "openInvestigations": "විවෘත පරීක්ෂණ",
     "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
-    "completedCases": "සම්පූර්ණ කළ නඩු",
+    "completedCases": "සම්පූර්ණ කළ සිද්ධි",
     "totalLosses": "මුළු අලාභ",
     "recoveries": "යළිලැබීම්",
     "accidentTrends": "අනතුරු ප්‍රවණතා",
     "lossCategories": "අලාභ කාණ්ඩ",
-    "recentCases": "අලුත් නඩු",
+    "recentCases": "අලුත් සිද්ධි",
     "vehicleRisk": "වාහන අවදානම්",
     "locationRisks": "ස්ථානයේ අවදානම්",
     "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
@@ -136,12 +136,12 @@
     "welcome": "නැවත සාදරයෙන් පිළිගනිමු"
   },
   "caseManagement": {
-    "title": "නඩු කළමනාකරණය",
-    "casesFound": "නඩු සොයා ගන්නා ලදී",
+    "title": "සිද්ධි කළමනාකරණය",
+    "casesFound": "සිද්ධි සොයා ගන්නා ලදී",
     "search": "සොයන්න",
 
     "table": {
-      "caseId": "නඩු අංකය",
+      "caseId": "සිද්ධි අංකය",
       "incident": "සිදුවීම",
       "institution": "ආයතනය",
       "date": "දිනය",
@@ -150,13 +150,13 @@
     },
 
     "empty": {
-      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන නඩු නොමැත"
+      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන සිද්ධි නොමැත"
     },
 
     "pagination": {
       "showing": "පෙන්වන්නේ",
       "of": "අතුරින්",
-      "cases": "නඩු",
+      "cases": "සිද්ධි",
       "previous": "පෙර",
       "next": "ඊළඟ"
     },
@@ -168,7 +168,7 @@
     },
 
     "details": {
-      "caseId": "නඩු අංකය",
+      "caseId": "සිද්ධි අංකය",
       "dateTime": "දිනය සහ වේලාව",
       "location": "ස්ථානය",
       "vehicle": "වාහනය",
@@ -342,14 +342,14 @@
 
     "police": {
       "station": "පොලිස් ස්ථානය",
-      "caseNumber": "නඩු අංකය",
+      "caseNumber": "සිද්ධි අංකය",
       "officerName": "නිලධාරියාගේ නම",
       "reportDate": "වාර්තා දිනය",
       "attachReport": "පොලිස් වාර්තාවේ සාරාංශය අමුණන්න." 
     },
     "legalAction": {
       "courtName": "අධිකරණයේ නම",
-      "caseNo": "නඩු අංකය",
+      "caseNo": "සිද්ධි අංකය",
       "courtOrder": "අධිකරණ නියෝගය",
       "courtOrderSummary": "අධිකරණ නියෝගයේ සාරාංශය",
       "attachOrder": "අධිකරණ නියෝගයේ පිටපත අමුණන්න"
@@ -498,7 +498,7 @@
       "amountRecovered": "වගකිව යුතු නිලධාරීන්ගෙන් / රක්ෂණයෙන් / ඇපකරයෙන් අය කරගත් මුදල",
       "netLoss": "විදේශ විනිමය පිරිවැය, රේගු බදු, දෙපාර්තමේන්තු ගාස්තු ඇතුළත් ශුද්ධ අලාභය",
       "nameOfCourt": "අධිකරණයේ නම",
-      "caseNo": "නඩු අංකය",
+      "caseNo": "සිද්ධි අංකය",
       "outcomeOfLegalAction": "නීතිමය ක්‍රියාමාර්ගයේ ප්‍රතිඵලය / අධිකරණ නියෝගය",
       "nameOfOfficer": "නිලධාරියාගේ නම",
       "designation": "තනතුර",
@@ -543,14 +543,14 @@
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",
-    "subtitle": "නඩු සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
+    "subtitle": "සිද්ධි සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
 
     "uploadEvidence": "සාක්ෂි උඩුගත කරන්න",
     "upload": "උඩුගත කරන්න",
     "cancel": "අවලංගු කරන්න",
 
     "evidenceType": "සාක්ෂි වර්ගය",
-    "caseReference": "නඩු යොමුව",
+    "caseReference": "සිද්ධි යොමුව",
     "description": "විස්තරය",
 
     "dragDrop": "ගොනු මෙතනට ඇද දමන්න",
@@ -566,7 +566,7 @@
     "policeReports": "පොලිස් වාර්තා",
 
     "search": "සොයන්න",
-    "allCases": "සියලු නඩු",
+    "allCases": "සියලු සිද්ධි",
 
     "preview": "පෙරදසුන",
     "download": "බාගත කරන්න",
@@ -619,7 +619,7 @@
       "district": "දිස්ත්‍රික්කය",
       "director": "අධ්‍යක්ෂ",
       "edit": "සංස්කරණය",
-      "viewCases": "නඩු බලන්න"
+      "viewCases": "සිද්ධි බලන්න"
     },
 
     "vehicles": {
@@ -637,14 +637,14 @@
     },
 
     "workflow": {
-      "description": "අනතුරු නඩු සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
+      "description": "අනතුරු සිද්ධි සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
       "appliesTo": "අදාළ වන්නේ",
 
       "rules": {
         "autoEscalate": "පැය 48ක් තුළ ක්‍රියාමාර්ගයක් නොමැති නම් ස්වයංක්‍රීයව උත්සන්න කරන්න",
-        "smsNotification": "නව පොරොත්තු නඩුවක් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
+        "smsNotification": "නව පොරොත්තු සිද්ධික් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
         "mandatoryComment": "ප්‍රතික්ෂේප කිරීමේදී අනිවාර්ය අදහසක් එක් කිරීම අවශ්‍ය වේ",
-        "skipInvestigation": "සුළු නඩු සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
+        "skipInvestigation": "සුළු සිද්ධි සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
         "autoForward": "අමාත්‍යාංශ ලේකම් අනුමැතියෙන් පසු CAO වෙත ස්වයංක්‍රීයව යොමු කරන්න",
         "boardInquiry": "රු. මිලියන 1ට වැඩි පාඩු සඳහා පරීක්ෂණ මණ්ඩලයක් අවශ්‍ය වේ"
       }
@@ -664,7 +664,7 @@
       "triggers": {
         "newAccidentReport": "නව අනතුරු වාර්තාව",
         "approvalRequired": "අනුමැතිය අවශ්‍යයි",
-        "caseOverdue": "නඩුව ප්‍රමාද වී ඇත (දින 7)",
+        "caseOverdue": "සිද්ධිය ප්‍රමාද වී ඇත (දින 7)",
         "investigationComplete": "විමර්ශනය සම්පූර්ණයි",
         "pdfGenerated": "PDF වාර්තාව ජනනය කරන ලදී"
       }
@@ -685,10 +685,10 @@
 
     "auditActions": {
       "userCreated": "පරිශීලකයා නිර්මාණය කරන ලදී",
-      "caseUpdated": "නඩුව යාවත්කාලීන කරන ලදී",
+      "caseUpdated": "සිද්ධිය යාවත්කාලීන කරන ලදී",
       "evidenceUpload": "සාක්ෂි උඩුගත කරන ලදී",
       "loginFailed": "පිවිසුම අසාර්ථක විය",
-      "caseApproved": "නඩුව අනුමත කරන ලදී",
+      "caseApproved": "සිද්ධිය අනුමත කරන ලදී",
       "pdfGenerated": "PDF ජනනය කරන ලදී",
       "vehicleAdded": "වාහනය එක් කරන ලදී"
     },
@@ -705,7 +705,7 @@
     "title": "අනුමත කිරීමේ ක්‍රියාවලිය",
     "subtitle": "බහු මට්ටමේ අනුමත කිරීමේ දාම කළමනාකරණය",
 
-    "selectCase": "නඩුව තෝරන්න",
+    "selectCase": "සිද්ධිය තෝරන්න",
 
     "approvalChain": "අනුමත කිරීමේ දාමය",
     "approvalHistory": "අනුමත කිරීමේ ඉතිහාසය",
@@ -729,7 +729,7 @@
     "cancel": "අවලංගු කරන්න",
     "submitChanges": "වෙනස්කම් ඉල්ලන්න",
 
-    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන නඩු",
+    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන සිද්ධි",
 
     "investigationOfficerReview": "විමර්ශන නිලධාරි සමාලෝචනය",
     "administrativeOfficerReview": "පරිපාලන නිලධාරි සමාලෝචනය",
