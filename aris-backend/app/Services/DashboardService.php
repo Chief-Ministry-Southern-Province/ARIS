@@ -7,6 +7,7 @@ use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR109;
 use App\Models\User;
+use App\Models\Vehicle;
 use Carbon\CarbonImmutable;
 
 class DashboardService
@@ -32,7 +33,12 @@ class DashboardService
         $fiscalAccidents = Accident::query()
             ->whereIn('institution_id', $institutionIds)
             ->whereBetween('accident_date', [$fiscalYearStart->toDateString(), $fiscalYearEnd->toDateString()])
-            ->get(['id', 'accident_date']);
+            ->get(['id', 'vehicle_id', 'accident_date']);
+
+        $accessibleVehicles = Vehicle::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->where('status', '!=', 'DISPOSED')
+            ->get(['id', 'vehicle_type']);
 
         $latestWriteOffReports = FR109::query()
             ->whereIn('accident_case_id', $fiscalCaseScope->select('id'))
@@ -60,6 +66,7 @@ class DashboardService
                 fn (FR109 $report) => $this->money($report->data['amountRecovered'] ?? 0),
             ),
             'accident_trends' => $this->monthlyTrends($fiscalAccidents, $latestWriteOffReports, $fiscalYearStart, $fiscalYearEnd),
+            'vehicle_risks' => $this->vehicleRisks($fiscalAccidents, $accessibleVehicles),
             'fiscal_year_start' => $fiscalYearStart->toDateString(),
             'fiscal_year_end' => $fiscalYearEnd->toDateString(),
         ];
@@ -117,5 +124,30 @@ class DashboardService
         }
 
         return array_values($months);
+    }
+
+    private function vehicleRisks($accidents, $vehicles): array
+    {
+        $vehiclesById = $vehicles->keyBy('id');
+        $fleetByType = $vehicles->groupBy('vehicle_type');
+        $incidentsByType = $accidents
+            ->filter(fn (Accident $accident) => $vehiclesById->has($accident->vehicle_id))
+            ->groupBy(fn (Accident $accident) => $vehiclesById->get($accident->vehicle_id)->vehicle_type);
+
+        return $fleetByType
+            ->map(function ($fleet, string $vehicleType) use ($incidentsByType) {
+                $incidents = $incidentsByType->get($vehicleType)?->count() ?? 0;
+                $risk = min(100, (int) round(($incidents / $fleet->count()) * 100));
+
+                return [
+                    'vehicle' => ucwords(strtolower(str_replace('_', ' ', $vehicleType))),
+                    'incidents' => $incidents,
+                    'risk' => $risk,
+                ];
+            })
+            ->sort(fn (array $left, array $right) => [$right['risk'], $right['incidents']] <=> [$left['risk'], $left['incidents']])
+            ->take(5)
+            ->values()
+            ->all();
     }
 }
