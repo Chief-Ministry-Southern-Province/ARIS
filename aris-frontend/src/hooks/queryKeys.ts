@@ -39,6 +39,9 @@ export const queryKeys = {
   dashboard: {
     statistics: ["dashboard", "statistics"] as const,
   },
+  analytics: {
+    context: (period: string) => ["analytics", "context", period] as const,
+  },
 
   approvals: {
     all: ["approvals"] as const,

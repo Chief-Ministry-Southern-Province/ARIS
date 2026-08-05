@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\WorkflowSettingController;
 use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\PushSubscriptionController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\AnalyticsController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -37,6 +38,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/profile', [AuthController::class, 'profile']);
 
     Route::get('/dashboard/statistics', [DashboardController::class, 'statistics']);
+    Route::get('/analytics', [AnalyticsController::class, 'index']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 

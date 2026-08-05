@@ -810,9 +810,18 @@
       "costAnalysis": "Cost Analysis",
       "recoveryAnalysis": "Recovery Analysis",
       "lossDistribution": "Loss Distribution",
+      "highRiskVehicles": "High Risk Vehicles",
       "repeatIncidentsDriverAnalysis": "Repeat Incidents — Driver Analysis",
       "institutionComparison": "Institution Comparison",
-      "gisAccidentHotspots": "GIS Accident Hotspots"
+      "gisAccidentHotspots": "GIS Accident Hotspots",
+      "gisHotspots": "GIS Accident Hotspots"
+    },
+
+    "sections": {
+      "overview": "Accident Overview",
+      "financialInsights": "Financial Insights",
+      "riskAndPerformance": "Risk & Performance",
+      "institutionAndLocation": "Institution & Location Insights"
     },
 
     "legend": {

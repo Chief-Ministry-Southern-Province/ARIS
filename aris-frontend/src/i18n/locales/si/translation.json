@@ -770,6 +770,7 @@
   },
    "analytics": {
     "title": "විශ්ලේෂණ",
+    "subtitle": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "description": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "refresh": "නවතම දත්ත ලබා ගන්න",
 
@@ -785,9 +786,18 @@
       "costAnalysis": "පිරිවැය විශ්ලේෂණය",
       "recoveryAnalysis": "යළිලැබීම් විශ්ලේෂණය",
       "lossDistribution": "අලාභ බෙදාහැරීම",
+      "highRiskVehicles": "ඉහළ අවදානම් වාහන",
       "repeatIncidentsDriverAnalysis": "නැවත සිදුවීම් — රියදුරු විශ්ලේෂණය",
       "institutionComparison": "ආයතන සංසන්දනය",
-      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්"
+      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්",
+      "gisHotspots": "GIS අනතුරු හොට්ස්පොට්"
+    },
+
+    "sections": {
+      "overview": "අනතුරු සාරාංශය",
+      "financialInsights": "මූල්‍ය අවබෝධතා",
+      "riskAndPerformance": "අවදානම් සහ කාර්යසාධනය",
+      "institutionAndLocation": "ආයතන සහ ස්ථාන අවබෝධතා"
     },
 
     "legend": {
