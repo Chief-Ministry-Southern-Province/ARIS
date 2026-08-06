@@ -831,6 +831,7 @@
       "recovered": "Recovered",
       "insurance": "Insurance",
       "disciplinary": "Disciplinary",
+      "riskScore": "Risk Score",
       "other": "Other",
       "lossesLKR": "Losses (LKR)"
     },

@@ -6,6 +6,7 @@ use App\Models\Accident;
 use App\Models\AccidentCase;
 use App\Models\FR109;
 use App\Models\User;
+use App\Models\Vehicle;
 use Carbon\CarbonImmutable;
 
 class AnalyticsService
@@ -50,7 +51,79 @@ class AnalyticsService
             ],
             'accident_frequency_trend' => $this->monthlyAccidentTrend($institutionIds, $start, $end),
             'cost_analysis_trend' => $this->monthlyCostAnalysisTrend($institutionIds, $start, $end),
+            'high_risk_vehicle_types' => $this->highRiskVehicleTypes($institutionIds, $start, $end),
+            'hotspots' => $this->hotspots($institutionIds, $start, $end),
         ];
+    }
+
+    private function highRiskVehicleTypes(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array
+    {
+        $vehicles = Vehicle::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->where('status', '!=', 'DISPOSED')
+            ->get(['id', 'vehicle_type']);
+        $vehiclesById = $vehicles->keyBy('id');
+        $fleetByType = $vehicles->groupBy('vehicle_type');
+        $incidentsByType = Accident::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()])
+            ->get(['vehicle_id'])
+            ->filter(fn (Accident $accident) => $vehiclesById->has($accident->vehicle_id))
+            ->groupBy(fn (Accident $accident) => $vehiclesById->get($accident->vehicle_id)->vehicle_type);
+
+        return $fleetByType
+            ->map(function ($fleet, string $vehicleType) use ($incidentsByType) {
+                $incidents = $incidentsByType->get($vehicleType)?->count() ?? 0;
+
+                return [
+                    'vehicle' => ucwords(strtolower(str_replace('_', ' ', $vehicleType))),
+                    'incidents' => $incidents,
+                    'risk' => min(100, (int) round(($incidents / $fleet->count()) * 100)),
+                ];
+            })
+            ->filter(fn (array $vehicle) => $vehicle['incidents'] > 0)
+            ->sort(fn (array $left, array $right) => [$right['risk'], $right['incidents']] <=> [$left['risk'], $left['incidents']])
+            ->take(5)
+            ->values()
+            ->all();
+    }
+
+    private function hotspots(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array
+    {
+        return Accident::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()])
+            ->get(['id', 'latitude', 'longitude', 'location'])
+            ->filter(fn (Accident $accident) => $this->hasSriLankanCoordinates($accident))
+            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2) . ':' . round((float) $accident->longitude, 2))
+            ->map(function ($nearbyAccidents) {
+                $count = $nearbyAccidents->count();
+
+                return [
+                    'id' => $nearbyAccidents->first()->id,
+                    'name' => $nearbyAccidents->pluck('location')->filter()->first() ?: 'Accident hotspot',
+                    'latitude' => round((float) $nearbyAccidents->avg('latitude'), 6),
+                    'longitude' => round((float) $nearbyAccidents->avg('longitude'), 6),
+                    'count' => $count,
+                    'risk' => $count >= 5 ? 'HIGH' : ($count >= 3 ? 'MEDIUM' : 'LOW'),
+                ];
+            })
+            ->sortByDesc('count')
+            ->take(10)
+            ->values()
+            ->all();
+    }
+
+    private function hasSriLankanCoordinates(Accident $accident): bool
+    {
+        if ($accident->latitude === null || $accident->longitude === null) {
+            return false;
+        }
+
+        return (float) $accident->latitude >= 5.8
+            && (float) $accident->latitude <= 10.1
+            && (float) $accident->longitude >= 79.5
+            && (float) $accident->longitude <= 82.1;
     }
 
     private function monthlyCostAnalysisTrend(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array

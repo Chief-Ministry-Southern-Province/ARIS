@@ -137,7 +137,10 @@ export default function Analytics() {
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">{t("analytics.sections.riskAndPerformance")}</h2>
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
           <Suspense fallback={<ChartSkeleton />}>
-            <HighRiskVehiclesChart />
+            <HighRiskVehiclesChart
+              data={analytics?.high_risk_vehicle_types}
+              isLoading={isLoading}
+            />
           </Suspense>
           <RepeatIncidentsTable />
         </div>
@@ -148,7 +151,7 @@ export default function Analytics() {
         <Suspense fallback={<ChartSkeleton />}>
           <InstitutionComparisonChart />
         </Suspense>
-        <GISHotspotsTable />
+        <GISHotspotsTable data={analytics?.hotspots} isLoading={isLoading} />
       </section>
     </div>
   );
