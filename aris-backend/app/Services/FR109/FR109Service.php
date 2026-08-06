@@ -3,6 +3,7 @@
 namespace App\Services\FR109;
 
 use App\Models\AccidentCase;
+use App\Models\Approval;
 use App\Models\FR109;
 use App\Models\User;
 use App\Services\AccidentTimelineService;
@@ -20,6 +21,16 @@ class FR109Service
 
     public function saveDraft(AccidentCase $case, User $user, array $data): FR109
     {
+        if (filled($data['secretaryOfMinistry'] ?? null)) {
+            $user->loadMissing('institution');
+
+            abort_unless(
+                $user->hasRole('subject_officer') && $user->institution?->type === 'PDHS',
+                403,
+                'Only a PDHS Subject Officer can complete the Secretary to the Ministry of field.'
+            );
+        }
+
         return DB::transaction(function () use ($case, $user, $data) {
             $latest = $case->fr109s()->latest('revision')->first();
 
@@ -119,6 +130,79 @@ class FR109Service
                 $user,
                 'FR109',
                 'WRITE_OFF_NOTED',
+                $fr109->revision,
+                $fr109->reference_number,
+            );
+
+            return $fr109->fresh();
+        });
+    }
+
+    /** Complete Part I before the assigned Ministry Subject Officer recommends FR109. */
+    public function updateChiefAccountingOrder(FR109 $fr109, User $user, array $data): FR109
+    {
+        $isAssignedMinistrySubjectOfficer = Approval::query()
+            ->where('accident_case_id', $fr109->accident_case_id)
+            ->where('document_type', 'FR109')
+            ->where('revision', $fr109->revision)
+            ->where('approver_id', $user->id)
+            ->where('status', 'PENDING')
+            ->exists();
+
+        abort_unless(
+            $user->hasRole('subject_officer') && $isAssignedMinistrySubjectOfficer,
+            403,
+            'Only the assigned Ministry Subject Officer can complete the Chief Accounting Officer order.'
+        );
+
+        return DB::transaction(function () use ($fr109, $user, $data) {
+            $documentData = $fr109->data;
+            $documentData['chiefAccountingOfficerSTNo'] = $data['chiefAccountingOfficerSTNo'];
+            $documentData['chiefAccountingOfficerRefNo'] = $data['chiefAccountingOfficerRefNo'];
+            $fr109->update(['data' => $documentData]);
+
+            $this->timelineService->createDocumentEvent(
+                $fr109->accidentCase,
+                $user,
+                'FR109',
+                'CHIEF_ACCOUNTING_ORDER_COMPLETED',
+                $fr109->revision,
+                $fr109->reference_number,
+            );
+
+            return $fr109->fresh();
+        });
+    }
+
+    /** Record Part J without changing the Chief Secretary's approval decision. */
+    public function updateChiefSecretaryDecision(FR109 $fr109, User $user, array $data): FR109
+    {
+        $isPendingChiefSecretary = Approval::query()
+            ->where('accident_case_id', $fr109->accident_case_id)
+            ->where('document_type', 'FR109')
+            ->where('revision', $fr109->revision)
+            ->where('approver_id', $user->id)
+            ->where('status', 'PENDING')
+            ->exists();
+
+        abort_unless(
+            $user->hasRole('chief_secretary') && $isPendingChiefSecretary,
+            403,
+            'Only the pending Chief Secretary can complete the write-off decision.'
+        );
+
+        return DB::transaction(function () use ($fr109, $user, $data) {
+            $documentData = $fr109->data;
+            $documentData['chiefSecretaryToMinistryOf'] = $data['secretaryToMinistryOf'];
+            $documentData['chiefSecretaryRefNo'] = $data['refNo'];
+            $documentData['writeOffStatus'] = $data['writeOffStatus'];
+            $fr109->update(['data' => $documentData]);
+
+            $this->timelineService->createDocumentEvent(
+                $fr109->accidentCase,
+                $user,
+                'FR109',
+                'WRITE_OFF_DECISION_RECORDED',
                 $fr109->revision,
                 $fr109->reference_number,
             );

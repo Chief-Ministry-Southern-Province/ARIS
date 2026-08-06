@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FR109\SaveFR109Request;
 use App\Http\Requests\FR109\UpdateFR109WriteOffRequest;
+use App\Http\Requests\FR109\UpdateFR109ChiefAccountingOrderRequest;
+use App\Http\Requests\FR109\UpdateFR109ChiefSecretaryDecisionRequest;
 use App\Http\Resources\FR109Resource;
 use App\Models\AccidentCase;
 use App\Models\FR109;
@@ -44,6 +46,24 @@ class FR109Controller extends Controller
             $fr109,
             $request->user(),
             $request->validated('writeOffEntries'),
+        ));
+    }
+
+    public function updateChiefAccountingOrder(UpdateFR109ChiefAccountingOrderRequest $request, FR109 $fr109)
+    {
+        return new FR109Resource($this->fr109Service->updateChiefAccountingOrder(
+            $fr109,
+            $request->user(),
+            $request->validated(),
+        ));
+    }
+
+    public function updateChiefSecretaryDecision(UpdateFR109ChiefSecretaryDecisionRequest $request, FR109 $fr109)
+    {
+        return new FR109Resource($this->fr109Service->updateChiefSecretaryDecision(
+            $fr109,
+            $request->user(),
+            $request->validated(),
         ));
     }
 }

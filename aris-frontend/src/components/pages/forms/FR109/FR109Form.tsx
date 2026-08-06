@@ -5,7 +5,7 @@ import { CheckCircle, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
-import { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff } from "@/hooks/useFR109";
+import { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
 import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
@@ -17,6 +17,9 @@ import ValueOfLossSection from "@/components/organisms/Forms/FR109/ValueOfLossSe
 import NonRecoverySection from "@/components/organisms/Forms/FR109/NonRecoverySection";
 import LegalActionSection from "@/components/organisms/Forms/FR109/LegalActionSection";
 import WriteOffRegisterSection from "@/components/organisms/Forms/FR109/WriteOffRegisterSection";
+import HeadOfDepartmentOrderSection from "@/components/organisms/Forms/FR109/HeadOfDepartmentOrderSection";
+import ChiefAccountingOfficerOrderSection from "@/components/organisms/Forms/FR109/ChiefAccountingOfficerOrderSection";
+import WriteOffDecisionSection from "@/components/organisms/Forms/FR109/WriteOffDecisionSection";
 
 interface Props {
   readOnly?: boolean;
@@ -24,6 +27,8 @@ interface Props {
   approvalTimeline?: Approval[];
   onBack?: () => void;
   onDecision?: () => void;
+  canCompleteChiefAccountingOrder?: boolean;
+  canCompleteChiefSecretaryDecision?: boolean;
 }
 
 type LegacyWriteOffFields = {
@@ -47,9 +52,11 @@ export default function FR109Form({
   approvalTimeline = [],
   onBack,
   onDecision,
+  canCompleteChiefAccountingOrder = false,
+  canCompleteChiefSecretaryDecision = false,
 }: Props) {
   const { t } = useTranslation();
-  const { id: currentUserId } = useAuth();
+  const { id: currentUserId, role, institutionType } = useAuth();
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
 
@@ -59,6 +66,12 @@ export default function FR109Form({
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
   const writeOff = useUpdateFR109WriteOff(caseId ?? "");
+  const chiefAccountingOrder = useUpdateFR109ChiefAccountingOrder(
+    caseId ?? String(document?.case.id ?? ""),
+  );
+  const chiefSecretaryDecision = useUpdateFR109ChiefSecretaryDecision(
+    caseId ?? String(document?.case.id ?? ""),
+  );
 
   const displayed = document ?? loaded;
 
@@ -71,6 +84,19 @@ export default function FR109Form({
     !readOnly &&
     status === "APPROVED" &&
     displayed?.creator.id === currentUserId;
+  const ministryRecommendationEditable =
+    editable &&
+    role.includes("subject_officer") &&
+    institutionType === "PDHS";
+  const chiefAccountingOrderEditable =
+    (!readOnly || canCompleteChiefAccountingOrder) &&
+    status === "UNDER_APPROVAL" &&
+    role.includes("subject_officer") &&
+    institutionType === "MINISTRY";
+  const chiefSecretaryDecisionEditable =
+    (!readOnly || canCompleteChiefSecretaryDecision) &&
+    status === "UNDER_APPROVAL" &&
+    role.includes("chief_secretary");
 
   const currentApproval =
     approvalTimeline.find((item) => item.status === "PENDING") ??
@@ -170,6 +196,44 @@ export default function FR109Form({
     }
   };
 
+  const saveChiefAccountingOrder = async () => {
+    if (!displayed?.id) return;
+
+    try {
+      const result = await chiefAccountingOrder.mutateAsync({
+        fr109Id: displayed.id,
+        stNo: data.chiefAccountingOfficerSTNo,
+        refNo: data.chiefAccountingOfficerRefNo,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Chief Accounting Officer order saved successfully.");
+    } catch (reason: unknown) {
+      toast.error(
+        (reason as { response?: { data?: { message?: string } } }).response
+          ?.data?.message || "Failed to save Chief Accounting Officer order."
+      );
+    }
+  };
+
+  const saveChiefSecretaryDecision = async () => {
+    if (!displayed?.id || !data.writeOffStatus) return;
+
+    try {
+      const result = await chiefSecretaryDecision.mutateAsync({
+        fr109Id: displayed.id,
+        secretaryToMinistryOf: data.chiefSecretaryToMinistryOf,
+        refNo: data.chiefSecretaryRefNo,
+        writeOffStatus: data.writeOffStatus,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Write-off decision saved successfully.");
+    } catch (reason: unknown) {
+      toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to save write-off decision.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR109 form..." />;
 
   return (
@@ -262,6 +326,24 @@ export default function FR109Form({
 
           </fieldset>
 
+          <fieldset disabled={!ministryRecommendationEditable} className="space-y-8 disabled:opacity-70">
+            <HeadOfDepartmentOrderSection
+              formData={data}
+              setFormData={setData}
+            />
+          </fieldset>
+
+          <fieldset disabled={!chiefAccountingOrderEditable} className="space-y-8 disabled:opacity-70">
+            <ChiefAccountingOfficerOrderSection
+              formData={data}
+              setFormData={setData}
+            />
+          </fieldset>
+
+          <fieldset disabled={!chiefSecretaryDecisionEditable} className="space-y-8 disabled:opacity-70">
+            <WriteOffDecisionSection formData={data} setFormData={setData} />
+          </fieldset>
+
           <fieldset disabled={!writeOffEditable} className="space-y-8 disabled:opacity-70">
             <WriteOffRegisterSection
               formData={data}
@@ -325,6 +407,25 @@ export default function FR109Form({
                     >
                       <Save size={18} />
                       {writeOff.isPending ? "Saving..." : "Save Write-Off Details"}
+                    </button>
+                  )}
+
+                  {chiefAccountingOrderEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefAccountingOrder}
+                      disabled={chiefAccountingOrder.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefAccountingOrder.isPending ? "Saving..." : "Save S.T. / Ref. No."}
+                    </button>
+                  )}
+
+                  {chiefSecretaryDecisionEditable && (
+                    <button type="button" onClick={saveChiefSecretaryDecision} disabled={chiefSecretaryDecision.isPending || !data.writeOffStatus} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2">
+                      <Save size={18} />
+                      {chiefSecretaryDecision.isPending ? "Saving..." : "Save Write-Off Decision"}
                     </button>
                   )}
 

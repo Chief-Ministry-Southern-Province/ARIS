@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/hooks/queryKeys";
-import { getFR109, saveFR109, submitFR109, updateFR109WriteOff } from "@/services/fr109.service";
+import { getFR109, saveFR109, submitFR109, updateFR109WriteOff, updateFR109ChiefAccountingOrder, updateFR109ChiefSecretaryDecision } from "@/services/fr109.service";
 import type { FR109FormData, FR109Response, WriteOffEntry } from "@/types/FR109.type";
 
 const useGetFR109 = (caseId: string) => {
@@ -50,4 +50,27 @@ const useUpdateFR109WriteOff = (caseId: string) => {
   });
 };
 
-export { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff };
+const useUpdateFR109ChiefAccountingOrder = (caseId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<FR109Response, Error, { fr109Id: number; stNo: string; refNo: string }>({
+    mutationFn: ({ fr109Id, stNo, refNo }) => updateFR109ChiefAccountingOrder(fr109Id, stNo, refNo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline(Number(caseId)) });
+    },
+  });
+};
+
+const useUpdateFR109ChiefSecretaryDecision = (caseId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation<FR109Response, Error, { fr109Id: number; secretaryToMinistryOf: string; refNo: string; writeOffStatus: "AUTHORISED" | "NOT_APPROVED" }>({
+    mutationFn: ({ fr109Id, secretaryToMinistryOf, refNo, writeOffStatus }) => updateFR109ChiefSecretaryDecision(fr109Id, secretaryToMinistryOf, refNo, writeOffStatus),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.timeline(Number(caseId)) });
+    },
+  });
+};
+
+export { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision };

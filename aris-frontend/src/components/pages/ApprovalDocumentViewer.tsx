@@ -117,6 +117,8 @@ export default function ApprovalDocumentViewer() {
       document={document}
       approvalTimeline={approvals}
       onBack={() => navigate("/approvals")}
+      canCompleteChiefAccountingOrder={canDecide}
+      canCompleteChiefSecretaryDecision={canDecide}
       {...decisionProps}
     />
   ) : document.document_type === "FR1044" ? (

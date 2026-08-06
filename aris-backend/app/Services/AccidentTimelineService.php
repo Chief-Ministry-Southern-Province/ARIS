@@ -38,6 +38,8 @@ class AccidentTimelineService
       'REJECTED' => "{$document} {$revisionLabel} rejected: {$comments}",
       'WORKFLOW_COMPLETED' => "{$document} {$revisionLabel} approval workflow completed.",
       'WRITE_OFF_NOTED' => "{$document} {$revisionLabel} write-off register completed.",
+      'CHIEF_ACCOUNTING_ORDER_COMPLETED' => "{$document} {$revisionLabel} Chief Accounting Officer order completed.",
+      'WRITE_OFF_DECISION_RECORDED' => "{$document} {$revisionLabel} write-off decision recorded.",
       default => "{$document} {$revisionLabel} {$event}.",
     };
 

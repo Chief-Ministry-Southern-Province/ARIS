@@ -26,6 +26,12 @@ export interface WriteOffEntry {
 export interface FR109FormData {
   // 1. Department
   department: string;
+  secretaryOfMinistry: string;
+  chiefAccountingOfficerSTNo: string;
+  chiefAccountingOfficerRefNo: string;
+  chiefSecretaryToMinistryOf: string;
+  chiefSecretaryRefNo: string;
+  writeOffStatus: "AUTHORISED" | "NOT_APPROVED" | "";
 
   // 2. Report
   finalReportReferenceNo: string;

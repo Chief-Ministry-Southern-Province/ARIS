@@ -2,6 +2,12 @@ import type { FR109FormData } from "@/types/FR109.type";
 
 export const initialFormData: FR109FormData = {
   department: "",
+  secretaryOfMinistry: "",
+  chiefAccountingOfficerSTNo: "",
+  chiefAccountingOfficerRefNo: "",
+  chiefSecretaryToMinistryOf: "",
+  chiefSecretaryRefNo: "",
+  writeOffStatus: "",
 
   preliminaryReportReferenceNo: "",
   finalReportReferenceNo: "",
