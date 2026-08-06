@@ -1,65 +1,70 @@
-import { TrendingUp, TrendingDown, AlertTriangle, Car, DollarSign, RefreshCw } from "lucide-react";
+import { AlertTriangle, Car, DollarSign, RefreshCw, TrendingDown, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
+import type { AnalyticsContext } from "@/types/analytics.type";
 
 interface KpiCardProps {
   icon: React.ElementType;
   label: string;
   value: string;
-  change: string;
-  up: boolean;
+  changePercentage: number | null;
+  increasedIsGood: boolean;
 }
 
-function KpiCard({ icon: Icon, label, value, change, up }: KpiCardProps) {
+function KpiCard({ icon: Icon, label, value, changePercentage, increasedIsGood }: KpiCardProps) {
+  const isIncrease = (changePercentage ?? 0) >= 0;
+  const isFavourable = changePercentage !== null && (isIncrease ? increasedIsGood : !increasedIsGood);
+
   return (
-    <div
-      className="bg-white rounded-sm p-5 flex flex-col gap-3"
-      style={{
-        border: "1px solid #D1D9E0",
-        borderLeftWidth: "4px",
-        borderLeftColor: "#115fdc",
-        boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-      }}
-    >
-      <div className="flex items-start justify-between">
-        <div
-          className="w-9 h-9 rounded-sm flex items-center justify-center"
-          style={{ background: "#E8EFF7" }}
-        >
-          <Icon className="w-4 h-4" style={{ color: "#115fdc" }} />
+    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 border-l-4 border-l-blue-600 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+          <Icon className="h-4 w-4 text-blue-700" />
         </div>
-        <span
-          className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-sm tracking-wide"
-          style={
-            up
-              ? { color: "#922B21", background: "#FDECEA" }
-              : { color: "#1D6A3A", background: "#E6F4EC" }
-          }
-        >
-          {up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-          {change}
-        </span>
+        {changePercentage !== null && (
+          <span className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold tracking-wide ${isFavourable ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+            {isIncrease ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            {Math.abs(changePercentage).toFixed(1)}%
+          </span>
+        )}
       </div>
       <div>
-        <div className="text-2xl font-bold" style={{ color: "#115fdc", letterSpacing: "-0.5px" }}>
-          {value}
-        </div>
-        <div className="text-xs font-medium mt-1 uppercase tracking-widest" style={{ color: "#4B5D6E" }}>
-          {label}
-        </div>
+        <div className="text-2xl font-bold tracking-tight text-blue-700">{value}</div>
+        <div className="mt-1 text-xs font-medium uppercase tracking-widest text-slate-600">{label}</div>
       </div>
     </div>
   );
 }
 
-export default function KpiGrid() {
+function compactLkr(value: number) {
+  if (value >= 1_000_000) return `LKR ${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `LKR ${(value / 1_000).toFixed(1)}K`;
+
+  return `LKR ${value.toLocaleString()}`;
+}
+
+interface KpiGridProps {
+  kpis?: AnalyticsContext["kpis"];
+  isLoading: boolean;
+}
+
+export default function KpiGrid({ kpis, isLoading }: KpiGridProps) {
   const { t } = useTranslation();
 
+  if (isLoading || !kpis) {
+    return (
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {[...Array(4)].map((_, index) => <div key={index} className="h-32 animate-pulse rounded-2xl bg-slate-100" />)}
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <KpiCard icon={AlertTriangle} label={t("analytics.kpi.accidentFrequencyMonthly")} value="5.2" change="12%"  up={true}  />
-      <KpiCard icon={Car} label={t("analytics.kpi.highRiskVehicles")} value="6" change="2 added" up={true}  />
-      <KpiCard icon={DollarSign} label={t("analytics.kpi.totalCostImpact")} value="LKR 9.6M" change="8%" up={true}  />
-      <KpiCard icon={RefreshCw} label={t("analytics.kpi.recoveryRate")} value="38.4%" change="5.2%" up={false} />
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <KpiCard icon={AlertTriangle} label={t("analytics.kpi.accidentFrequencyMonthly")} value={kpis.monthly_accident_frequency.value.toFixed(1)} changePercentage={kpis.monthly_accident_frequency.change_percentage} increasedIsGood={false} />
+      <KpiCard icon={Car} label={t("analytics.kpi.highRiskVehicles")} value={kpis.high_risk_vehicles.value.toLocaleString()} changePercentage={kpis.high_risk_vehicles.change_percentage} increasedIsGood={false} />
+      <KpiCard icon={DollarSign} label={t("analytics.kpi.totalCostImpact")} value={compactLkr(kpis.total_cost_impact.value)} changePercentage={kpis.total_cost_impact.change_percentage} increasedIsGood={false} />
+      <KpiCard icon={RefreshCw} label={t("analytics.kpi.recoveryRate")} value={`${kpis.recovery_rate.value.toFixed(1)}%`} changePercentage={kpis.recovery_rate.change_percentage} increasedIsGood />
     </div>
   );
 }

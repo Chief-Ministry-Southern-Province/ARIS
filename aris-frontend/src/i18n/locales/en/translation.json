@@ -797,6 +797,7 @@
     "subtitle": "Comprehensive accident analytics and insights",
     "description": "Comprehensive accident analytics and insights",
     "refresh": "Refresh",
+    "noDataForPeriod": "No data is available for the selected period.",
 
     "kpi": {
       "accidentFrequencyMonthly": "Accident Frequency (Monthly)",

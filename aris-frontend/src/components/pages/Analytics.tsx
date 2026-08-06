@@ -83,7 +83,7 @@ export function AnalyticsSkeleton() {
 export default function Analytics() {
   const { t } = useTranslation();
   const [period, setPeriod] = useState(currentFiscalPeriod);
-  const { data: analytics, isFetching, isError, refetch } = useAnalytics(period);
+  const { data: analytics, isFetching, isLoading, isError, refetch } = useAnalytics(period);
 
   return (
     <div className="mx-auto max-w-[1600px] space-y-8 p-4 sm:p-6">
@@ -101,16 +101,22 @@ export default function Analytics() {
         </div>
       )}
 
-      <KpiGrid />
+      <KpiGrid kpis={analytics?.kpis} isLoading={isLoading} />
 
       <section className="space-y-4">
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">{t("analytics.sections.overview")}</h2>
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
           <Suspense fallback={<ChartSkeleton />}>
-            <AccidentFrequencyChart />
+            <AccidentFrequencyChart
+              data={analytics?.accident_frequency_trend}
+              isLoading={isLoading}
+            />
           </Suspense>
           <Suspense fallback={<ChartSkeleton />}>
-            <CostAnalysisChart />
+            <CostAnalysisChart
+              data={analytics?.cost_analysis_trend}
+              isLoading={isLoading}
+            />
           </Suspense>
         </div>
       </section>
