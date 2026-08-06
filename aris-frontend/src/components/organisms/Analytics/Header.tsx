@@ -3,19 +3,22 @@ import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   period: string;
+  periods: string[];
   onPeriodChange: (period: string) => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
 }
 
-export default function Header({ period, onPeriodChange }: HeaderProps) {
+export default function Header({ period, periods, onPeriodChange, onRefresh, isRefreshing }: HeaderProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-sm px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm sm:px-6">
       <div>
         <div className="flex items-center gap-2 mb-1">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-gray-900">{t("analytics.title")}</h1>
+              <h1 className="text-2xl font-bold text-slate-900">{t("analytics.title")}</h1>
               <p className="text-sm text-gray-500 mt-0.5">{t("analytics.subtitle")}</p>
             </div>
           </div>
@@ -25,26 +28,27 @@ export default function Header({ period, onPeriodChange }: HeaderProps) {
         <select
           value={period}
           onChange={(e) => onPeriodChange(e.target.value)}
-          className="px-3 py-2 text-sm focus:outline-none rounded-sm"
+          className="rounded-lg px-3 py-2 text-sm focus:outline-none"
           style={{
             background: "#115fdc",
             border: "1px solid #3A6AAA",
             color: "#E8F0F9",
           }}
         >
-          <option>FY2023-24</option>
-          <option>FY2022-23</option>
-          <option>Q4 2024</option>
+          {periods.map((option) => <option key={option}>{option}</option>)}
         </select>
         <button
-          className="flex items-center gap-2 px-3 py-2 text-sm rounded-sm transition-colors"
+          type="button"
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
           style={{
             background: "#115fdc",
             border: "1px solid #3A6AAA",
             color: "#E8F0F9",
           }}
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
           {t("analytics.refresh")}
         </button>
       </div>

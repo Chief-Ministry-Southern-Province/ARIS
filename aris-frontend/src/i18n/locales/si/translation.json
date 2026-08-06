@@ -33,17 +33,33 @@
     "reportIncident": "නව අනතුරු වාර්තාව",
     "totalIncidents": "මුළු සිදුවීම්",
     "openInvestigations": "විවෘත පරීක්ෂණ",
+    "openCases": "විවෘත නඩු",
     "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
+    "pendingApprovalsRecommendations": "අනුමැතිය / නිර්දේශ බලාපොරොත්තුවෙන්",
     "completedCases": "සම්පූර්ණ කළ සිද්ධි",
     "totalLosses": "මුළු අලාභ",
     "recoveries": "යළිලැබීම්",
+    "thisFiscalYear": "මෙම මූල්‍ය වර්ෂය",
+    "activeCases": "ක්‍රියාත්මක නඩු",
+    "awaitingReview": "ඔබගේ තීරණය බලාපොරොත්තුවෙන්",
+    "estimatedTotal": "ඇස්තමේන්තුගත මුළු අගය",
+    "recoveryRate": "අය කරගත් මුදල",
     "accidentTrends": "අනතුරු ප්‍රවණතා",
     "lossCategories": "අලාභ කාණ්ඩ",
     "recentCases": "අලුත් සිද්ධි",
     "vehicleRisk": "වාහන අවදානම්",
     "locationRisks": "ස්ථානයේ අවදානම්",
     "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
-    "recentActivities": "අලුත් ක්‍රියාකාරකම්"
+    "recentActivities": "අලුත් ක්‍රියාකාරකම්",
+    "overdueApprovals": "කල් ඉකුත් වූ අනුමැතීන්",
+    "overdueApprovalsSubtitle": "පැය 24ක් හෝ ඊට වැඩි කාලයක් සමාලෝචනය බලාපොරොත්තු වන අනුමැතීන්.",
+    "unassignedApprover": "අනුමත කරන්නෙකු පවරා නැත",
+    "step": "පියවර {{step}}",
+    "noOverdueApprovals": "කල් ඉකුත් වූ අනුමැතීන් නොමැත.",
+    "caseStageFunnel": "නඩු පියවර ප්‍රවාහය",
+    "caseStageFunnelSubtitle": "ප්‍රවේශ විය හැකි නඩු දැනට පවතින පියවර.",
+    "stageAccidentReported": "අනතුර වාර්තා කරන ලදී",
+    "stageCompleted": "සම්පූර්ණ කරන ලදී"
   },
   "report": {
     "title": "නව අනතුරු වාර්තාව",
@@ -754,8 +770,10 @@
   },
    "analytics": {
     "title": "විශ්ලේෂණ",
+    "subtitle": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "description": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "refresh": "නවතම දත්ත ලබා ගන්න",
+    "noDataForPeriod": "තෝරාගත් කාලසීමාව සඳහා දත්ත නොමැත.",
 
     "kpi": {
       "accidentFrequencyMonthly": "අනතුරු සංඛ්‍යාතය (මාසික)",
@@ -769,9 +787,19 @@
       "costAnalysis": "පිරිවැය විශ්ලේෂණය",
       "recoveryAnalysis": "යළිලැබීම් විශ්ලේෂණය",
       "lossDistribution": "අලාභ බෙදාහැරීම",
+      "netLossByVehicleType": "වාහන වර්ගය අනුව ශුද්ධ අලාභය",
+      "highRiskVehicles": "ඉහළ අවදානම් වාහන",
       "repeatIncidentsDriverAnalysis": "නැවත සිදුවීම් — රියදුරු විශ්ලේෂණය",
       "institutionComparison": "ආයතන සංසන්දනය",
-      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්"
+      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්",
+      "gisHotspots": "GIS අනතුරු හොට්ස්පොට්"
+    },
+
+    "sections": {
+      "overview": "අනතුරු සාරාංශය",
+      "financialInsights": "මූල්‍ය අවබෝධතා",
+      "riskAndPerformance": "අවදානම් සහ කාර්යසාධනය",
+      "institutionAndLocation": "ආයතන සහ ස්ථාන අවබෝධතා"
     },
 
     "legend": {
@@ -780,6 +808,7 @@
       "recovered": "අයකරගත් මුදල",
       "insurance": "රක්ෂණ",
       "disciplinary": "විනය ක්‍රියාමාර්ග",
+      "riskScore": "අවදානම් ලකුණු",
       "other": "වෙනත්",
       "lossesLKR": "අලාභ (රු.)"
     },

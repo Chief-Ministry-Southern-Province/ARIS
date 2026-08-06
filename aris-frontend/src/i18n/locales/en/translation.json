@@ -68,17 +68,33 @@
     "reportIncident": "Report New Accident",
     "totalIncidents": "Total Incidents",
     "openInvestigations": "Open Investigations",
+    "openCases": "Open Cases",
     "pendingApprovals": "Pending Approvals",
+    "pendingApprovalsRecommendations": "Pending Approvals / Recommendations",
     "completedCases": "Completed Cases",
     "totalLosses": "Total Losses",
     "recoveries": "Recoveries",
+    "thisFiscalYear": "This Fiscal Year",
+    "activeCases": "Active Cases",
+    "awaitingReview": "Awaiting Your Decision",
+    "estimatedTotal": "Estimated Total",
+    "recoveryRate": "Amount Recovered",
     "accidentTrends": "Accident Trends",
     "lossCategories": "Loss Categories",
     "recentCases": "Recent Cases",
     "vehicleRisk": "Vehicle Risk",
     "locationRisks": "Location Risks",
     "accidentHotspotMp": "Accident Hotspot Map",
-    "recentActivities": "Recent Activity"
+    "recentActivities": "Recent Activity",
+    "overdueApprovals": "Overdue Approvals",
+    "overdueApprovalsSubtitle": "Pending review for 24 hours or more.",
+    "unassignedApprover": "Unassigned approver",
+    "step": "Step {{step}}",
+    "noOverdueApprovals": "No overdue approvals.",
+    "caseStageFunnel": "Case Stage Funnel",
+    "caseStageFunnelSubtitle": "Where accessible cases are currently progressing.",
+    "stageAccidentReported": "Accident Reported",
+    "stageCompleted": "Completed"
   },
   "report": {
     "title": "Report New Accident",
@@ -781,6 +797,7 @@
     "subtitle": "Comprehensive accident analytics and insights",
     "description": "Comprehensive accident analytics and insights",
     "refresh": "Refresh",
+    "noDataForPeriod": "No data is available for the selected period.",
 
     "kpi": {
       "accidentFrequencyMonthly": "Accident Frequency (Monthly)",
@@ -794,9 +811,19 @@
       "costAnalysis": "Cost Analysis",
       "recoveryAnalysis": "Recovery Analysis",
       "lossDistribution": "Loss Distribution",
+      "netLossByVehicleType": "Net Loss by Vehicle Type",
+      "highRiskVehicles": "High Risk Vehicles",
       "repeatIncidentsDriverAnalysis": "Repeat Incidents — Driver Analysis",
       "institutionComparison": "Institution Comparison",
-      "gisAccidentHotspots": "GIS Accident Hotspots"
+      "gisAccidentHotspots": "GIS Accident Hotspots",
+      "gisHotspots": "GIS Accident Hotspots"
+    },
+
+    "sections": {
+      "overview": "Accident Overview",
+      "financialInsights": "Financial Insights",
+      "riskAndPerformance": "Risk & Performance",
+      "institutionAndLocation": "Institution & Location Insights"
     },
 
     "legend": {
@@ -805,6 +832,7 @@
       "recovered": "Recovered",
       "insurance": "Insurance",
       "disciplinary": "Disciplinary",
+      "riskScore": "Risk Score",
       "other": "Other",
       "lossesLKR": "Losses (LKR)"
     },

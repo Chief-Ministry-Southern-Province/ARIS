@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class FR109 extends Model
 {
+    protected $table = 'fr109s';
+
     protected $fillable = [
         'accident_case_id',
         'reference_number',

@@ -1,63 +1,50 @@
 import { useMemo } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useTranslation } from "react-i18next";
-import { lossCategoryData } from "../../data/mockData";
+
+import type { LossDistributionPoint } from "@/types/analytics.type";
 import { formatLKR } from "@/utils/formatCurrency";
-import { Card, SectionTitle, tooltipStyle, GOV_COLORS } from "./shared";
+import { Card, GOV_COLORS, SectionTitle, tooltipStyle } from "./shared";
 
-export default function LossDistributionChart() {
+interface LossDistributionChartProps {
+  data?: LossDistributionPoint[];
+  isLoading: boolean;
+}
+
+export default function LossDistributionChart({ data = [], isLoading }: LossDistributionChartProps) {
   const { t } = useTranslation();
-
-  const totalLoss = useMemo(
-    () => lossCategoryData.reduce((s, d) => s + d.value, 0),
-    []
-  );
+  const totalLoss = useMemo(() => data.reduce((total, item) => total + item.value, 0), [data]);
 
   return (
     <Card>
-      <SectionTitle>{t("analytics.charts.lossDistribution")}</SectionTitle>
-      <ResponsiveContainer width="100%" height={180}>
-        <PieChart>
-          <Pie
-            data={lossCategoryData}
-            cx="50%"
-            cy="50%"
-            outerRadius={70}
-            paddingAngle={2}
-            dataKey="value"
-            label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`}
-            labelLine={false}
-            strokeWidth={1}
-            stroke="#F0F3F7"
-          >
-            {lossCategoryData.map((_, i) => (
-              <Cell key={i} fill={GOV_COLORS[i % GOV_COLORS.length]} />
+      <SectionTitle>{t("analytics.charts.netLossByVehicleType")}</SectionTitle>
+      {isLoading ? (
+        <div className="h-[180px] animate-pulse rounded-xl bg-slate-100" />
+      ) : data.length ? (
+        <>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie data={data} cx="50%" cy="50%" outerRadius={70} paddingAngle={2} dataKey="value" label={({ percent }) => `${((percent ?? 0) * 100).toFixed(0)}%`} labelLine={false} strokeWidth={1} stroke="#F0F3F7">
+                {data.map((item, index) => <Cell key={item.name} fill={GOV_COLORS[index % GOV_COLORS.length]} />)}
+              </Pie>
+              <Tooltip contentStyle={tooltipStyle} formatter={(value, name) => [formatLKR(Number(value)), name]} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="mt-2 space-y-1.5">
+            {data.map((item, index) => (
+              <div key={item.name} className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-sm" style={{ background: GOV_COLORS[index % GOV_COLORS.length] }} />
+                  <span className="text-slate-600">{item.name}</span>
+                </div>
+                <span className="font-semibold text-blue-900">{((item.value / totalLoss) * 100).toFixed(0)}%</span>
+              </div>
             ))}
-          </Pie>
-          <Tooltip
-            contentStyle={tooltipStyle}
-            formatter={(value, name) => [
-              `LKR ${formatLKR(Number(Array.isArray(value) ? value[0] : value ?? 0))}`,
-              name,
-            ]}
-          />
-        </PieChart>
-      </ResponsiveContainer>
-
-      {/* Legend */}
-      <div className="space-y-1.5 mt-2">
-        {lossCategoryData.map((item, i) => (
-          <div key={i} className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-sm" style={{ background: GOV_COLORS[i] }} />
-              <span style={{ color: "#4B5D6E" }}>{item.name}</span>
-            </div>
-            <span className="font-semibold" style={{ color: "#1B3A6B" }}>
-              {((item.value / totalLoss) * 100).toFixed(0)}%
-            </span>
           </div>
-        ))}
-      </div>
+        </>
+      ) : (
+        <div className="flex h-[220px] items-center justify-center text-sm text-slate-400">{t("analytics.noDataForPeriod")}</div>
+      )}
     </Card>
   );
 }
