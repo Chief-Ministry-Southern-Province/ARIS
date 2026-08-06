@@ -24,6 +24,7 @@ class AnalyticsService
         $comparisonEnd = $comparisonStart->addMonths($monthsInPeriod)->subDay();
         $current = $this->periodMetrics($institutionIds, $start, $end, $monthsInPeriod);
         $previous = $this->periodMetrics($institutionIds, $comparisonStart, $comparisonEnd, $monthsInPeriod);
+        $costAnalysisTrend = $this->monthlyCostAnalysisTrend($institutionIds, $start, $end);
 
         return [
             'period' => $periodLabel,
@@ -50,7 +51,14 @@ class AnalyticsService
                 ],
             ],
             'accident_frequency_trend' => $this->monthlyAccidentTrend($institutionIds, $start, $end),
-            'cost_analysis_trend' => $this->monthlyCostAnalysisTrend($institutionIds, $start, $end),
+            'cost_analysis_trend' => $costAnalysisTrend,
+            'recovery_analysis_trend' => collect($costAnalysisTrend)
+                ->map(fn (array $month) => [
+                    'month' => $month['month'],
+                    'recoveries' => $month['recoveries'],
+                ])
+                ->all(),
+            'loss_distribution' => $this->lossDistribution($institutionIds, $start, $end),
             'high_risk_vehicle_types' => $this->highRiskVehicleTypes($institutionIds, $start, $end),
             'hotspots' => $this->hotspots($institutionIds, $start, $end),
             'repeat_incident_drivers' => $this->repeatIncidentDrivers($institutionIds, $start, $end),
@@ -155,6 +163,35 @@ class AnalyticsService
             })
             ->filter(fn (array $vehicle) => $vehicle['incidents'] > 0)
             ->sort(fn (array $left, array $right) => [$right['risk'], $right['incidents']] <=> [$left['risk'], $left['incidents']])
+            ->take(5)
+            ->values()
+            ->all();
+    }
+
+    private function lossDistribution(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array
+    {
+        $caseScope = AccidentCase::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->whereHas('accident', fn ($query) => $query->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()]));
+
+        return FR109::query()
+            ->whereIn('accident_case_id', $caseScope->select('id'))
+            ->with('accidentCase.accident.vehicle:id,vehicle_type')
+            ->get(['accident_case_id', 'revision', 'data'])
+            ->groupBy('accident_case_id')
+            ->map(fn ($revisions) => $revisions->sortByDesc('revision')->first())
+            ->groupBy(fn (FR109 $report) => $report->accidentCase?->accident?->vehicle?->vehicle_type)
+            ->reject(fn ($reports, $vehicleType) => blank($vehicleType))
+            ->map(function ($reports, string $vehicleType) {
+                return [
+                    'name' => ucwords(strtolower(str_replace('_', ' ', $vehicleType))),
+                    'value' => (float) $reports->sum(
+                        fn (FR109 $report) => $this->money($report->data['netLoss'] ?? 0),
+                    ),
+                ];
+            })
+            ->filter(fn (array $distribution) => $distribution['value'] > 0)
+            ->sortByDesc('value')
             ->take(5)
             ->values()
             ->all();

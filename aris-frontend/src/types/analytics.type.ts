@@ -14,6 +14,16 @@ export interface CostAnalysisTrendPoint {
   recoveries: number;
 }
 
+export interface RecoveryAnalysisTrendPoint {
+  month: string;
+  recoveries: number;
+}
+
+export interface LossDistributionPoint {
+  name: string;
+  value: number;
+}
+
 export interface HighRiskVehicleTypePoint {
   vehicle: string;
   incidents: number;
@@ -57,6 +67,8 @@ export interface AnalyticsContext {
   };
   accident_frequency_trend: AccidentFrequencyTrendPoint[];
   cost_analysis_trend: CostAnalysisTrendPoint[];
+  recovery_analysis_trend: RecoveryAnalysisTrendPoint[];
+  loss_distribution: LossDistributionPoint[];
   high_risk_vehicle_types: HighRiskVehicleTypePoint[];
   hotspots: AnalyticsHotspotPoint[];
   repeat_incident_drivers: RepeatIncidentDriverPoint[];

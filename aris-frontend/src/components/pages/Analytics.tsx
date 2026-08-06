@@ -125,10 +125,16 @@ export default function Analytics() {
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">{t("analytics.sections.financialInsights")}</h2>
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
           <Suspense fallback={<ChartSkeleton />}>
-            <RecoveryAnalysisChart />
+            <RecoveryAnalysisChart
+              data={analytics?.recovery_analysis_trend}
+              isLoading={isLoading}
+            />
           </Suspense>
           <Suspense fallback={<ChartSkeleton />}>
-            <LossDistributionChart />
+            <LossDistributionChart
+              data={analytics?.loss_distribution}
+              isLoading={isLoading}
+            />
           </Suspense>
         </div>
       </section>

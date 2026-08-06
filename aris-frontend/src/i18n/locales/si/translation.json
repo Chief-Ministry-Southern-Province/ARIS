@@ -787,6 +787,7 @@
       "costAnalysis": "පිරිවැය විශ්ලේෂණය",
       "recoveryAnalysis": "යළිලැබීම් විශ්ලේෂණය",
       "lossDistribution": "අලාභ බෙදාහැරීම",
+      "netLossByVehicleType": "වාහන වර්ගය අනුව ශුද්ධ අලාභය",
       "highRiskVehicles": "ඉහළ අවදානම් වාහන",
       "repeatIncidentsDriverAnalysis": "නැවත සිදුවීම් — රියදුරු විශ්ලේෂණය",
       "institutionComparison": "ආයතන සංසන්දනය",

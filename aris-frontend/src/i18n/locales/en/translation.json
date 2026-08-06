@@ -811,6 +811,7 @@
       "costAnalysis": "Cost Analysis",
       "recoveryAnalysis": "Recovery Analysis",
       "lossDistribution": "Loss Distribution",
+      "netLossByVehicleType": "Net Loss by Vehicle Type",
       "highRiskVehicles": "High Risk Vehicles",
       "repeatIncidentsDriverAnalysis": "Repeat Incidents — Driver Analysis",
       "institutionComparison": "Institution Comparison",
