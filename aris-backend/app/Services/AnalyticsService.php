@@ -53,7 +53,79 @@ class AnalyticsService
             'cost_analysis_trend' => $this->monthlyCostAnalysisTrend($institutionIds, $start, $end),
             'high_risk_vehicle_types' => $this->highRiskVehicleTypes($institutionIds, $start, $end),
             'hotspots' => $this->hotspots($institutionIds, $start, $end),
+            'repeat_incident_drivers' => $this->repeatIncidentDrivers($institutionIds, $start, $end),
+            'institution_comparison' => $this->institutionComparison($institutionIds, $start, $end),
         ];
+    }
+
+    private function repeatIncidentDrivers(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array
+    {
+        return Accident::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()])
+            ->whereNotNull('driver_id')
+            ->with([
+                'driver:id,name',
+                'institution:id,name',
+            ])
+            ->get(['id', 'driver_id', 'institution_id'])
+            ->groupBy('driver_id')
+            ->map(function ($accidents) {
+                $first = $accidents->first();
+
+                return [
+                    'id' => $first->driver_id,
+                    'driver' => $first->driver?->name ?: 'Unknown driver',
+                    'institution' => $first->institution?->name ?: 'Unknown institution',
+                    'incidents' => $accidents->count(),
+                ];
+            })
+            ->filter(fn (array $driver) => $driver['incidents'] >= 2)
+            ->sortByDesc('incidents')
+            ->take(5)
+            ->values()
+            ->all();
+    }
+
+    private function institutionComparison(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array
+    {
+        $cases = AccidentCase::query()
+            ->whereIn('institution_id', $institutionIds)
+            ->whereHas('accident', fn ($query) => $query->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()]))
+            ->with('institution:id,name')
+            ->get(['id', 'institution_id']);
+        $caseInstitutionIds = $cases->pluck('institution_id', 'id');
+        $caseCounts = $cases->countBy('institution_id');
+        $lossesByInstitution = [];
+
+        FR109::query()
+            ->whereIn('accident_case_id', $cases->pluck('id'))
+            ->get(['accident_case_id', 'revision', 'data'])
+            ->groupBy('accident_case_id')
+            ->map(fn ($revisions) => $revisions->sortByDesc('revision')->first())
+            ->each(function (FR109 $report) use ($caseInstitutionIds, &$lossesByInstitution): void {
+                $institutionId = $caseInstitutionIds[$report->accident_case_id] ?? null;
+
+                if ($institutionId !== null) {
+                    $lossesByInstitution[$institutionId] = ($lossesByInstitution[$institutionId] ?? 0)
+                        + $this->money($report->data['netLoss'] ?? 0);
+                }
+            });
+
+        return $cases
+            ->groupBy('institution_id')
+            ->map(function ($institutionCases, int $institutionId) use ($caseCounts, $lossesByInstitution) {
+                return [
+                    'id' => $institutionId,
+                    'name' => $institutionCases->first()->institution?->name ?: 'Unknown institution',
+                    'accidents' => (int) ($caseCounts[$institutionId] ?? 0),
+                    'losses' => (float) ($lossesByInstitution[$institutionId] ?? 0),
+                ];
+            })
+            ->sort(fn (array $left, array $right) => [$right['accidents'], $right['losses']] <=> [$left['accidents'], $left['losses']])
+            ->take(6)
+            ->values()
+            ->all();
     }
 
     private function highRiskVehicleTypes(array $institutionIds, CarbonImmutable $start, CarbonImmutable $end): array

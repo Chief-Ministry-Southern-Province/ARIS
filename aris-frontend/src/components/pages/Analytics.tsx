@@ -142,14 +142,20 @@ export default function Analytics() {
               isLoading={isLoading}
             />
           </Suspense>
-          <RepeatIncidentsTable />
+          <RepeatIncidentsTable
+            data={analytics?.repeat_incident_drivers}
+            isLoading={isLoading}
+          />
         </div>
       </section>
 
       <section className="space-y-4">
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">{t("analytics.sections.institutionAndLocation")}</h2>
         <Suspense fallback={<ChartSkeleton />}>
-          <InstitutionComparisonChart />
+          <InstitutionComparisonChart
+            data={analytics?.institution_comparison}
+            isLoading={isLoading}
+          />
         </Suspense>
         <GISHotspotsTable data={analytics?.hotspots} isLoading={isLoading} />
       </section>

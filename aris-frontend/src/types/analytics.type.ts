@@ -29,6 +29,20 @@ export interface AnalyticsHotspotPoint {
   risk: "HIGH" | "MEDIUM" | "LOW";
 }
 
+export interface RepeatIncidentDriverPoint {
+  id: number;
+  driver: string;
+  institution: string;
+  incidents: number;
+}
+
+export interface InstitutionComparisonPoint {
+  id: number;
+  name: string;
+  accidents: number;
+  losses: number;
+}
+
 export interface AnalyticsContext {
   period: string;
   period_start: string;
@@ -45,4 +59,6 @@ export interface AnalyticsContext {
   cost_analysis_trend: CostAnalysisTrendPoint[];
   high_risk_vehicle_types: HighRiskVehicleTypePoint[];
   hotspots: AnalyticsHotspotPoint[];
+  repeat_incident_drivers: RepeatIncidentDriverPoint[];
+  institution_comparison: InstitutionComparisonPoint[];
 }
