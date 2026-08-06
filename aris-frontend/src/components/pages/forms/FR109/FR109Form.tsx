@@ -5,7 +5,8 @@ import { CheckCircle, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
-import { useGetFR109, useSaveFR109, useSubmitFR109 } from "@/hooks/useFR109";
+import { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff } from "@/hooks/useFR109";
+import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
 import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
@@ -48,6 +49,7 @@ export default function FR109Form({
   onDecision,
 }: Props) {
   const { t } = useTranslation();
+  const { id: currentUserId } = useAuth();
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
 
@@ -56,6 +58,7 @@ export default function FR109Form({
   );
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
+  const writeOff = useUpdateFR109WriteOff(caseId ?? "");
 
   const displayed = document ?? loaded;
 
@@ -64,6 +67,10 @@ export default function FR109Form({
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
+  const writeOffEditable =
+    !readOnly &&
+    status === "APPROVED" &&
+    displayed?.creator.id === currentUserId;
 
   const currentApproval =
     approvalTimeline.find((item) => item.status === "PENDING") ??
@@ -140,6 +147,25 @@ export default function FR109Form({
       toast.error(
         (reason as { response?: { data?: { message?: string } } }).response
           ?.data?.message || "Failed to submit FR109 form."
+      );
+    }
+  };
+
+  const saveWriteOff = async () => {
+    if (!displayed?.id) return;
+
+    try {
+      const result = await writeOff.mutateAsync({
+        fr109Id: displayed.id,
+        writeOffEntries: data.writeOffEntries,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Write-off register saved successfully.");
+    } catch (reason: unknown) {
+      toast.error(
+        (reason as { response?: { data?: { message?: string } } }).response
+          ?.data?.message || "Failed to save write-off register."
       );
     }
   };
@@ -234,11 +260,13 @@ export default function FR109Form({
               setFormData={setData}
             />
 
+          </fieldset>
+
+          <fieldset disabled={!writeOffEditable} className="space-y-8 disabled:opacity-70">
             <WriteOffRegisterSection
               formData={data}
               setFormData={setData}
             />
-
           </fieldset>
 
           <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
@@ -287,6 +315,18 @@ export default function FR109Form({
                     <Save size={18} />
                     {saving ? "Saving..." : "Save Draft"}
                   </button>
+
+                  {writeOffEditable && (
+                    <button
+                      type="button"
+                      onClick={saveWriteOff}
+                      disabled={writeOff.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {writeOff.isPending ? "Saving..." : "Save Write-Off Details"}
+                    </button>
+                  )}
 
                   <button
                     type="button"

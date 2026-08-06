@@ -37,6 +37,7 @@ class AccidentTimelineService
       'APPROVED' => "{$document} {$revisionLabel} approved at step {$step}.",
       'REJECTED' => "{$document} {$revisionLabel} rejected: {$comments}",
       'WORKFLOW_COMPLETED' => "{$document} {$revisionLabel} approval workflow completed.",
+      'WRITE_OFF_NOTED' => "{$document} {$revisionLabel} write-off register completed.",
       default => "{$document} {$revisionLabel} {$event}.",
     };
 

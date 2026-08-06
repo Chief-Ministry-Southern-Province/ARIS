@@ -34,6 +34,7 @@ export type TimelineAction =
   | "FR109_APPROVED"
   | "FR109_REJECTED"
   | "FR109_WORKFLOW_COMPLETED"
+  | "FR109_WRITE_OFF_NOTED"
 
   | (string & {}); 
 

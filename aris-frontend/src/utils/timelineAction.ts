@@ -168,6 +168,12 @@ export const TIMELINE_ACTIONS = {
     icon: CheckCircle2,
     badge: "bg-green-100 text-green-700 border-green-200",
   },
+
+  FR109_WRITE_OFF_NOTED: {
+    label: "FR109 Write-Off Register Completed",
+    icon: CheckCircle2,
+    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
 } as const;
 
 export const DEFAULT_ACTION = {

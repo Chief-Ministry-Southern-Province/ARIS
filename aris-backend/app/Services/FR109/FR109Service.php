@@ -99,6 +99,34 @@ class FR109Service
         return $case->fr109s()->latest('revision')->first();
     }
 
+    /**
+     * The approved FR109 remains immutable except for Part G, which is
+     * completed by the officer who created the document after approval.
+     */
+    public function updateWriteOffEntries(FR109 $fr109, User $user, array $writeOffEntries): FR109
+    {
+        abort_unless($fr109->created_by === $user->id, 403, 'Only the FR109 creator can complete the write-off register.');
+        abort_unless($fr109->status === 'APPROVED', 409, 'Write-off details can be completed only after final FR109 approval.');
+
+        return DB::transaction(function () use ($fr109, $user, $writeOffEntries) {
+            $data = $fr109->data;
+            $data['writeOffEntries'] = $writeOffEntries;
+
+            $fr109->update(['data' => $data]);
+
+            $this->timelineService->createDocumentEvent(
+                $fr109->accidentCase,
+                $user,
+                'FR109',
+                'WRITE_OFF_NOTED',
+                $fr109->revision,
+                $fr109->reference_number,
+            );
+
+            return $fr109->fresh();
+        });
+    }
+
     private function ensureFR1044Approved(AccidentCase $case): void
     {
         abort_unless($case->fr1044s()->latest('revision')->value('status') === 'APPROVED', 409, 'An approved FR1044 report is required before creating FR109.');

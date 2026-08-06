@@ -45,7 +45,7 @@ class UpdateUserRequest extends FormRequest
         return [function ($validator) {
             $requiredInstitutionType = match ($this->input('role')) {
                 'chief_secretary' => 'MINISTRY',
-                'chief_accountant' => 'PDHS',
+                'chief_accountant', 'ministry_account_subject_officer' => 'MINISTRY',
                 default => null,
             };
 
@@ -56,7 +56,11 @@ class UpdateUserRequest extends FormRequest
             $institution = Institution::find($this->integer('institution_id'));
 
             if (! $institution || $institution->type !== $requiredInstitutionType) {
-                $roleName = $this->input('role') === 'chief_accountant' ? 'Chief Accountant' : 'Chief Secretary';
+                $roleName = match ($this->input('role')) {
+                    'chief_accountant' => 'Chief Accountant',
+                    'ministry_account_subject_officer' => 'Ministry Account Subject Officer',
+                    default => 'Chief Secretary',
+                };
                 $validator->errors()->add('institution_id', "{$roleName} must be assigned to a {$requiredInstitutionType} institution.");
             }
         }];

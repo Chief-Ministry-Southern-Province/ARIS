@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FR109\SaveFR109Request;
+use App\Http\Requests\FR109\UpdateFR109WriteOffRequest;
 use App\Http\Resources\FR109Resource;
 use App\Models\AccidentCase;
 use App\Models\FR109;
@@ -35,5 +36,14 @@ class FR109Controller extends Controller
         $draft = $this->fr109Service->saveDraft($accidentCase, $request->user(), $request->validated('data'));
 
         return new FR109Resource($this->fr109Service->submit($draft, $request->user()));
+    }
+
+    public function updateWriteOff(UpdateFR109WriteOffRequest $request, FR109 $fr109)
+    {
+        return new FR109Resource($this->fr109Service->updateWriteOffEntries(
+            $fr109,
+            $request->user(),
+            $request->validated('writeOffEntries'),
+        ));
     }
 }

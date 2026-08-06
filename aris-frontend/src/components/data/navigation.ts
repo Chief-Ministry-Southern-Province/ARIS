@@ -21,6 +21,7 @@ export const CHIEF_ACCOUNTANT_ACCESS_ROLES = [
 export const FR109_APPROVAL_ACCESS_ROLES = [
   ...FULL_ACCESS_ROLES,
   "chief_accountant",
+  "ministry_account_subject_officer",
 ];
 
 export const SIGNATURE_ACCESS_ROLE = [
@@ -53,6 +54,7 @@ export const canAccessAdminPanel = (
 
 export const NOTIFICATION_ROLES = [
   ...CHIEF_ACCOUNTANT_ACCESS_ROLES,
+  "ministry_account_subject_officer",
   "driver",
 ];
 

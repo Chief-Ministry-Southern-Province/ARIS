@@ -146,6 +146,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/cases/{accidentCase}/fr109', [FR109Controller::class, 'show']);
     Route::post('/cases/{accidentCase}/fr109', [FR109Controller::class, 'save']);
     Route::post('/cases/{accidentCase}/fr109/submit', [FR109Controller::class, 'submit']);
+    Route::put('/fr109/{fr109}/write-off', [FR109Controller::class, 'updateWriteOff']);
 
     //Protected routes for user signature
     Route::post('/user/signature', [UserSignatureController::class, 'store']);
