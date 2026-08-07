@@ -146,25 +146,39 @@
         }
 
         .title-cell {
-            height: 20mm;
+            height: 22mm;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .title-stack {
+            width: 100%;
+            height: 100%;
+        }
+
+        .title-stack td {
+            border: 0;
+            padding: 0;
             text-align: center;
             vertical-align: middle;
         }
 
         .title-si {
-            font-size: 13pt;
+            font-family: iskoolapota, sans-serif;
+            font-size: 24pt;
             font-weight: bold;
-            line-height: 1.2;
+            line-height: 1.05;
         }
 
         .title-ta {
-            font-size: 13pt;
+            font-size: 12pt;
             font-weight: normal;
             line-height: 1.2;
         }
 
         .title-en {
-            font-size: 13pt;
+            font-size: 12pt;
             font-weight: bold;
             line-height: 1.2;
         }
@@ -368,6 +382,63 @@
             line-height: 1.12;
         }
 
+        .approval-signature-row {
+            width: 100%;
+        }
+
+        .approval-signature-row td {
+            border: 0;
+            padding: 5mm 0 0;
+            vertical-align: top;
+        }
+
+        /* --- Date / brace block (fixed alignment) ---
+           Only the brace is vertically centered against the 3-line
+           label stack. The labels and the date value are BOTTOM
+           aligned, so "Date" and the dotted line share one baseline
+           instead of the date text floating in the middle of a tall
+           row, disconnected from its own line. */
+        .approval-date-labels {
+            width: 18mm;
+            font-size: 8.5pt;
+            line-height: 1.15;
+            padding: 0 !important;
+            vertical-align: bottom !important;
+        }
+
+        .approval-date-brace {
+            width: 5mm;
+            font-size: 25pt;
+            line-height: 1;
+            padding: 0 !important;
+            vertical-align: middle !important;
+            text-align: center;
+        }
+
+        .approval-date-value {
+            width: 32mm;
+            font-size: 8.5pt;
+            padding: 0 0 0.3mm 2mm !important;
+            vertical-align: bottom !important;
+        }
+
+        .approval-signature-content {
+            text-align: right;
+        }
+
+        .approval-signature-line {
+            width: 75mm;
+            min-height: 12mm;
+            margin-left: auto;
+            border-bottom: 0.25mm dotted #000;
+        }
+
+        .approval-signature-image {
+            width: 55mm;
+            height: 12mm;
+            object-fit: contain;
+        }
+
         .footer-note {
             height: 3mm;
             font-size: 7.8pt;
@@ -381,6 +452,17 @@
         $documentData = data_get($document, 'data', []);
         $referenceNumber = data_get($document, 'reference_number', '');
         $text = static fn (mixed $value, int $limit): string => \Illuminate\Support\Str::limit(trim((string) $value), $limit, '...');
+        $signatureDate = static function (mixed $value): string {
+            if ($value === null || $value === '') {
+                return '';
+            }
+
+            try {
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
+            } catch (\Throwable) {
+                return '';
+            }
+        };
 
         $items = collect(data_get($documentData, 'items', []))
             ->filter(static fn ($item): bool => is_array($item) || is_object($item))
@@ -427,9 +509,17 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="title-cell" style="width: 150mm;">
-                    <span class="title-si" lang="si">මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</span><br>
-                    <span class="title-ta" lang="ta">நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</span><br>
-                    <span class="title-en">PRELIMINARY REPORT OF LOSSES UNDER F.R. 104 (3)</span>
+                    <table class="no-border title-stack">
+                        <tr>
+                            <td class="title-si" style="font-family: iskoolapota, sans-serif !important; font-size: 32pt !important; line-height: 0.9 !important;">මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</td>
+                        </tr>
+                        <tr>
+                            <td class="title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 12pt; line-height: 1.1;">நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</td>
+                        </tr>
+                        <tr>
+                            <td class="title-en" style="font-size: 12pt; line-height: 1.1;">PRELIMINARY REPORT OF LOSSES UNDER F.R. 104 (3)</td>
+                        </tr>
+                    </table>
                 </td>
                 <td class="reference-cell" style="width: 50mm;">
                     <div class="field-title">
@@ -650,36 +740,79 @@
 
         @php
             $signatureRows = [
-                ['signature' => $headSignature, 'label' => 'Head of Department / Chairman of Corporation', 'always_show' => true],
-                ['signature' => $pdhsSignature, 'label' => 'Provincial Director of Health Services', 'always_show' => false],
-                ['signature' => $secretarySignature, 'label' => 'Secretary to the Ministry of ' . $text(data_get($documentData, 'secretaryOfMinistry', ''), 45), 'always_show' => true],
-                ['signature' => $chiefSecretarySignature, 'label' => 'Chief Secretary', 'always_show' => false],
+                [
+                    'signature' => $pdhsSignature,
+                    'label' => 'පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,',
+                    'secondary_label' => 'දකුණු පළාත.',
+                    'always_show' => true,
+                    'show_institution' => false,
+                ],
+                [
+                    'signature' => $secretarySignature,
+                    'label' => 'ලේකම්,',
+                    'secondary_label' => 'ප්‍රධාන අමාත්‍යාංශය,',
+                    'tertiary_label' => 'දකුණු පළාත.',
+                    'always_show' => true,
+                    'show_institution' => false,
+                ],
+                [
+                    'signature' => $chiefSecretarySignature,
+                    'label' => 'ප්‍රධාන ලේකම්,',
+                    'secondary_label' => 'දකුණු පළාත.',
+                    'always_show' => false,
+                    'show_institution' => false,
+                ],
             ];
         @endphp
 
+        {{--
+            All signature rows now share the same date/brace layout
+            (label stack + curly brace + dotted line), matching the
+            reference image. Only the label text and the bound
+            $signatureRow data differ between rows.
+        --}}
         <table class="no-border signature-layout page-break-avoid" style="margin-top: 12mm;">
             <tr>
                 <td style="width: 200mm;">
                     @foreach ($signatureRows as $signatureRow)
                         @if ($signatureRow['always_show'] || data_get($signatureRow['signature'], 'signature_data_uri'))
                             <div class="signature-block">
-                                <table class="no-border signature-row">
+                                <table class="no-border approval-signature-row">
                                     <tr>
-                                        <td class="signature-date" style="width: 45mm;">
-                                            <span lang="si">දිනය</span><br>
-                                            <span lang="ta">திகதி</span><br>
-                                            Date<br>
-                                            {{ $text(data_get($signatureRow['signature'], 'approved_at', ''), 30) }}
+                                        <td style="width: 55mm;">
+                                            <table class="no-border" style="width: 55mm;">
+                                                <tr>
+                                                    <td class="approval-date-labels">
+                                                        <span lang="si">දිනය</span><br>
+                                                        <span lang="ta">திகதி</span><br>
+                                                        Date
+                                                    </td>
+                                                    <td class="approval-date-brace">}</td>
+                                                    <td class="approval-date-value">
+                                                        <span class="dotted-value">{{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
-                                        <td class="signature-content" style="width: 155mm;">
-                                            @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                                <img class="approval-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature"><br>
-                                            @else
-                                                <div class="signature-line" style="width: 65mm; margin-left: auto;"></div>
-                                            @endif
+                                        <td class="approval-signature-content" style="width: 145mm;">
+                                            <div class="approval-signature-line">
+                                                @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                    <img class="approval-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
+                                                @endif
+                                            </div>
                                             <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
-                                            <span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution', ''), 55) }}</span><br>
-                                            <span class="signature-label">{{ $signatureRow['label'] }}</span>
+                                            <span class="signature-label" @if (($signatureRow['show_institution'] ?? true) === false) lang="si" @endif>
+                                                {{ $signatureRow['label'] }}
+                                                @if (! empty($signatureRow['secondary_label']))
+                                                    <br>{{ $signatureRow['secondary_label'] }}
+                                                @endif
+                                                @if (! empty($signatureRow['tertiary_label']))
+                                                    <br>{{ $signatureRow['tertiary_label'] }}
+                                                @endif
+                                            </span>
+                                            @if ($signatureRow['show_institution'] ?? true)
+                                                <br><span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution', ''), 55) }}</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 </table>
