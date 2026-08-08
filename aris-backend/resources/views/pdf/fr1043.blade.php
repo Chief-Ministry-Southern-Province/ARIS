@@ -382,6 +382,12 @@
             line-height: 1.12;
         }
 
+        .signature-label-left {
+            display: block !important;
+            width: 100% !important;
+            text-align: left !important;
+        }
+
         .approval-signature-row {
             width: 100%;
         }
@@ -746,6 +752,7 @@
                     'secondary_label' => 'දකුණු පළාත.',
                     'always_show' => true,
                     'show_institution' => false,
+                    'label_alignment' => 'left',
                 ],
                 [
                     'signature' => $secretarySignature,
@@ -754,6 +761,7 @@
                     'tertiary_label' => 'දකුණු පළාත.',
                     'always_show' => true,
                     'show_institution' => false,
+                    'label_alignment' => 'left',
                 ],
                 [
                     'signature' => $chiefSecretarySignature,
@@ -761,6 +769,7 @@
                     'secondary_label' => 'දකුණු පළාත.',
                     'always_show' => false,
                     'show_institution' => false,
+                    'label_alignment' => 'left',
                 ],
             ];
         @endphp
@@ -801,7 +810,7 @@
                                                 @endif
                                             </div>
                                             <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
-                                            <span class="signature-label" @if (($signatureRow['show_institution'] ?? true) === false) lang="si" @endif>
+                                            <span class="signature-label @if (($signatureRow['label_alignment'] ?? 'right') === 'left') signature-label-left @endif" @if (($signatureRow['show_institution'] ?? true) === false) lang="si" @endif>
                                                 {{ $signatureRow['label'] }}
                                                 @if (! empty($signatureRow['secondary_label']))
                                                     <br>{{ $signatureRow['secondary_label'] }}
