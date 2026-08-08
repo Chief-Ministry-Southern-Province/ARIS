@@ -231,6 +231,13 @@
             padding: 2mm;
         }
 
+        .item-total-row {
+            height: 7mm;
+            padding: 1mm 2mm;
+            font-size: 8.5pt;
+            vertical-align: middle;
+        }
+
         .item-line {
             height: 6.5mm;
             overflow: hidden;
@@ -333,6 +340,71 @@
             line-height: 1.12;
         }
 
+        .workflow-signature-layout td,
+        .workflow-signature-row td {
+            border: 0;
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .workflow-signature-block {
+            min-height: 19mm;
+            padding-bottom: 3mm;
+        }
+
+        .workflow-signature-separator {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1mm 0 3mm;
+        }
+
+        .workflow-signature-separator td {
+            border-top: 0.35mm solid #000 !important;
+            height: 0;
+            padding: 0;
+        }
+
+        .workflow-date-labels {
+            width: 18mm;
+            font-size: 8.5pt;
+            line-height: 1.15;
+            padding: 0 !important;
+            vertical-align: bottom !important;
+        }
+
+        .workflow-date-brace {
+            width: 5mm;
+            font-size: 25pt;
+            line-height: 1;
+            padding: 0 !important;
+            text-align: center;
+            vertical-align: middle !important;
+        }
+
+        .workflow-date-value {
+            width: 32mm;
+            font-size: 8.5pt;
+            padding: 0 0 0.3mm 2mm !important;
+            vertical-align: bottom !important;
+        }
+
+        .workflow-signature-content {
+            text-align: right;
+        }
+
+        .workflow-signature-line {
+            width: 75mm;
+            min-height: 12mm;
+            margin-left: auto;
+            border-bottom: 0.25mm dotted #000;
+        }
+
+        .workflow-signature-image {
+            width: 55mm;
+            height: 12mm;
+            object-fit: contain;
+        }
+
         .footer-note {
             height: 3mm;
             font-size: 7.8pt;
@@ -345,13 +417,18 @@
     @php
         $documentData = data_get($document, 'data', []);
         $referenceNumber = data_get($document, 'reference_number', data_get($documentData, 'referenceNo', ''));
-        $text = static fn (mixed $value, int $limit): string => \Illuminate\Support\Str::limit(trim((string) $value), $limit, '...');
+        // The official form must render the stored value, not a shortened
+        // preview with an ellipsis. Fixed table geometry remains unchanged.
+        $text = static fn (mixed $value, int $limit): string => trim((string) $value);
 
         $lostItems = collect(data_get($documentData, 'lostItems', []))
             ->filter(static fn ($item): bool => is_array($item) || is_object($item))
             ->values()
             ->take(5);
         $itemSlots = $lostItems->pad(5, []);
+        $number = static fn (mixed $value): float => (float) preg_replace('/[^0-9.\-]/', '', (string) $value ?: '0');
+        $totalOriginalCost = collect(data_get($documentData, 'lostItems', []))
+            ->sum(static fn ($item): float => $number(data_get($item, 'originalCost', 0)));
 
         $officers = collect(data_get($documentData, 'officers', []))
             ->filter(static fn ($officer): bool => is_array($officer) || is_object($officer))
@@ -373,6 +450,17 @@
 
         $copyToAuditorGeneral = data_get($documentData, 'copyToAuditorGeneral') === 'yes';
         $isDueToFraudNegligence = data_get($documentData, 'isDueToFraudNegligence');
+        $signatureDate = static function (mixed $value): string {
+            if ($value === null || $value === '') {
+                return '';
+            }
+
+            try {
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
+            } catch (\Throwable) {
+                return '';
+            }
+        };
     @endphp
 
     <div class="page page-1">
@@ -546,6 +634,9 @@
 
     <div class="page page-2">
 
+        <table rotate="-90" style="width: 277mm; border: 0;">
+            <tr>
+                <td style="width: 277mm; border: 0; padding: 0;">
         <table class="page-break-avoid">
             <tr>
                 <th class="h-13 table-header header-cell" style="width: 200mm;" colspan="7">
@@ -628,6 +719,12 @@
                     @endforeach
                 </td>
             </tr>
+            <tr>
+                <td colspan="6" class="item-total-row" style="text-align: right;">
+                    <span lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total Value
+                </td>
+                <td class="item-total-row" style="text-align: right;">{{ number_format($totalOriginalCost, 2) }}</td>
+            </tr>
         </table>
 
         <table class="page-break-avoid" style="margin-top: 3mm;">
@@ -674,7 +771,7 @@
                         <div class="officer-line">{{ $text(data_get($officer, 'responsibility', ''), 45) }}</div>
                     @endforeach
                 </td>
-                <td class="h-23 response" style="width: 40mm; text-align: center;">
+                <td class="h-23 response" style="width: 40mm; text-align: left;">
                     @foreach ($officerSlots as $officer)
                         <div class="officer-line">{{ $text(data_get($officer, 'disciplinaryAction', ''), 30) }}</div>
                     @endforeach
@@ -687,6 +784,9 @@
             </tr>
         </table>
 
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="page page-3">
@@ -869,42 +969,83 @@
             </tr>
         </table>
 
-        <table class="no-border signature-card-grid page-break-avoid"
-            style="margin-top: 16mm;"
-        >
+        @php
+            $signatureRows = [
+                [
+                    'signature' => $pdhsSignature,
+                    'label' => 'පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,',
+                    'secondary_label' => 'දකුණු පළාත.',
+                    'always_show' => true,
+                ],
+                [
+                    'signature' => $secretarySignature,
+                    'label' => 'ලේකම්,',
+                    'secondary_label' => 'ප්‍රධාන අමාත්‍යාංශය,',
+                    'tertiary_label' => 'දකුණු පළාත.',
+                    'always_show' => true,
+                ],
+                [
+                    'signature' => $chiefSecretarySignature,
+                    'label' => 'ප්‍රධාන ලේකම්,',
+                    'secondary_label' => 'දකුණු පළාත.',
+                    'always_show' => false,
+                ],
+            ];
+        @endphp
+
+        <table class="no-border workflow-signature-layout page-break-avoid" style="margin-top: 12mm;">
             <tr>
-                <td style="width: 66.66mm;">
-                    @if (data_get($documentData, 'preparedSignature'))
-                        <img class="approval-signature-image" src="{{ data_get($documentData, 'preparedSignature') }}" alt="Prepared by signature"><br>
-                    @else
-                        <div class="signature-line"></div>
-                    @endif
-                    <span class="signature-card-name">{{ $text(data_get($documentData, 'preparedBy', ''), 55) }}</span><br>
-                    <span class="signature-card-role">{{ $text(data_get($documentData, 'preparedDesignation', ''), 55) }}</span><br>
-                    <span class="signature-card-institution">Prepared By</span><br>
-                    <span class="signature-card-date">{{ $text(data_get($documentData, 'preparedDate', ''), 30) }}</span>
-                </td>
-                <td style="width: 66.66mm;">
-                    @if (data_get($documentData, 'headSignature'))
-                        <img class="approval-signature-image" src="{{ data_get($documentData, 'headSignature') }}" alt="Head of Department signature"><br>
-                    @else
-                        <div class="signature-line"></div>
-                    @endif
-                    <span class="signature-card-name">{{ $text(data_get($documentData, 'headName', ''), 55) }}</span><br>
-                    <span class="signature-card-role">{{ $text(data_get($documentData, 'headDesignation', ''), 55) }}</span><br>
-                    <span class="signature-card-institution">Head of Department / Chairman</span><br>
-                    <span class="signature-card-date">{{ $text(data_get($documentData, 'headApprovalDate', ''), 30) }}</span>
-                </td>
-                <td style="width: 66.66mm;">
-                    @if (data_get($documentData, 'secretarySignature'))
-                        <img class="approval-signature-image" src="{{ data_get($documentData, 'secretarySignature') }}" alt="Secretary to the Ministry signature"><br>
-                    @else
-                        <div class="signature-line"></div>
-                    @endif
-                    <span class="signature-card-name">{{ $text(data_get($documentData, 'secretaryName', ''), 55) }}</span><br>
-                    <span class="signature-card-role">{{ $text(data_get($documentData, 'secretaryDesignation', ''), 55) }}</span><br>
-                    <span class="signature-card-institution">Secretary to the Ministry</span><br>
-                    <span class="signature-card-date">{{ $text(data_get($documentData, 'secretaryApprovalDate', ''), 30) }}</span>
+                <td style="width: 200mm;">
+                    @foreach ($signatureRows as $signatureRow)
+                        @if ($signatureRow['always_show'] || data_get($signatureRow['signature'], 'signature_data_uri'))
+                            <div class="workflow-signature-block">
+                                <table class="no-border workflow-signature-row" style="width: 200mm;">
+                                    <tr>
+                                        <td style="width: 55mm;">
+                                            <table class="no-border" style="width: 55mm;">
+                                                <tr>
+                                                    <td class="workflow-date-labels">
+                                                        <span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span><br>
+                                                        <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span><br>
+                                                        Date
+                                                    </td>
+                                                    <td class="workflow-date-brace">}</td>
+                                                    <td class="workflow-date-value"><span class="dotted-value">{{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</span></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td class="workflow-signature-content" style="width: 145mm;">
+                                            <div class="workflow-signature-line">
+                                                @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                    <img class="workflow-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
+                                                @endif
+                                            </div>
+                                            <table class="no-border" style="width: 145mm;">
+                                                <tr>
+                                                    <td style="width: 70mm; border: 0; padding: 0 !important;">&nbsp;</td>
+                                                    <td style="width: 75mm; border: 0; padding: 0 !important; text-align: right !important;">
+                                                        <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
+                                                        <span class="signature-label" lang="si">
+                                                            {{ $signatureRow['label'] }}
+                                                            @if (! empty($signatureRow['secondary_label']))
+                                                                <br>{{ $signatureRow['secondary_label'] }}
+                                                            @endif
+                                                            @if (! empty($signatureRow['tertiary_label']))
+                                                                <br>{{ $signatureRow['tertiary_label'] }}
+                                                            @endif
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <table class="workflow-signature-separator" style="width: 200mm;">
+                                <tr><td style="width: 200mm;">&nbsp;</td></tr>
+                            </table>
+                        @endif
+                    @endforeach
                 </td>
             </tr>
         </table>

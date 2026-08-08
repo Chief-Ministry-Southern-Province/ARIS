@@ -3,12 +3,14 @@
 namespace App\Services\PDF;
 
 use App\Models\FR1044;
+use App\Services\DocumentSignatureService;
 use App\Services\PDF\Contracts\PdfGeneratorInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class FR1044PdfGenerator implements PdfGeneratorInterface
 {
     public function __construct(
+        protected DocumentSignatureService $documentSignatureService,
         protected PDFService $pdfService,
     ) {
     }
@@ -21,7 +23,7 @@ class FR1044PdfGenerator implements PdfGeneratorInterface
 
         return $this->pdfService->download(
             'pdf.fr1044',
-            ['document' => $document],
+            $this->buildViewData($document),
             "FR1044-{$document->reference_number}.pdf",
             ['footer' => $this->footerHtml()],
         );
@@ -35,7 +37,7 @@ class FR1044PdfGenerator implements PdfGeneratorInterface
 
         return $this->pdfService->stream(
             'pdf.fr1044',
-            ['document' => $document],
+            $this->buildViewData($document),
             "FR1044-{$document->reference_number}.pdf",
             ['footer' => $this->footerHtml()],
         );
@@ -46,6 +48,36 @@ class FR1044PdfGenerator implements PdfGeneratorInterface
         return FR1044::query()
             ->with(['accidentCase', 'creator'])
             ->findOrFail($documentId);
+    }
+
+    protected function buildViewData(FR1044 $document): array
+    {
+        $signatures = $this->documentSignatureService->getDocumentSignatures(
+            $document->accidentCase,
+            'FR1044',
+            $document->revision,
+        );
+
+        return [
+            'document' => $document,
+            'pdhsSignature' => $this->firstSignatureForRoles($signatures, ['provincial director']),
+            'secretarySignature' => $this->firstSignatureForRoles($signatures, ['secretary']),
+            'chiefSecretarySignature' => $this->firstSignatureForRoles($signatures, ['chief secretary']),
+        ];
+    }
+
+    /** @param array<int, array<string, mixed>> $signatures */
+    private function firstSignatureForRoles(array $signatures, array $roles): ?array
+    {
+        foreach ($signatures as $signature) {
+            $signatureRole = strtolower(str_replace('_', ' ', trim((string) ($signature['role'] ?? ''))));
+
+            if (in_array($signatureRole, $roles, true)) {
+                return $signature;
+            }
+        }
+
+        return null;
     }
 
     private function footerHtml(): string
