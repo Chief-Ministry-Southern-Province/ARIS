@@ -90,6 +90,12 @@
             font-weight: normal !important;
         }
 
+        [lang="si"] {
+            font-family: iskoolapota, sans-serif;
+            font-size: 8pt;
+            font-weight: normal !important;
+        }
+
         .small {
             font-size: 7.8pt;
             line-height: 1.05;
@@ -278,6 +284,76 @@
             overflow: hidden;
             overflow-wrap: break-word;
             word-wrap: break-word;
+        }
+
+        /* Section 11 is one table with the official horizontal-rule layout. */
+        .insurance-table {
+            border: 0;
+        }
+
+        .insurance-table td {
+            border: 0;
+            padding: 0;
+        }
+
+        .insurance-title {
+            height: 25mm;
+            padding: 2mm !important;
+            border-top: 0.25mm solid #000 !important;
+            border-bottom: 0.25mm solid #000 !important;
+            vertical-align: top;
+        }
+
+        .insurance-words {
+            height: 20mm;
+            padding: 2mm 6mm !important;
+            border-bottom: 0.25mm solid #000 !important;
+            vertical-align: middle;
+        }
+
+        .insurance-words-label {
+            display: inline-block;
+            width: 39mm;
+            vertical-align: middle;
+            line-height: 1.05;
+        }
+
+        .insurance-brace {
+            display: inline-block;
+            width: 7mm;
+            font-family: serif;
+            font-size: 29pt;
+            font-weight: normal;
+            line-height: 0.5;
+            vertical-align: middle;
+        }
+
+        .insurance-dotted-value {
+            display: inline-block;
+            width: 102mm;
+            min-height: 7mm;
+            margin-left: 3mm;
+            border-bottom: 0.25mm dotted #000;
+            vertical-align: middle;
+        }
+
+        .insurance-heading {
+            height: 20mm;
+            padding: 2mm !important;
+            border-bottom: 0.25mm solid #000 !important;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .insurance-value {
+            height: 36mm;
+            padding: 2mm !important;
+            border-bottom: 0.25mm solid #000 !important;
+            vertical-align: top;
+        }
+
+        .insurance-divider {
+            border-right: 0.25mm solid #000 !important;
         }
 
         .writing-response-30 {
@@ -862,29 +938,41 @@
             </tr>
         </table>
 
-        <table class="page-break-avoid" style="margin-top: 3mm;">
+        <table class="page-break-avoid insurance-table" style="margin-top: 3mm;">
             <tr>
-                <td class="field-topic-cell" style="height: 8mm;" colspan="4">
+                <td class="insurance-title" colspan="3">
                     <span class="label-local" lang="si">11. රක්ෂණයකින් හෝ ඇප සහතිකයකින් අයකරගත හැකි මුදල</span> /
                     <span class="label-local" lang="ta">காப்புறுதி அல்லது உத்தரவாதத்திலிருந்து மீட்கக்கூடிய தொகை</span> /
-                    <span class="label-local">Amount Recoverable from Insurance / Guarantee</span>
+                    <span class="label-local">Amount Recoverable from Insurance /</span><br>
+                    <span class="label-local">Guarantee -</span>
                 </td>
             </tr>
             <tr>
-                <td class="field-content-cell" style="width: 200mm; height: 10mm;" colspan="4">
-                    <span class="label-local">Amount in words (Rupees):</span>
-                    {{ $text(data_get($documentData, 'insuranceRecoverableAmountWords', ''), 100) }}
+                <td class="insurance-words" colspan="3">
+                    <span class="insurance-words-label">
+                        <span lang="si">(මුදල අකුරින්)</span><br>
+                        <span lang="ta">(தொகை எழுத்தில்)</span><br>
+                        (Amount in words) Rupees
+                    </span>
+                    <span class="insurance-brace">}</span>
+                    <span class="insurance-dotted-value">{{ $text(data_get($documentData, 'insuranceRecoverableAmountWords', ''), 100) }}</span>
                 </td>
             </tr>
             <tr>
-                <td class="field-topic-cell" style="width: 45mm;">Policy No.</td>
-                <td class="field-topic-cell" style="width: 55mm;">Amount Insured for</td>
-                <td class="field-topic-cell" style="width: 100mm;" colspan="2">Amount Recoverable</td>
+                <td class="insurance-heading insurance-divider" style="width: 40mm;">
+                    <span lang="si">ඔප්පුපත් අංකය</span> / <span lang="ta">காப்புறுதி இல.</span> /<br>Policy No.
+                </td>
+                <td class="insurance-heading insurance-divider" style="width: 115mm;">
+                    <span lang="si">රක්ෂණය කරන ලද මුදල</span> / <span lang="ta">காப்புறுதி செய்யப்பட்ட தொகை</span> / Amount Insured for
+                </td>
+                <td class="insurance-heading" style="width: 45mm;">
+                    <span lang="si">අයකරගත හැකි මුදල</span> / <span lang="ta">அறவிடக் கூடிய தொகை</span> / Amount recoverable
+                </td>
             </tr>
             <tr>
-                <td class="field-content-cell" style="width: 45mm; height: 10mm;">{{ $text(data_get($documentData, 'policyNo', ''), 25) }}</td>
-                <td class="field-content-cell" style="width: 55mm; height: 10mm;">{{ $text(data_get($documentData, 'amountInsured', ''), 25) }}</td>
-                <td class="field-content-cell" style="width: 100mm; height: 10mm;" colspan="2">{{ $text(data_get($documentData, 'amountRecoverable', ''), 25) }}</td>
+                <td class="insurance-value insurance-divider" style="width: 40mm;">{{ $text(data_get($documentData, 'policyNo', ''), 25) }}</td>
+                <td class="insurance-value insurance-divider" style="width: 115mm;">{{ $text(data_get($documentData, 'amountInsured', ''), 25) }}</td>
+                <td class="insurance-value" style="width: 45mm;">{{ $text(data_get($documentData, 'amountRecoverable', ''), 25) }}</td>
             </tr>
         </table>
 
