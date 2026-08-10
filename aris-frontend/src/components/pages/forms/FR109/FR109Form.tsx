@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { CheckCircle, Printer, Save } from "lucide-react";
+import { CheckCircle, Download, Eye, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
-import { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
+import { useDownloadFR109Pdf, useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
 import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
@@ -20,6 +20,7 @@ import WriteOffRegisterSection from "@/components/organisms/Forms/FR109/WriteOff
 import HeadOfDepartmentOrderSection from "@/components/organisms/Forms/FR109/HeadOfDepartmentOrderSection";
 import ChiefAccountingOfficerOrderSection from "@/components/organisms/Forms/FR109/ChiefAccountingOfficerOrderSection";
 import WriteOffDecisionSection from "@/components/organisms/Forms/FR109/WriteOffDecisionSection";
+import PdfPreviewModal from "@/components/organisms/PDF/PdfPreviewModal";
 
 interface Props {
   readOnly?: boolean;
@@ -65,6 +66,7 @@ export default function FR109Form({
   );
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
+  const downloadPdfMutation = useDownloadFR109Pdf();
   const writeOff = useUpdateFR109WriteOff(caseId ?? "");
   const chiefAccountingOrder = useUpdateFR109ChiefAccountingOrder(
     caseId ?? String(document?.case.id ?? ""),
@@ -77,6 +79,7 @@ export default function FR109Form({
 
   const [data, setData] = useState<FR109FormData>(initialFormData);
   const [status, setStatus] = useState<FR109Status | null>(null);
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
@@ -234,6 +237,42 @@ export default function FR109Form({
     }
   };
 
+  const pdfDocumentId = displayed?.id;
+  const pdfFilename = `FR109-${displayed?.reference_number ?? pdfDocumentId ?? "preview"}.pdf`;
+
+  const previewPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR109 form before previewing its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      setPdfPreviewUrl(URL.createObjectURL(blob));
+    } catch {
+      toast.error("Unable to generate the FR109 PDF preview.");
+    }
+  };
+
+  const downloadPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR109 form before downloading its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = pdfFilename;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to download the FR109 PDF.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR109 form..." />;
 
   return (
@@ -355,6 +394,8 @@ export default function FR109Form({
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
                 <>
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Review PDF"}</button>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button
                     type="button"
                     onClick={onBack}
@@ -374,6 +415,8 @@ export default function FR109Form({
                 </>
               ) : (
                 <>
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Review PDF"}</button>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button
                     type="submit"
                     disabled={!editable || saving || submit.isPending}
@@ -446,6 +489,16 @@ export default function FR109Form({
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <DocumentApprovalSignatures approvals={approvalTimeline} />
         </div>
+        {pdfPreviewUrl && (
+          <PdfPreviewModal
+            filename={pdfFilename}
+            pdfUrl={pdfPreviewUrl}
+            onClose={() => {
+              URL.revokeObjectURL(pdfPreviewUrl);
+              setPdfPreviewUrl(null);
+            }}
+          />
+        )}
         
       </div>
     </div>

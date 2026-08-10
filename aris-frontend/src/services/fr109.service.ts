@@ -1,6 +1,9 @@
 import api from "./api";
 import type { FR109Response, FR109Payload, FR109FormData, WriteOffEntry } from "@/types/FR109.type";
 
+export const downloadFR109Pdf = async (id: number): Promise<Blob> =>
+  (await api.get(`/fr109/${id}/pdf`, { responseType: "blob" })).data;
+
 export const getFR109 = async (caseId: string): Promise<FR109Response> => {
   const response = await api.get(`/cases/${caseId}/fr109`);
   return response.data;

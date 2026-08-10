@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/hooks/queryKeys";
-import { getFR109, saveFR109, submitFR109, updateFR109WriteOff, updateFR109ChiefAccountingOrder, updateFR109ChiefSecretaryDecision } from "@/services/fr109.service";
+import { downloadFR109Pdf, getFR109, saveFR109, submitFR109, updateFR109WriteOff, updateFR109ChiefAccountingOrder, updateFR109ChiefSecretaryDecision } from "@/services/fr109.service";
 import type { FR109FormData, FR109Response, WriteOffEntry } from "@/types/FR109.type";
 
 const useGetFR109 = (caseId: string) => {
@@ -38,6 +38,9 @@ const useSubmitFR109 = (caseId: string) => {
   });
 };
 
+const useDownloadFR109Pdf = () =>
+  useMutation<Blob, Error, number>({ mutationFn: downloadFR109Pdf });
+
 const useUpdateFR109WriteOff = (caseId: string) => {
   const queryClient = useQueryClient();
 
@@ -73,4 +76,4 @@ const useUpdateFR109ChiefSecretaryDecision = (caseId: string) => {
   });
 };
 
-export { useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision };
+export { useGetFR109, useSaveFR109, useSubmitFR109, useDownloadFR109Pdf, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision };
