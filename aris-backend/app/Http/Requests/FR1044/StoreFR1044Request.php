@@ -65,7 +65,6 @@ class StoreFR1044Request extends FormRequest
             // Part G - Legal Action (item 9)
             'data.courtName' => ['nullable', 'string', 'max:255'],
             'data.courtCaseNo' => ['nullable', 'string', 'max:100'],
-            'data.courtOrderSummary' => ['nullable', 'string'],
             'data.courtOrderFile' => ['nullable', 'string'],
             'data.courtOrderEvidenceId' => ['nullable', 'integer', 'exists:accident_evidence,id'],
 

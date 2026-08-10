@@ -150,21 +150,28 @@
         }
 
         .title-cell {
-            height: 20mm;
+            height: 45mm;
             text-align: center;
             vertical-align: middle;
         }
 
         .title-si {
-            font-size: 13pt;
+            font-size: 24pt !important;
             font-weight: bold;
-            line-height: 1.2;
+            line-height: 1.25;
+        }
+
+        /* mPDF needs a title-specific Sinhala override above the global label rule. */
+        .title-cell .title-si[lang="si"] {
+            font-family: iskoolapota, sans-serif !important;
+            font-size: 24pt !important;
+            font-weight: bold !important;
         }
 
         .title-ta {
-            font-size: 13pt;
+            font-size: 15pt;
             font-weight: normal;
-            line-height: 1.2;
+            line-height: 1.25;
         }
 
         .title-en {
@@ -286,55 +293,60 @@
             word-wrap: break-word;
         }
 
-        /* Section 11 is one table with the official horizontal-rule layout. */
+        /* Section 11 must render as a fully ruled table in mPDF. */
         .insurance-table {
-            border: 0;
+            border: 0.25mm solid #000;
         }
 
         .insurance-table td {
-            border: 0;
+            border: 0.25mm solid #000 !important;
             padding: 0;
         }
 
         .insurance-title {
-            height: 25mm;
-            padding: 2mm !important;
+            height: 14mm;
+            padding: 1.5mm 2mm !important;
             border-top: 0.25mm solid #000 !important;
             border-bottom: 0.25mm solid #000 !important;
             vertical-align: top;
         }
 
         .insurance-words {
-            height: 20mm;
-            padding: 2mm 6mm !important;
+            height: 16mm;
+            padding: 1.5mm 6mm !important;
             border-bottom: 0.25mm solid #000 !important;
             vertical-align: middle;
         }
 
-        .insurance-words-label {
-            display: inline-block;
-            width: 39mm;
+        .insurance-words-grid {
+            width: 100%;
+            border: 0 !important;
+        }
+
+        .insurance-words-grid td {
+            border: 0 !important;
+            padding: 0 !important;
             vertical-align: middle;
+        }
+
+        .insurance-words-label {
             line-height: 1.05;
         }
 
         .insurance-brace {
-            display: inline-block;
-            width: 7mm;
+            display: block;
             font-family: serif;
             font-size: 29pt;
             font-weight: normal;
-            line-height: 0.5;
-            vertical-align: middle;
+            line-height: 0.8;
+            text-align: center;
         }
 
         .insurance-dotted-value {
-            display: inline-block;
-            width: 102mm;
+            display: block;
+            width: 100%;
             min-height: 7mm;
-            margin-left: 3mm;
             border-bottom: 0.25mm dotted #000;
-            vertical-align: middle;
         }
 
         .insurance-heading {
@@ -557,8 +569,8 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="title-cell" style="width: 150mm;">
-                    <span class="title-si" lang="si">මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ අවසාන වාර්තාව</span><br>
-                    <span class="title-ta" lang="ta">நி.பி. 104 (4) இன் கீழ் இழப்புகள் பற்றிய இறுதி அறிக்கை</span><br>
+                    <span class="title-si" lang="si">මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව</span><br>
+                    <span class="title-ta" lang="ta">நி.பி. 104 (4) இன் கீழ் இழப்புகள் பற்றிய<br>இறுதி அறிக்கை</span><br>
                     <span class="title-en">FINAL REPORT OF LOSSES UNDER F.R. 104 (4)</span>
                 </td>
                 <td class="reference-cell" style="width: 50mm;">
@@ -651,9 +663,9 @@
                     <span class="label-local">Circumstances in which the loss occurred</span>
                 </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="field-content-cell" style="height: 10mm;">{{ $text(data_get($documentData, 'lossDetails', ''), 150) }}</td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td class="field-content-cell" style="height: 14mm;">{{ $text(data_get($documentData, 'circumstances', ''), 250) }}</td>
             </tr>
@@ -662,16 +674,16 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" style="height: 14mm;">
-                    <span class="label-local" lang="si">5. එය වංචාවක්, නොසැලකිල්ලක්, ප්‍රමාදයක්, අතපසුවීමක් හෝ වෙනත් වරදක් නිසා සිදු වූවක්ද?</span><br>
+                    <span class="label-local" lang="si">5.වංචාවක්, නොසැලකිල්ලක්, ප්‍රමාදයක්, අතපසුවීමක් හෝ වෙනත් වරදක් නිසා සිදු වූවක්ද?</span><br>
                     <span class="label-local" lang="ta">மோசடி, கவனயீனம், தாமதம், தவறவிடல் அல்லது பிற தவறு காரணமாக ஏற்பட்டதா?</span><br>
                     <span class="label-local">Is it due to fraud, negligence, delay, omissions or other fault?</span>
                 </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="field-content-cell" style="height: 6mm;">
                     <span class="label-local">Yes / No:</span> {{ $text($isDueToFraudNegligence === 'yes' ? 'Yes' : ($isDueToFraudNegligence === 'no' ? 'No' : ''), 10) }}
                 </td>
-            </tr>
+            </tr> --}}
             <tr>
                 <td class="field-content-cell" style="height: 10mm;">{{ $text(data_get($documentData, 'causeOfLoss', ''), 200) }}</td>
             </tr>
@@ -695,7 +707,7 @@
                 </td>
             </tr>
         </table>
-
+{{-- 
         <table class="no-border page-break-avoid">
             <tr>
                 <td class="addressed-line compact">
@@ -704,7 +716,7 @@
                     <span class="label-local">To: Secretary to the Ministry</span>
                 </td>
             </tr>
-        </table>
+        </table> --}}
 
     </div>
 
@@ -891,9 +903,6 @@
                     <span class="label-local">Order of Court (Annex a copy)</span>
                 </td>
             </tr>
-            <tr>
-                <td class="field-content-cell" style="height: 12mm;" colspan="2">{{ $text(data_get($documentData, 'courtOrderSummary', ''), 180) }}</td>
-            </tr>
             @if (data_get($documentData, 'courtOrderEvidenceId') || data_get($documentData, 'courtOrderFile'))
             <tr>
                 <td class="field-content-cell" style="height: 6mm;" colspan="2"><span class="small">Attached — {{ $text(data_get($documentData, 'courtOrderFile', ''), 60) }}</span></td>
@@ -949,13 +958,19 @@
             </tr>
             <tr>
                 <td class="insurance-words" colspan="3">
-                    <span class="insurance-words-label">
-                        <span lang="si">(මුදල අකුරින්)</span><br>
-                        <span lang="ta">(தொகை எழுத்தில்)</span><br>
-                        (Amount in words) Rupees
-                    </span>
-                    <span class="insurance-brace">}</span>
-                    <span class="insurance-dotted-value">{{ $text(data_get($documentData, 'insuranceRecoverableAmountWords', ''), 100) }}</span>
+                    <table class="insurance-words-grid">
+                        <tr>
+                            <td style="width: 39mm;">
+                                <span class="insurance-words-label">
+                                    <span lang="si">(මුදල අකුරින්)</span><br>
+                                    <span lang="ta">(தொகை எழுத்தில்)</span><br>
+                                    (Amount in words) Rupees
+                                </span>
+                            </td>
+                            <td style="width: 7mm;"><span class="insurance-brace">}</span></td>
+                            <td><span class="insurance-dotted-value">{{ $text(data_get($documentData, 'insuranceRecoverableAmountWords', ''), 100) }}</span></td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
             <tr>
@@ -985,8 +1000,8 @@
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 100mm;">
                     <span lang="si">තනතුර</span><br>
-                    <span lang="ta">gjtp</span><br>
-                    Designation
+                    <span lang="ta">பதவிப் பெயர்</span><br>
+                    Designations
                 </th>
             </tr>
             <tr>
@@ -1038,7 +1053,7 @@
             </tr>
         </table>
 
-        <table class="ministry-table page-break-avoid" style="margin-top: 3mm;">
+        {{-- <table class="ministry-table page-break-avoid" style="margin-top: 3mm;">
             <tr>
                 <td class="copy-line compact">
                     <span class="label-local" lang="si">15. ශ්‍රී ලංකා නිලධාරි ලේඛන යොමු අංකය</span> /
@@ -1055,7 +1070,7 @@
                     <span class="label-local">Secretary to the Ministry of</span>&nbsp;&nbsp;<span class="dotted-value">{{ $text(data_get($documentData, 'secretaryOfMinistry', ''), 50) }}</span>
                 </td>
             </tr>
-        </table>
+        </table> --}}
 
         @php
             $signatureRows = [

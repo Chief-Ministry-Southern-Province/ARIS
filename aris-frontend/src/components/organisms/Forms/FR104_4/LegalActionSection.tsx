@@ -1,6 +1,5 @@
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
-import { TextAreaField } from "@/components/atoms/TextAreaField";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import { useTranslation } from "react-i18next";
 import { Eye, LoaderCircle, X } from "lucide-react";
@@ -69,23 +68,6 @@ export default function LegalActionSection({
         </FormField>
 
       </div>
-
-      <FormField
-        label={t(
-          "fr104_4.legalAction.courtOrderSummary"
-        )}
-      >
-        <TextAreaField
-          rows={5}
-          value={formData.courtOrderSummary}
-          onChange={(e) =>
-            handleChange(
-              "courtOrderSummary",
-              e.target.value
-            )
-          }
-        />
-      </FormField>
 
       {canEditAttachment && (
         <FormField

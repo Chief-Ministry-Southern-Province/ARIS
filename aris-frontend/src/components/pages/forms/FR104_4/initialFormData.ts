@@ -28,7 +28,6 @@ export const initialFormData: FR104_4FormData = {
   // Legal Action
   courtName: "",
   courtCaseNo: "",
-  courtOrderSummary: "",
   courtOrderFile: null,
 
   // Insurance

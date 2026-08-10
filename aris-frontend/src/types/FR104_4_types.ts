@@ -68,7 +68,6 @@ export interface FR104_4FormData {
   // Legal Action (item 9)
   courtName: string;
   courtCaseNo: string;
-  courtOrderSummary: string;
   courtOrderFile: File | string | null;
   courtOrderEvidenceId?: number | null;
 

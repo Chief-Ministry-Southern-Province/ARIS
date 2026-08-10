@@ -377,7 +377,6 @@
       "courtName": "Name of Court",
       "caseNo": "Case No.",
       "courtOrder": "Order of Court",
-      "courtOrderSummary": "Summary of Court Order",
       "attachOrder": "Annex a Copy of the Court Order"
     },
     "investigation": {

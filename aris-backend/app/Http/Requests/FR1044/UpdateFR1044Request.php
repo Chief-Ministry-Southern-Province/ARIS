@@ -70,7 +70,6 @@ class UpdateFR1044Request extends FormRequest
             // Part G - Legal Action (item 9)
             'data.courtName' => ['sometimes', 'nullable', 'string', 'max:255'],
             'data.courtCaseNo' => ['sometimes', 'nullable', 'string', 'max:100'],
-            'data.courtOrderSummary' => ['sometimes', 'nullable', 'string'],
             'data.courtOrderFile' => ['sometimes', 'nullable', 'string'],
             'data.courtOrderEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
