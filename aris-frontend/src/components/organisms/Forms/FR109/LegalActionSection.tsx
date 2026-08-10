@@ -64,7 +64,7 @@ export default function LegalActionSection({ formData, setFormData }: Props) {
       part={t("fr109.parts.e")}
       title={t("fr109.sections.legalActionAndSurcharges")}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <FormField label={t("fr109.fields.nameOfCourt")}>
           <InputField
             value={formData.nameOfCourt}
@@ -83,19 +83,20 @@ export default function LegalActionSection({ formData, setFormData }: Props) {
           />
         </FormField>
 
-        <FormField label={t("fr109.fields.outcomeOfLegalAction")}>
-          <TextAreaField
-            rows={1}
-            value={formData.outcomeOfLegalAction}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                outcomeOfLegalAction: e.target.value,
-              }))
-            }
-          />
-        </FormField>
       </div>
+
+      <FormField label={t("fr109.fields.outcomeOfLegalAction")}>
+        <TextAreaField
+          rows={4}
+          value={formData.outcomeOfLegalAction}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              outcomeOfLegalAction: e.target.value,
+            }))
+          }
+        />
+      </FormField>
 
       <div className="space-y-6">
         {officers.map((officer, index) => (
@@ -174,20 +175,23 @@ export default function LegalActionSection({ formData, setFormData }: Props) {
                 />
               </FormField>
 
-              <FormField label={t("fr109.fields.creditParticulars")}>
-                <InputField
-                  value={officer.creditParticulars}
-                  onChange={(e) =>
-                    updateOfficer(index, "creditParticulars", e.target.value)
-                  }
-                />
-              </FormField>
-
               <FormField label={t("fr109.fields.balanceNotRecovered")}>
                 <InputField
                   value={officer.balanceNotRecovered}
                   onChange={(e) =>
                     updateOfficer(index, "balanceNotRecovered", e.target.value)
+                  }
+                />
+              </FormField>
+            </div>
+
+            <div className="mt-4">
+              <FormField label={t("fr109.fields.creditParticulars")}>
+                <TextAreaField
+                  rows={3}
+                  value={officer.creditParticulars}
+                  onChange={(e) =>
+                    updateOfficer(index, "creditParticulars", e.target.value)
                   }
                 />
               </FormField>

@@ -142,6 +142,8 @@ export default function FR109Form({
     }
   }, [error]);
 
+  const numericPayload = (value: string): string => value.replace(/,/g, "").trim();
+
   const save = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
       toast.error("Invalid accident case.");
@@ -149,7 +151,11 @@ export default function FR109Form({
     }
 
     try {
-      const result = await saveFR109(data);
+      const result = await saveFR109({
+        ...data,
+        originalCost: numericPayload(data.originalCost),
+        netLoss: numericPayload(data.netLoss),
+      });
       setData(result.data);
       setStatus(result.status);
       toast.success("FR109 draft saved successfully.");

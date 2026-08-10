@@ -9,6 +9,11 @@ use App\Services\InstitutionService;
 
 class FR109Policy
 {
+    public function view(User $user, FR109 $fr109): bool
+    {
+        return $this->canAccessCase($user, $fr109->accidentCase);
+    }
+
     public function viewForCase(User $user, AccidentCase $accidentCase): bool
     {
         return $this->canAccessCase($user, $accidentCase);
