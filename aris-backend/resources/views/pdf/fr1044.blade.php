@@ -481,6 +481,13 @@
             text-align: right;
         }
 
+        .workflow-signature-comment {
+            font-size: 8pt;
+            line-height: 1.15;
+            text-align: left;
+            vertical-align: middle;
+        }
+
         .workflow-signature-line {
             width: 75mm;
             min-height: 12mm;
@@ -1119,15 +1126,17 @@
                                             </table>
                                         </td>
                                         <td class="workflow-signature-content" style="width: 145mm;">
-                                            <div class="workflow-signature-line">
-                                                @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                                    <img class="workflow-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
-                                                @endif
-                                            </div>
                                             <table class="no-border" style="width: 145mm;">
                                                 <tr>
-                                                    <td style="width: 70mm; border: 0; padding: 0 !important;">&nbsp;</td>
+                                                    <td class="workflow-signature-comment" style="width: 70mm; border: 0; padding: 0 2mm 0 0 !important;">
+                                                        {{ $text(data_get($signatureRow['signature'], 'comments', ''), 90) }}
+                                                    </td>
                                                     <td style="width: 75mm; border: 0; padding: 0 !important; text-align: right !important;">
+                                                        <div class="workflow-signature-line">
+                                                            @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                                <img class="workflow-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
+                                                            @endif
+                                                        </div>
                                                         <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
                                                         <span class="signature-label" lang="si">
                                                             {{ $signatureRow['label'] }}

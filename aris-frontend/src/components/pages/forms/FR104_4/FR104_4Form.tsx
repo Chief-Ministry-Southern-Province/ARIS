@@ -21,7 +21,11 @@ import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/Preve
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR1044Pdf, useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
 import { useGetFR1043 } from "@/hooks/useFR1043";
-import { getFR1044AttachmentPreview, uploadFR1044Attachment } from "@/services/fr1044.service";
+import {
+  downloadFR1044Attachment,
+  getFR1044AttachmentPreview,
+  uploadFR1044Attachment,
+} from "@/services/fr1044.service";
 import type {
   FR104_4FormData,
   FR1044Response,
@@ -49,6 +53,12 @@ const badge: Record<FR1044Status, string> = {
 
 type AttachmentFieldKey = "policeReportFile" | "courtOrderFile" | "boardReportFile";
 type AttachmentEvidenceKey = "policeReportEvidenceId" | "courtOrderEvidenceId" | "boardReportEvidenceId";
+
+const attachmentEvidenceKeyByField: Record<AttachmentFieldKey, AttachmentEvidenceKey> = {
+  policeReportFile: "policeReportEvidenceId",
+  courtOrderFile: "courtOrderEvidenceId",
+  boardReportFile: "boardReportEvidenceId",
+};
 
 export default function FR104_4Form({
   readOnly = false,
@@ -84,7 +94,12 @@ export default function FR104_4Form({
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
-  const showAttachmentPreviews = Boolean(id && status && !editable);
+  const showAttachmentPreviews = Boolean(id);
+  const attachmentRefreshKey = [
+    data.policeReportEvidenceId,
+    data.courtOrderEvidenceId,
+    data.boardReportEvidenceId,
+  ].join(":");
 
   const currentApproval =
     approvalTimeline.find((item) => item.status === "PENDING") ??
@@ -124,7 +139,7 @@ export default function FR104_4Form({
       fieldKeys.map(async (fieldKey) => {
         try {
           const attachment = await getFR1044AttachmentPreview(id, fieldKey);
-          return [fieldKey, attachment.file_url] as const;
+          return [fieldKey, attachment] as const;
         } catch {
           return null;
         }
@@ -132,20 +147,32 @@ export default function FR104_4Form({
     ).then((attachments) => {
       if (!active) return;
 
-      setAttachmentPreviewUrls(
-        Object.fromEntries(
-          attachments.filter(
-            (attachment): attachment is readonly [AttachmentFieldKey, string] => attachment !== null
-          )
-        )
+      const savedAttachments = attachments.filter(
+        (attachment): attachment is readonly [AttachmentFieldKey, Awaited<ReturnType<typeof getFR1044AttachmentPreview>>] => attachment !== null
       );
+
+      setAttachmentPreviewUrls(
+        Object.fromEntries(savedAttachments.map(([fieldKey, attachment]) => [fieldKey, attachment.file_url]))
+      );
+      setData((previous) => {
+        const attachmentData = savedAttachments.reduce<Partial<FR104_4FormData>>(
+          (next, [fieldKey, attachment]) => {
+            next[fieldKey] = attachment.original_name;
+            next[attachmentEvidenceKeyByField[fieldKey]] = attachment.id;
+            return next;
+          },
+          {}
+        );
+
+        return { ...previous, ...attachmentData };
+      });
       setAttachmentPreviewsLoading(false);
     });
 
     return () => {
       active = false;
     };
-  }, [id, showAttachmentPreviews]);
+  }, [attachmentRefreshKey, id, showAttachmentPreviews]);
 
   useEffect(() => {
     if (displayed || !preliminaryReport) return;
@@ -295,13 +322,36 @@ export default function FR104_4Form({
     }
   };
 
+  const downloadAttachment = async (
+    fieldKey: AttachmentFieldKey,
+    filename?: string,
+    fileUrl?: string
+  ) => {
+    if (!id) {
+      toast.info("Save the FR104(4) form before downloading its attachment.");
+      return;
+    }
+
+    try {
+      const blob = await downloadFR1044Attachment(id, fieldKey, fileUrl);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = filename || "FR1044-attachment";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to download the attachment.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR104(4) form..." />;
 
   const cards = [
     ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} isPreliminaryLoading={preliminaryReportLoading} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
-    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} previewLoading={Boolean(data.policeReportFile) && attachmentPreviewsLoading} />],
+    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} onDownloadAttachment={() => downloadAttachment("policeReportFile", typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name, attachmentPreviewUrls.policeReportFile)} previewLoading={attachmentPreviewsLoading} />],
     ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />],
     ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />],
     ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
@@ -309,7 +359,7 @@ export default function FR104_4Form({
     ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />],
     ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />],
     ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />],
-    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} previewLoading={Boolean(data.boardReportFile) && attachmentPreviewsLoading} />],
+    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} onDownloadAttachment={() => downloadAttachment("boardReportFile", typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name, attachmentPreviewUrls.boardReportFile)} previewLoading={attachmentPreviewsLoading} />],
     ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
   ] as const;
 

@@ -26,3 +26,15 @@ export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: s
 
 export const getFR1044AttachmentPreview = async (id: number, fieldKey: string): Promise<EvidenceResponse> =>
   (await api.get(`/fr1044/${id}/attachments/${fieldKey}`)).data.data;
+
+export const downloadFR1044Attachment = async (
+  id: number,
+  fieldKey: string,
+  fileUrl?: string
+): Promise<Blob> =>
+  (
+    await api.get(
+      fileUrl || `/fr1044/${id}/attachments/${fieldKey}/download`,
+      { responseType: "blob" }
+    )
+  ).data;

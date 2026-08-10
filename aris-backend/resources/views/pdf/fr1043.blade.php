@@ -432,6 +432,13 @@
             text-align: right;
         }
 
+        .approval-signature-comment {
+            font-size: 8pt;
+            line-height: 1.15;
+            text-align: left;
+            vertical-align: middle;
+        }
+
         .approval-signature-line {
             width: 75mm;
             min-height: 12mm;
@@ -804,24 +811,33 @@
                                             </table>
                                         </td>
                                         <td class="approval-signature-content" style="width: 145mm;">
-                                            <div class="approval-signature-line">
-                                                @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                                    <img class="approval-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
-                                                @endif
-                                            </div>
-                                            <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
-                                            <span class="signature-label @if (($signatureRow['label_alignment'] ?? 'right') === 'left') signature-label-left @endif" @if (($signatureRow['show_institution'] ?? true) === false) lang="si" @endif>
-                                                {{ $signatureRow['label'] }}
-                                                @if (! empty($signatureRow['secondary_label']))
-                                                    <br>{{ $signatureRow['secondary_label'] }}
-                                                @endif
-                                                @if (! empty($signatureRow['tertiary_label']))
-                                                    <br>{{ $signatureRow['tertiary_label'] }}
-                                                @endif
-                                            </span>
-                                            @if ($signatureRow['show_institution'] ?? true)
-                                                <br><span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution', ''), 55) }}</span>
-                                            @endif
+                                            <table class="no-border" style="width: 145mm;">
+                                                <tr>
+                                                    <td class="approval-signature-comment" style="width: 70mm; border: 0; padding: 0 2mm 0 0 !important;">
+                                                        {{ $text(data_get($signatureRow['signature'], 'comments', ''), 90) }}
+                                                    </td>
+                                                    <td style="width: 75mm; border: 0; padding: 0 !important; text-align: right;">
+                                                        <div class="approval-signature-line">
+                                                            @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                                <img class="approval-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
+                                                            @endif
+                                                        </div>
+                                                        <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
+                                                        <span class="signature-label @if (($signatureRow['label_alignment'] ?? 'right') === 'left') signature-label-left @endif" @if (($signatureRow['show_institution'] ?? true) === false) lang="si" @endif>
+                                                            {{ $signatureRow['label'] }}
+                                                            @if (! empty($signatureRow['secondary_label']))
+                                                                <br>{{ $signatureRow['secondary_label'] }}
+                                                            @endif
+                                                            @if (! empty($signatureRow['tertiary_label']))
+                                                                <br>{{ $signatureRow['tertiary_label'] }}
+                                                            @endif
+                                                        </span>
+                                                        @if ($signatureRow['show_institution'] ?? true)
+                                                            <br><span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution', ''), 55) }}</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
