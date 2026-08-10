@@ -92,7 +92,7 @@
 
         [lang="si"] {
             font-family: iskoolapota, sans-serif;
-            font-size: 8pt;
+            font-size: 10.5pt;
             font-weight: normal !important;
         }
 
@@ -156,28 +156,29 @@
         }
 
         .title-si {
-            font-size: 24pt !important;
+            font-size: 32pt !important;
             font-weight: bold;
-            line-height: 1.25;
+            line-height: 1.05;
         }
 
         /* mPDF needs a title-specific Sinhala override above the global label rule. */
         .title-cell .title-si[lang="si"] {
             font-family: iskoolapota, sans-serif !important;
-            font-size: 24pt !important;
+            font-size: 32pt !important;
             font-weight: bold !important;
+            line-height: 1.25 !important;
         }
 
         .title-ta {
-            font-size: 15pt;
+            font-size: 12pt;
             font-weight: normal;
-            line-height: 1.25;
+            line-height: 1.0;
         }
 
         .title-en {
-            font-size: 13pt;
+            font-size: 9pt;
             font-weight: bold;
-            line-height: 1.2;
+            line-height: 0.9;
         }
 
         .reference-cell {
@@ -569,7 +570,7 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="title-cell" style="width: 150mm;">
-                    <span class="title-si" lang="si">මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව</span><br>
+                    <span class="title-si" lang="si" style="font-family: iskoolapota, sans-serif !important; font-size: 40pt !important; font-weight: bold !important; line-height: 1.5; text-align: center; text-transform: uppercase !important;">මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව</span><br>
                     <span class="title-ta" lang="ta">நி.பி. 104 (4) இன் கீழ் இழப்புகள் பற்றிய<br>இறுதி அறிக்கை</span><br>
                     <span class="title-en">FINAL REPORT OF LOSSES UNDER F.R. 104 (4)</span>
                 </td>
@@ -700,7 +701,7 @@
             <tr>
                 <td class="field-content-cell" style="height: 20mm;">
                     @if (data_get($documentData, 'policeReportEvidenceId') || data_get($documentData, 'policeReportFile'))
-                        <span class="label-local">Attached — {{ $text(data_get($documentData, 'policeReportFile', ''), 60) }}</span>
+                        <span class="label-local" lang="si">අමුණා ඇත.</span>
                     @else
                         <span class="label-local small">Not attached</span>
                     @endif
@@ -905,7 +906,7 @@
             </tr>
             @if (data_get($documentData, 'courtOrderEvidenceId') || data_get($documentData, 'courtOrderFile'))
             <tr>
-                <td class="field-content-cell" style="height: 6mm;" colspan="2"><span class="small">Attached — {{ $text(data_get($documentData, 'courtOrderFile', ''), 60) }}</span></td>
+                <td class="field-content-cell" style="height: 6mm;" colspan="2"><span class="small" lang="si">අමුණා ඇත.</span></td>
             </tr>
             @endif
         </table>
@@ -1030,12 +1031,12 @@
                     <span class="label-local">Recommendations of the Board of Inquiry (Annex copy of report)</span>
                 </td>
             </tr>
-            <tr>
+            {{-- <tr>
                 <td class="field-content-cell" style="height: 20mm;">{{ $text(data_get($documentData, 'recommendations', ''), 260) }}</td>
-            </tr>
+            </tr> --}}
             @if (data_get($documentData, 'boardReportEvidenceId') || data_get($documentData, 'boardReportFile'))
             <tr>
-                <td class="field-content-cell" style="height: 4mm;"><span class="small">Attached — {{ $text(data_get($documentData, 'boardReportFile', ''), 60) }}</span></td>
+                <td class="field-content-cell" style="height: 4mm;"><span class="small" lang="si">අමුණා ඇත.</span></td>
             </tr>
             @endif
         </table>
