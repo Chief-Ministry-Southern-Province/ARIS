@@ -182,10 +182,12 @@
                 width: 277mm;
                 border: 0;
             }
-            .page-2 .rotated-form > tbody > tr > td {
+            .page-2 .rotated-form > tbody > tr > td,
+            .page-2 .rotated-form > tr > td,
+            .page-2 .rotated-form .rotated-container {
                 width: 277mm;
-                border: 0;
-                padding: 0;
+                border: 0 !important;
+                padding: 0 !important;
             }
             .writeoff td {
                 height: 27mm;
@@ -387,107 +389,85 @@
         </div>
 
         <div class="page page-2">
-            <table rotate="-90" class="rotated-form">
+            <table
+                rotate="-90"
+                class="rotated-form"
+                style="border: 0 !important; outline: 0 !important"
+            >
                 <tr>
-                    <td>
+                    <td
+                        class="rotated-container"
+                        style="border: 0 !important; padding: 0 !important"
+                    >
                         <table>
                             <tr>
-                                <td class="section-title" colspan="8">
-                                    <span lang="si"
-                                        >5. නීතිමය ක්‍රියාමාර්ගය</span
-                                    >
-                                    / <span lang="ta">சட்ட நடவடிக்கை</span> /
+                                <td class="section-title" style="width: 50%">
+                                    <span lang="si">5. නීතිමය ක්‍රියාමාර්ගය</span>
+                                    / <span lang="ta">சட்ட நடவடிக்கைகளின் விளைவு</span> /
                                     Outcome of legal action -
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="header" style="width: 40mm">
-                                    Name of Court
-                                </td>
-                                <td class="header" style="width: 25mm">
-                                    Case No.
-                                </td>
-                                <td class="header" style="width: 55mm">
-                                    Details of Surcharges imposed / Name of
-                                    Officer
-                                </td>
-                                <td class="header" style="width: 30mm">
-                                    Designation
-                                </td>
-                                <td class="header" style="width: 25mm">
-                                    Amount surcharged
-                                </td>
-                                <td class="header" style="width: 25mm">
-                                    Amount recovered
-                                </td>
-                                <td class="header" style="width: 35mm">
-                                    Date / Receipt No.
-                                </td>
-                                <td class="header" style="width: 42mm">
-                                    Credit particulars / Balance not recovered
-                                </td>
-                            </tr>
-                            @foreach ($officers as $index => $officer)
-                            <tr>
-                                @if ($index === 0)
-                                <td rowspan="4" class="value h-78">
-                                    {{ $value('nameOfCourt') }}
-                                </td>
-                                <td rowspan="4" class="value h-78">
-                                    {{ $value('caseNo') }}
-                                </td>
-                                @endif
-                                <td class="line">
-                                    {{ data_get($officer, 'nameOfOfficer', '')
-                                    }}
-                                </td>
-                                <td class="line">
-                                    {{ data_get($officer, 'designation', '') }}
-                                </td>
-                                <td class="line">
-                                    {{ data_get($officer, 'amountSurcharged',
-                                    '') }}
-                                </td>
-                                <td class="line">
-                                    {{ data_get($officer,
-                                    'amountRecoveredSurcharge', '') }}
-                                </td>
-                                <td class="line">
-                                    {{ data_get($officer, 'dateOfRecovery', '')
-                                    }}<br />{{ data_get($officer, 'receiptNo',
-                                    '') }}
-                                </td>
-                                <td class="line">
-                                    {{ data_get($officer, 'creditParticulars',
-                                    '') }}<br />{{ data_get($officer,
-                                    'balanceNotRecovered', '') }}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </table>
-
-                        <table style="margin-top: 3mm">
-                            <tr>
-                                <td class="section-title">
-                                    <span lang="si">6. අධිකරණ නියෝගය</span> /
+                                <td class="section-title" style="width: 50%">
+                                    <span lang="si">අධිකරණ නියෝගය</span> /
                                     <span lang="ta">நீதிமன்றக் கட்டளை</span> /
                                     Order of Court
                                 </td>
                             </tr>
                             <tr>
-                                <td class="value h-30">
-                                    {{ $value('outcomeOfLegalAction') }}
+                                <td style="padding: 0">
+                                    <table>
+                                        <tr>
+                                            <td class="header" style="width: 55%">Name of Court</td>
+                                            <td class="header" style="width: 45%">Case No.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="value h-16">{{ $value('nameOfCourt') }}</td>
+                                            <td class="value h-16">{{ $value('caseNo') }}</td>
+                                        </tr>
+                                    </table>
                                 </td>
+                                <td class="value h-30">{{ $value('outcomeOfLegalAction') }}</td>
                             </tr>
                         </table>
 
-                        <table class="no-border">
+                        <table style="margin-top: 3mm">
+                            <tr>
+                                <td class="section-title" colspan="8">
+                                    <span lang="si">6. අයකර ගැනීම් සහ අය කිරීමේ විස්තර</span> /
+                                    <span lang="ta">வசூலிப்பு விபரங்கள்</span> /
+                                    Details of surcharges imposed and recoveries
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="header" style="width: 55mm">Details of Surcharges imposed / Name of Officer</td>
+                                <td class="header" style="width: 30mm">Designation</td>
+                                <td class="header" style="width: 25mm">Amount surcharged</td>
+                                <td class="header" style="width: 25mm">Amount recovered</td>
+                                <td class="header" style="width: 35mm">Date of recovery</td>
+                                <td class="header" style="width: 35mm">Receipt No.</td>
+                                <td class="header" style="width: 40mm">Credit particulars</td>
+                                <td class="header" style="width: 32mm">Balance not recovered</td>
+                            </tr>
+                            @foreach ($officers as $officer)
+                            <tr>
+                                <td class="line">{{ data_get($officer, 'nameOfOfficer', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'designation', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'amountSurcharged', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'amountRecoveredSurcharge', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'dateOfRecovery', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'receiptNo', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'creditParticulars', '') }}</td>
+                                <td class="line">{{ data_get($officer, 'balanceNotRecovered', '') }}</td>
+                            </tr>
+                            @endforeach
+                        </table>
+
+                        {{-- <table class="no-border">
                             <tr>
                                 <td class="footer" style="text-align: center">
                                     2
                                 </td>
                             </tr>
-                        </table>
+                        </table> --}}
                     </td>
                 </tr>
             </table>
