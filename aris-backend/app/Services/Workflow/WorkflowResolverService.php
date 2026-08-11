@@ -23,7 +23,12 @@ class WorkflowResolverService
   public function resolve(AccidentCase $case, string $documentType, int $revision): array
   {
       $isFR109 = $documentType === 'FR109';
-      $includeChiefAccountant = false;
+      // FR109 requires the PDHS Chief Accountant to recommend before the
+      // Provincial Director, regardless of the institution where the case began.
+      $includeChiefAccountant = $isFR109;
+      // The originating institution's Subject Officer creates FR109 and does
+      // not approve their own document.
+      $includeOriginatingSubjectOfficer = false;
       $case->loadMissing(['institution.parentInstitution', 'accident.vehicle.institution']);
       $institution = $case->institution;
       // Ministry subject-officer assignment follows the vehicle owner's institution,
@@ -31,11 +36,11 @@ class WorkflowResolverService
       $vehicleInstitutionDistrict = trim((string) $case->accident?->vehicle?->institution?->district);
 
       [$steps, $ministry] = match ($institution->type) {
-          'PDHS' => [$this->resolveProvincial($institution, $includeChiefAccountant, $isFR109), $institution->parentInstitution],
-          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution, $includeChiefAccountant, $isFR109), $institution->parentInstitution?->parentInstitution],
-          'RDHS' => [$this->resolveRegional($institution, $includeChiefAccountant, $isFR109), $institution->parentInstitution?->parentInstitution],
+          'PDHS' => [$this->resolveProvincial($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution],
+          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution?->parentInstitution],
+          'RDHS' => [$this->resolveRegional($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution?->parentInstitution],
           'DIVISIONAL_HOSPITAL', 'MOH', 'PMCU', 'UNITS', 'OTHER' => [
-              $this->resolveRegional($institution->parentInstitution, $includeChiefAccountant, $isFR109),
+              $this->resolveRegional($institution->parentInstitution, $includeChiefAccountant, $includeOriginatingSubjectOfficer),
               $institution->parentInstitution?->parentInstitution?->parentInstitution,
           ],
           default => throw new \Exception('Workflow not found.'),

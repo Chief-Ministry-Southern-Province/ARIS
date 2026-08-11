@@ -204,6 +204,7 @@ class ApprovalService
             'medical_superintendent',
             'regional_director',
             'provincial_director',
+            'chief_accountant',
             'secretary',
         ]);
 

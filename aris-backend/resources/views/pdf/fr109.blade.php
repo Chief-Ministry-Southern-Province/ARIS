@@ -178,6 +178,17 @@
                 text-align: center;
                 font-size: 8.5pt;
             }
+            .signature-comment {
+                font-size: 8pt;
+                line-height: 1.15;
+                text-align: left;
+                vertical-align: middle;
+            }
+            .approval-signature-image {
+                width: 52mm;
+                height: 28mm;
+                object-fit: contain;
+            }
             .page-2 .rotated-form {
                 width: 277mm;
                 border: 0;
@@ -202,7 +213,7 @@
         is_array($item))->values()->take(4)->pad(4, []); $writeOffEntries =
         collect(data_get($data, 'writeOffEntries', []))->filter(fn ($item) =>
         is_array($item))->values()->take(1)->pad(1, []); $reference = (string)
-        (data_get($document, 'reference_number') ?: $value('refNo')); @endphp
+        (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; @endphp
 
         <div class="page page-1">
             <table class="no-border">
@@ -526,14 +537,20 @@
                     <td style="width: 55mm; vertical-align: bottom">
                         <span lang="si">දිනය</span><br /><span lang="ta"
                             >திகதி</span
-                        ><br />Date <span class="dotted"></span>
+                        ><br />Date <span class="dotted">{{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</span>
                     </td>
-                    <td style="width: 85mm"></td>
+                    <td class="signature-comment" style="width: 85mm">
+                        {{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'comments', '')), 110, '...') }}
+                    </td>
                     <td
                         style="width: 60mm; vertical-align: bottom"
                         class="signature-text"
                     >
-                        <div class="signature-space"></div>
+                        <div class="signature-space">
+                            @if (data_get($pdhsChiefAccountantSignature, 'signature_data_uri'))
+                                <img class="approval-signature-image" src="{{ data_get($pdhsChiefAccountantSignature, 'signature_data_uri') }}" alt="Chief Accountant signature">
+                            @endif
+                        </div>
                         <span lang="si">ප්‍රධාන ගණකාධිකාරීගේ අත්සන</span
                         ><br /><span lang="ta">பிரதம கணக்காளரின் கையொப்பம்</span
                         ><br /><i>Signature of Chief Accountant.</i>

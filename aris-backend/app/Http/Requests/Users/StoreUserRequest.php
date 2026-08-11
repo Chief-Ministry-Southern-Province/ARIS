@@ -38,25 +38,26 @@ class StoreUserRequest extends FormRequest
     public function after(): array
     {
         return [function ($validator) {
-            $requiredInstitutionType = match ($this->input('role')) {
-                'chief_secretary' => 'MINISTRY',
-                'chief_accountant', 'ministry_account_subject_officer' => 'MINISTRY',
+            $allowedInstitutionTypes = match ($this->input('role')) {
+                'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
+                'chief_accountant' => ['MINISTRY', 'PDHS'],
                 default => null,
             };
 
-            if (! $requiredInstitutionType) {
+            if (! $allowedInstitutionTypes) {
                 return;
             }
 
             $institution = Institution::find($this->integer('institution_id'));
 
-            if (! $institution || $institution->type !== $requiredInstitutionType) {
+            if (! $institution || ! in_array($institution->type, $allowedInstitutionTypes, true)) {
                 $roleName = match ($this->input('role')) {
                     'chief_accountant' => 'Chief Accountant',
                     'ministry_account_subject_officer' => 'Ministry Account Subject Officer',
                     default => 'Chief Secretary',
                 };
-                $validator->errors()->add('institution_id', "{$roleName} must be assigned to a {$requiredInstitutionType} institution.");
+                $institutionTypes = implode(' or ', $allowedInstitutionTypes);
+                $validator->errors()->add('institution_id', "{$roleName} must be assigned to a {$institutionTypes} institution.");
             }
         }];
     }

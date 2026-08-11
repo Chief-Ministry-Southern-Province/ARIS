@@ -12,7 +12,7 @@ export const rolesForInstitution = (institutionType?: string) => {
     case "MINISTRY":
       return ["subject_officer", "ministry_account_subject_officer", "chief_accountant", "secretary", "assistant_secretary", "senior_assistant_secretary", "chief_secretary", "administrative_officer", "driver"];
     case "PDHS":
-      return ["subject_officer", "administrative_officer", "deputy_director", "provincial_director", "driver"];
+      return ["subject_officer", "administrative_officer", "deputy_director", "chief_accountant", "provincial_director", "driver"];
     case "RDHS":
       return ["subject_officer", "administrative_officer", "regional_director", "driver"];
     case "BASE_HOSPITAL":

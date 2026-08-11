@@ -3,13 +3,16 @@
 namespace App\Services\PDF;
 
 use App\Models\FR109;
+use App\Services\DocumentSignatureService;
 use App\Services\PDF\Contracts\PdfGeneratorInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class FR109PdfGenerator implements PdfGeneratorInterface
 {
-    public function __construct(protected PDFService $pdfService)
-    {
+    public function __construct(
+        protected DocumentSignatureService $documentSignatureService,
+        protected PDFService $pdfService,
+    ) {
     }
 
     public function download(int $documentId): Response
@@ -18,7 +21,7 @@ class FR109PdfGenerator implements PdfGeneratorInterface
 
         return $this->pdfService->download(
             'pdf.fr109',
-            ['document' => $document],
+            $this->buildViewData($document),
             "FR109-{$document->reference_number}.pdf",
             $this->pdfOptions(),
         );
@@ -30,7 +33,7 @@ class FR109PdfGenerator implements PdfGeneratorInterface
 
         return $this->pdfService->stream(
             'pdf.fr109',
-            ['document' => $document],
+            $this->buildViewData($document),
             "FR109-{$document->reference_number}.pdf",
             $this->pdfOptions(),
         );
@@ -39,6 +42,42 @@ class FR109PdfGenerator implements PdfGeneratorInterface
     private function loadDocument(int $documentId): FR109
     {
         return FR109::query()->with(['accidentCase', 'creator'])->findOrFail($documentId);
+    }
+
+    /** @return array<string, mixed> */
+    private function buildViewData(FR109 $document): array
+    {
+        $signatures = $this->documentSignatureService->getDocumentSignatures(
+            $document->accidentCase,
+            'FR109',
+            $document->revision,
+        );
+
+        return [
+            'document' => $document,
+            'pdhsChiefAccountantSignature' => $this->firstSignatureForRole(
+                $signatures,
+                'chief accountant',
+                'PDHS',
+            ),
+        ];
+    }
+
+    /** @param array<int, array<string, mixed>> $signatures */
+    private function firstSignatureForRole(array $signatures, string $role, ?string $institutionType = null): ?array
+    {
+        foreach ($signatures as $signature) {
+            $signatureRole = strtolower(str_replace('_', ' ', trim((string) ($signature['role'] ?? ''))));
+
+            if (
+                $signatureRole === $role
+                && ($institutionType === null || ($signature['institution_type'] ?? null) === $institutionType)
+            ) {
+                return $signature;
+            }
+        }
+
+        return null;
     }
 
     private function footerHtml(): string
