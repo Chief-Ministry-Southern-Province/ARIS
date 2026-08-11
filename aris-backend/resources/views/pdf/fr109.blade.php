@@ -126,6 +126,193 @@
                 border-left: 0;
                 border-right: 0;
             }
+            .field-nine-title {
+                padding: 1.5mm 5mm 1mm;
+                border-bottom: 0;
+                line-height: 1.08;
+            }
+            .field-nine-body,
+            .field-nine-body td {
+                border: 0;
+            }
+            .field-nine-body {
+                border-bottom: 0.25mm solid #000;
+            }
+            .field-nine-secretary {
+                border-left: 0 !important;
+                border-right: 0 !important;
+                border-bottom: 0 !important;
+                padding: 1.5mm 7mm 1mm;
+                vertical-align: middle;
+            }
+            .field-nine-secretary-caption {
+                position: relative;
+                border-left: 0.25mm solid #000 !important;
+                padding: 1.2mm 2mm !important;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 8pt;
+                line-height: 1.04;
+            }
+            .field-nine-caption-brace {
+                display: inline-block;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 23pt;
+                line-height: 0.65;
+                margin-right: 1mm;
+                vertical-align: middle;
+            }
+            .brace-caption-wrap {
+                text-align: left;
+                white-space: nowrap;
+            }
+            .brace-caption-text {
+                display: inline-block;
+                text-align: center;
+                vertical-align: middle;
+            }
+            .brace-caption-text span {
+                display: block;
+            }
+            .field-nine-date {
+                padding: 2mm 7mm 2.5mm;
+                vertical-align: bottom;
+            }
+            .field-nine-brace {
+                padding: 1mm 0 0 !important;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 34pt;
+                line-height: 0.65;
+                vertical-align: middle;
+            }
+            .field-nine-dots {
+                display: inline-block;
+                color: #000;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 8pt;
+                letter-spacing: 0.1mm;
+                white-space: nowrap;
+            }
+            .field-nine-signature {
+                padding: 1mm 5mm 2.5mm;
+                text-align: center;
+                vertical-align: bottom;
+                font-size: 8.5pt;
+                line-height: 1.04;
+            }
+            .field-nine-signature-line {
+                height: 10mm;
+                border-bottom: 0.25mm dotted #000;
+            }
+            .field-ten-title {
+                padding: 1.5mm 5mm 1mm;
+                border-bottom: 0;
+                line-height: 1.08;
+            }
+            .page-4 > table:nth-of-type(3) > tr:first-child > td,
+            .page-4 > table:nth-of-type(3) > tbody > tr:first-child > td {
+                padding: 1.5mm 5mm 1mm;
+                border-bottom: 0;
+                line-height: 1.08;
+            }
+            .field-ten-body,
+            .field-ten-body td {
+                border: 0;
+            }
+            .field-ten-body {
+                height: 53mm;
+                border-bottom: 0.25mm solid #000;
+            }
+            .field-ten-reference {
+                padding: 3mm 12mm 0 !important;
+                vertical-align: top;
+            }
+            .field-ten-reference-label {
+                display: inline-block;
+                width: 13mm;
+                text-align: center;
+                line-height: 1.02;
+                vertical-align: middle;
+            }
+            .field-ten-reference-brace {
+                display: inline-block;
+                margin: 0 2mm;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 30pt;
+                line-height: 0.65;
+                vertical-align: middle;
+            }
+            .field-ten-reference-value {
+                display: inline-block;
+                width: 58mm;
+                border-bottom: 0.25mm dotted #000;
+                vertical-align: middle;
+            }
+            .field-ten-bottom {
+                padding: 14mm 12mm 2mm !important;
+                vertical-align: bottom;
+            }
+            .field-ten-date-label {
+                display: inline-block;
+                width: 10mm;
+                line-height: 1.02;
+                vertical-align: middle;
+            }
+            .field-ten-date-value {
+                display: inline-block;
+                width: 45mm;
+                border-bottom: 0.25mm dotted #000;
+                vertical-align: middle;
+            }
+            .field-ten-secretary {
+                text-align: right;
+                vertical-align: bottom !important;
+                padding: 7mm 5mm 2mm !important;
+            }
+            .field-ten-secretary-line {
+                display: inline-block;
+                width: 86mm;
+                border-bottom: 0.25mm dotted #000;
+            }
+            .field-ten-reference-row {
+                height: 24mm;
+            }
+            .field-ten-signature-row {
+                height: 29mm;
+            }
+            .field-ten-reference-row td {
+                height: 24mm;
+            }
+            .field-ten-signature-row td {
+                height: 29mm;
+            }
+            .field-eleven-body,
+            .field-eleven-body td {
+                border: 0 !important;
+            }
+            .field-eleven-body {
+                height: 58mm;
+                padding: 0 !important;
+                border-top: 0.25mm solid #000 !important;
+                border-bottom: 0.25mm solid #000 !important;
+            }
+            .field-eleven-top {
+                padding: 2mm 8mm 0 !important;
+                vertical-align: top;
+            }
+            .field-eleven-middle {
+                padding: 1mm 20mm !important;
+                vertical-align: middle;
+            }
+            .field-eleven-bottom {
+                padding: 3mm 12mm 2mm !important;
+                vertical-align: bottom;
+            }
+            .field-eleven-copy {
+                padding: 1mm 0 0 1mm !important;
+                font-size: 7pt;
+                line-height: 1.02;
+            }
             .value {
                 padding: 2mm;
                 vertical-align: top;
@@ -202,6 +389,11 @@
             }
             .writeoff td {
                 height: 27mm;
+            }
+            .writeoff .header {
+                height: 17mm !important;
+                font-size: 8pt;
+                line-height: 1.02;
             }
         </style>
     </head>
@@ -507,7 +699,7 @@
                             >8. (අ) නිලධාරියාගේ වත්කම්වලින් අයකර ගැනීමට ගෙන ඇති
                             ක්‍රියාමාර්ගය</span
                         ><br /><span lang="ta"
-                            >அலுவலரின் சொத்துக்களிலிருந்து அறவிட எடுக்கப்பட்ட
+                            >(அ)அலுவலரின் சொத்துக்களிலிருந்து அறவிட எடுக்கப்பட்ட
                             நடவடிக்கையின் விபரம்</span
                         ><br />(a) Details of action taken to effect the
                         recovery of shortages from the assets of the officer, if
@@ -523,7 +715,7 @@
                     <td class="section-title">
                         <span lang="si">(ආ) ඉහත ක්‍රියාමාර්ගයේ ප්‍රතිඵල</span
                         ><br /><span lang="ta"
-                            >மேற்படி நடவடிக்கையின் விளைவு</span
+                            >(ஆ)மேற்படி நடவடிக்கையின் விளைவு</span
                         ><br />(b) Results of the above action -
                     </td>
                 </tr>
@@ -558,25 +750,12 @@
                 </tr>
             </table>
 
-            <table class="no-border">
-                <tr>
-                    <td
-                        class="footer"
-                        style="
-                            border-bottom: 0.25mm solid #000;
-                            text-align: center;
-                        "
-                    >
-                        3
-                    </td>
-                </tr>
-            </table>
         </div>
 
         <div class="page page-4">
             <table>
                 <tr>
-                    <td class="section-title">
+                    <td class="section-title field-nine-title" style="width: 100%; vertical-align: bottom;">
                         <span lang="si"
                             >9. මූ. රෙ. 109 යටතේ අලාභයන් ලියාහැරීම සඳහා
                             දෙපාර්තමේන්තු ප්‍රධානියාගේ හෝ සංස්ථාපතිවරයාගේ
@@ -590,26 +769,45 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="value h-22">
-                        {{ $value('secretaryOfMinistry') ? 'Secretary to the
-                        Ministry of '.$value('secretaryOfMinistry') : '' }}
+                    <td class="field-nine-secretary">
+                        <table class="no-border">
+                            <tr>
+                                <td style="width: 160mm; padding: 0; vertical-align: middle">
+                                    * Secretary to the Ministry of
+                                    <span class="field-nine-dots">....................................................................................</span>
+                                </td>
+                                <td class="field-nine-secretary-caption" style="width: 40mm">
+                                    <div class="brace-caption-wrap" style="">
+                                        <span class="field-nine-caption-brace">{</span>
+                                        <div class="brace-caption-text">
+                                            <span lang="si">අමාත්‍යාංශයේ ලේකම්</span>
+                                            <span lang="ta">அமைச்சின் செயலாளர்</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
             </table>
 
-            <table class="no-border">
+            <table class="field-nine-body">
                 <tr>
-                    <td style="width: 60mm; vertical-align: bottom">
+                    <td class="field-nine-date" style="width: 14mm">
                         <span lang="si">දිනය</span><br /><span lang="ta"
                             >திகதி</span
-                        ><br />Date <span class="dotted"></span>
+                        ><br />Date
                     </td>
-                    <td style="width: 70mm"></td>
+                    <td class="field-nine-brace" style="width: 5mm">}</td>
+                    <td style="width: 55mm; padding: 0; vertical-align: middle">
+                        <span class="field-nine-dots">.......................................</span>
+                    </td>
+                    <td style="width: 56mm; padding: 0"></td>
                     <td
-                        style="width: 70mm; vertical-align: bottom"
-                        class="signature-text"
+                        style="width: 70mm"
+                        class="field-nine-signature"
                     >
-                        <div class="signature-space"></div>
+                        <div class="field-nine-signature-line"></div>
                         <span lang="si"
                             >දෙපාර්තමේන්තු ප්‍රධානියාගේ/සංස්ථාපතිවරයාගේ
                             අත්සන</span
@@ -623,42 +821,60 @@
             </table>
 
             <table style="margin-top: 3mm">
-                <tr>
-                    <td class="section-title">
-                        <span lang="si"
-                            >10. ප්‍රධාන ගණන් දීමේ නිලධාරියාගේ නියෝගය</span
-                        ><br /><span lang="ta"
-                            >பிரதம கணக்கீட்டு அலுவலரின் கட்டளை</span
-                        ><br />Order of the Chief Accounting Officer under F. R.
-                        108 (1) or recommendation of Chief Accounting Officer
-                        under F. R. 108 (3) -
+    <tr>
+        <td class="section-title">
+            <span lang="si">10. ප්‍රධාන ගණන් දීමේ නිලධාරියාගේ නියෝගය</span><br />
+            <span lang="ta">பிரதம கணக்கீட்டு அலுவலரின் கட்டளை</span><br />
+            Order of the Chief Accounting Officer under F. R. 108 (1) or recommendation of Chief Accounting Officer
+            under F. R. 108 (3) -
+        </td>
+    </tr>
+    <tr>
+        <td class="field-ten-body" style="padding: 0">
+            <table class="no-border" style="height: 53mm">
+                <tr class="field-ten-reference-row">
+                    <td class="field-ten-reference" style="width: 100mm">
+                        <span class="field-ten-reference-label">* <span lang="si">එස්. ටී.</span><br /><span lang="ta">எஸ். ரி.</span><br />S. T.</span>
+                        <span class="field-ten-reference-brace">}</span>
+                        <span class="field-nine-dots">{{ $value('chiefAccountingOfficerSTNo') ?: '.......................................' }}</span>
+                    </td>
+                    <td class="field-ten-reference" style="width: 100mm; padding-left: 10mm">
+                        <span class="field-ten-reference-label"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></span>
+                        <span class="field-ten-reference-brace">}</span>
+                        <span class="field-nine-dots">{{ $value('chiefAccountingOfficerRefNo') ?: '.......................................' }}</span>
                     </td>
                 </tr>
-                <tr>
-                    <td class="value h-30">
-                        <span lang="si">එස්. ටී. අංකය</span> /
-                        <span lang="ta">எஸ். ரி. இல.</span> / S. T. No.
-                        <span class="dotted"
-                            >{{ $value('chiefAccountingOfficerSTNo') }}</span
-                        ><br /><br /><span lang="si">යොමු අංකය</span> /
-                        <span lang="ta">தொடர் இல.</span> / Ref. No.
-                        <span class="dotted"
-                            >{{ $value('chiefAccountingOfficerRefNo') }}</span
-                        >
+                <tr class="field-ten-signature-row">
+                    <td class="field-ten-bottom" style="width: 100mm; vertical-align: bottom">
+                        <span class="field-ten-date-label"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></span>
+                        <span class="field-ten-reference-brace">}</span>
+                        <span class="field-nine-dots">.......................................</span>
+                    </td>
+                    <td class="field-ten-secretary" style="width: 100mm; padding-left: 10mm; vertical-align: bottom">
+                        <div class="field-ten-secretary-line dotted" style="height: 5mm"></div>
+                        <div class="field-ten-secretary-caption" lang="si" style="text-align: right; font-size: 8pt">
+                            අමාත්‍යාංශයේ ලේකම්
+                        </div>
+                        <div style="margin-top: 2mm">
+                            <i>Secretary to the Ministry of</i>
+                            <span class="field-nine-dots">....................................</span>
+                        </div>
                     </td>
                 </tr>
             </table>
-
+        </td>
+    </tr>
+</table>
             <table style="margin-top: 3mm">
                 <tr>
-                    <td class="section-title">
+                    <td class="section-title" style="display: none">
                         <span lang="si">11. ලියාහැරීම සඳහා අනුමැතිය</span> /
                         <span lang="ta">தள்ளுபடி செய்வதற்கான அனுமதி</span> /
                         Write off authorised / not approved.
                     </td>
                 </tr>
                 <tr>
-                    <td class="value h-30">
+                    <td class="value h-30" style="display: none">
                         <span lang="si">ලේකම්, අමාත්‍යාංශය</span> /
                         <span lang="ta">அமைச்சின் செயலாளர்</span> / Secretary to
                         the Ministry of
@@ -674,21 +890,90 @@
                         off not approved.' : '') }}
                     </td>
                 </tr>
+                <tr>
+                    <td class="field-eleven-body">
+                        <table class="no-border" style="height: 58mm">
+                            <tr style="height: 18mm">
+                                <td class="field-eleven-top" style="width: 55mm">
+                                    <b>11.</b>
+                                    <span class="field-nine-dots">....................................</span><br />
+                                    <span class="field-nine-dots">....................................</span><br />
+                                    <i>Secretary to the Ministry of</i>
+                                </td>
+                                <td class="field-eleven-top" style="width: 75mm">
+                                    <span lang="si">ලේකම්, අමාත්‍යාංශය</span><br />
+                                    <span lang="ta">அமைச்சின் செயலாளர்</span><br />
+                                    <span class="field-nine-dots">....................................</span>
+                                </td>
+                                <td class="field-eleven-top" style="width: 70mm">
+                                    <span lang="si">යොමු අංකය</span><br />
+                                    <span lang="ta">தொடர் இல.</span><br />
+                                    <i>Ref. No.</i>
+                                    <span class="field-ten-reference-brace">}</span>
+                                    <span class="field-nine-dots">....................................</span>
+                                </td>
+                            </tr>
+                            <tr style="height: 17mm">
+                                <td class="field-eleven-middle" colspan="3">
+                                    <span lang="si">ලියාහැරීම සඳහා අනුමැතිය/අනුමත නොකෙරේ.</span><br />
+                                    <span lang="ta">தள்ளுபடிக்கு அனுமதிக்கப்படுகிறது / அனுமதிக்கப்படவில்லை.</span><br />
+                                    Write off authorised/not approved.
+                                </td>
+                            </tr>
+                            <tr style="height: 18mm">
+                                <td class="field-eleven-bottom" style="width: 90mm">
+                                    <span class="field-ten-date-label"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></span>
+                                    <span class="field-ten-reference-brace">}</span>
+                                    <span class="field-nine-dots">....................................</span>
+                                </td>
+                                <td class="field-eleven-bottom" colspan="2" style="width: 110mm; text-align: center">
+                                    <span class="field-nine-dots">....................................................</span><br />
+                                    <span lang="si">භාණ්ඩාගාරයේ ලේකම්</span><br />
+                                    <span lang="ta">திறைசேரியின் செயலாளர்</span><br />
+                                    <i>Secretary to the Treasury.</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="field-eleven-copy" colspan="3">
+                                    <span lang="si">පිටපත : විගණකාධිපති ජනරාල්</span><br />
+                                    <span lang="ta">பிரதி : கணக்காய்வாளர் நாயகம்</span><br />
+                                    Copy to : Auditor-General.
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
             </table>
 
             <table style="margin-top: 3mm" class="writeoff">
                 <tr>
                     <td class="section-title" colspan="4">
-                        <span lang="si">12. ලියාහැරීම සටහන් කරන ලද්දේ</span> /
-                        <span lang="ta">தள்ளுபடி பதிவு செய்யப்பட்ட இடம்</span> /
+                        <span lang="si">12. ලියාහැරීම සටහන් කරන ලද්දේ -</span><br />
+                        <span lang="ta">தள்ளுபடி பதிவு செய்யப்பட்ட இடம் -</span><br />
                         Write off noted in-
                     </td>
                 </tr>
                 <tr>
-                    <td class="header">Stock Book folio</td>
-                    <td class="header">Inventory Book folio</td>
-                    <td class="header">Register of fixed Assets folio</td>
-                    <td class="header">Ledger folio</td>
+                    <td class="header" style="width: 43mm">
+                        <span lang="si">තොග පොතේ පිටු අංකය</span><br />
+                        <span lang="ta">இருப்புப் பதிவேட்டுப் பக்க இல.</span><br />
+                        Stock Book folio
+                    </td>
+                    <td class="header" style="width: 41mm">
+                        <span lang="si">භාණ්ඩ ලේඛන පොතේ පිටු අංකය</span><br />
+                        <span lang="ta">சரக்குப் பதிவேட்டுப் பக்க இல.</span><br />
+                        Inventory Book folio
+                    </td>
+                    <td class="header" style="width: 70mm">
+                        <span lang="si">ස්ථාවර වත්කම් ලේඛනයේ පිටු අංකය</span><br />
+                        <span lang="ta">நிலையான சொத்துப் பதிவேட்டுப் பக்க இல.</span><br />
+                        Register of fixed Assets folio
+                    </td>
+                    <td class="header" style="width: 46mm">
+                        <span lang="si">ලෙජර් පිටු අංකය</span><br />
+                        <span lang="ta">பேரேட்டுப் பக்க இல.</span><br />
+                        Ledger folio
+                    </td>
                 </tr>
                 @foreach ($writeOffEntries as $entry)
                 <tr>
@@ -707,7 +992,7 @@
                     <td class="footer">
                         * <span lang="si">අදාළ නොවන වචන කපා හරින්න</span> /
                         <span lang="ta">பொருந்தாதவற்றைக் கறை</span> / Delete if
-                        inapplicable <span style="float: right">4</span>
+                        inapplicable
                     </td>
                 </tr>
             </table>
