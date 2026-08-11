@@ -33,6 +33,13 @@
             .page-3 {
                 page-break-after: always;
             }
+            .page-3 {
+                height: 270mm;
+                position: relative;
+            }
+            .page-three-ca-signature {
+                margin-top: 24mm;
+            }
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -155,19 +162,19 @@
                 line-height: 1.04;
             }
             .field-nine-caption-brace {
-                display: inline-block;
+                display: table-cell;
                 font-family: dejavuserifcondensed, serif;
-                font-size: 23pt;
-                line-height: 0.65;
-                margin-right: 1mm;
+                font-size: 26pt;
+                line-height: 1;
                 vertical-align: middle;
             }
             .brace-caption-wrap {
-                text-align: left;
-                white-space: nowrap;
+                display: table;
+                margin: 0 auto;
             }
             .brace-caption-text {
-                display: inline-block;
+                display: table-cell;
+                padding-left: 1.5mm;
                 text-align: center;
                 vertical-align: middle;
             }
@@ -291,7 +298,7 @@
                 border: 0 !important;
             }
             .field-eleven-body {
-                height: 58mm;
+                height: 75mm;
                 padding: 0 !important;
                 border-top: 0.25mm solid #000 !important;
                 border-bottom: 0.25mm solid #000 !important;
@@ -301,15 +308,15 @@
                 vertical-align: top;
             }
             .field-eleven-middle {
-                padding: 1mm 20mm !important;
+                padding: 1mm 28mm !important;
                 vertical-align: middle;
             }
             .field-eleven-bottom {
-                padding: 3mm 12mm 2mm !important;
+                padding: 8mm 12mm 2mm !important;
                 vertical-align: bottom;
             }
             .field-eleven-copy {
-                padding: 1mm 0 0 1mm !important;
+                padding: 12mm 0 0 1mm !important;
                 font-size: 7pt;
                 line-height: 1.02;
             }
@@ -351,6 +358,99 @@
                 height: 7.5mm;
                 border-bottom: 0.2mm dotted #777;
                 overflow: hidden;
+            }
+            .credit-particulars-cell {
+                height: auto !important;
+                min-height: 18mm;
+                padding: 1.5mm !important;
+                overflow: visible !important;
+            }
+            .credit-particulars-content {
+                height: auto;
+                overflow: visible;
+                font-family: iskoolapota, sans-serif;
+                font-size: 8pt;
+                line-height: 1.22;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                word-break: normal;
+                white-space: normal;
+            }
+            .section-six-area {
+                height: 58mm;
+                padding: 0 !important;
+                vertical-align: top;
+            }
+            .section-six-line {
+                height: 14.5mm;
+                padding: 1.5mm 1.5mm;
+                border-bottom: 0.2mm dotted #777;
+                overflow: hidden;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+            }
+            .section-six-credit-line {
+                height: 14.5mm;
+                padding: 1.5mm;
+                border-bottom: 0.2mm dotted #777;
+                font-family: iskoolapota, sans-serif;
+                font-size: 7.5pt;
+                line-height: 1.2;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .section-six-currency-header {
+                padding: 0 !important;
+            }
+            .section-six-currency-header td {
+                border-top: 0 !important;
+                border-bottom: 0 !important;
+                padding: 0.7mm !important;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 7.5pt;
+            }
+            .section-six-currency-area {
+                height: 58mm;
+                padding: 0 !important;
+            }
+            .section-six-currency-area td {
+                border-top: 0 !important;
+                border-bottom: 0 !important;
+                padding: 0 !important;
+            }
+            .section-six-currency-header .no-border td:first-child,
+            .section-six-currency-area .no-border td:first-child {
+                border-right: 0.25mm solid #000 !important;
+            }
+            .currency-split-table {
+                border-collapse: collapse;
+            }
+            .currency-split-table td {
+                border: 0 !important;
+                padding: 0 !important;
+                text-align: center;
+                vertical-align: top;
+            }
+            .currency-split-table td:first-child {
+                border-right: 0.25mm solid #000 !important;
+            }
+            .section-six-data-row > td {
+                height: 14.5mm;
+                padding: 1.2mm !important;
+                border-top: 0 !important;
+                border-bottom: 0.2mm dotted #777 !important;
+                vertical-align: top;
+            }
+            .section-six-data-row .currency-split-table td {
+                height: 14.5mm;
+                border-top: 0 !important;
+                border-bottom: 0 !important;
+            }
+            .section-six-currency-area .section-six-line {
+                display: block;
+                width: 100%;
+                border-bottom: 0.25mm dotted #777 !important;
             }
             .footer {
                 border: 0;
@@ -405,7 +505,7 @@
         is_array($item))->values()->take(4)->pad(4, []); $writeOffEntries =
         collect(data_get($data, 'writeOffEntries', []))->filter(fn ($item) =>
         is_array($item))->values()->take(1)->pad(1, []); $reference = (string)
-        (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; @endphp
+        (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; $creditLines = static function (mixed $credit): array { $words = preg_split('/\s+/u', trim((string) $credit), -1, PREG_SPLIT_NO_EMPTY) ?: []; $lines = []; $line = ''; foreach ($words as $word) { $candidate = $line === '' ? $word : $line.' '.$word; if ($line !== '' && mb_strlen($candidate) > 28) { $lines[] = $line; $line = $word; } else { $line = $candidate; } } if ($line !== '') { $lines[] = $line; } return $lines ?: ['']; }; $currencyParts = static function (mixed $amount): array { $amount = trim(str_replace(',', '', (string) $amount)); if ($amount === '') { return ['', '']; } [$rupees, $cents] = array_pad(explode('.', $amount, 2), 2, '00'); return [$rupees, str_pad(substr($cents, 0, 2), 2, '0')]; }; @endphp
 
         <div class="page page-1">
             <table class="no-border">
@@ -626,6 +726,12 @@
                                             <td class="value h-16">{{ $value('nameOfCourt') }}</td>
                                             <td class="value h-16">{{ $value('caseNo') }}</td>
                                         </tr>
+                                        @for ($emptyCourtRow = 0; $emptyCourtRow < 2; $emptyCourtRow++)
+                                        <tr>
+                                            <td class="line">&nbsp;</td>
+                                            <td class="line">&nbsp;</td>
+                                        </tr>
+                                        @endfor
                                     </table>
                                 </td>
                                 <td class="value h-30">{{ $value('outcomeOfLegalAction') }}</td>
@@ -641,25 +747,60 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="header" style="width: 55mm">Details of Surcharges imposed / Name of Officer</td>
-                                <td class="header" style="width: 30mm">Designation</td>
-                                <td class="header" style="width: 25mm">Amount surcharged</td>
-                                <td class="header" style="width: 25mm">Amount recovered</td>
-                                <td class="header" style="width: 35mm">Date of recovery</td>
-                                <td class="header" style="width: 35mm">Receipt No.</td>
-                                <td class="header" style="width: 40mm">Credit particulars</td>
-                                <td class="header" style="width: 32mm">Balance not recovered</td>
+                                <td class="header" style="width: 65mm">
+                                    <span lang="si">අධිභාර පැනවූ නිලධාරියාගේ නම</span><br />
+                                    <span lang="ta">அதிக கட்டணம் விதிக்கப்பட்ட அலுவலரின் பெயர்</span><br />
+                                    Details of Surcharges imposed / Name of Officer
+                                </td>
+                                <td class="header" style="width: 35mm">
+                                    <span lang="si">තනතුර</span><br />
+                                    <span lang="ta">பதவி</span><br />
+                                    Designation
+                                </td>
+                                <td class="header section-six-currency-header" style="width: 25mm">
+                                    <span lang="si">අධිභාර කළ මුදල</span><br />
+                                    <span lang="ta">அதிக கட்டணத் தொகை</span><br />
+                                    Amount surcharged
+                                    <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
+                                </td>
+                                <td class="header section-six-currency-header" style="width: 25mm">
+                                    <span lang="si">අයකරගත් මුදල</span><br />
+                                    <span lang="ta">அறவிடப்பட்ட தொகை</span><br />
+                                    Amount recovered
+                                    <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
+                                </td>
+                                <td class="header" style="width: 30mm">
+                                    <span lang="si">අයකරගත් දිනය</span><br />
+                                    <span lang="ta">அறவிட்ட திகதி</span><br />
+                                    Date of recovery
+                                </td>
+                                <td class="header" style="width: 25mm">
+                                    <span lang="si">රිසිට් අංකය</span><br />
+                                    <span lang="ta">பற்றுச்சீட்டு இல.</span><br />
+                                    Receipt No.
+                                </td>
+                                <td class="header" style="width: 47mm">
+                                    <span lang="si">බැර කළ විස්තර</span><br />
+                                    <span lang="ta">வரவுப் விபரங்கள்</span><br />
+                                    Credit particulars
+                                </td>
+                                <td class="header section-six-currency-header" style="width: 25mm">
+                                    <span lang="si">අයකර නොගත් ශේෂය</span><br />
+                                    <span lang="ta">அறவிடப்படாத மீதி</span><br />
+                                    Balance not recovered
+                                    <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
+                                </td>
                             </tr>
                             @foreach ($officers as $officer)
-                            <tr>
-                                <td class="line">{{ data_get($officer, 'nameOfOfficer', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'designation', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'amountSurcharged', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'amountRecoveredSurcharge', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'dateOfRecovery', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'receiptNo', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'creditParticulars', '') }}</td>
-                                <td class="line">{{ data_get($officer, 'balanceNotRecovered', '') }}</td>
+                            <tr class="section-six-data-row">
+                                <td>{{ data_get($officer, 'nameOfOfficer', '') }}</td>
+                                <td>{{ data_get($officer, 'designation', '') }}</td>
+                                <td style="padding: 0 !important"><table class="currency-split-table"><tr><td style="width: 50%">{{ $currencyParts(data_get($officer, 'amountSurcharged', ''))[0] }}</td><td style="width: 50%">{{ $currencyParts(data_get($officer, 'amountSurcharged', ''))[1] }}</td></tr></table></td>
+                                <td style="padding: 0 !important"><table class="currency-split-table"><tr><td style="width: 50%">{{ $currencyParts(data_get($officer, 'amountRecoveredSurcharge', ''))[0] }}</td><td style="width: 50%">{{ $currencyParts(data_get($officer, 'amountRecoveredSurcharge', ''))[1] }}</td></tr></table></td>
+                                <td>{{ data_get($officer, 'dateOfRecovery', '') }}</td>
+                                <td>{{ data_get($officer, 'receiptNo', '') }}</td>
+                                <td style="width: 47mm">{{ data_get($officer, 'creditParticulars', '') }}</td>
+                                <td style="padding: 0 !important"><table class="currency-split-table"><tr><td style="width: 50%">{{ $currencyParts(data_get($officer, 'balanceNotRecovered', ''))[0] }}</td><td style="width: 50%">{{ $currencyParts(data_get($officer, 'balanceNotRecovered', ''))[1] }}</td></tr></table></td>
                             </tr>
                             @endforeach
                         </table>
@@ -724,12 +865,16 @@
                 </tr>
             </table>
 
-            <table class="no-border" style="margin-top: 3mm">
+            <table class="no-border page-three-ca-signature">
                 <tr>
-                    <td style="width: 55mm; vertical-align: bottom">
-                        <span lang="si">දිනය</span><br /><span lang="ta"
-                            >திகதி</span
-                        ><br />Date <span class="dotted">{{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</span>
+                    <td style="width: 55mm; vertical-align: bottom; padding: 0">
+                        <table class="no-border">
+                            <tr>
+                                <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br />Date</td>
+                                <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                <td style="padding: 0; vertical-align: middle"><span class="dotted">{{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</span></td>
+                            </tr>
+                        </table>
                     </td>
                     <td class="signature-comment" style="width: 85mm">
                         {{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'comments', '')), 110, '...') }}
@@ -777,13 +922,15 @@
                                     <span class="field-nine-dots">....................................................................................</span>
                                 </td>
                                 <td class="field-nine-secretary-caption" style="width: 40mm">
-                                    <div class="brace-caption-wrap" style="">
-                                        <span class="field-nine-caption-brace">{</span>
-                                        <div class="brace-caption-text">
+                                    <table class="no-border">
+                                        <tr>
+                                            <td class="field-nine-caption-brace" style="width: 6mm; padding: 0; text-align: left">{</td>
+                                            <td style="padding: 0; text-align: center; vertical-align: middle">
                                             <span lang="si">අමාත්‍යාංශයේ ලේකම්</span>
-                                            <span lang="ta">அமைச்சின் செயலாளர்</span>
-                                        </div>
-                                    </div>
+                                            <br /><span lang="ta">அமைச்சின் செயலாளர்</span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
                         </table>
@@ -834,30 +981,40 @@
             <table class="no-border" style="height: 53mm">
                 <tr class="field-ten-reference-row">
                     <td class="field-ten-reference" style="width: 100mm">
-                        <span class="field-ten-reference-label">* <span lang="si">එස්. ටී.</span><br /><span lang="ta">எஸ். ரி.</span><br />S. T.</span>
-                        <span class="field-ten-reference-brace">}</span>
-                        <span class="field-nine-dots">{{ $value('chiefAccountingOfficerSTNo') ?: '.......................................' }}</span>
+                        <table class="no-border">
+                            <tr>
+                                <td class="field-ten-reference-label" style="width: 14mm; padding: 0">* <span lang="si">එස්. ටී.</span><br /><span lang="ta">எஸ். ரி.</span><br />S. T.</td>
+                                <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ $value('chiefAccountingOfficerSTNo') ?: '.......................................' }}</span></td>
+                            </tr>
+                        </table>
                     </td>
                     <td class="field-ten-reference" style="width: 100mm; padding-left: 10mm">
-                        <span class="field-ten-reference-label"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></span>
-                        <span class="field-ten-reference-brace">}</span>
-                        <span class="field-nine-dots">{{ $value('chiefAccountingOfficerRefNo') ?: '.......................................' }}</span>
+                        <table class="no-border">
+                            <tr>
+                                <td class="field-ten-reference-label" style="width: 14mm; padding: 0"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></td>
+                                <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ $value('chiefAccountingOfficerRefNo') ?: '.......................................' }}</span></td>
+                            </tr>
+                        </table>
                     </td>
                 </tr>
                 <tr class="field-ten-signature-row">
                     <td class="field-ten-bottom" style="width: 100mm; vertical-align: bottom">
-                        <span class="field-ten-date-label"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></span>
-                        <span class="field-ten-reference-brace">}</span>
-                        <span class="field-nine-dots">.......................................</span>
+                        <table class="no-border">
+                            <tr>
+                                <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
+                                <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">.......................................</span></td>
+                            </tr>
+                        </table>
                     </td>
                     <td class="field-ten-secretary" style="width: 100mm; padding-left: 10mm; vertical-align: bottom">
-                        <div class="field-ten-secretary-line dotted" style="height: 5mm"></div>
-                        <div class="field-ten-secretary-caption" lang="si" style="text-align: right; font-size: 8pt">
-                            අමාත්‍යාංශයේ ලේකම්
-                        </div>
-                        <div style="margin-top: 2mm">
+                        <div><span class="field-nine-dots">....................................</span> <span lang="si">ලේකම්, අමාත්‍යාංශය</span></div>
+                        <div><span class="field-nine-dots">....................................</span> <span lang="ta">அமைச்சின் செயலாளர்</span></div>
+                        <div style="margin-top: 1mm">
                             <i>Secretary to the Ministry of</i>
-                            <span class="field-nine-dots">....................................</span>
+                            <span class="field-nine-dots">..............................................</span>
                         </div>
                     </td>
                 </tr>
@@ -866,67 +1023,50 @@
     </tr>
 </table>
             <table style="margin-top: 3mm">
-                <tr>
-                    <td class="section-title" style="display: none">
-                        <span lang="si">11. ලියාහැරීම සඳහා අනුමැතිය</span> /
-                        <span lang="ta">தள்ளுபடி செய்வதற்கான அனுமதி</span> /
-                        Write off authorised / not approved.
-                    </td>
-                </tr>
-                <tr>
-                    <td class="value h-30" style="display: none">
-                        <span lang="si">ලේකම්, අමාත්‍යාංශය</span> /
-                        <span lang="ta">அமைச்சின் செயலாளர்</span> / Secretary to
-                        the Ministry of
-                        <span class="dotted"
-                            >{{ $value('chiefSecretaryToMinistryOf') }}</span
-                        ><br /><br /><span lang="si">යොමු අංකය</span> /
-                        <span lang="ta">தொடர் இல.</span> / Ref. No.
-                        <span class="dotted"
-                            >{{ $value('chiefSecretaryRefNo') }}</span
-                        ><br /><br />{{ $value('writeOffStatus') ===
-                        'AUTHORISED' ? '✓ Write off authorised.' :
-                        ($value('writeOffStatus') === 'NOT_APPROVED' ? '✓ Write
-                        off not approved.' : '') }}
-                    </td>
-                </tr>
+               
                 <tr>
                     <td class="field-eleven-body">
-                        <table class="no-border" style="height: 58mm">
-                            <tr style="height: 18mm">
-                                <td class="field-eleven-top" style="width: 55mm">
+                        <table class="no-border" style="height: 75mm">
+                            <tr style="height: 25mm">
+                                <td class="field-eleven-top" style="width: 120mm">
                                     <b>11.</b>
-                                    <span class="field-nine-dots">....................................</span><br />
-                                    <span class="field-nine-dots">....................................</span><br />
-                                    <i>Secretary to the Ministry of</i>
-                                </td>
-                                <td class="field-eleven-top" style="width: 75mm">
+                                    <span class="field-nine-dots">................................................................</span>
                                     <span lang="si">ලේකම්, අමාත්‍යාංශය</span><br />
+                                    <span style="display: inline-block; width: 10mm"></span>
+                                    <span class="field-nine-dots">................................................................</span>
                                     <span lang="ta">அமைச்சின் செயலாளர்</span><br />
-                                    <span class="field-nine-dots">....................................</span>
+                                    <span style="display: inline-block; width: 10mm"></span>
+                                    <i>Secretary to the Ministry of</i>
+                                    <span class="field-nine-dots">..............................................</span>
                                 </td>
-                                <td class="field-eleven-top" style="width: 70mm">
-                                    <span lang="si">යොමු අංකය</span><br />
-                                    <span lang="ta">தொடர் இல.</span><br />
-                                    <i>Ref. No.</i>
-                                    <span class="field-ten-reference-brace">}</span>
-                                    <span class="field-nine-dots">....................................</span>
+                                <td class="field-eleven-top" style="width: 80mm">
+                                    <table class="no-border">
+                                        <tr>
+                                            <td class="field-ten-reference-label" style="width: 14mm; padding: 0"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></td>
+                                            <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                            <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">....................................</span></td>
+                                        </tr>
+                                    </table>
                                 </td>
                             </tr>
-                            <tr style="height: 17mm">
+                            <tr style="height: 20mm">
                                 <td class="field-eleven-middle" colspan="3">
                                     <span lang="si">ලියාහැරීම සඳහා අනුමැතිය/අනුමත නොකෙරේ.</span><br />
                                     <span lang="ta">தள்ளுபடிக்கு அனுமதிக்கப்படுகிறது / அனுமதிக்கப்படவில்லை.</span><br />
                                     Write off authorised/not approved.
                                 </td>
                             </tr>
-                            <tr style="height: 18mm">
-                                <td class="field-eleven-bottom" style="width: 90mm">
-                                    <span class="field-ten-date-label"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></span>
-                                    <span class="field-ten-reference-brace">}</span>
-                                    <span class="field-nine-dots">....................................</span>
+                            <tr style="height: 25mm">
+                                <td class="field-eleven-bottom" style="width: 120mm">
+                                    <table class="no-border">
+                                        <tr>
+                                            <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
+                                            <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
+                                            <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">....................................</span></td>
+                                        </tr>
+                                    </table>
                                 </td>
-                                <td class="field-eleven-bottom" colspan="2" style="width: 110mm; text-align: center">
+                                <td class="field-eleven-bottom" colspan="2" style="width: 80mm; text-align: center">
                                     <span class="field-nine-dots">....................................................</span><br />
                                     <span lang="si">භාණ්ඩාගාරයේ ලේකම්</span><br />
                                     <span lang="ta">திறைசேரியின் செயலாளர்</span><br />
