@@ -299,6 +299,13 @@ class ApprovalService
                     }
 
                     if ($approval->document_type === 'FR1044') {
+                        $accidentCase->update([
+                            'current_stage' => 'FR109',
+                            'status' => 'IN_PROGRESS',
+                        ]);
+                    }
+
+                    if ($approval->document_type === 'FR109') {
                         $caseStatusBeforeCompletion = $accidentCase->status;
 
                         $accidentCase->update([
@@ -321,12 +328,12 @@ class ApprovalService
            
 
             if (!$nextApproval) {
-                if ($approval->document_type === 'FR1044' && $document) {
+                if ($approval->document_type === 'FR109' && $document) {
                     $this->timelineService->create(
                         accidentCase: $accidentCase,
                         user: $user,
                         action: 'CASE_COMPLETED',
-                        description: 'Case completed after final FR1044 approval.',
+                        description: 'Case completed after final FR109 approval.',
                         oldValue: ['status' => $caseStatusBeforeCompletion ?? 'IN_PROGRESS'],
                         newValue: ['status' => 'COMPLETED', 'current_stage' => 'FR109'],
                     );

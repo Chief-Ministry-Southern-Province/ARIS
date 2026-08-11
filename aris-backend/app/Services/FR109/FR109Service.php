@@ -65,6 +65,11 @@ class FR109Service
                 }
             }
 
+            $case->update([
+                'current_stage' => 'FR109',
+                'status' => 'IN_PROGRESS',
+            ]);
+
             $this->timelineService->createDocumentEvent(
                 $case,
                 $user,
@@ -91,7 +96,10 @@ class FR109Service
         return DB::transaction(function () use ($fr109, $user) {
             $fr109->update(['status' => 'UNDER_APPROVAL', 'submitted_at' => now()]);
             $this->approvalService->submit($fr109->accidentCase, 'FR109', $fr109->revision);
-            $fr109->accidentCase->update(['current_stage' => 'FR109']);
+            $fr109->accidentCase->update([
+                'current_stage' => 'FR109',
+                'status' => 'IN_PROGRESS',
+            ]);
             $this->timelineService->createDocumentEvent(
                 $fr109->accidentCase,
                 $user,
