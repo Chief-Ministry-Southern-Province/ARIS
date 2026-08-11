@@ -20,7 +20,7 @@ import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalAction
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR1044Pdf, useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
-import { useGetFR1043 } from "@/hooks/useFR1043";
+import { useApprovalHistory } from "@/hooks/useApprovals";
 import {
   downloadFR1044Attachment,
   getFR1044AttachmentPreview,
@@ -74,14 +74,19 @@ export default function FR104_4Form({
   const { data: loaded, isLoading, error } = useGetFR1044(
     readOnly ? undefined : accidentCaseId
   );
-  const { data: preliminaryReport, isLoading: preliminaryReportLoading } = useGetFR1043(
-    readOnly ? undefined : accidentCaseId
-  );
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1044Pdf();
+  const { data: approvalGroups = [] } = useApprovalHistory(
+    readOnly ? 0 : accidentCaseId,
+    "FR1044",
+  );
 
   const displayed = document ?? loaded;
+  const generatedApprovalTimeline = approvalGroups.flatMap((group) => group.approvals);
+  const resolvedApprovalTimeline = approvalTimeline.length > 0
+    ? approvalTimeline
+    : generatedApprovalTimeline;
 
   const [data, setData] = useState<FR104_4FormData>(initialFormData);
   const [id, setId] = useState<number | null>(null);
@@ -102,8 +107,8 @@ export default function FR104_4Form({
   ].join(":");
 
   const currentApproval =
-    approvalTimeline.find((item) => item.status === "PENDING") ??
-    approvalTimeline.at(-1);
+    resolvedApprovalTimeline.find((item) => item.status === "PENDING") ??
+    resolvedApprovalTimeline.at(-1);
 
   useEffect(() => {
     if (displayed) {
@@ -173,19 +178,6 @@ export default function FR104_4Form({
       active = false;
     };
   }, [attachmentRefreshKey, id, showAttachmentPreviews]);
-
-  useEffect(() => {
-    if (displayed || !preliminaryReport) return;
-
-    setData((previous) => ({
-      ...previous,
-      preliminaryReportRefNo: preliminaryReport.reference_number,
-      preliminaryReportDate:
-        preliminaryReport.data.date ||
-        preliminaryReport.submitted_at?.slice(0, 10) ||
-        "",
-    }));
-  }, [displayed, preliminaryReport]);
 
   useEffect(() => {
     if (error && (error as { response?: { status?: number } }).response?.status !== 404) {
@@ -348,7 +340,7 @@ export default function FR104_4Form({
   if (!readOnly && isLoading) return <Loader text="Loading FR104(4) form..." />;
 
   const cards = [
-    ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} isPreliminaryLoading={preliminaryReportLoading} />],
+    ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
     ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} onDownloadAttachment={() => downloadAttachment("policeReportFile", typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name, attachmentPreviewUrls.policeReportFile)} previewLoading={attachmentPreviewsLoading} />],
@@ -422,7 +414,7 @@ export default function FR104_4Form({
                 ? `Step ${currentApproval.step} — ${currentApproval.status}`
                 : "—"}
             </div>
-            <div>{approvalTimeline.length} approval steps</div>
+            <div>{resolvedApprovalTimeline.length} approval steps</div>
           </div>
         )}
 
@@ -443,7 +435,11 @@ export default function FR104_4Form({
             ))}
           </fieldset>
 
-          <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <DocumentApprovalSignatures approvals={resolvedApprovalTimeline} />
+          </div>
+
+          <div className="border-t bg-white p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
                 <>
@@ -502,10 +498,6 @@ export default function FR104_4Form({
           />
         )}
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <DocumentApprovalSignatures approvals={approvalTimeline} />
-        </div>
-        
       </div>
     </div>
   );

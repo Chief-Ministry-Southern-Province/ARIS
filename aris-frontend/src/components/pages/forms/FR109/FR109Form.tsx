@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR109Pdf, useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
+import { useApprovalHistory } from "@/hooks/useApprovals";
 import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
@@ -67,6 +68,10 @@ export default function FR109Form({
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
   const downloadPdfMutation = useDownloadFR109Pdf();
+  const { data: approvalGroups = [] } = useApprovalHistory(
+    readOnly ? 0 : accidentCaseId,
+    "FR109",
+  );
   const writeOff = useUpdateFR109WriteOff(caseId ?? "");
   const chiefAccountingOrder = useUpdateFR109ChiefAccountingOrder(
     caseId ?? String(document?.case.id ?? ""),
@@ -76,6 +81,10 @@ export default function FR109Form({
   );
 
   const displayed = document ?? loaded;
+  const generatedApprovalTimeline = approvalGroups.flatMap((group) => group.approvals);
+  const resolvedApprovalTimeline = approvalTimeline.length > 0
+    ? approvalTimeline
+    : generatedApprovalTimeline;
 
   const [data, setData] = useState<FR109FormData>(initialFormData);
   const [status, setStatus] = useState<FR109Status | null>(null);
@@ -102,8 +111,8 @@ export default function FR109Form({
     role.includes("chief_secretary");
 
   const currentApproval =
-    approvalTimeline.find((item) => item.status === "PENDING") ??
-    approvalTimeline.at(-1);
+    resolvedApprovalTimeline.find((item) => item.status === "PENDING") ??
+    resolvedApprovalTimeline.at(-1);
 
   useEffect(() => {
     if (displayed) {
@@ -332,7 +341,7 @@ export default function FR109Form({
                 ? `Step ${currentApproval.step} — ${currentApproval.status}`
                 : "—"}
             </div>
-            <div>{approvalTimeline.length} approval steps</div>
+            <div>{resolvedApprovalTimeline.length} approval steps</div>
           </div>
         )}
 
@@ -396,7 +405,11 @@ export default function FR109Form({
             />
           </fieldset>
 
-          <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <DocumentApprovalSignatures approvals={resolvedApprovalTimeline} />
+          </div>
+
+          <div className="border-t bg-white p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
                 <>
@@ -492,9 +505,6 @@ export default function FR109Form({
           </div>
         </form>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <DocumentApprovalSignatures approvals={approvalTimeline} />
-        </div>
         {pdfPreviewUrl && (
           <PdfPreviewModal
             filename={pdfFilename}
