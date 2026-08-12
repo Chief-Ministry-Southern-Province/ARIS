@@ -524,6 +524,19 @@
                 white-space: nowrap;
                 margin: 0 0 1.5mm;
             }
+            .signature-approver-name {
+                display: block;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 8.5pt;
+                line-height: 1.15;
+                margin: 0 0 0.8mm;
+            }
+            .field-nine-pd-designation {
+                display: block;
+                font-size: 8.5pt;
+                line-height: 1.15;
+                white-space: nowrap;
+            }
             .signature-text {
                 text-align: center;
                 font-size: 8.5pt;
@@ -962,6 +975,7 @@
                             @endif
                         </div>
                         <div class="signature-dots">....................................</div>
+                        <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'name', '')), 55) }}</span>
                         <span lang="si">ප්‍රධාන ගණකාධිකාරීගේ අත්සන</span
                         ><br /><span lang="ta">பிரதம கணக்காளரின் கையொப்பம்</span
                         ><br /><i>Signature of Chief Accountant.</i>
@@ -993,7 +1007,8 @@
                             <tr>
                                 <td style="width: 160mm; padding: 0; vertical-align: middle">
                                     * Secretary to the Ministry of
-                                    <span class="field-nine-dots">....................................................................................</span>
+                                    <span lang="si">  ප්‍රධාන අමාත්‍යාංශය</span>
+                                    
                                 </td>
                                 <td class="field-nine-secretary-caption" style="width: 40mm">
                                     <table class="no-border">
@@ -1023,9 +1038,9 @@
                     <td class="field-nine-date-value" style="width: 55mm">
                         <span class="field-nine-dots">{{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</span>
                     </td>
-                    <td style="width: 56mm; padding: 0"></td>
+                    <td style="width: 46mm; padding: 0"></td>
                     <td
-                        style="width: 50mm"
+                        style="width: 60mm"
                         class="field-nine-signature"
                     >
                         <div class="signature-space field-nine-pd-signature-space">
@@ -1034,10 +1049,11 @@
                             @endif
                         </div>
                         <div class="signature-dots">....................................</div>
-                        <span lang="si">
+                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'name', '')), 55) }}</div>
+                        <div class="field-nine-pd-designation" lang="si">
                             පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,<br />
                             දකුණු පළාත.
-                        </span>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -1091,6 +1107,7 @@
                             @endif
                         </div>
                         <div class="signature-dots">....................................</div>
+                        <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'name', '')), 55) }}</span>
                         <div lang="si" style="text-align: right; line-height: 1.12">
                             ලේකම්,<br />
                             ප්‍රධාන අමාත්‍යාංශය,<br />
@@ -1110,8 +1127,9 @@
                             <tr style="height: 10mm">
                                 <td class="field-eleven-top" style="width: 120mm">
                                     <b>11.</b>
-                                    <span class="field-nine-dots">................................................................</span>
-                                    <span lang="si">ලේකම්, අමාත්‍යාංශය</span><br />
+                                    <span class="field-nine-dots">..........ප්‍රධාන අමාත්‍යාංශය</span>
+                                    <span class="field-nine-dots">....................</span>
+                                    <span lang="si" style="white-space: nowrap">අමාත්‍යාංශයේ ලේකම්</span><br />
                                     <span style="display: inline-block; width: 10mm"></span>
                                     <span class="field-nine-dots">................................................................</span>
                                     <span lang="ta">அமைச்சின் செயலாளர்</span><br />
@@ -1167,6 +1185,7 @@
                                         @endif
                                     </div>
                                     <div class="signature-dots">....................................</div>
+                                    <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'name', '')), 55) }}</span>
                                     <div lang="si" style="line-height: 1.12">
                                         ප්‍රධාන ලේකම්,<br />
                                         දකුණු පළාත.
