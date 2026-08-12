@@ -60,6 +60,20 @@ class FR109PdfGenerator implements PdfGeneratorInterface
                 'chief accountant',
                 'PDHS',
             ),
+            'pdhsProvincialDirectorSignature' => $this->firstSignatureForRole(
+                $signatures,
+                'provincial director',
+                'PDHS',
+            ),
+            'ministrySecretarySignature' => $this->firstSignatureForRole(
+                $signatures,
+                'secretary',
+                'MINISTRY',
+            ),
+            'chiefSecretarySignature' => $this->firstSignatureForRole(
+                $signatures,
+                'chief secretary',
+            ),
         ];
     }
 

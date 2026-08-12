@@ -192,6 +192,14 @@
                 line-height: 0.65;
                 vertical-align: middle;
             }
+            .field-nine-date-brace {
+                padding: 0 0 2.5mm !important;
+                vertical-align: bottom;
+            }
+            .field-nine-date-value {
+                padding-bottom: 2.5mm !important;
+                vertical-align: bottom;
+            }
             .field-nine-dots {
                 display: inline-block;
                 color: #000;
@@ -211,6 +219,23 @@
                 height: 10mm;
                 border-bottom: 0.25mm dotted #000;
             }
+            .field-nine-signature .signature-space {
+                height: 15mm !important;
+            }
+            .field-nine-signature .approval-signature-image {
+                width: 45mm !important;
+                height: 15mm !important;
+            }
+            .field-nine-pd-signature-space {
+                height: 15mm !important;
+            }
+            .field-nine-pd-signature-image {
+                width: 45mm !important;
+                height: 15mm !important;
+            }
+            .field-nine-signature .field-nine-signature-line {
+                height: 2mm;
+            }
             .field-ten-title {
                 padding: 1.5mm 5mm 1mm;
                 border-bottom: 0;
@@ -227,11 +252,11 @@
                 border: 0;
             }
             .field-ten-body {
-                height: 53mm;
-                border-bottom: 0.25mm solid #000;
+                height: 30mm;
+                border-bottom: 0;
             }
             .field-ten-reference {
-                padding: 3mm 12mm 0 !important;
+                padding: 2mm 12mm 0 !important;
                 vertical-align: top;
             }
             .field-ten-reference-label {
@@ -256,7 +281,7 @@
                 vertical-align: middle;
             }
             .field-ten-bottom {
-                padding: 14mm 12mm 2mm !important;
+                padding: 2mm 12mm 3mm !important;
                 vertical-align: bottom;
             }
             .field-ten-date-label {
@@ -264,6 +289,10 @@
                 width: 10mm;
                 line-height: 1.02;
                 vertical-align: middle;
+            }
+            .field-ten-bottom .field-ten-date-label {
+                padding-bottom: 2.5mm !important;
+                vertical-align: bottom !important;
             }
             .field-ten-date-value {
                 display: inline-block;
@@ -274,7 +303,7 @@
             .field-ten-secretary {
                 text-align: right;
                 vertical-align: bottom !important;
-                padding: 7mm 5mm 2mm !important;
+                padding: 2mm 5mm 3mm !important;
             }
             .field-ten-secretary-line {
                 display: inline-block;
@@ -285,40 +314,60 @@
                 height: 24mm;
             }
             .field-ten-signature-row {
-                height: 29mm;
+                height: 20mm;
             }
             .field-ten-reference-row td {
-                height: 24mm;
+                height: 10mm;
             }
             .field-ten-signature-row td {
-                height: 29mm;
+                height: 20mm;
             }
             .field-eleven-body,
             .field-eleven-body td {
                 border: 0 !important;
             }
             .field-eleven-body {
-                height: 75mm;
+                height: 68mm;
                 padding: 0 !important;
                 border-top: 0.25mm solid #000 !important;
-                border-bottom: 0.25mm solid #000 !important;
+                border-bottom: 0 !important;
             }
             .field-eleven-top {
                 padding: 2mm 8mm 0 !important;
                 vertical-align: top;
             }
             .field-eleven-middle {
-                padding: 1mm 28mm !important;
+                padding: 1mm 18mm !important;
                 vertical-align: middle;
             }
             .field-eleven-bottom {
-                padding: 8mm 12mm 2mm !important;
+                padding: 2mm 12mm !important;
                 vertical-align: bottom;
             }
+            .field-eleven-bottom .field-ten-date-label {
+                padding-bottom: 2mm !important;
+                vertical-align: bottom !important;
+            }
+            .field-eleven-chief-secretary {
+                padding: 2mm 8mm !important;
+                text-align: center;
+                vertical-align: bottom !important;
+            }
+            .chief-secretary-signature-image {
+                width: 45mm;
+                height: 15mm;
+                object-fit: contain;
+            }
+            .chief-secretary-signature-line {
+                display: inline-block;
+                width: 55mm;
+                border-bottom: 0.25mm dotted #000;
+            }
             .field-eleven-copy {
-                padding: 12mm 0 0 1mm !important;
+                padding: 3mm 0 0 1mm !important;
                 font-size: 7pt;
                 line-height: 1.02;
+                vertical-align: top;
             }
             .value {
                 padding: 2mm;
@@ -459,7 +508,21 @@
             }
             .signature-space {
                 height: 32mm;
+                border-bottom: 0;
+            }
+            .approval-signature-line {
+                width: 100%;
                 border-bottom: 0.25mm dotted #000;
+            }
+            .signature-dots {
+                display: block;
+                color: #000;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 8pt;
+                letter-spacing: 0.1mm;
+                line-height: 1;
+                white-space: nowrap;
+                margin: 0 0 1.5mm;
             }
             .signature-text {
                 text-align: center;
@@ -475,6 +538,16 @@
                 width: 52mm;
                 height: 28mm;
                 object-fit: contain;
+            }
+            .ministry-secretary-signature-image {
+                width: 45mm;
+                height: 15mm;
+                object-fit: contain;
+            }
+            .ministry-secretary-signature-line {
+                display: inline-block;
+                width: 68mm;
+                border-bottom: 0.25mm dotted #000;
             }
             .page-2 .rotated-form {
                 width: 277mm;
@@ -681,14 +754,14 @@
                 </tr>
             </table>
 
-            <table class="no-border">
+            {{-- <table class="no-border">
                 <tr>
                     <td class="footer">
                         (2023/06) ශ්‍රී ලංකා රජයේ මුද්‍රණ දෙපාර්තමේන්තුව
                         <span style="float: right">1</span>
                     </td>
                 </tr>
-            </table>
+            </table> --}}
         </div>
 
         <div class="page page-2">
@@ -888,6 +961,7 @@
                                 <img class="approval-signature-image" src="{{ data_get($pdhsChiefAccountantSignature, 'signature_data_uri') }}" alt="Chief Accountant signature">
                             @endif
                         </div>
+                        <div class="signature-dots">....................................</div>
                         <span lang="si">ප්‍රධාන ගණකාධිකාරීගේ අත්සන</span
                         ><br /><span lang="ta">பிரதம கணக்காளரின் கையொப்பம்</span
                         ><br /><i>Signature of Chief Accountant.</i>
@@ -945,24 +1019,25 @@
                             >திகதி</span
                         ><br />Date
                     </td>
-                    <td class="field-nine-brace" style="width: 5mm">}</td>
-                    <td style="width: 55mm; padding: 0; vertical-align: middle">
-                        <span class="field-nine-dots">.......................................</span>
+                    <td class="field-nine-brace field-nine-date-brace" style="width: 5mm">}</td>
+                    <td class="field-nine-date-value" style="width: 55mm">
+                        <span class="field-nine-dots">{{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</span>
                     </td>
                     <td style="width: 56mm; padding: 0"></td>
                     <td
-                        style="width: 70mm"
+                        style="width: 50mm"
                         class="field-nine-signature"
                     >
-                        <div class="field-nine-signature-line"></div>
-                        <span lang="si"
-                            >දෙපාර්තමේන්තු ප්‍රධානියාගේ/සංස්ථාපතිවරයාගේ
-                            අත්සන</span
-                        ><br /><span lang="ta"
-                            >திணைக்களத் தலைவரின் கையொப்பம்</span
-                        ><br /><i
-                            >Head of Department/ Chairman of Corporation.</i
-                        >
+                        <div class="signature-space field-nine-pd-signature-space">
+                            @if (data_get($pdhsProvincialDirectorSignature, 'signature_data_uri'))
+                                <img class="approval-signature-image field-nine-pd-signature-image" src="{{ data_get($pdhsProvincialDirectorSignature, 'signature_data_uri') }}" alt="Provincial Director signature">
+                            @endif
+                        </div>
+                        <div class="signature-dots">....................................</div>
+                        <span lang="si">
+                            පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,<br />
+                            දකුණු පළාත.
+                        </span>
                     </td>
                 </tr>
             </table>
@@ -978,7 +1053,7 @@
     </tr>
     <tr>
         <td class="field-ten-body" style="padding: 0">
-            <table class="no-border" style="height: 53mm">
+            <table class="no-border" style="height: 30mm">
                 <tr class="field-ten-reference-row">
                     <td class="field-ten-reference" style="width: 100mm">
                         <table class="no-border">
@@ -1004,17 +1079,22 @@
                         <table class="no-border">
                             <tr>
                                 <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
-                                <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
-                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">.......................................</span></td>
+                                <td class="field-nine-brace field-nine-date-brace" style="width: 6mm">}</td>
+                                <td class="field-nine-date-value"><span class="field-nine-dots">{{ $signatureDate(data_get($ministrySecretarySignature, 'approved_at')) }}</span></td>
                             </tr>
                         </table>
                     </td>
                     <td class="field-ten-secretary" style="width: 100mm; padding-left: 10mm; vertical-align: bottom">
-                        <div><span class="field-nine-dots">....................................</span> <span lang="si">ලේකම්, අමාත්‍යාංශය</span></div>
-                        <div><span class="field-nine-dots">....................................</span> <span lang="ta">அமைச்சின் செயலாளர்</span></div>
-                        <div style="margin-top: 1mm">
-                            <i>Secretary to the Ministry of</i>
-                            <span class="field-nine-dots">..............................................</span>
+                        <div style="height: 15mm; text-align: center">
+                            @if (data_get($ministrySecretarySignature, 'signature_data_uri'))
+                                <img class="ministry-secretary-signature-image" src="{{ data_get($ministrySecretarySignature, 'signature_data_uri') }}" alt="Ministry Secretary signature">
+                            @endif
+                        </div>
+                        <div class="signature-dots">....................................</div>
+                        <div lang="si" style="text-align: right; line-height: 1.12">
+                            ලේකම්,<br />
+                            ප්‍රධාන අමාත්‍යාංශය,<br />
+                            දකුණු පළාත.
                         </div>
                     </td>
                 </tr>
@@ -1026,8 +1106,8 @@
                
                 <tr>
                     <td class="field-eleven-body">
-                        <table class="no-border" style="height: 75mm">
-                            <tr style="height: 25mm">
+                        <table class="no-border" style="height: 68mm">
+                            <tr style="height: 10mm">
                                 <td class="field-eleven-top" style="width: 120mm">
                                     <b>11.</b>
                                     <span class="field-nine-dots">................................................................</span>
@@ -1049,31 +1129,58 @@
                                     </table>
                                 </td>
                             </tr>
-                            <tr style="height: 20mm">
+                            <tr style="height: 13mm">
                                 <td class="field-eleven-middle" colspan="3">
+                                    @php
+                                        $writeOffStatus = $value('writeOffStatus');
+                                        $writeOffDecision = match ($writeOffStatus) {
+                                            'AUTHORISED' => 'අනුමතයි',
+                                            'NOT_APPROVED' => 'අනුමත නොකෙරේ',
+                                            default => '',
+                                        };
+                                    @endphp
+                                    <div lang="si" style="line-height: 1.1">
+                                        @if ($writeOffDecision !== '')
+                                            <b>{{ $writeOffDecision }}</b>
+                                        @endif
+                                    </div>
+                                    <div class="field-nine-dots">..........................................................</div>
                                     <span lang="si">ලියාහැරීම සඳහා අනුමැතිය/අනුමත නොකෙරේ.</span><br />
                                     <span lang="ta">தள்ளுபடிக்கு அனுமதிக்கப்படுகிறது / அனுமதிக்கப்படவில்லை.</span><br />
                                     Write off authorised/not approved.
                                 </td>
                             </tr>
-                            <tr style="height: 25mm">
+                            <tr style="height: 30mm">
                                 <td class="field-eleven-bottom" style="width: 120mm">
                                     <table class="no-border">
                                         <tr>
                                             <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
-                                            <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
-                                            <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">....................................</span></td>
+                                            <td class="field-nine-brace field-nine-date-brace" style="width: 6mm">}</td>
+                                            <td class="field-nine-date-value"><span class="field-nine-dots">{{ $signatureDate(data_get($chiefSecretarySignature, 'approved_at')) }}</span></td>
                                         </tr>
                                     </table>
                                 </td>
-                                <td class="field-eleven-bottom" colspan="2" style="width: 80mm; text-align: center">
-                                    <span class="field-nine-dots">....................................................</span><br />
-                                    <span lang="si">භාණ්ඩාගාරයේ ලේකම්</span><br />
-                                    <span lang="ta">திறைசேரியின் செயலாளர்</span><br />
-                                    <i>Secretary to the Treasury.</i>
+                                <td class="field-eleven-chief-secretary" colspan="2" style="width: 80mm">
+                                    <div style="height: 15mm">
+                                        @if (data_get($chiefSecretarySignature, 'signature_data_uri'))
+                                            <img class="chief-secretary-signature-image" src="{{ data_get($chiefSecretarySignature, 'signature_data_uri') }}" alt="Chief Secretary signature">
+                                        @endif
+                                    </div>
+                                    <div class="signature-dots">....................................</div>
+                                    <div lang="si" style="line-height: 1.12">
+                                        ප්‍රධාන ලේකම්,<br />
+                                        දකුණු පළාත.
+                                    </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr style="height: 15mm">
+                                <td class="field-eleven-copy" colspan="3">
+                                    <span lang="si"></span><br />
+                                    <span lang="ta"></span><br />
+                                    
+                                </td>
+                            </tr>
+                            <tr style="height: 15mm">
                                 <td class="field-eleven-copy" colspan="3">
                                     <span lang="si">පිටපත : විගණකාධිපති ජනරාල්</span><br />
                                     <span lang="ta">பிரதி : கணக்காய்வாளர் நாயகம்</span><br />
@@ -1127,7 +1234,7 @@
                 @endforeach
             </table>
 
-            <table class="no-border">
+            {{-- <table class="no-border">
                 <tr>
                     <td class="footer">
                         * <span lang="si">අදාළ නොවන වචන කපා හරින්න</span> /
@@ -1135,7 +1242,7 @@
                         inapplicable
                     </td>
                 </tr>
-            </table>
+            </table> --}}
         </div>
     </body>
 </html>
