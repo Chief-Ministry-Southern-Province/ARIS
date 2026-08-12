@@ -55,13 +55,7 @@ class WorkflowResolverService
 
       if ($isFR109) {
           if ($lossAmount > $configuration['pdhs_threshold']) {
-              if ($vehicleInstitutionDistrict === '') {
-                  throw ValidationException::withMessages([
-                      'workflow' => 'The accident vehicle institution must have a district before resolving the Ministry approval workflow.',
-                  ]);
-              }
-
-              $steps = [...$steps, ...$this->resolveFR109Ministry($ministry, $vehicleInstitutionDistrict)];
+              $steps = [...$steps, ...$this->resolveFR109Ministry($ministry)];
           }
 
           if ($lossAmount > $configuration['ministry_threshold']) {
@@ -329,15 +323,9 @@ class WorkflowResolverService
    * FR109 continues from the Provincial Director to the Ministry Accounts
    * approval chain when the FR109 loss exceeds the PDHS threshold.
    */
-  protected function resolveFR109Ministry(Institution $ministry, string $district): array
+  protected function resolveFR109Ministry(Institution $ministry): array
   {
       return [
-          new WorkflowStep(
-              step: 1,
-              institution: $ministry,
-              role: 'subject_officer',
-              district: $district,
-          ),
           new WorkflowStep(
               step: 1,
               institution: $ministry,

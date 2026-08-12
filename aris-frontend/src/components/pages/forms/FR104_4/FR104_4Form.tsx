@@ -74,16 +74,21 @@ export default function FR104_4Form({
   const { data: loaded, isLoading, error } = useGetFR1044(
     readOnly ? undefined : accidentCaseId
   );
+  const displayed = document ?? loaded;
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1044Pdf();
   const { data: approvalGroups = [] } = useApprovalHistory(
     readOnly ? 0 : accidentCaseId,
     "FR1044",
+    displayed?.revision,
   );
 
-  const displayed = document ?? loaded;
-  const generatedApprovalTimeline = approvalGroups.flatMap((group) => group.approvals);
+  const generatedApprovalTimeline = displayed
+    ? approvalGroups
+      .filter((group) => group.revision === displayed.revision)
+      .flatMap((group) => group.approvals)
+    : [];
   const resolvedApprovalTimeline = approvalTimeline.length > 0
     ? approvalTimeline
     : generatedApprovalTimeline;
@@ -452,29 +457,33 @@ export default function FR104_4Form({
                 <>
                   <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}</button>
-                  <button
-                    type="submit"
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle size={18} />
-                    {submit.isPending
-                      ? "Submitting..."
-                      : status === "CHANGES_REQUESTED" ||
-                        (displayed?.revision ?? 1) > 1
-                      ? "Submit Again"
-                      : "Submit"}
-                  </button>
+                  {status !== "APPROVED" && (
+                    <>
+                      <button
+                        type="submit"
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <CheckCircle size={18} />
+                        {submit.isPending
+                          ? "Submitting..."
+                          : status === "CHANGES_REQUESTED" ||
+                            (displayed?.revision ?? 1) > 1
+                          ? "Submit Again"
+                          : "Submit"}
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={save}
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <Save size={18} />
-                    {saving ? "Saving..." : "Save Draft"}
-                  </button>
+                      <button
+                        type="button"
+                        onClick={save}
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <Save size={18} />
+                        {saving ? "Saving..." : "Save Draft"}
+                      </button>
+                    </>
+                  )}
 
                   <button
                     type="button"

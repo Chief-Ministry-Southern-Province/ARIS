@@ -146,10 +146,10 @@ class FR109Service
         });
     }
 
-    /** Complete Part I before the assigned Ministry Subject Officer recommends FR109. */
+    /** Complete Part I before the Ministry Account Subject Officer recommends FR109. */
     public function updateChiefAccountingOrder(FR109 $fr109, User $user, array $data): FR109
     {
-        $isAssignedMinistrySubjectOfficer = Approval::query()
+        $isAssignedMinistryAccountSubjectOfficer = Approval::query()
             ->where('accident_case_id', $fr109->accident_case_id)
             ->where('document_type', 'FR109')
             ->where('revision', $fr109->revision)
@@ -158,9 +158,9 @@ class FR109Service
             ->exists();
 
         abort_unless(
-            $user->hasRole('subject_officer') && $isAssignedMinistrySubjectOfficer,
+            $user->hasRole('ministry_account_subject_officer') && $isAssignedMinistryAccountSubjectOfficer,
             403,
-            'Only the assigned Ministry Subject Officer can complete the Chief Accounting Officer order.'
+            'Only the assigned Ministry Account Subject Officer can complete the Chief Accounting Officer order.'
         );
 
         return DB::transaction(function () use ($fr109, $user, $data) {
