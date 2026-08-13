@@ -32,6 +32,7 @@ class FR109Service
         }
 
         return DB::transaction(function () use ($case, $user, $data) {
+            $data = $this->withReportDetails($case, $data);
             $latest = $case->fr109s()->latest('revision')->first();
 
             if (! $latest) {
@@ -222,6 +223,28 @@ class FR109Service
     private function ensureFR1044Approved(AccidentCase $case): void
     {
         abort_unless($case->fr1044s()->latest('revision')->value('status') === 'APPROVED', 409, 'An approved FR1044 report is required before creating FR109.');
+    }
+
+    /**
+     * FR109 identifies the approved FR1043 preliminary and FR1044 final reports.
+     */
+    private function withReportDetails(AccidentCase $case, array $data): array
+    {
+        $preliminaryReport = $case->fr1043s()->latest('revision')->first();
+        $finalReport = $case->fr1044s()->latest('revision')->first();
+
+        abort_unless(
+            $preliminaryReport?->status === 'APPROVED' && $finalReport?->status === 'APPROVED',
+            409,
+            'Approved FR1043 and FR1044 reports are required before creating or updating FR109.'
+        );
+
+        $data['preliminaryReportReferenceNo'] = $preliminaryReport->reference_number;
+        $data['finalReportReferenceNo'] = $finalReport->reference_number;
+        $data['preliminaryDate'] = $data['preliminaryDate'] ?? $preliminaryReport->approved_at?->toDateString();
+        $data['finalDate'] = $data['finalDate'] ?? $finalReport->approved_at?->toDateString();
+
+        return $data;
     }
 
 }

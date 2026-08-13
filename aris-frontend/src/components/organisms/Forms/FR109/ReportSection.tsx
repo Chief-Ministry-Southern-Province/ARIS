@@ -27,9 +27,7 @@ export default function ReportSection({ formData, setFormData }: Props) {
           <FormField label={t("fr109.fields.preliminaryReportReferenceNo")}>
             <InputField
               value={formData.preliminaryReportReferenceNo}
-              onChange={(e) =>
-                handleChange("preliminaryReportReferenceNo", e.target.value)
-              }
+              readOnly
             />
           </FormField>
 
@@ -51,9 +49,7 @@ export default function ReportSection({ formData, setFormData }: Props) {
           <FormField label={t("fr109.fields.finalReportReferenceNo")}>
             <InputField
               value={formData.finalReportReferenceNo}
-              onChange={(e) =>
-                handleChange("finalReportReferenceNo", e.target.value)
-              }
+              readOnly
             />
           </FormField>
 

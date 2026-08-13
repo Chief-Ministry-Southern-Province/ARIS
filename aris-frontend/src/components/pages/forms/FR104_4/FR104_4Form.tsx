@@ -20,7 +20,9 @@ import LegalActionSection from "@/components/organisms/Forms/FR104_4/LegalAction
 import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/PreventiveActionsSection";
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR1044Pdf, useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
+import { useGetFR1043 } from "@/hooks/useFR1043";
 import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 import {
   downloadFR1044Attachment,
   getFR1044AttachmentPreview,
@@ -74,7 +76,10 @@ export default function FR104_4Form({
   const { data: loaded, isLoading, error } = useGetFR1044(
     readOnly ? undefined : accidentCaseId
   );
+  const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const displayed = document ?? loaded;
+  const { data: accidentCase } = useCase(readOnly ? undefined : accidentCaseId);
+  const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1044Pdf();
@@ -118,11 +123,37 @@ export default function FR104_4Form({
   useEffect(() => {
     if (displayed) {
       const { ministry: legacyMinistry, ...currentData } = displayed.data as FR104_4FormData & { ministry?: string };
-      setData({ ...currentData, secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "" });
+      const approvedPreliminaryReport = preliminaryReport?.status === "APPROVED"
+        ? preliminaryReport
+        : undefined;
+
+      setData({
+        ...currentData,
+        secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "",
+        preliminaryReportRefNo: approvedPreliminaryReport?.reference_number
+          ?? currentData.preliminaryReportRefNo
+          ?? accidentCase?.case_number
+          ?? "",
+        preliminaryReportDate: currentData.preliminaryReportDate
+          || approvedPreliminaryReport?.approved_at?.slice(0, 10)
+          || "",
+      });
       setId(displayed.id);
       setStatus(displayed.status);
     }
-  }, [displayed]);
+  }, [accidentCase?.case_number, displayed, preliminaryReport]);
+
+  useEffect(() => {
+    if (preliminaryReport?.status !== "APPROVED") {
+      return;
+    }
+
+    setData((current) => ({
+      ...current,
+      preliminaryReportRefNo: preliminaryReport.reference_number,
+      preliminaryReportDate: current.preliminaryReportDate || preliminaryReport.approved_at?.slice(0, 10) || "",
+    }));
+  }, [preliminaryReport]);
 
   useEffect(() => () => {
     if (pdfPreviewUrl) {
@@ -377,7 +408,7 @@ export default function FR104_4Form({
                 {t("fr104_4.generalInformation.referenceNo")}
               </p>
               <p className="font-semibold">
-                {displayed?.reference_number || data.referenceNo || "—"}
+                {referenceNumber ?? "—"}
               </p>
             </div>
 

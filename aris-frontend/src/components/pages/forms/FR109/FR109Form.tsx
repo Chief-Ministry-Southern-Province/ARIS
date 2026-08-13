@@ -6,7 +6,10 @@ import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR109Pdf, useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
+import { useGetFR1043 } from "@/hooks/useFR1043";
+import { useGetFR1044 } from "@/hooks/useFR1044";
 import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
@@ -65,7 +68,11 @@ export default function FR109Form({
   const { data: loaded, isLoading, error } = useGetFR109(
     readOnly ? "" : (caseId ?? "")
   );
+  const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
+  const { data: finalReport } = useGetFR1044(readOnly ? undefined : accidentCaseId);
   const displayed = document ?? loaded;
+  const { data: accidentCase } = useCase(readOnly ? undefined : accidentCaseId);
+  const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
   const downloadPdfMutation = useDownloadFR109Pdf();
@@ -140,6 +147,14 @@ export default function FR109Form({
       setData({
         ...initialFormData,
         ...currentData,
+        preliminaryReportReferenceNo: preliminaryReport?.status === "APPROVED"
+          ? preliminaryReport.reference_number
+          : currentData.preliminaryReportReferenceNo,
+        finalReportReferenceNo: finalReport?.status === "APPROVED"
+          ? finalReport.reference_number
+          : currentData.finalReportReferenceNo,
+        preliminaryDate: currentData.preliminaryDate || preliminaryReport?.approved_at?.slice(0, 10) || "",
+        finalDate: currentData.finalDate || finalReport?.approved_at?.slice(0, 10) || "",
         writeOffEntries: formData.writeOffEntries?.length
           ? formData.writeOffEntries
           : hasLegacyEntry
@@ -148,7 +163,21 @@ export default function FR109Form({
       });
       setStatus(displayed.status);
     }
-  }, [displayed]);
+  }, [displayed, finalReport, preliminaryReport]);
+
+  useEffect(() => {
+    if (preliminaryReport?.status !== "APPROVED" || finalReport?.status !== "APPROVED") {
+      return;
+    }
+
+    setData((current) => ({
+      ...current,
+      preliminaryReportReferenceNo: preliminaryReport.reference_number,
+      finalReportReferenceNo: finalReport.reference_number,
+      preliminaryDate: current.preliminaryDate || preliminaryReport.approved_at?.slice(0, 10) || "",
+      finalDate: current.finalDate || finalReport.approved_at?.slice(0, 10) || "",
+    }));
+  }, [finalReport, preliminaryReport]);
 
   useEffect(() => {
     if (error && (error as { response?: { status?: number } }).response?.status !== 404) {
@@ -308,7 +337,7 @@ export default function FR109Form({
             <div>
               <p className="text-xs text-slate-500">{t("fr109.meta.refNo")}</p>
               <p className="font-semibold">
-                {displayed?.reference_number || data.refNo || "—"}
+                {referenceNumber ?? "—"}
               </p>
             </div>
 

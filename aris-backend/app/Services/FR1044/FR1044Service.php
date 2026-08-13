@@ -27,19 +27,7 @@ class FR1044Service
               'An FR1044 form already exists for this case.'
           );
 
-          $preliminaryReport = $case->fr1043s()
-              ->latest('revision')
-              ->first();
-
-          abort_unless(
-              $preliminaryReport && $preliminaryReport->status === 'APPROVED',
-              409,
-              'An approved FR1043 preliminary report is required before creating FR1044.'
-          );
-
-          $data['preliminaryReportRefNo'] = $preliminaryReport->reference_number;
-          $data['preliminaryReportDate'] = $preliminaryReport->data['date']
-              ?? $preliminaryReport->submitted_at?->toDateString();
+          $data = $this->withPreliminaryReportDetails($case, $data);
 
           $fr1044 = FR1044::create([
               'reference_number' => $case->case_number,
@@ -67,6 +55,7 @@ class FR1044Service
   {
       abort_unless($fr1044->created_by === $user->id, 403);
       $this->validateEvidenceReferences($fr1044->accidentCase, $data);
+      $data = $this->withPreliminaryReportDetails($fr1044->accidentCase, $data);
 
       if ($fr1044->status === 'CHANGES_REQUESTED') {
           return $this->createRevision($fr1044, $user, $data);
@@ -114,6 +103,28 @@ class FR1044Service
           ->count();
 
       abort_unless($valid === $ids->count(), 422, 'One or more attachments do not belong to this FR1044 case.');
+  }
+
+  /**
+   * FR1044 always identifies its approved FR1043 preliminary report.
+   */
+  protected function withPreliminaryReportDetails(AccidentCase $case, array $data): array
+  {
+      $preliminaryReport = $case->fr1043s()
+          ->latest('revision')
+          ->first();
+
+      abort_unless(
+          $preliminaryReport && $preliminaryReport->status === 'APPROVED',
+          409,
+          'An approved FR1043 preliminary report is required before creating or updating FR1044.'
+      );
+
+      $data['preliminaryReportRefNo'] = $preliminaryReport->reference_number;
+      $data['preliminaryReportDate'] = $data['preliminaryReportDate']
+          ?? $preliminaryReport->approved_at?->toDateString();
+
+      return $data;
   }
 
   protected function createRevision(FR1044 $rejectedRevision, User $user, array $data): FR1044

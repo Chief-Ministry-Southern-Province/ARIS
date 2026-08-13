@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDownloadFR1043Pdf, useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
 import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
@@ -47,6 +48,8 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
 
   const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const displayedForm = document ?? loadedForm;
+  const { data: accidentCase } = useCase(readOnly ? undefined : accidentCaseId);
+  const referenceNumber = displayedForm?.reference_number ?? accidentCase?.case_number;
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
   const submitMutation = useSubmitFR1043(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1043Pdf();
@@ -305,7 +308,7 @@ useEffect(() => {
               </p>
 
               <p className="font-semibold text-slate-800">
-                {displayedForm?.reference_number ?? "Not saved"}
+                {referenceNumber ?? "Not saved"}
               </p>
             </div>
 

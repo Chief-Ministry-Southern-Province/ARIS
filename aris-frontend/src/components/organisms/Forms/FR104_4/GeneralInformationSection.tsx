@@ -41,12 +41,7 @@ export default function GeneralInformationSection({
       >
         <InputField
           value={formData.preliminaryReportRefNo}
-          onChange={(e) =>
-            handleChange(
-              "preliminaryReportRefNo",
-              e.target.value
-            )
-          }
+          readOnly
         />
       </FormField>
 
