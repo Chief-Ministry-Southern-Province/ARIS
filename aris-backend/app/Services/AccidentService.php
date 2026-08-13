@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Accident;
+use App\Models\Institution;
 use App\Models\User;
 use App\Http\Requests\Accident\StoreAccidentRequest;
 use Illuminate\Support\Facades\DB;
@@ -29,26 +30,73 @@ class AccidentService
     }
 
     /**
-     * Generate a unique reference number for the accident.
-     * Format: ACC-YYYYMMDD-XXXXX
+     * Generate the shared case and document reference number.
+     * Format: CMSP/HLTH/PARENT[/LOCATION]/YYYY/0001
      */
-    protected function generateReferenceNumber(): string
+    protected function generateReferenceNumber(Institution $institution): string
     {
-        $date = now()->format('Ymd');
+        $year = now()->year;
+        [$parent, $location] = $this->resolveCodingGroup($institution);
+        $segments = [config('case-codes.prefix'), config('case-codes.sector'), $parent];
+
+        if ($location) {
+            $segments[] = $location;
+        }
+
+        $segments[] = $year;
+        $prefix = implode('/', $segments) . '/';
 
         $lastAccident = Accident::withoutGlobalScopes()
-            ->where('reference_number', 'like', "ACC-{$date}-%")
+            ->where('reference_number', 'like', "{$prefix}%")
+            ->lockForUpdate()
             ->orderByDesc('reference_number')
             ->first();
 
         if ($lastAccident) {
-            $lastNumber = (int) substr($lastAccident->reference_number, -5);
+            $lastNumber = (int) substr($lastAccident->reference_number, -4);
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
         }
 
-        return sprintf('ACC-%s-%05d', $date, $nextNumber);
+        return sprintf('%s%04d', $prefix, $nextNumber);
+    }
+
+    /**
+     * Determine the coding group without replacing the vehicle-owning
+     * institution saved on the accident itself.
+     *
+     * @return array{string, string|null}
+     */
+    protected function resolveCodingGroup(Institution $institution): array
+    {
+        if ($institution->type === 'PDHS') {
+            return ['PDHS', null];
+        }
+
+        if ($institution->type === 'BASE_HOSPITAL') {
+            $location = config('case-codes.base_hospitals.' . strtolower(trim($institution->name)));
+
+            abort_unless($location, 422, "A case-code location is not configured for {$institution->name}.");
+
+            return ['BH', $location];
+        }
+
+        $current = $institution;
+
+        while ($current) {
+            if ($current->type === 'RDHS') {
+                $district = config('case-codes.districts.' . strtolower(trim((string) $current->district)));
+
+                abort_unless($district, 422, "A case-code district is not configured for {$current->name}.");
+
+                return ['RDHS', $district];
+            }
+
+            $current = $current->parentInstitution;
+        }
+
+        abort(422, "A case-code group could not be resolved for {$institution->name}.");
     }
 
     /**
@@ -60,13 +108,15 @@ class AccidentService
 
         $files = $request->file('files');
 
-        $data['reference_number'] = $this->generateReferenceNumber();
         $data['reported_by'] = $user->id;
         $data['institution_id'] = $user->institution_id;
 
         DB::beginTransaction();
 
         try {
+
+            $institution = Institution::query()->findOrFail($data['institution_id']);
+            $data['reference_number'] = $this->generateReferenceNumber($institution);
 
             $accident = Accident::create($data);
 

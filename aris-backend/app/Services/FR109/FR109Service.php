@@ -37,7 +37,7 @@ class FR109Service
             if (! $latest) {
                 $this->ensureFR1044Approved($case);
                 $latest = FR109::create([
-                    'reference_number' => $this->generateReferenceNumber(),
+                    'reference_number' => $case->case_number,
                     'accident_case_id' => $case->id,
                     'created_by' => $user->id,
                     'revision' => 1,
@@ -224,8 +224,4 @@ class FR109Service
         abort_unless($case->fr1044s()->latest('revision')->value('status') === 'APPROVED', 409, 'An approved FR1044 report is required before creating FR109.');
     }
 
-    private function generateReferenceNumber(): string
-    {
-        return sprintf('FR109-%d-%04d', now()->year, (FR109::max('id') ?? 0) + 1);
-    }
 }

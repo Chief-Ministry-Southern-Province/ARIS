@@ -17,19 +17,6 @@ class FR1044Service
       protected AccidentTimelineService $timelineService
   ) {}
 
-  protected function generateReferenceNumber(): string
-  {
-      $year = now()->year;
-      $last = FR1044::latest('id')->first();
-      $next = $last ? $last->id + 1 : 1;
-
-      return sprintf(
-          'FR1044-%d-%04d',
-          $year,
-          $next
-      );
-  }
-
   public function createDraft(AccidentCase $case,User $user,array $data): FR1044 
   {
       return DB::transaction(function () use ($case,$user,$data) {
@@ -55,7 +42,7 @@ class FR1044Service
               ?? $preliminaryReport->submitted_at?->toDateString();
 
           $fr1044 = FR1044::create([
-              'reference_number' => $this->generateReferenceNumber(),
+              'reference_number' => $case->case_number,
               'accident_case_id' => $case->id,
               'created_by' => $user->id,
               'revision' => 1,

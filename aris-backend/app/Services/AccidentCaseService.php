@@ -21,21 +21,12 @@ class AccidentCaseService
         $this->notificationService = $notificationService;
     }
 
-    protected function generateCaseNumber(): string
-    {
-        $year = now()->year;
-
-        $lastCase = AccidentCase::latest('id')->first();
-
-        $next = $lastCase ? $lastCase->id + 1 : 1;
-
-        return sprintf('CASE-%d-%04d', $year, $next);
-    }
-
     public function create(Accident $accident, User $creator): AccidentCase
     {
         $case = AccidentCase::create([
-            'case_number' => $this->generateCaseNumber(),
+            // The accident reference is the case code and the single reference
+            // used by FR1043, FR1044, and FR109 for this case.
+            'case_number' => $accident->reference_number,
             'accident_id' => $accident->id,
             'institution_id' => $accident->institution_id,
             'created_by' => $creator->id,
