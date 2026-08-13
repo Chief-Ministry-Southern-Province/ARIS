@@ -205,6 +205,7 @@ class ApprovalService
             'regional_director',
             'provincial_director',
             'chief_accountant',
+            'accountant',
             'secretary',
         ]);
 

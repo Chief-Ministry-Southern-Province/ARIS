@@ -46,6 +46,7 @@ class UpdateUserRequest extends FormRequest
             $allowedInstitutionTypes = match ($this->input('role')) {
                 'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
                 'chief_accountant' => ['MINISTRY', 'PDHS'],
+                'accountant' => ['RDHS', 'BASE_HOSPITAL'],
                 default => null,
             };
 
@@ -59,6 +60,7 @@ class UpdateUserRequest extends FormRequest
                 $roleName = match ($this->input('role')) {
                     'chief_accountant' => 'Chief Accountant',
                     'ministry_account_subject_officer' => 'Ministry Account Subject Officer',
+                    'accountant' => 'Accountant',
                     default => 'Chief Secretary',
                 };
                 $institutionTypes = implode(' or ', $allowedInstitutionTypes);

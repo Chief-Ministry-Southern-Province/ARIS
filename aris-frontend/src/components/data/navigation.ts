@@ -11,6 +11,7 @@ export const FULL_ACCESS_ROLES = [
   "assistant_secretary",
   "senior_assistant_secretary",
   "chief_secretary",
+  "accountant",
 ];
 
 export const CHIEF_ACCOUNTANT_ACCESS_ROLES = [
@@ -32,11 +33,13 @@ export const SIGNATURE_ACCESS_ROLE = [
   "chief_accountant",
   "secretary",
   "chief_secretary",
+  "accountant",
 ]
 
 export const REPORT_ROLES = [
   "subject_officer",
   "driver",
+  "accountant",
 ];
 
 export const ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS = [

@@ -23,6 +23,9 @@ class WorkflowResolverService
   public function resolve(AccidentCase $case, string $documentType, int $revision): array
   {
       $isFR109 = $documentType === 'FR109';
+      // FR1044 requires the originating Base Hospital or RDHS Accountant to
+      // recommend, with a signature, before the MS or Regional Director.
+      $includeAccountantRecommendation = $documentType === 'FR1044';
       // FR109 requires the PDHS Chief Accountant to recommend before the
       // Provincial Director, regardless of the institution where the case began.
       $includeChiefAccountant = $isFR109;
@@ -37,10 +40,10 @@ class WorkflowResolverService
 
       [$steps, $ministry] = match ($institution->type) {
           'PDHS' => [$this->resolveProvincial($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution],
-          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution?->parentInstitution],
-          'RDHS' => [$this->resolveRegional($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution?->parentInstitution],
+          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation), $institution->parentInstitution?->parentInstitution],
+          'RDHS' => [$this->resolveRegional($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation), $institution->parentInstitution?->parentInstitution],
           'DIVISIONAL_HOSPITAL', 'MOH', 'PMCU', 'UNITS', 'OTHER' => [
-              $this->resolveRegional($institution->parentInstitution, $includeChiefAccountant, $includeOriginatingSubjectOfficer),
+              $this->resolveRegional($institution->parentInstitution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation),
               $institution->parentInstitution?->parentInstitution?->parentInstitution,
           ],
           default => throw new \Exception('Workflow not found.'),
@@ -173,6 +176,7 @@ class WorkflowResolverService
       Institution $hospital,
       bool $includeChiefAccountant = false,
       bool $includeSubjectOfficer = false,
+      bool $includeAccountantRecommendation = false,
   ): array
   {
       $pdhs = $hospital->parentInstitution;
@@ -189,13 +193,20 @@ class WorkflowResolverService
           institution: $hospital,
           role: 'administrative_officer',
         ),
+        ...($includeAccountantRecommendation ? [
+            new WorkflowStep(
+                step: 2,
+                institution: $hospital,
+                role: 'accountant',
+            ),
+        ] : []),
         new WorkflowStep(
-          step: 2,
+          step: $includeAccountantRecommendation ? 3 : 2,
           institution: $hospital,
           role: 'medical_superintendent',
         ),
 
-        ...$this->resolvePDHS($pdhs,3, $includeChiefAccountant),
+        ...$this->resolvePDHS($pdhs, $includeAccountantRecommendation ? 4 : 3, $includeChiefAccountant),
       ];
   }
 
@@ -203,6 +214,7 @@ class WorkflowResolverService
       Institution $rdhs,
       bool $includeChiefAccountant = false,
       bool $includeSubjectOfficer = false,
+      bool $includeAccountantRecommendation = false,
   ): array
   {
 
@@ -224,13 +236,21 @@ class WorkflowResolverService
               role: 'administrative_officer',
           ),
 
+          ...($includeAccountantRecommendation ? [
+              new WorkflowStep(
+                  step: 2,
+                  institution: $rdhs,
+                  role: 'accountant',
+              ),
+          ] : []),
+
           new WorkflowStep(
-              step: 2,
+              step: $includeAccountantRecommendation ? 3 : 2,
               institution: $rdhs,
               role: 'regional_director',
           ),
 
-          ...$this->resolvePDHS($pdhs,3, $includeChiefAccountant),
+          ...$this->resolvePDHS($pdhs, $includeAccountantRecommendation ? 4 : 3, $includeChiefAccountant),
 
       ];
   }

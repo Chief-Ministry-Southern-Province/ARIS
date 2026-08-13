@@ -14,9 +14,9 @@ export const rolesForInstitution = (institutionType?: string) => {
     case "PDHS":
       return ["subject_officer", "administrative_officer", "deputy_director", "chief_accountant", "provincial_director", "driver"];
     case "RDHS":
-      return ["subject_officer", "administrative_officer", "regional_director", "driver"];
+      return ["subject_officer", "administrative_officer", "accountant", "regional_director", "driver"];
     case "BASE_HOSPITAL":
-      return ["subject_officer", "administrative_officer", "medical_superintendent", "driver"];
+      return ["subject_officer", "administrative_officer", "accountant", "medical_superintendent", "driver"];
     default:
       return [];
   }
