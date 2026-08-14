@@ -60,6 +60,14 @@ class FR109PdfGenerator implements PdfGeneratorInterface
                 'chief accountant',
                 'PDHS',
             ),
+            'originatingAccountantSignature' => $this->firstSignatureForRole(
+                $signatures,
+                'accountant',
+            ),
+            'originatingHeadSignature' => $this->firstSignatureForRoles(
+                $signatures,
+                ['medical superintendent', 'regional director'],
+            ),
             'pdhsProvincialDirectorSignature' => $this->firstSignatureForRole(
                 $signatures,
                 'provincial director',
@@ -87,6 +95,20 @@ class FR109PdfGenerator implements PdfGeneratorInterface
                 $signatureRole === $role
                 && ($institutionType === null || ($signature['institution_type'] ?? null) === $institutionType)
             ) {
+                return $signature;
+            }
+        }
+
+        return null;
+    }
+
+    /** @param array<int, array<string, mixed>> $signatures */
+    private function firstSignatureForRoles(array $signatures, array $roles): ?array
+    {
+        foreach ($roles as $role) {
+            $signature = $this->firstSignatureForRole($signatures, $role);
+
+            if ($signature) {
                 return $signature;
             }
         }

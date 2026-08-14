@@ -23,9 +23,9 @@ class WorkflowResolverService
   public function resolve(AccidentCase $case, string $documentType, int $revision): array
   {
       $isFR109 = $documentType === 'FR109';
-      // FR1044 requires the originating Base Hospital or RDHS Accountant to
-      // recommend, with a signature, before the MS or Regional Director.
-      $includeAccountantRecommendation = $documentType === 'FR1044';
+      // FR1044 and FR109 require the originating Base Hospital or RDHS
+      // Accountant to recommend, with a signature, before the MS or RD.
+      $includeAccountantRecommendation = in_array($documentType, ['FR1044', 'FR109'], true);
       // FR109 requires the PDHS Chief Accountant to recommend before the
       // Provincial Director, regardless of the institution where the case began.
       $includeChiefAccountant = $isFR109;

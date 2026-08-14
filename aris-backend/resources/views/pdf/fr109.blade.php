@@ -38,7 +38,35 @@
                 position: relative;
             }
             .page-three-ca-signature {
-                margin-top: 24mm;
+                margin-top: 2mm;
+            }
+            .page-three-local-signatures {
+                width: 200mm;
+                margin-top: 2mm;
+                margin-bottom: 1mm;
+            }
+            .page-three-local-signatures .signature-comment {
+                min-height: 7mm;
+                font-size: 7.5pt;
+                line-height: 1.05;
+            }
+            .page-three-local-signatures .signature-space {
+                height: 10mm;
+                text-align: center;
+            }
+            .page-three-local-signatures .approval-signature-image {
+                width: 36mm;
+                height: 10mm;
+                object-fit: contain;
+            }
+            .page-three-local-signatures .signature-approver-name,
+            .page-three-local-signatures .signature-role,
+            .page-three-local-signatures .signature-date {
+                font-size: 7.5pt;
+                line-height: 1.05;
+            }
+            .page-three-local-signatures .signature-approver-name {
+                margin-bottom: 0;
             }
             table {
                 width: 100%;
@@ -951,6 +979,35 @@
                 </tr>
             </table>
 
+            <table class="no-border page-three-local-signatures">
+                <tr>
+                    <td style="width: 100mm; vertical-align: bottom; padding-right: 4mm;">
+                        <div class="signature-comment">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingAccountantSignature, 'comments', '')), 100, '...') }}</div>
+                        <div class="signature-space" style="height: 8mm; text-align: center; line-height: 0;">
+                            @if (data_get($originatingAccountantSignature, 'signature_data_uri'))
+                                <img class="approval-signature-image" style="width: 32mm; height: 8mm; object-fit: contain;" src="{{ data_get($originatingAccountantSignature, 'signature_data_uri') }}" alt="Accountant signature">
+                            @endif
+                        </div>
+                        <div class="signature-dots">........................................................</div>
+                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingAccountantSignature, 'name', '')), 55) }}</div>
+                        <div class="signature-role">Accountant</div>
+                        <div class="signature-date">Date: {{ $signatureDate(data_get($originatingAccountantSignature, 'approved_at')) }}</div>
+                    </td>
+                    <td style="width: 100mm; vertical-align: bottom; padding-left: 4mm;">
+                        <div class="signature-comment">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'comments', '')), 100, '...') }}</div>
+                        <div class="signature-space" style="height: 8mm; text-align: center; line-height: 0;">
+                            @if (data_get($originatingHeadSignature, 'signature_data_uri'))
+                                <img class="approval-signature-image" style="width: 32mm; height: 8mm; object-fit: contain;" src="{{ data_get($originatingHeadSignature, 'signature_data_uri') }}" alt="Medical Superintendent or Regional Director signature">
+                            @endif
+                        </div>
+                        <div class="signature-dots">........................................................</div>
+                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'name', '')), 55) }}</div>
+                        <div class="signature-role">{{ \Illuminate\Support\Str::title((string) data_get($originatingHeadSignature, 'role', 'Medical Superintendent / Regional Director')) }}</div>
+                        <div class="signature-date">Date: {{ $signatureDate(data_get($originatingHeadSignature, 'approved_at')) }}</div>
+                    </td>
+                </tr>
+            </table>
+
             <table class="no-border page-three-ca-signature">
                 <tr>
                     <td style="width: 55mm; vertical-align: bottom; padding: 0">
@@ -1085,7 +1142,7 @@
                             <tr>
                                 <td class="field-ten-reference-label" style="width: 14mm; padding: 0"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></td>
                                 <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
-                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ $value('chiefAccountingOfficerRefNo') ?: '.......................................' }}</span></td>
+                                <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ data_get($ministrySecretarySignature, 'signature_data_uri') ? $reference : '.......................................' }}</span></td>
                             </tr>
                         </table>
                     </td>
@@ -1134,15 +1191,14 @@
                                     <span class="field-nine-dots">................................................................</span>
                                     <span lang="ta">அமைச்சின் செயலாளர்</span><br />
                                     <span style="display: inline-block; width: 10mm"></span>
-                                    <i>Secretary to the Ministry of</i>
-                                    <span class="field-nine-dots">..............................................</span>
+                                    <span class="field-nine-dots">..............................................................................</span>
                                 </td>
                                 <td class="field-eleven-top" style="width: 80mm">
                                     <table class="no-border">
                                         <tr>
                                             <td class="field-ten-reference-label" style="width: 14mm; padding: 0"><span lang="si">යොමු අංකය</span><br /><span lang="ta">தொடர் இல.</span><br /><i>Ref. No.</i></td>
                                             <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
-                                            <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">....................................</span></td>
+                                            <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ data_get($chiefSecretarySignature, 'signature_data_uri') ? $reference : '....................................' }}</span></td>
                                         </tr>
                                     </table>
                                 </td>
