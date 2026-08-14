@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { FormCard } from "@/components/molecules/FormCard";
 import { FormField } from "@/components/molecules/FormField";
-import { InputField } from "@/components/atoms/InputField";
 import type { FR109FormData } from "@/types/FR109.type";
 
 interface Props {
@@ -14,14 +13,6 @@ export default function WriteOffDecisionSection({ formData, setFormData }: Props
 
   return (
     <FormCard part={t("fr109.parts.j")} title={t("fr109.sections.writeOffDecision")}>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <FormField label={t("fr109.fields.secretaryToMinistryOf")}>
-          <InputField value={formData.chiefSecretaryToMinistryOf} onChange={(event) => setFormData((previous) => ({ ...previous, chiefSecretaryToMinistryOf: event.target.value }))} />
-        </FormField>
-        <FormField label={t("fr109.fields.refNo")}>
-          <InputField value={formData.chiefSecretaryRefNo} onChange={(event) => setFormData((previous) => ({ ...previous, chiefSecretaryRefNo: event.target.value }))} />
-        </FormField>
-      </div>
       <FormField label={t("fr109.fields.writeOffStatus")}>
         <div className="flex flex-wrap gap-5 pt-2 text-sm font-medium text-slate-700">
           <label className="flex items-center gap-2"><input type="radio" name="writeOffStatus" value="AUTHORISED" checked={formData.writeOffStatus === "AUTHORISED"} onChange={() => setFormData((previous) => ({ ...previous, writeOffStatus: "AUTHORISED" }))} />{t("fr109.fields.authorised")}</label>

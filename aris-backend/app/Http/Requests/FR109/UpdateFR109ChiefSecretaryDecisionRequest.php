@@ -15,8 +15,6 @@ class UpdateFR109ChiefSecretaryDecisionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'secretaryToMinistryOf' => ['required', 'string', 'max:255'],
-            'refNo' => ['required', 'string', 'max:255'],
             'writeOffStatus' => ['required', Rule::in(['AUTHORISED', 'NOT_APPROVED'])],
         ];
     }

@@ -15,7 +15,6 @@ class UpdateFR109ChiefAccountingOrderRequest extends FormRequest
     {
         return [
             'chiefAccountingOfficerSTNo' => ['required', 'string', 'max:255'],
-            'chiefAccountingOfficerRefNo' => ['required', 'string', 'max:255'],
         ];
     }
 }

@@ -31,21 +31,17 @@ export const updateFR109WriteOff = async (fr109Id: number, writeOffEntries: Writ
 export const updateFR109ChiefAccountingOrder = async (
   fr109Id: number,
   chiefAccountingOfficerSTNo: string,
-  chiefAccountingOfficerRefNo: string,
 ): Promise<FR109Response> => {
   const response = await api.put(`/fr109/${fr109Id}/chief-accounting-order`, {
     chiefAccountingOfficerSTNo,
-    chiefAccountingOfficerRefNo,
   });
   return response.data;
 };
 
 export const updateFR109ChiefSecretaryDecision = async (
   fr109Id: number,
-  secretaryToMinistryOf: string,
-  refNo: string,
   writeOffStatus: "AUTHORISED" | "NOT_APPROVED",
 ): Promise<FR109Response> => {
-  const response = await api.put(`/fr109/${fr109Id}/chief-secretary-decision`, { secretaryToMinistryOf, refNo, writeOffStatus });
+  const response = await api.put(`/fr109/${fr109Id}/chief-secretary-decision`, { writeOffStatus });
   return response.data;
 };

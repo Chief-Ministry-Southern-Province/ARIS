@@ -21,7 +21,6 @@ import ValueOfLossSection from "@/components/organisms/Forms/FR109/ValueOfLossSe
 import NonRecoverySection from "@/components/organisms/Forms/FR109/NonRecoverySection";
 import LegalActionSection from "@/components/organisms/Forms/FR109/LegalActionSection";
 import WriteOffRegisterSection from "@/components/organisms/Forms/FR109/WriteOffRegisterSection";
-import HeadOfDepartmentOrderSection from "@/components/organisms/Forms/FR109/HeadOfDepartmentOrderSection";
 import ChiefAccountingOfficerOrderSection from "@/components/organisms/Forms/FR109/ChiefAccountingOfficerOrderSection";
 import WriteOffDecisionSection from "@/components/organisms/Forms/FR109/WriteOffDecisionSection";
 import PdfPreviewModal from "@/components/organisms/PDF/PdfPreviewModal";
@@ -108,10 +107,6 @@ export default function FR109Form({
     !readOnly &&
     status === "APPROVED" &&
     displayed?.creator.id === currentUserId;
-  const ministryRecommendationEditable =
-    editable &&
-    role.includes("subject_officer") &&
-    institutionType === "PDHS";
   const chiefAccountingOrderEditable =
     (!readOnly || canCompleteChiefAccountingOrder) &&
     status === "UNDER_APPROVAL" &&
@@ -255,7 +250,6 @@ export default function FR109Form({
       const result = await chiefAccountingOrder.mutateAsync({
         fr109Id: displayed.id,
         stNo: data.chiefAccountingOfficerSTNo,
-        refNo: data.chiefAccountingOfficerRefNo,
       });
       setData(result.data);
       setStatus(result.status);
@@ -274,8 +268,6 @@ export default function FR109Form({
     try {
       const result = await chiefSecretaryDecision.mutateAsync({
         fr109Id: displayed.id,
-        secretaryToMinistryOf: data.chiefSecretaryToMinistryOf,
-        refNo: data.chiefSecretaryRefNo,
         writeOffStatus: data.writeOffStatus,
       });
       setData(result.data);
@@ -412,13 +404,6 @@ export default function FR109Form({
               setFormData={setData}
             />
 
-          </fieldset>
-
-          <fieldset disabled={!ministryRecommendationEditable} className="space-y-8 disabled:opacity-70">
-            <HeadOfDepartmentOrderSection
-              formData={data}
-              setFormData={setData}
-            />
           </fieldset>
 
           <fieldset disabled={!chiefAccountingOrderEditable} className="space-y-8 disabled:opacity-70">

@@ -56,8 +56,8 @@ const useUpdateFR109WriteOff = (caseId: string) => {
 const useUpdateFR109ChiefAccountingOrder = (caseId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation<FR109Response, Error, { fr109Id: number; stNo: string; refNo: string }>({
-    mutationFn: ({ fr109Id, stNo, refNo }) => updateFR109ChiefAccountingOrder(fr109Id, stNo, refNo),
+  return useMutation<FR109Response, Error, { fr109Id: number; stNo: string }>({
+    mutationFn: ({ fr109Id, stNo }) => updateFR109ChiefAccountingOrder(fr109Id, stNo),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline(Number(caseId)) });
@@ -67,8 +67,8 @@ const useUpdateFR109ChiefAccountingOrder = (caseId: string) => {
 
 const useUpdateFR109ChiefSecretaryDecision = (caseId: string) => {
   const queryClient = useQueryClient();
-  return useMutation<FR109Response, Error, { fr109Id: number; secretaryToMinistryOf: string; refNo: string; writeOffStatus: "AUTHORISED" | "NOT_APPROVED" }>({
-    mutationFn: ({ fr109Id, secretaryToMinistryOf, refNo, writeOffStatus }) => updateFR109ChiefSecretaryDecision(fr109Id, secretaryToMinistryOf, refNo, writeOffStatus),
+  return useMutation<FR109Response, Error, { fr109Id: number; writeOffStatus: "AUTHORISED" | "NOT_APPROVED" }>({
+    mutationFn: ({ fr109Id, writeOffStatus }) => updateFR109ChiefSecretaryDecision(fr109Id, writeOffStatus),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.fr109(Number(caseId)) });
       queryClient.invalidateQueries({ queryKey: queryKeys.timeline(Number(caseId)) });
