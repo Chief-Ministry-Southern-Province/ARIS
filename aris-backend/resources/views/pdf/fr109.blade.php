@@ -69,11 +69,11 @@
                 text-align: center;
             }
             .page-three-ca-signature .signature-space {
-                height: 15mm !important;
+                height: 10mm !important;
             }
             .page-three-ca-signature .approval-signature-image {
-                width: 45mm !important;
-                height: 15mm !important;
+                width: 32mm !important;
+                height: 10mm !important;
                 object-fit: contain;
             }
             .page-three-local-signatures {
@@ -93,12 +93,12 @@
                 overflow: hidden;
             }
             .page-three-local-signatures .signature-space {
-                height: 15mm !important;
+                height: 10mm !important;
                 text-align: center;
             }
             .page-three-local-signatures .approval-signature-image {
-                width: 45mm;
-                height: 15mm !important;
+                width: 32mm !important;
+                height: 10mm !important;
                 object-fit: contain;
             }
             .page-three-local-signatures .signature-approver-name,
@@ -290,18 +290,18 @@
                 border-bottom: 0.25mm dotted #000;
             }
             .field-nine-signature .signature-space {
-                height: 15mm !important;
+                height: 10mm !important;
             }
             .field-nine-signature .approval-signature-image {
-                width: 45mm !important;
-                height: 15mm !important;
+                width: 32mm !important;
+                height: 10mm !important;
             }
             .field-nine-pd-signature-space {
-                height: 15mm !important;
+                height: 10mm !important;
             }
             .field-nine-pd-signature-image {
-                width: 45mm !important;
-                height: 15mm !important;
+                width: 32mm !important;
+                height: 10mm !important;
             }
             .field-nine-signature .field-nine-signature-line {
                 height: 2mm;
@@ -424,8 +424,8 @@
                 vertical-align: bottom !important;
             }
             .chief-secretary-signature-image {
-                width: 45mm;
-                height: 15mm;
+                width: 32mm !important;
+                height: 10mm !important;
                 object-fit: contain;
             }
             .chief-secretary-signature-line {
@@ -577,7 +577,7 @@
                 font-size: 7.5pt;
             }
             .signature-space {
-                height: 32mm;
+                height: 10mm;
                 border-bottom: 0;
             }
             .approval-signature-line {
@@ -624,13 +624,13 @@
                 vertical-align: middle;
             }
             .approval-signature-image {
-                width: 52mm;
-                height: 28mm;
+                width: 32mm !important;
+                height: 10mm !important;
                 object-fit: contain;
             }
             .ministry-secretary-signature-image {
-                width: 45mm;
-                height: 15mm;
+                width: 32mm !important;
+                height: 10mm !important;
                 object-fit: contain;
             }
             .ministry-secretary-signature-line {

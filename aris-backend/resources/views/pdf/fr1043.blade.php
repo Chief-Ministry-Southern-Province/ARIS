@@ -355,8 +355,8 @@
         }
 
         .approval-signature-image {
-            width: 46mm;
-            height: 12mm;
+            width: 32mm !important;
+            height: 10mm !important;
             object-fit: contain;
         }
 
@@ -447,8 +447,8 @@
         }
 
         .approval-signature-image {
-            width: 55mm;
-            height: 12mm;
+            width: 32mm !important;
+            height: 10mm !important;
             object-fit: contain;
         }
 

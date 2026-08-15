@@ -402,8 +402,8 @@
         }
 
         .approval-signature-image {
-            width: 52mm;
-            height: 20mm;
+            width: 32mm !important;
+            height: 10mm !important;
             object-fit: contain;
         }
 
@@ -496,8 +496,8 @@
         }
 
         .workflow-signature-image {
-            width: 55mm;
-            height: 12mm;
+            width: 32mm !important;
+            height: 10mm !important;
             object-fit: contain;
         }
 
