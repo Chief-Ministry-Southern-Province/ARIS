@@ -607,6 +607,12 @@
                 font-size: 8.5pt;
                 line-height: 1.15;
             }
+            .signature-date,
+            .signature-card-date {
+                font-size: 7.5pt;
+                line-height: 1.15;
+                white-space: nowrap;
+            }
             .field-nine-pd-designation {
                 display: block;
                 font-size: 8.5pt;
@@ -1039,7 +1045,9 @@
                         <div class="signature-dots">........................................................</div>
                         <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingAccountantSignature, 'name', '')), 55) }}</div>
                         <div class="signature-role">Accountant</div>
-                        <div class="signature-date">Date: {{ $signatureDate(data_get($originatingAccountantSignature, 'approved_at')) }}</div>
+                        @if (data_get($originatingAccountantSignature, 'signature_data_uri'))
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($originatingAccountantSignature, 'approved_at')) }}</div>
+                        @endif
                     </td>
                     <td style="width: 100mm; vertical-align: bottom; padding-left: 4mm;">
                         <div class="signature-comment">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'comments', '')), 100, '...') }}</div>
@@ -1051,22 +1059,16 @@
                         <div class="signature-dots">........................................................</div>
                         <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'name', '')), 55) }}</div>
                         <div class="signature-role">{{ \Illuminate\Support\Str::title((string) data_get($originatingHeadSignature, 'role', 'Medical Superintendent / Regional Director')) }}</div>
-                        <div class="signature-date">Date: {{ $signatureDate(data_get($originatingHeadSignature, 'approved_at')) }}</div>
+                        @if (data_get($originatingHeadSignature, 'signature_data_uri'))
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($originatingHeadSignature, 'approved_at')) }}</div>
+                        @endif
                     </td>
                 </tr>
             </table>
 
             <table class="no-border page-three-ca-signature">
                 <tr>
-                    <td class="field-ten-date-label ca-date-label" style="width: 14mm">
-                        <span lang="si">දිනය</span><br />
-                        <span lang="ta">திகதி</span><br />
-                        Date
-                    </td>
-                    <td class="field-nine-brace ca-date-brace" style="width: 6mm">}</td>
-                    <td class="ca-date-value" style="width: 35mm">
-                        <span class="dotted">{{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</span>
-                    </td>
+                    <td style="width: 55mm">&nbsp;</td>
                     <td class="signature-comment ca-comment-cell" style="width: 85mm">
                         {{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'comments', '')), 110, '...') }}
                     </td>
@@ -1080,6 +1082,9 @@
                         <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'name', '')), 55) }}</div>
                         <div class="signature-role">{{ \Illuminate\Support\Str::title((string) data_get($pdhsChiefAccountantSignature, 'role', 'Chief Accountant')) }}</div>
                         <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'institution', '')), 65) }}</div>
+                        @if (data_get($pdhsChiefAccountantSignature, 'signature_data_uri'))
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</div>
+                        @endif
                     </td>
                 </tr>
             </table>
@@ -1130,15 +1135,9 @@
 
             <table class="field-nine-body">
                 <tr>
-                    <td class="field-nine-date" style="width: 14mm">
-                        <span lang="si">දිනය</span><br /><span lang="ta"
-                            >திகதி</span
-                        ><br />Date
-                    </td>
-                    <td class="field-nine-brace field-nine-date-brace" style="width: 5mm">}</td>
-                    <td class="field-nine-date-value" style="width: 55mm">
-                        <span class="field-nine-dots">{{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</span>
-                    </td>
+                    <td class="field-nine-date" style="width: 14mm">&nbsp;</td>
+                    <td class="field-nine-brace field-nine-date-brace" style="width: 5mm">&nbsp;</td>
+                    <td class="field-nine-date-value" style="width: 55mm">&nbsp;</td>
                     <td style="width: 46mm; padding: 0"></td>
                     <td
                         style="width: 60mm"
@@ -1155,6 +1154,9 @@
                             පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,<br />
                             දකුණු පළාත.
                         </div>
+                        @if (data_get($pdhsProvincialDirectorSignature, 'signature_data_uri'))
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</div>
+                        @endif
                     </td>
                 </tr>
             </table>
@@ -1192,15 +1194,7 @@
                     </td>
                 </tr>
                 <tr class="field-ten-signature-row">
-                    <td class="field-ten-bottom" style="width: 100mm; vertical-align: bottom">
-                        <table class="no-border">
-                            <tr>
-                                <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
-                                <td class="field-nine-brace field-nine-date-brace" style="width: 6mm">}</td>
-                                <td class="field-nine-date-value"><span class="field-nine-dots">{{ $signatureDate(data_get($ministrySecretarySignature, 'approved_at')) }}</span></td>
-                            </tr>
-                        </table>
-                    </td>
+                    <td class="field-ten-bottom" style="width: 100mm; vertical-align: bottom">&nbsp;</td>
                     <td class="field-ten-secretary" style="width: 100mm; padding-left: 10mm; vertical-align: bottom">
                         <div style="height: 15mm; text-align: center">
                             @if (data_get($ministrySecretarySignature, 'signature_data_uri'))
@@ -1214,6 +1208,9 @@
                             ප්‍රධාන අමාත්‍යාංශය,<br />
                             දකුණු පළාත.
                         </div>
+                        @if (data_get($ministrySecretarySignature, 'signature_data_uri'))
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($ministrySecretarySignature, 'approved_at')) }}</div>
+                        @endif
                     </td>
                 </tr>
             </table>
@@ -1269,15 +1266,7 @@
                                 </td>
                             </tr>
                             <tr style="height: 30mm">
-                                <td class="field-eleven-bottom" style="width: 120mm">
-                                    <table class="no-border">
-                                        <tr>
-                                            <td class="field-ten-date-label" style="width: 14mm; padding: 0"><span lang="si">දිනය</span><br /><span lang="ta">திகதி</span><br /><i>Date</i></td>
-                                            <td class="field-nine-brace field-nine-date-brace" style="width: 6mm">}</td>
-                                            <td class="field-nine-date-value"><span class="field-nine-dots">{{ $signatureDate(data_get($chiefSecretarySignature, 'approved_at')) }}</span></td>
-                                        </tr>
-                                    </table>
-                                </td>
+                                <td class="field-eleven-bottom" style="width: 120mm">&nbsp;</td>
                                 <td class="field-eleven-chief-secretary" colspan="2" style="width: 80mm">
                                     <div style="height: 15mm">
                                         @if (data_get($chiefSecretarySignature, 'signature_data_uri'))
@@ -1290,6 +1279,9 @@
                                         ප්‍රධාන ලේකම්,<br />
                                         දකුණු පළාත.
                                     </div>
+                                    @if (data_get($chiefSecretarySignature, 'signature_data_uri'))
+                                        <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($chiefSecretarySignature, 'approved_at')) }}</div>
+                                    @endif
                                 </td>
                             </tr>
                             <tr style="height: 15mm">

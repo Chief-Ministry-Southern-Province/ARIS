@@ -418,10 +418,14 @@
             line-height: 1.15;
         }
 
-        .signature-card-role,
-        .signature-card-date {
+        .signature-card-role {
             font-size: 8.5pt;
             line-height: 1.15;
+        }
+        .signature-card-date {
+            font-size: 7.5pt;
+            line-height: 1.15;
+            white-space: nowrap;
         }
 
         .signature-label {
@@ -1112,19 +1116,7 @@
                             <div class="workflow-signature-block">
                                 <table class="no-border workflow-signature-row" style="width: 200mm;">
                                     <tr>
-                                        <td style="width: 55mm;">
-                                            <table class="no-border" style="width: 55mm;">
-                                                <tr>
-                                                    <td class="workflow-date-labels">
-                                                        <span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span><br>
-                                                        <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span><br>
-                                                        Date
-                                                    </td>
-                                                    <td class="workflow-date-brace">}</td>
-                                                    <td class="workflow-date-value"><span class="dotted-value">{{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</span></td>
-                                                </tr>
-                                            </table>
-                                        </td>
+                                        <td style="width: 55mm;">&nbsp;</td>
                                         <td class="workflow-signature-content" style="width: 145mm;">
                                             <table class="no-border" style="width: 145mm;">
                                                 <tr>
@@ -1147,6 +1139,12 @@
                                                                 <br>{{ $signatureRow['tertiary_label'] }}
                                                             @endif
                                                         </span>
+                                                        @if (filled(data_get($signatureRow['signature'], 'institution')))
+                                                            <br><span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution'), 55) }}</span>
+                                                        @endif
+                                                        @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                                            <div class="signature-card-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             </table>
