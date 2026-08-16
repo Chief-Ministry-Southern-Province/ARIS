@@ -1,10 +1,12 @@
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
+import { TextAreaField } from "@/components/atoms/TextAreaField";
 import { useTranslation } from "react-i18next";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import { Download, Eye, LoaderCircle, X } from "lucide-react";
 
 interface Props {
+  formData: FR104_4FormData;
   handleChange: (
     field: keyof FR104_4FormData,
     value: string | File | null
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function RecommendationsSection({
+  formData,
   handleChange,
   previewUrl,
   canEditAttachment,
@@ -32,7 +35,14 @@ export default function RecommendationsSection({
 
   return (
     <div className="space-y-4">
-
+      <FormField label={t("fr104_4.recommendations.summary")}>
+        <TextAreaField
+          rows={4}
+          value={formData.boardReportSummary}
+          disabled={!canEditAttachment}
+          onChange={(event) => handleChange("boardReportSummary", event.target.value)}
+        />
+      </FormField>
 
       {canEditAttachment && (
         <FormField

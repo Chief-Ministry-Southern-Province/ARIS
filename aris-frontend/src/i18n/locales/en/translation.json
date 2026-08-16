@@ -371,13 +371,15 @@
       "caseNumber": "Case Number",
       "officerName": "Officer Name",
       "reportDate": "Report Date",
-      "attachReport": "Attach Summary of Police Report"
+      "attachReport": "Attach Summary of Police Report",
+      "summary": "Summary of Police Report"
     },
     "legalAction": {
       "courtName": "Name of Court",
       "caseNo": "Case No.",
       "courtOrder": "Order of Court",
-      "attachOrder": "Annex a Copy of the Court Order"
+      "attachOrder": "Annex a Copy of the Court Order",
+      "summary": "Summary of Court Order"
     },
     "investigation": {
       "findings": "Investigation Findings"
@@ -436,7 +438,8 @@
     "recommendations": {
       "title": "Recommendations of the Board of Inquiry",
       "label": "Recommendations of the Board of Inquiry",
-      "attachReport": "Annex Copy of Board Report"
+      "attachReport": "Annex Copy of Board Report",
+      "summary": "Summary of Board Report"
     },
     "preventiveActions": {
       "title": "Preventive Actions",

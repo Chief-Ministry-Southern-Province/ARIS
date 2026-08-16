@@ -46,68 +46,73 @@
             .page-three-section-eight-result-value {
                 height: 32mm !important;
             }
-            .page-three-ca-signature {
+            .page-three-approval-signatures {
                 width: 200mm;
                 margin-top: 1mm;
                 table-layout: fixed;
             }
-            .page-three-ca-signature > tbody > tr {
-                height: 50mm;
+            .page-three-approval-signatures > tbody > tr {
+                height: 21mm;
             }
-            .page-three-ca-signature .ca-date-label,
-            .page-three-ca-signature .ca-date-brace,
-            .page-three-ca-signature .ca-date-value,
-            .page-three-ca-signature .ca-signature-cell {
-                vertical-align: bottom;
+            .page-three-approval-signatures > tbody > tr.page-three-signature-separator {
+                height: 1mm;
+            }
+            .page-three-approval-signatures > tbody > tr.page-three-signature-separator-gap {
+                height: 1.5mm;
+            }
+            .page-three-approval-signatures td {
+                border: 0;
                 padding: 0;
             }
-            .page-three-ca-signature .ca-comment-cell {
+            .page-three-approval-signatures .page-three-signature-card {
+                height: 21mm;
+                vertical-align: bottom;
+                padding-left: 4mm;
+                text-align: right;
+            }
+            .page-three-approval-signatures .page-three-signature-comment {
+                height: 21mm;
                 vertical-align: middle;
-                padding: 0 4mm;
-            }
-            .page-three-ca-signature .ca-signature-cell {
-                text-align: center;
-            }
-            .page-three-ca-signature .signature-space {
-                height: 10mm !important;
-            }
-            .page-three-ca-signature .approval-signature-image {
-                width: 32mm !important;
-                height: 10mm !important;
-                object-fit: contain;
-            }
-            .page-three-local-signatures {
-                width: 200mm;
-                height: 30mm;
-                margin-top: 1mm;
-                margin-bottom: 1mm;
-                table-layout: fixed;
-            }
-            .page-three-local-signatures > tbody > tr {
-                height: 30mm;
-            }
-            .page-three-local-signatures .signature-comment {
-                height: 4mm;
-                font-size: 7.5pt;
-                line-height: 1.05;
+                padding-right: 4mm;
+                font-size: 8pt;
+                line-height: 1.15;
+                text-align: right;
                 overflow: hidden;
             }
-            .page-three-local-signatures .signature-space {
-                height: 10mm !important;
-                text-align: center;
+            .page-three-approval-signatures .page-three-signature-separator td {
+                height: 1mm;
+                padding: 0 !important;
+                vertical-align: middle;
+                border-top: 0.35mm solid #000 !important;
             }
-            .page-three-local-signatures .approval-signature-image {
-                width: 32mm !important;
-                height: 10mm !important;
+            .page-three-approval-signatures .page-three-signature-separator-gap td {
+                height: 1.5mm;
+                padding: 0 !important;
+                border: 0 !important;
+            }
+            .page-three-approval-signatures .signature-space {
+                height: 8mm !important;
+                text-align: right;
+                line-height: 0;
+            }
+            .page-three-approval-signatures .approval-signature-image {
+                width: 28mm !important;
+                height: 8mm !important;
                 object-fit: contain;
             }
-            .page-three-local-signatures .signature-approver-name,
-            .page-three-local-signatures .signature-role,
-            .page-three-local-signatures .signature-date {
-                font-size: 7.5pt;
-                line-height: 1.05;
+            .page-three-approval-signatures .signature-dots {
+                font-size: 6.8pt;
+                line-height: 1;
             }
-            .page-three-local-signatures .signature-approver-name {
+            .page-three-approval-signatures .signature-approver-name,
+            .page-three-approval-signatures .signature-role,
+            .page-three-approval-signatures .signature-institution,
+            .page-three-approval-signatures .signature-date {
+                font-size: 6.8pt;
+                line-height: 1;
+                text-align: right;
+            }
+            .page-three-approval-signatures .signature-approver-name {
                 margin-bottom: 0;
             }
             table {
@@ -280,7 +285,7 @@
             }
             .field-nine-signature {
                 padding: 1mm 5mm 2.5mm;
-                text-align: center;
+                text-align: right;
                 vertical-align: bottom;
                 font-size: 8.5pt;
                 line-height: 1.04;
@@ -291,6 +296,7 @@
             }
             .field-nine-signature .signature-space {
                 height: 10mm !important;
+                text-align: right;
             }
             .field-nine-signature .approval-signature-image {
                 width: 32mm !important;
@@ -419,8 +425,8 @@
                 vertical-align: bottom !important;
             }
             .field-eleven-chief-secretary {
-                padding: 2mm 8mm !important;
-                text-align: center;
+                padding: 2mm 5mm !important;
+                text-align: right;
                 vertical-align: bottom !important;
             }
             .chief-secretary-signature-image {
@@ -1033,60 +1039,63 @@
                 </tr>
             </table>
 
-            <table class="no-border page-three-local-signatures">
-                <tr>
-                    <td style="width: 100mm; vertical-align: bottom; padding-right: 4mm;">
-                        <div class="signature-comment">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingAccountantSignature, 'comments', '')), 100, '...') }}</div>
-                        <div class="signature-space" style="text-align: center; line-height: 0;">
-                            @if (data_get($originatingAccountantSignature, 'signature_data_uri'))
-                                <img class="approval-signature-image" src="{{ data_get($originatingAccountantSignature, 'signature_data_uri') }}" alt="Accountant signature">
-                            @endif
-                        </div>
-                        <div class="signature-dots">........................................................</div>
-                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingAccountantSignature, 'name', '')), 55) }}</div>
-                        <div class="signature-role">Accountant</div>
-                        @if (data_get($originatingAccountantSignature, 'signature_data_uri'))
-                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($originatingAccountantSignature, 'approved_at')) }}</div>
-                        @endif
-                    </td>
-                    <td style="width: 100mm; vertical-align: bottom; padding-left: 4mm;">
-                        <div class="signature-comment">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'comments', '')), 100, '...') }}</div>
-                        <div class="signature-space" style="text-align: center; line-height: 0;">
-                            @if (data_get($originatingHeadSignature, 'signature_data_uri'))
-                                <img class="approval-signature-image" src="{{ data_get($originatingHeadSignature, 'signature_data_uri') }}" alt="Medical Superintendent or Regional Director signature">
-                            @endif
-                        </div>
-                        <div class="signature-dots">........................................................</div>
-                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($originatingHeadSignature, 'name', '')), 55) }}</div>
-                        <div class="signature-role">{{ \Illuminate\Support\Str::title((string) data_get($originatingHeadSignature, 'role', 'Medical Superintendent / Regional Director')) }}</div>
-                        @if (data_get($originatingHeadSignature, 'signature_data_uri'))
-                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($originatingHeadSignature, 'approved_at')) }}</div>
-                        @endif
-                    </td>
-                </tr>
-            </table>
+            @php
+                $pageThreeApprovalSignatures = [
+                    [
+                        'signature' => $originatingAccountantSignature,
+                        'role' => 'Accountant',
+                        'alt' => 'Accountant signature',
+                    ],
+                    [
+                        'signature' => $originatingHeadSignature,
+                        'role' => 'Medical Superintendent / Regional Director',
+                        'alt' => 'Medical Superintendent or Regional Director signature',
+                    ],
+                    [
+                        'signature' => $pdhsChiefAccountantSignature,
+                        'role' => 'Chief Accountant',
+                        'alt' => 'Chief Accountant signature',
+                        'separate_before' => true,
+                    ],
+                ];
+                $displayedPageThreeApprovalSignatures = array_values(array_filter(
+                    $pageThreeApprovalSignatures,
+                    fn (array $signatureRow): bool => filled(data_get($signatureRow['signature'], 'signature_data_uri')),
+                ));
+            @endphp
 
-            <table class="no-border page-three-ca-signature">
-                <tr>
-                    <td style="width: 55mm">&nbsp;</td>
-                    <td class="signature-comment ca-comment-cell" style="width: 85mm">
-                        {{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'comments', '')), 110, '...') }}
-                    </td>
-                    <td class="signature-text ca-signature-cell" style="width: 60mm">
-                        <div class="signature-space">
-                            @if (data_get($pdhsChiefAccountantSignature, 'signature_data_uri'))
-                                <img class="approval-signature-image" src="{{ data_get($pdhsChiefAccountantSignature, 'signature_data_uri') }}" alt="Chief Accountant signature">
+            <table class="no-border page-three-approval-signatures">
+                @foreach ($displayedPageThreeApprovalSignatures as $signatureRow)
+                    @php
+                        $signature = $signatureRow['signature'];
+                        $recordedSignature = data_get($signature, 'signature_data_uri');
+                        $role = \Illuminate\Support\Str::title(str_replace('_', ' ', (string) data_get($signature, 'role', $signatureRow['role'])));
+                    @endphp
+                    @if (($signatureRow['separate_before'] ?? false) && ! $loop->first)
+                        <tr class="page-three-signature-separator-gap"><td colspan="2">&nbsp;</td></tr>
+                        <tr class="page-three-signature-separator">
+                            <td colspan="2">&nbsp;</td>
+                        </tr>
+                        <tr class="page-three-signature-separator-gap"><td colspan="2">&nbsp;</td></tr>
+                    @endif
+                    <tr>
+                        <td class="page-three-signature-comment" style="width: 128mm;">
+                            {{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'comments', '')), 180, '...') }}
+                        </td>
+                        <td class="page-three-signature-card" style="width: 72mm;">
+                            <div class="signature-space">
+                                <img class="approval-signature-image" src="{{ $recordedSignature }}" alt="{{ $signatureRow['alt'] }}">
+                            </div>
+                            <div class="signature-dots">................................................</div>
+                            <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'name', '')), 55) }}</div>
+                            <div class="signature-role">{{ $role }}</div>
+                            @if (filled(data_get($signature, 'institution')))
+                                <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'institution')), 70) }}</div>
                             @endif
-                        </div>
-                        <div class="signature-dots">....................................</div>
-                        <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'name', '')), 55) }}</div>
-                        <div class="signature-role">{{ \Illuminate\Support\Str::title((string) data_get($pdhsChiefAccountantSignature, 'role', 'Chief Accountant')) }}</div>
-                        <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsChiefAccountantSignature, 'institution', '')), 65) }}</div>
-                        @if (data_get($pdhsChiefAccountantSignature, 'signature_data_uri'))
-                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($pdhsChiefAccountantSignature, 'approved_at')) }}</div>
-                        @endif
-                    </td>
-                </tr>
+                            <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signature, 'approved_at')) }}</div>
+                        </td>
+                    </tr>
+                @endforeach
             </table>
 
         </div>
@@ -1135,12 +1144,9 @@
 
             <table class="field-nine-body">
                 <tr>
-                    <td class="field-nine-date" style="width: 14mm">&nbsp;</td>
-                    <td class="field-nine-brace field-nine-date-brace" style="width: 5mm">&nbsp;</td>
-                    <td class="field-nine-date-value" style="width: 55mm">&nbsp;</td>
-                    <td style="width: 46mm; padding: 0"></td>
+                    <td style="width: 100mm; padding: 0">&nbsp;</td>
                     <td
-                        style="width: 60mm"
+                        style="width: 100mm"
                         class="field-nine-signature"
                     >
                         <div class="signature-space field-nine-pd-signature-space">

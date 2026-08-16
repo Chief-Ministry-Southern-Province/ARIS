@@ -23,11 +23,13 @@ export const initialFormData: FR104_4FormData = {
   isDueToFraudNegligence: "no",
 
   // Police Information
+  policeReportSummary: "",
   policeReportFile: null,
 
   // Legal Action
   courtName: "",
   courtCaseNo: "",
+  courtOrderSummary: "",
   courtOrderFile: null,
 
   // Insurance
@@ -38,6 +40,7 @@ export const initialFormData: FR104_4FormData = {
 
   // Recommendations
   recommendations: "",
+  boardReportSummary: "",
   boardReportFile: null,
 
   // Preventive Actions

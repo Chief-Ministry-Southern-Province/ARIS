@@ -130,6 +130,9 @@ export default function FR104_4Form({
       setData({
         ...currentData,
         secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "",
+        policeReportSummary: currentData.policeReportSummary ?? "",
+        courtOrderSummary: currentData.courtOrderSummary ?? "",
+        boardReportSummary: currentData.boardReportSummary ?? "",
         preliminaryReportRefNo: approvedPreliminaryReport?.reference_number
           ?? currentData.preliminaryReportRefNo
           ?? accidentCase?.case_number
@@ -379,7 +382,7 @@ export default function FR104_4Form({
     ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
-    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} onDownloadAttachment={() => downloadAttachment("policeReportFile", typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name, attachmentPreviewUrls.policeReportFile)} previewLoading={attachmentPreviewsLoading} />],
+    ["d", "policeInformation", <PoliceInformationSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} onDownloadAttachment={() => downloadAttachment("policeReportFile", typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name, attachmentPreviewUrls.policeReportFile)} previewLoading={attachmentPreviewsLoading} />],
     ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />],
     ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />],
     ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
@@ -387,7 +390,7 @@ export default function FR104_4Form({
     ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />],
     ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />],
     ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />],
-    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} onDownloadAttachment={() => downloadAttachment("boardReportFile", typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name, attachmentPreviewUrls.boardReportFile)} previewLoading={attachmentPreviewsLoading} />],
+    ["l", "recommendations", <RecommendationsSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} onDownloadAttachment={() => downloadAttachment("boardReportFile", typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name, attachmentPreviewUrls.boardReportFile)} previewLoading={attachmentPreviewsLoading} />],
     ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
   ] as const;
 

@@ -25,15 +25,6 @@ export default function GeneralInformationSection({
         />
       </FormField>
 
-      <FormField label={t("fr104_4.generalInformation.secretaryToMinistryOf")}>
-        <InputField
-          value={formData.secretaryOfMinistry}
-          onChange={(e) =>
-            handleChange("secretaryOfMinistry", e.target.value)
-          }
-        />
-      </FormField>
-
       <FormField
         label={t(
           "fr104_4.generalInformation.preliminaryReportRefNo"

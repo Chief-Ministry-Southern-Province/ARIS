@@ -62,12 +62,14 @@ export interface FR104_4FormData {
   isDueToFraudNegligence: string; // "yes" | "no" — item 5's direct yes/no question  <-- was missing
 
   // Police Information (item 6)
+  policeReportSummary: string;
   policeReportFile: File | string | null;
   policeReportEvidenceId?: number | null;
 
   // Legal Action (item 9)
   courtName: string;
   courtCaseNo: string;
+  courtOrderSummary: string;
   courtOrderFile: File | string | null;
   courtOrderEvidenceId?: number | null;
 
@@ -79,6 +81,7 @@ export interface FR104_4FormData {
 
   // Recommendations (item 13)
   recommendations: string;
+  boardReportSummary: string;
   boardReportFile: File | string | null;
   boardReportEvidenceId?: number | null;
 

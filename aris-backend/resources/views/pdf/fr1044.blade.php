@@ -711,11 +711,7 @@
             </tr>
             <tr>
                 <td class="field-content-cell" style="height: 20mm;">
-                    @if (data_get($documentData, 'policeReportEvidenceId') || data_get($documentData, 'policeReportFile'))
-                        <span class="label-local" lang="si">අමුණා ඇත.</span>
-                    @else
-                        <span class="label-local small">Not attached</span>
-                    @endif
+                    {{ $text(data_get($documentData, 'policeReportSummary', ''), 260) }}
                 </td>
             </tr>
         </table>
@@ -915,11 +911,11 @@
                     <span class="label-local">Order of Court (Annex a copy)</span>
                 </td>
             </tr>
-            @if (data_get($documentData, 'courtOrderEvidenceId') || data_get($documentData, 'courtOrderFile'))
             <tr>
-                <td class="field-content-cell" style="height: 6mm;" colspan="2"><span class="small" lang="si">අමුණා ඇත.</span></td>
+                <td class="field-content-cell" style="height: 12mm;" colspan="2">
+                    {{ $text(data_get($documentData, 'courtOrderSummary', ''), 180) }}
+                </td>
             </tr>
-            @endif
         </table>
 
         <table class="page-break-avoid" style="margin-top: 3mm;">
@@ -1042,14 +1038,11 @@
                     <span class="label-local">Recommendations of the Board of Inquiry (Annex copy of report)</span>
                 </td>
             </tr>
-            {{-- <tr>
-                <td class="field-content-cell" style="height: 20mm;">{{ $text(data_get($documentData, 'recommendations', ''), 260) }}</td>
-            </tr> --}}
-            @if (data_get($documentData, 'boardReportEvidenceId') || data_get($documentData, 'boardReportFile'))
             <tr>
-                <td class="field-content-cell" style="height: 4mm;"><span class="small" lang="si">අමුණා ඇත.</span></td>
+                <td class="field-content-cell" style="height: 12mm;">
+                    {{ $text(data_get($documentData, 'boardReportSummary', ''), 180) }}
+                </td>
             </tr>
-            @endif
         </table>
 
         <table class="page-break-avoid">

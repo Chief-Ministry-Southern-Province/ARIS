@@ -1,10 +1,12 @@
 import { FormField } from "@/components/molecules/FormField";
 import { InputField } from "@/components/atoms/InputField";
+import { TextAreaField } from "@/components/atoms/TextAreaField";
 import type { FR104_4FormData } from "@/types/FR104_4_types";
 import { useTranslation } from "react-i18next";
 import { Download, Eye, LoaderCircle, X } from "lucide-react";
 
 interface Props {
+  formData: FR104_4FormData;
   handleChange: (
     field: keyof FR104_4FormData,
     value: string | File | null
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function PoliceInformationSection({
+  formData,
   handleChange,
   previewUrl,
   canEditAttachment,
@@ -32,7 +35,14 @@ export default function PoliceInformationSection({
 
   return (
     <div className="space-y-6">
-
+      <FormField label={t("fr104_4.police.summary")}>
+        <TextAreaField
+          rows={4}
+          value={formData.policeReportSummary}
+          disabled={!canEditAttachment}
+          onChange={(event) => handleChange("policeReportSummary", event.target.value)}
+        />
+      </FormField>
 
       {canEditAttachment && (
         <FormField
