@@ -689,7 +689,7 @@
                             <span lang="si">පොදු</span> /
                             <span lang="ta">பொது</span> / General <b>285</b
                             ><br />(F* S., T. &amp; E.) 12/76<br />[A4* S., T.
-                            &amp; E. 06/2023 - Amended]
+                            &amp; E.06/2023-Amended]
                         </div>
                     </td>
                 </tr>
@@ -703,8 +703,7 @@
                             පත්‍රය</span
                         ><br />
                         <span class="title-ta" lang="ta"
-                            >நி. பி. 109 இன் படி இழப்புகளைத் தள்ளுபடி
-                            செய்வதற்கான<br />விண்ணப்பம்</span
+                            >நி. பி. 109 இன் படி இழப்புக்களை பதியறித்ததற்கான<br />விண்ணப்பம்</span
                         ><br />
                         <span class="title-en"
                             >APPLICATION FOR WRITE OFF OF LOSSES IN TERMS OF
@@ -772,14 +771,14 @@
                 <tr>
                     <td class="section-title" colspan="2">
                         <span lang="si">3. දේපළ පිළිබඳ විස්තර</span> /
-                        <span lang="ta">பொருட்களின் விபரம்</span> / Particulars
+                        <span lang="ta">பொருட்களின் விவரம்</span> / Particulars
                         of Property -
                     </td>
                 </tr>
                 <tr>
                     <td class="header" style="width: 120mm">
                         <span lang="si">දේපළ පිළිබඳ විස්තර</span> /
-                        <span lang="ta">பொருட்களின் விபரம்</span> / Description
+                        <span lang="ta">பொருட்களின் விவரணம்</span> / Description
                         of Property
                     </td>
                     <td class="header" style="width: 80mm">
@@ -797,7 +796,7 @@
                     <td class="h-11">
                         <span lang="si">4. මුල් පිරිවැය</span><br /><span
                             lang="ta"
-                            >அசல் பெறுமதி</span
+                            >மூலப் பெறுமதி</span
                         ><br />Original Cost
                     </td>
                     <td>{{ $value('originalCost') }}</td>
@@ -805,11 +804,10 @@
                 <tr>
                     <td class="h-11">
                         <span lang="si"
-                            >අලාභය සිදු වූ අවස්ථාවේ දී ඇස්තමේන්තුගත
-                            වටිනාකම</span
+                            >අලාභය සිදු වූ අවස්ථාවේ දළ හෝ තක්සේරු පිරිවැය</span
                         ><br /><span lang="ta"
-                            >இழப்பு ஏற்பட்ட நேரத்தில் மதிப்பிடப்பட்ட
-                            பெறுமதி</span
+                            >இழப்பு நேர்ந்தபோது அதன் அண்ணளவான அல்லது
+                            மதிப்பிட்ட பெறுமதி</span
                         ><br />Approximate or Estimated cost at time of loss
                     </td>
                     <td>{{ $value('estimatedCostAtTimeOfLoss') }}</td>
@@ -819,7 +817,7 @@
                         <span lang="si"
                             >ප්‍රතිස්ථාපන අගය හෝ අලුත්වැඩියා කිරීමේ වියදම</span
                         ><br /><span lang="ta"
-                            >மாற்றீட்டு பெறுமதி அல்லது பழுதுபார்ப்பு செலவு</span
+                            >பதிலீடும் செலவு அல்லது திருத்தச் செலவு</span
                         ><br />Replacement value or cost of repairs
                     </td>
                     <td>{{ $value('replacementValue') }}</td>
@@ -828,7 +826,7 @@
                     <td class="h-11">
                         <span lang="si">මූ. රෙ. 105(1) යටතේ වටිනාකම</span
                         ><br /><span lang="ta"
-                            >நி. பி. 105(1) இன் கீழ் பெறுமதி</span
+                            >நி. பி. 105(1) இன் படி பெறுமதி</span
                         ><br />Value in terms of F. R. 105(1)
                     </td>
                     <td>{{ $value('valueUnderFr105') }}</td>
@@ -836,18 +834,18 @@
                 <tr>
                     <td class="h-11">
                         <span lang="si"
-                            >රක්ෂණයෙන්/ඇප සහතිකයෙන් අයකර ගන්නා ලද මුදල</span
+                            >වගකියයුතු නිලධාරීන්ගෙන්/රක්ෂණයෙන්/ඇප සහතිකයෙන් අයකර ගන්නා ලද මුදල</span
                         ><br /><span lang="ta"
-                            >காப்புறுதி/உத்தரவாதத்திலிருந்து அறவிடப்பட்ட
-                            தொகை</span
-                        ><br />Amount recovered from Insurance/Guarantee
+                            >இதற்குப் பொறுப்பான உத்தியோகத்தர்களிடமிருந்து/
+                            காப்புறுதியிலிருந்து/உத்தரவாதத்திலிருந்து அறவிடப்பட்ட தொகை</span
+                        ><br />Amount recovered from officers responsible/ Insurance/Guarantee
                     </td>
                     <td>{{ $value('amountRecovered') }}</td>
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si">ශුද්ධ අලාභය</span><br /><span lang="ta"
-                            >நிகர இழப்பு</span
+                        <span lang="si">වි.වි.හි.ස., රේගුබදු, දෙපාර්තමේන්තු ගාස්තු යනාදිය ඇතුලත්ව ශුද්ධ අලාභය</span><br /><span lang="ta"
+                            >அ.செ.ஈ. சா., சுங்கத்தீர்வை, திணைக்களச் செலவுகள் முதலியன உட்பட்ட தேறிய நட்டம்</span
                         ><br />Net Loss inclusive of FEECs, Customs Duty,
                         Departmental charges, etc.,
                     </td>
@@ -879,12 +877,12 @@
                         <table>
                             <tr>
                                 <td class="section-title" style="width: 50%">
-                                    <span lang="si">5. නීතිමය ක්‍රියාමාර්ගය</span>
+                                    <span lang="si">5. නීතිමය ක්‍රියාවන්ගේ ප්‍රතිඵල</span>
                                     / <span lang="ta">சட்ட நடவடிக்கைகளின் விளைவு</span> /
                                     Outcome of legal action -
                                 </td>
                                 <td class="section-title" style="width: 50%">
-                                    <span lang="si">අධිකරණ නියෝගය</span> /
+                                    <span lang="si">උසාවියේ නියෝගය</span> /
                                     <span lang="ta">நீதிமன்றக் கட்டளை</span> /
                                     Order of Court
                                 </td>
@@ -893,8 +891,8 @@
                                 <td style="padding: 0">
                                     <table>
                                         <tr>
-                                            <td class="header" style="width: 55%">Name of Court</td>
-                                            <td class="header" style="width: 45%">Case No.</td>
+                                            <td class="header" style="width: 55%"><span lang="si">උසාවියේ නම</span><br /><span lang="ta">நீதி மன்றத்தின் பெயர்</span><br />Name of Court</td>
+                                            <td class="header" style="width: 45%"><span lang="si">නඩු අංකය</span><br /><span lang="ta">வழக்கு இல.</span><br />Case No.</td>
                                         </tr>
                                         <tr>
                                             <td class="value h-16">{{ $value('nameOfCourt') }}</td>
@@ -915,16 +913,16 @@
                         <table style="margin-top: 3mm">
                             <tr>
                                 <td class="section-title" colspan="8">
-                                    <span lang="si">6. අයකර ගැනීම් සහ අය කිරීමේ විස්තර</span> /
-                                    <span lang="ta">வசூலிப்பு விபரங்கள்</span> /
-                                    Details of surcharges imposed and recoveries
+                                    <span lang="si">6. නියම කරන ලද අධිභාරයේ විස්තර</span> /
+                                    <span lang="ta">விதித்த மேலதிகக் கட்டணங்களின் விவரங்கள்</span> /
+                                    Details of surcharges imposed -
                                 </td>
                             </tr>
                             <tr>
                                 <td class="header" style="width: 65mm">
-                                    <span lang="si">අධිභාර පැනවූ නිලධාරියාගේ නම</span><br />
-                                    <span lang="ta">அதிக கட்டணம் விதிக்கப்பட்ட அலுவலரின் பெயர்</span><br />
-                                    Details of Surcharges imposed / Name of Officer
+                                    <span lang="si">නිලධාරියාගේ නම</span><br />
+                                    <span lang="ta">உத்தியோகத்தரின் பெயர்</span><br />
+                                    Name of Officer
                                 </td>
                                 <td class="header" style="width: 35mm">
                                     <span lang="si">තනතුර</span><br />
@@ -932,35 +930,35 @@
                                     Designation
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">අධිභාර කළ මුදල</span><br />
-                                    <span lang="ta">அதிக கட்டணத் தொகை</span><br />
+                                    <span lang="si">නියම කරන ලද අධිභාරය</span><br />
+                                    <span lang="ta">மேலதிகக் கட்டணத் தொகை</span><br />
                                     Amount surcharged
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">අයකරගත් මුදල</span><br />
+                                    <span lang="si">අයකරගන්නා ලද මුදල</span><br />
                                     <span lang="ta">அறவிடப்பட்ட தொகை</span><br />
                                     Amount recovered
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
                                 </td>
                                 <td class="header" style="width: 30mm">
-                                    <span lang="si">අයකරගත් දිනය</span><br />
+                                    <span lang="si">අයකරගන්නා ලද දිනය</span><br />
                                     <span lang="ta">அறவிட்ட திகதி</span><br />
                                     Date of recovery
                                 </td>
                                 <td class="header" style="width: 25mm">
-                                    <span lang="si">රිසිට් අංකය</span><br />
-                                    <span lang="ta">பற்றுச்சீட்டு இல.</span><br />
+                                    <span lang="si">කුවිතාන්සි අංකය</span><br />
+                                    <span lang="ta">பற்றுச் சீட்டு இல.</span><br />
                                     Receipt No.
                                 </td>
                                 <td class="header" style="width: 47mm">
-                                    <span lang="si">බැර කළ විස්තර</span><br />
-                                    <span lang="ta">வரவுப் விபரங்கள்</span><br />
+                                    <span lang="si">ණය මුදල් පිළිබඳ විස්තර</span><br />
+                                    <span lang="ta">வரவு விவரங்கள்</span><br />
                                     Credit particulars
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">අයකර නොගත් ශේෂය</span><br />
-                                    <span lang="ta">அறவிடப்படாத மீதி</span><br />
+                                    <span lang="si">අය නොකරන ලද මුදල් ශේෂය</span><br />
+                                    <span lang="ta">அறவிடாத மீதி</span><br />
                                     Balance not recovered
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
                                 </td>
@@ -995,8 +993,8 @@
             <table>
                 <tr>
                     <td class="section-title">
-                        <span lang="si">7. අයකර ගැනීම් නොකිරීමට හේතු</span> /
-                        <span lang="ta">அறவிடப்படாமைக்கான காரணங்கள்</span> /
+                        <span lang="si">7. නියමකරන ලද අධිභාරයන් අය නොකිරීමට හේතු</span> /
+                        <span lang="ta">விதித்த மேலதிகக் கட்டணங்களை அறவிடாத காரணம்</span> /
                         Reasons for non-recoveries of surcharges imposed -
                     </td>
                 </tr>
@@ -1011,11 +1009,9 @@
                 <tr>
                     <td class="section-title">
                         <span lang="si"
-                            >8. (අ) නිලධාරියාගේ වත්කම්වලින් අයකර ගැනීමට ගෙන ඇති
-                            ක්‍රියාමාර්ගය</span
+                            >8. (අ) නිලධාරියා සේවයේ නොමැති නම් ඔහුගේ වත්කම්වලින් අලාභහානි අයකර ගැනීමට ගන්නා ලද ක්‍රියාමාර්ගයන් පිළිබඳ විස්තර</span
                         ><br /><span lang="ta"
-                            >(அ)அலுவலரின் சொத்துக்களிலிருந்து அறவிட எடுக்கப்பட்ட
-                            நடவடிக்கையின் விபரம்</span
+                            >(அ) உத்தியோகத்தர் சேவையிலில்லாவிடின், உத்தியோகத்தரின் சொத்துக்களிலிருந்து அறவிடுவதற்கு எடுத்துள்ள நடவடிக்கை</span
                         ><br />(a) Details of action taken to effect the
                         recovery of shortages from the assets of the officer, if
                         the officer is not in service -
@@ -1105,14 +1101,10 @@
                 <tr>
                     <td class="section-title field-nine-title" style="width: 100%; vertical-align: bottom;">
                         <span lang="si"
-                            >9. මූ. රෙ. 109 යටතේ අලාභයන් ලියාහැරීම සඳහා
-                            දෙපාර්තමේන්තු ප්‍රධානියාගේ හෝ සංස්ථාපතිවරයාගේ
-                            නිර්දේශය</span
+                            >9. මූ. රෙ. 109 යටතේ දෙපාර්තමේන්තු ප්‍රධානියාගේ හෝ සංස්ථාවේ සභාපතිගේ නිර්දේශය හෝ නියෝගය</span
                         ><br /><span lang="ta"
-                            >நி. பி. 109 இன் கீழ் தள்ளுபடி செய்வதற்கான
-                            திணைக்களத் தலைவரின் அல்லது கூட்டுத்தாபனத் தலைவரின்
-                            சிபாரிசு</span
-                        ><br />Recommendation of Head of Department or Chairman
+                            >நி. பி. 109 இன் கீழ் திணைக்களத் தலைவரின் அல்லது கூட்டுத்தாபனத் தவிசாளரது கட்டளை அல்லது விதப்புரை</span
+                        ><br />Order recommendation of Head of Department or Chairman
                         of Corporation under F. R. 109 -
                     </td>
                 </tr>
@@ -1170,8 +1162,8 @@
             <table style="margin-top: 3mm">
     <tr>
         <td class="section-title">
-            <span lang="si">10. ප්‍රධාන ගණන් දීමේ නිලධාරියාගේ නියෝගය</span><br />
-            <span lang="ta">பிரதம கணக்கீட்டு அலுவலரின் கட்டளை</span><br />
+            <span lang="si">10. මූ. රෙ. 108(1) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නියෝගය හෝ මූ. රෙ. 108(3) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නිර්දේශය</span><br />
+            <span lang="ta">நி. பி. 108(1) இன் கீழ் பிரதான கணக்குப் பொறுப்பு உத்தியோகத்தரின் கட்டளை அல்லது நி. பி. 108 (3) இன் கீழ் பிரதான கணக்குப் பொறுப்பு உத்தியோகத்தரின் விதப்புரை</span><br />
             Order of the Chief Accounting Officer under F. R. 108 (1) or recommendation of Chief Accounting Officer
             under F. R. 108 (3) -
         </td>
@@ -1266,9 +1258,9 @@
                                         @endif
                                     </div>
                                     <div class="field-nine-dots">..........................................................</div>
-                                    <span lang="si">ලියාහැරීම සඳහා අනුමැතිය/අනුමත නොකෙරේ.</span><br />
-                                    <span lang="ta">தள்ளுபடிக்கு அனுமதிக்கப்படுகிறது / அனுமதிக்கப்படவில்லை.</span><br />
-                                    Write off authorised/not approved.
+                                    <span lang="si">පොතෙන් කපාහැරීම අනුමතයි/අනුමත නොකෙරේ.</span><br />
+                                    <span lang="ta">பதிவழித்தல் அனுமதிக்கப்படுகிறது / அனுமதிக்கப்படவில்லை.</span><br />
+                                    Write off authorised /not approved.
                                 </td>
                             </tr>
                             <tr style="height: 30mm">
@@ -1299,8 +1291,8 @@
                             </tr>
                             <tr style="height: 15mm">
                                 <td class="field-eleven-copy" colspan="3">
-                                    <span lang="si">පිටපත : විගණකාධිපති ජනරාල්</span><br />
-                                    <span lang="ta">பிரதி : கணக்காய்வாளர் நாயகம்</span><br />
+                                    <span lang="si">පිටපත : විගණකාධිපති.</span><br />
+                                    <span lang="ta">பிரதி : கணக்காய்வு அதிபதி.</span><br />
                                     Copy to : Auditor-General.
                                 </td>
                             </tr>
@@ -1312,30 +1304,30 @@
             <table style="margin-top: 3mm" class="writeoff">
                 <tr>
                     <td class="section-title" colspan="4">
-                        <span lang="si">12. ලියාහැරීම සටහන් කරන ලද්දේ -</span><br />
-                        <span lang="ta">தள்ளுபடி பதிவு செய்யப்பட்ட இடம் -</span><br />
+                        <span lang="si">12. පොතෙන් කපාහැරීම සටහන් කරන ලද්දේ -</span><br />
+                        <span lang="ta">பதிவழித்தல் பின்வருவனவற்றில் குறிக்கப்பட்டுள்ளது -</span><br />
                         Write off noted in-
                     </td>
                 </tr>
                 <tr>
                     <td class="header" style="width: 43mm">
-                        <span lang="si">තොග පොතේ පිටු අංකය</span><br />
-                        <span lang="ta">இருப்புப் பதிவேட்டுப் பக்க இல.</span><br />
+                        <span lang="si">තොග පොතේ අංකය</span><br />
+                        <span lang="ta">இருப்புப் புத்தகப் பக்கம்</span><br />
                         Stock Book folio
                     </td>
                     <td class="header" style="width: 41mm">
-                        <span lang="si">භාණ්ඩ ලේඛන පොතේ පිටු අංකය</span><br />
-                        <span lang="ta">சரக்குப் பதிவேட்டுப் பக்க இல.</span><br />
+                        <span lang="si">බඩු වට්ටෝරු පිටුව</span><br />
+                        <span lang="ta">பதிவேட்டுப் புத்தகப் பக்கம்</span><br />
                         Inventory Book folio
                     </td>
                     <td class="header" style="width: 70mm">
-                        <span lang="si">ස්ථාවර වත්කම් ලේඛනයේ පිටු අංකය</span><br />
-                        <span lang="ta">நிலையான சொத்துப் பதிவேட்டுப் பக்க இல.</span><br />
+                        <span lang="si">ස්ථාවර වත්කම් ලේඛනය</span><br />
+                        <span lang="ta">நிலையான சொத்துக்களின் பதிவேட்டுப் பக்கம்</span><br />
                         Register of fixed Assets folio
                     </td>
                     <td class="header" style="width: 46mm">
-                        <span lang="si">ලෙජර් පිටු අංකය</span><br />
-                        <span lang="ta">பேரேட்டுப் பக்க இல.</span><br />
+                        <span lang="si">ලෙජර් පිටුව</span><br />
+                        <span lang="ta">பேரேட்டுப் பக்கம்</span><br />
                         Ledger folio
                     </td>
                 </tr>
