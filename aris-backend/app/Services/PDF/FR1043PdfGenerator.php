@@ -69,6 +69,10 @@ class FR1043PdfGenerator implements PdfGeneratorInterface
                 $signatures,
                 ['head of department', 'chairman of corporation', 'medical superintendent'],
             ),
+            'msRdSignature' => $this->firstSignatureForRoles(
+                $signatures,
+                ['medical superintendent', 'regional director'],
+            ),
             'secretarySignature' => $this->firstSignatureForRoles(
                 $signatures,
                 ['secretary'],

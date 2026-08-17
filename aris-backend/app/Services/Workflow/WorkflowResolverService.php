@@ -77,9 +77,6 @@ class WorkflowResolverService
           }
 
           $steps = [...$steps, ...$this->resolveMinistry($ministry, $vehicleInstitutionDistrict, 1)];
-      }
-
-      if ($lossAmount > $configuration['ministry_threshold']) {
           $steps[] = $this->resolveChiefSecretary();
       }
 
