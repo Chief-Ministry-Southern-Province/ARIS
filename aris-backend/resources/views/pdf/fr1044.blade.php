@@ -195,10 +195,12 @@
 
         .ministry-line {
             height: 14mm;
+            border-bottom: 0 !important;
         }
 
         .copy-line {
             height: 10mm;
+            border-top: 0 !important;
         }
 
         .addressed-line {
@@ -428,6 +430,82 @@
             white-space: nowrap;
         }
 
+        .signature-grid-card {
+            width: 100%;
+        }
+
+        .signature-grid-card td {
+            border: 0;
+            padding: 0;
+            vertical-align: middle;
+        }
+
+        .signature-grid-comment {
+            width: 105mm;
+            height: 15mm;
+            padding: 2mm 2mm 0 0 !important;
+            font-size: 7.2pt;
+            line-height: 1.08;
+            text-align: left;
+            vertical-align: middle !important;
+        }
+
+        .signature-grid-signature {
+            width: 91mm;
+            text-align: right;
+        }
+
+        .signature-grid-line {
+            width: 70mm;
+            min-height: 6mm;
+            margin-left: auto;
+            border-bottom: 0.25mm dotted #000;
+        }
+
+        .signature-grid-image {
+            width: 23mm !important;
+            height: 6mm !important;
+            object-fit: contain;
+        }
+
+        .signature-grid-name,
+        .signature-grid-label,
+        .signature-grid-institution,
+        .signature-grid-date {
+            display: block;
+            line-height: 1.05;
+        }
+
+        .signature-grid-name,
+        .signature-grid-label,
+        .signature-grid-institution {
+            font-size: 8pt;
+        }
+
+        .signature-grid-date {
+            margin-top: 0.5mm;
+            font-size: 8pt;
+            white-space: nowrap;
+        }
+
+        .signature-full-width {
+            margin: 3mm 0 1mm;
+        }
+
+        .signature-full-card {
+            height: 15mm;
+        }
+
+        .signature-full-separator td {
+            height: 1.5mm;
+            padding: 0 !important;
+            border-top: 0.35mm solid #000 !important;
+        }
+
+        .signature-ministry-single {
+            margin: 1mm 0 0;
+        }
+
         .signature-label {
             font-size: 9pt;
             line-height: 1.12;
@@ -548,7 +626,6 @@
             ->take(4);
         $boardMemberSlots = $boardMembers->pad(4, []);
 
-        $copyToAuditorGeneral = data_get($documentData, 'copyToAuditorGeneral') === 'yes';
         $isDueToFraudNegligence = data_get($documentData, 'isDueToFraudNegligence');
         $signatureDate = static function (mixed $value): string {
             if ($value === null || $value === '') {
@@ -587,7 +664,7 @@
                 </td>
                 <td class="reference-cell" style="width: 50mm;">
                     <div class="field-title">
-                        <span class="label-local" lang="si">යොමු අංකය</span> /
+                        <span class="label-local" lang="si">යොමු අංක</span> /
                         <span class="label-local" lang="ta">தொடர் இல.</span> /
                         <span class="label-local">Ref. No.</span>
                     </div>
@@ -599,20 +676,34 @@
         <table class="ministry-table page-break-avoid">
             <tr>
                 <td class="ministry-line compact">
-                    <span class="label-local" lang="si">අමාත්‍යාංශයේ ලේකම්</span> /
-                    <span class="label-local" lang="ta">அமைச்சின் செயலாளர்</span> /
-                    <span class="label-local">Secretary to the Ministry of</span>&nbsp;&nbsp;<span class="dotted-value">{{ $text(data_get($documentData, 'secretaryOfMinistry', ''), 50) }}</span>
+                    <table class="no-border" style="width: 100%;">
+                        <tr>
+                            <td rowspan="2" style="width: 160mm; vertical-align: middle;">
+                                <span class="label-local">Secretary to Ministry of</span>&nbsp;<span
+                                    class="label-local">............................</span>&nbsp;<span
+                                    class="label-local" lang="si">ප්‍රධාන</span>&nbsp;<span
+                                    class="label-local">............................</span>
+                            </td>
+                            <td rowspan="2"
+                                style="width: 5mm; font-size: 18pt; line-height: 0.8; text-align: center; vertical-align: middle;">
+                                {</td>
+                            <td style="width: 35mm; vertical-align: bottom;"><span class="label-local"
+                                    lang="si">අමාත්‍යාංශයේ ලේකම්</span></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 35mm; vertical-align: top;"><span class="label-local"
+                                    lang="ta">அமைச்சின் செயலாளருக்கு</span></td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
-            @if ($copyToAuditorGeneral)
             <tr>
                 <td class="copy-line compact">
-                    <span class="label-local" lang="si">පිටපත: විගණකාධිපති</span> /
-                    <span class="label-local" lang="ta">பிரதி: கணக்காய்வாளர் தலைமை அதிபதி</span> /
-                    <span class="label-local">Copy to: Auditor-General</span>
+                    <span class="label-local" lang="si">පිටපත: විගණකාධිපති</span><br>
+                    <span class="label-local" lang="ta">பிரதி: கணக்காய்வு அதிபதி</span><br>
+                    <span class="label-local">Copy to : Auditor - General</span>
                 </td>
             </tr>
-            @endif
         </table>
 
         <table class="page-break-avoid">
@@ -631,9 +722,9 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" style="width: 130mm; height: 8mm;">
-                    <span class="label-local" lang="si">2. ප්‍රාථමික වාර්තාව - යොමු අංකය</span> /
+                    <span class="label-local" lang="si">2. ප්‍රාරම්භක වාර්තාව : යොමු අංක</span> /
                     <span class="label-local" lang="ta">தொடக்க அறிக்கை - தொடர் இல.</span> /
-                    <span class="label-local">Preliminary Report - Ref. No.</span>
+                    <span class="label-local">Preliminary Report : Ref. No.</span>
                 </td>
                 <td class="field-topic-cell" style="width: 70mm; height: 8mm;">
                     <span class="label-local" lang="si">දිනය</span> /
@@ -670,9 +761,9 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" style="height: 11mm;">
-                    <span class="label-local" lang="si">4. අලාභය සිදුවීමට හේතුවූ තත්ත්වයන්</span><br>
+                    <span class="label-local" lang="si">4. අලාභය සිදුවීමට හේතුවූ කරුණු</span><br>
                     <span class="label-local" lang="ta">இழப்பு ஏற்பட்ட சூழ்நிலைகள்</span><br>
-                    <span class="label-local">Circumstances in which the loss occurred</span>
+                    <span class="label-local">Circumstances in which the loss occurred -</span>
                 </td>
             </tr>
             {{-- <tr>
@@ -686,9 +777,9 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" style="height: 14mm;">
-                    <span class="label-local" lang="si">5.වංචාවක්, නොසැලකිල්ලක්, ප්‍රමාදයක්, අතපසුවීමක් හෝ වෙනත් වරදක් නිසා සිදු වූවක්ද?</span><br>
-                    <span class="label-local" lang="ta">மோசடி, கவனயீனம், தாமதம், தவறவிடல் அல்லது பிற தவறு காரணமாக ஏற்பட்டதா?</span><br>
-                    <span class="label-local">Is it due to fraud, negligence, delay, omissions or other fault?</span>
+                    <span class="label-local" lang="si">5. වංචාවක්, නොසැලකිල්ලක්, අතපසුවීමක්, ප්‍රමාදයක් හෝ වෙනත් වරදක් හේතු කොට ද යන්න</span><br>
+                    <span class="label-local" lang="ta">மோசடி, கவனயீனம், தாமதம், தவறுதல் அல்லது பிற பிழை காரணமாக ஏற்பட்டதா ?</span><br>
+                    <span class="label-local">Is it due to fraud, negligence, delay, ommissions or other fault ?</span>
                 </td>
             </tr>
             {{-- <tr>
@@ -736,7 +827,7 @@
         <table class="page-break-avoid">
             <tr>
                 <th class="h-13 table-header header-cell" style="width: 200mm;" colspan="7">
-                    <span lang="si">7. ඇස්තමේන්තුව හෝ අවසන් වටිනාකම</span><br>
+                    <span lang="si">7. නැතිවූ භාණ්ඩවල විස්තර</span><br>
                     <span lang="ta">7. இழந்த பொருட்களின் விபரம்</span><br>
                     Details of Items Lost
                 </th>
@@ -744,7 +835,7 @@
             <tr>
                 <th class="h-13 table-header header-cell" style="width: 40mm;">
                     <span lang="si">7(1) විස්තර</span><br>
-                    <span lang="ta">7(1) தகவல்</span><br>
+                    <span lang="ta">7(1) விபரம்</span><br>
                     Description
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 16mm;">
@@ -758,22 +849,22 @@
                     Qty
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 32mm;">
-                    <span lang="si">7(4) ඇස්. වියදම</span><br>
+                    <span lang="si">7(4) අලාභය සිදුවූ අවස්ථාවේ දළ හෝ තක්සේරු පිරිවැය</span><br>
                     <span lang="ta">7(4) மதிப்பீட்டுச் செலவு</span><br>
-                    Approx. cost at time of loss
+                    Approximate or estimated cost at time of loss
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 32mm;">
-                    <span lang="si">7(5) ප්‍රතිස්ථාපන අගය</span><br>
+                    <span lang="si">7(5) ප්‍රතිස්ථාපන අගය හෝ අලුත්වැඩියා කිරීමේ වියදම</span><br>
                     <span lang="ta">7(5) மாற்று மதிப்பு</span><br>
-                    Replacement value / cost of repairs
+                    Replacement value or cost of repairs
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 32mm;">
-                    <span lang="si">7(6) මූ.රෙ.105(1)</span><br>
+                    <span lang="si">7(6) මූ. රෙ. 105 (1) යටතේ වටිනාකම</span><br>
                     <span lang="ta">7(6) நி.பி.105(1)</span><br>
-                    Value per F.R. 105(1)
+                    Value in terms of F. R. 105 (1)
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 32mm;">
-                    <span lang="si">7(7) මුල් වියදම</span><br>
+                    <span lang="si">7(7) මුල් පිරිවැය</span><br>
                     <span lang="ta">7(7) மூலச் செலவு</span><br>
                     Original Cost
                 </th>
@@ -825,14 +916,21 @@
 
         <table class="page-break-avoid" style="margin-top: 3mm;">
             <tr>
+                <th class="h-13 table-header header-cell" style="width: 200mm;" colspan="5">
+                    <span lang="si">8. වගකිවයුතු නිලධාරීන් -</span><br>
+                    <span lang="ta">8. பொறுப்பான உத்தியோகத்தர்கள் -</span><br>
+                    Officers Responsible -
+                </th>
+            </tr>
+            <tr>
                 <th class="h-12 table-header header-cell" style="width: 40mm;">
                     <span lang="si">8(1) නම</span><br>
                     <span lang="ta">8(1) பெயர்</span><br>
                     Name
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 40mm;">
-                    <span lang="si">8(2) තනතුර</span><br>
-                    <span lang="ta">8(2) பதவி</span><br>
+                    <span lang="si">8(2) පදවිය</span><br>
+                    <span lang="ta">8(2) பதவிப் பெயர்</span><br>
                     Designation
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 45mm;">
@@ -841,12 +939,12 @@
                     Nature of Responsibility
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 40mm;">
-                    <span lang="si">8(4) විනයානුකූල ක්‍රියාමාර්ග</span><br>
-                    <span lang="ta">8(4) ஒழுங்காற்று நடவடிக்கை</span><br>
-                    Disciplinary Action Taken?
+                    <span lang="si">8(4) නිලධාරියාට විරුද්ධව විනයානුකූලව කටයුතු කර ඇත්ද?</span><br>
+                    <span lang="ta">8(4) உத்தியோகத்தருக்கு எதிராக ஒழுக்காற்று நடவடிக்கை எடுக்கப்பட்டதா?</span><br>
+                    Was disciplinary action taken against the officer ?
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 35mm;">
-                    <span lang="si">8(5) දඬුවම් විස්තර</span><br>
+                    <span lang="si">8(5) දඬුවම පිළිබඳ විස්තර</span><br>
                     <span lang="ta">8(5) தண்டனையின் விபரம்</span><br>
                     Details of Punishment
                 </th>
@@ -889,8 +987,15 @@
 
         <table class="page-break-avoid">
             <tr>
+                <td class="field-topic-cell" style="height: 11mm;" colspan="2">
+                    <span class="label-local" lang="si">9. ගන්නා ලද නීතිමය ක්‍රියාමාර්ග පිළිබඳ විස්තර</span><br>
+                    <span class="label-local" lang="ta">9. எடுக்கப்பட்ட சட்ட நடவடிக்கைகளின் விபரம்</span><br>
+                    <span class="label-local">Details of legal action taken -</span>
+                </td>
+            </tr>
+            <tr>
                 <td class="field-topic-cell" style="width: 90mm; height: 8mm;">
-                    <span class="label-local" lang="si">9. නඩු මණ්ඩලයේ නම</span> /
+                    <span class="label-local" lang="si">අධිකරණයේ නම</span> /
                     <span class="label-local" lang="ta">நீதிமன்றத்தின் பெயர்</span> /
                     <span class="label-local">Name of Court</span>
                 </td>
@@ -906,7 +1011,7 @@
             </tr>
             <tr>
                 <td class="field-topic-cell" style="height: 8mm;" colspan="2">
-                    <span class="label-local" lang="si">9. විනිශ්චය (පිටපතක් අමුණන්න)</span> /
+                    <span class="label-local" lang="si">අධිකරණයේ නියෝගය (පිටපතක් අමුණන්න)</span> /
                     <span class="label-local" lang="ta">நீதிமன்றக் கட்டளை (பிரதி இணைக்க)</span> /
                     <span class="label-local">Order of Court (Annex a copy)</span>
                 </td>
@@ -920,20 +1025,26 @@
 
         <table class="page-break-avoid" style="margin-top: 3mm;">
             <tr>
+                <th class="h-13 table-header header-cell" style="width: 200mm;" colspan="3">
+                    <span lang="si">10. වගකිවයුතු නිලධාරීන්ගෙන් අයකර ගැනීමට තීරණය කරන ලද මුදල් ප්‍රමාණය</span> / <span lang="ta">இழப்புக்குப் பொறுப்பான உத்தியோகத்தர்களிடமிருந்து அறவிடுவதற்கெனத் தீர்மானிக்கப்பட்ட தொகை</span> /<br>
+                    Amount decided to be recovered from the officers responsible -
+                </th>
+            </tr>
+            <tr>
                 <th class="h-12 table-header header-cell" style="width: 70mm;" colspan="1">
-                    <span lang="si">10. නිලධාරියාගේ නම</span><br>
+                    <span lang="si">නිලධාරියාගේ නම</span><br>
                     <span lang="ta">உத்தியோகத்தர் பெயர்</span><br>
                     Name of Officer
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 50mm;">
                     <span lang="si">අයකර ගැනීමට ඇති මුදල</span><br>
-                    <span lang="ta">மீட்கப்படும் தொகை</span><br>
-                    Amount to be Recovered
+                    <span lang="ta">அறவிட வேண்டிய தொகை</span><br>
+                    Amount to be recovered
                 </th>
                 <th class="h-12 table-header header-cell" style="width: 80mm;">
-                    <span lang="si">අයකර ගැනීමේ ක්‍රමය</span><br>
-                    <span lang="ta">மீட்பு செய்முறை</span><br>
-                    How Recovery is to be Made
+                    <span lang="si">අයකර ගන්නා පිළිවෙල</span><br>
+                    <span lang="ta">எவ்வாறு அறவிட வேண்டும் என்பது</span><br>
+                    How recovery is to be made
                 </th>
             </tr>
             <tr>
@@ -958,10 +1069,10 @@
         <table class="page-break-avoid insurance-table" style="margin-top: 3mm;">
             <tr>
                 <td class="insurance-title" colspan="3">
-                    <span class="label-local" lang="si">11. රක්ෂණයකින් හෝ ඇප සහතිකයකින් අයකරගත හැකි මුදල</span> /
-                    <span class="label-local" lang="ta">காப்புறுதி அல்லது உத்தரவாதத்திலிருந்து மீட்கக்கூடிய தொகை</span> /
-                    <span class="label-local">Amount Recoverable from Insurance /</span><br>
-                    <span class="label-local">Guarantee -</span>
+                    <span class="label-local" lang="si">11. රක්ෂණයකින් හෝ ඇප සහතිකයකින් අයකර ගත හැකි ප්‍රමාණය</span> /
+                    <span class="label-local" lang="ta">காப்புறுதி/ உத்தரவாதத்திலிருந்து அறவிடக்கூடிய தொகை</span> /
+                    <span class="label-local">Amount recoverable from insurance/</span><br>
+                    <span class="label-local">guarantee -</span>
                 </td>
             </tr>
             <tr>
@@ -970,8 +1081,8 @@
                         <tr>
                             <td style="width: 39mm;">
                                 <span class="insurance-words-label">
-                                    <span lang="si">(මුදල අකුරින්)</span><br>
-                                    <span lang="ta">(தொகை எழுத்தில்)</span><br>
+                                    <span lang="si">(මුදල අකුරින්) රුපියල්</span><br>
+                                    <span lang="ta">(தொகை எழுத்தில்) ரூபா</span><br>
                                     (Amount in words) Rupees
                                 </span>
                             </td>
@@ -1001,24 +1112,27 @@
 
         <table class="page-break-avoid" style="margin-top: 3mm;">
             <tr>
-                <th class="h-12 table-header header-cell" style="width: 100mm;">
-                    <span lang="si">12. විමර්ශන මණ්ඩල සාමාජිකයන්ගේ නම</span><br>
-                    <span lang="ta">விசாரணைச் சபையின் உறுப்பினர் பெயர்</span><br>
-                    Names of Board of Inquiry Members
-                </th>
-                <th class="h-12 table-header header-cell" style="width: 100mm;">
-                    <span lang="si">තනතුර</span><br>
-                    <span lang="ta">பதவிப் பெயர்</span><br>
-                    Designations
+                <th class="h-13 table-header header-cell" style="width: 200mm;" colspan="2">
+                    <span lang="si">12. මූ. රෙ. 104 (1) බී යටතේ පත් කරන ලද පරීක්ෂණ මණ්ඩලය සැදී ඇති ආකාරය</span><br>
+                    <span lang="ta">நி. பி. 104 (1) பீ இன் பிரகாரம் நியமித்த விசாரணைச் சபையின் அமைப்பு</span><br>
+                    Composition of Board of Inquiry appointed in terms of F. R. 104 (1) b
                 </th>
             </tr>
             <tr>
-                <td class="h-23 response" style="width: 100mm;">
+                <th class="h-12 table-header header-cell" style="width: 120mm;">
+                    <span lang="si">මණ්ඩලයේ සාමාජිකයින්ගේ නම්</span> / <span lang="ta">சபை உறுப்பினரின் பெயர்</span> / Names of members of the Board
+                </th>
+                <th class="h-12 table-header header-cell" style="width: 80mm;">
+                    <span lang="si">පදවිය</span> / <span lang="ta">பதவிப் பெயர்</span> / Designations
+                </th>
+            </tr>
+            <tr>
+                <td class="h-23 response" style="width: 120mm;">
                     @foreach ($boardMemberSlots as $member)
                         <div class="officer-line">{{ $text(data_get($member, 'memberName', ''), 70) }}</div>
                     @endforeach
                 </td>
-                <td class="h-23 response" style="width: 100mm;">
+                <td class="h-23 response" style="width: 80mm;">
                     @foreach ($boardMemberSlots as $member)
                         <div class="officer-line">{{ $text(data_get($member, 'designation', ''), 70) }}</div>
                     @endforeach
@@ -1048,8 +1162,7 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" style="height: 12mm;">
-                    <span class="label-local" lang="si">14. අනාගතයේ දී මෙවැනි අලාභයන් වැළැක්වීම සඳහා ගෙන ඇති හෝ ගැනීමට යෝජිත පියවර</span><br>
-                    <span class="label-local" lang="ta">எதிர்காலத்தில் இது போன்ற இழப்புகளைத் தடுப்பதற்கு எடுக்கப்பட்டுள்ள அல்லது உத்தேசிக்கப்பட்டுள்ள நடவடிக்கைகள்</span><br>
+                    <span class="label-local" lang="si">14. අනාගතයේ දී මෙවැනි අලාභයන් සිදුවීම වැළැක්වීමට යොදා ඇති හෝ යොදනු ලබන පියවරවල්</span> / <span class="label-local" lang="ta">எதிர்காலத்தில் இது போன்ற இழப்புக்களைத் தடுப்பதற்கு எடுத்துள்ள அல்லது உத்தேசித்துள்ள நடவடிக்கைகள்</span> /<br>
                     <span class="label-local">Steps taken or proposed to be taken to prevent similar losses in the future</span>
                 </td>
             </tr>
@@ -1080,10 +1193,19 @@
         @php
             $signatureRows = [
                 [
+                    'signature' => $msRdSignature,
+                    'label' => 'MS/RD',
+                    'always_show' => false,
+                    'show_institution' => true,
+                    'label_alignment' => 'left',
+                ],
+                [
                     'signature' => $pdhsSignature,
                     'label' => 'පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,',
                     'secondary_label' => 'දකුණු පළාත.',
                     'always_show' => true,
+                    'show_institution' => true,
+                    'label_alignment' => 'left',
                 ],
                 [
                     'signature' => $secretarySignature,
@@ -1091,68 +1213,104 @@
                     'secondary_label' => 'ප්‍රධාන අමාත්‍යාංශය,',
                     'tertiary_label' => 'දකුණු පළාත.',
                     'always_show' => true,
+                    'show_institution' => true,
+                    'label_alignment' => 'left',
                 ],
                 [
                     'signature' => $chiefSecretarySignature,
-                    'label' => 'ප්‍රධාන ලේකම්,',
+                    'label' => 'Chief Secretary',
                     'secondary_label' => 'දකුණු පළාත.',
-                    'always_show' => false,
+                    'always_show' => true,
+                    'show_institution' => true,
+                    'label_alignment' => 'left',
                 ],
             ];
         @endphp
 
-        <table class="no-border workflow-signature-layout page-break-avoid" style="margin-top: 12mm;">
-            <tr>
-                <td style="width: 200mm;">
-                    @foreach ($signatureRows as $signatureRow)
-                        @if ($signatureRow['always_show'] || data_get($signatureRow['signature'], 'signature_data_uri'))
-                            <div class="workflow-signature-block">
-                                <table class="no-border workflow-signature-row" style="width: 200mm;">
-                                    <tr>
-                                        <td style="width: 55mm;">&nbsp;</td>
-                                        <td class="workflow-signature-content" style="width: 145mm;">
-                                            <table class="no-border" style="width: 145mm;">
-                                                <tr>
-                                                    <td class="workflow-signature-comment" style="width: 70mm; border: 0; padding: 0 2mm 0 0 !important;">
-                                                        {{ $text(data_get($signatureRow['signature'], 'comments', ''), 90) }}
-                                                    </td>
-                                                    <td style="width: 75mm; border: 0; padding: 0 !important; text-align: right !important;">
-                                                        <div class="workflow-signature-line">
-                                                            @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                                                <img class="workflow-signature-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 50) }} signature">
-                                                            @endif
-                                                        </div>
-                                                        <span class="signature-card-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 55) }}</span><br>
-                                                        <span class="signature-label" lang="si">
-                                                            {{ $signatureRow['label'] }}
-                                                            @if (! empty($signatureRow['secondary_label']))
-                                                                <br>{{ $signatureRow['secondary_label'] }}
-                                                            @endif
-                                                            @if (! empty($signatureRow['tertiary_label']))
-                                                                <br>{{ $signatureRow['tertiary_label'] }}
-                                                            @endif
-                                                        </span>
-                                                        @if (filled(data_get($signatureRow['signature'], 'institution')))
-                                                            <br><span class="signature-card-institution">{{ $text(data_get($signatureRow['signature'], 'institution'), 55) }}</span>
-                                                        @endif
-                                                        @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                                            <div class="signature-card-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <table class="workflow-signature-separator" style="width: 200mm;">
-                                <tr><td style="width: 200mm;">&nbsp;</td></tr>
-                            </table>
-                        @endif
-                    @endforeach
-                </td>
-            </tr>
+        @php
+            $localSignatureRows = collect([$signatureRows[0], $signatureRows[1]])
+                ->filter(
+                    fn(array $signatureRow): bool => $signatureRow['always_show'] ||
+                        data_get($signatureRow['signature'], 'signature_data_uri'),
+                )
+                ->values();
+            $ministrySignatureRows = collect([$signatureRows[2], $signatureRows[3]])
+                ->filter(
+                    fn(array $signatureRow): bool => $signatureRow['always_show'] ||
+                        data_get($signatureRow['signature'], 'signature_data_uri'),
+                )
+                ->values();
+        @endphp
+
+        <table class="no-border signature-full-width page-break-avoid">
+            @foreach ($localSignatureRows as $signatureRow)
+                <tr>
+                    <td style="width: 200mm;">
+                        <table class="no-border signature-grid-card signature-full-card">
+                            <tr>
+                                <td class="signature-grid-comment">
+                                    {{ $text(data_get($signatureRow['signature'], 'comments', ''), 110) }}
+                                </td>
+                                <td class="signature-grid-signature">
+                                    <div class="signature-grid-line">
+                                        @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                            <img class="signature-grid-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 45) }} signature">
+                                        @endif
+                                    </div>
+                                    <div class="signature-grid-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
+                                    <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}</div>
+                                    @if ($signatureRow['show_institution'] ?? true)
+                                        <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
+                                    @endif
+                                    @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr class="signature-full-separator">
+                    <td style="width: 200mm;">&nbsp;</td>
+                </tr>
+            @endforeach
         </table>
+
+        @foreach ($ministrySignatureRows as $signatureRow)
+            <table class="no-border signature-full-width signature-ministry-single page-break-avoid">
+                <tr>
+                    <td style="width: 200mm;">
+                        <table class="no-border signature-grid-card signature-full-card">
+                            <tr>
+                                <td class="signature-grid-comment">
+                                    {{ $text(data_get($signatureRow['signature'], 'comments', ''), 110) }}
+                                </td>
+                                <td class="signature-grid-signature">
+                                    <div class="signature-grid-line">
+                                        @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                            <img class="signature-grid-image" src="{{ data_get($signatureRow['signature'], 'signature_data_uri') }}" alt="{{ $text($signatureRow['label'], 45) }} signature">
+                                        @endif
+                                    </div>
+                                    <div class="signature-grid-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
+                                    <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}</div>
+                                    @if ($signatureRow['show_institution'] ?? true)
+                                        <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
+                                    @endif
+                                    @if (data_get($signatureRow['signature'], 'signature_data_uri'))
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                @if (! $loop->last)
+                    <tr class="signature-full-separator">
+                        <td style="width: 200mm;">&nbsp;</td>
+                    </tr>
+                @endif
+            </table>
+        @endforeach
 
     </div>
 </body>
