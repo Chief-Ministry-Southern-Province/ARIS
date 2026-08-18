@@ -4,7 +4,9 @@ import { Search, Filter } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FolderSearch, Download, Loader2 } from "lucide-react";
 import { useCases } from "@/hooks/queries/useCaseQueries";
+import { downloadAccidentCasesCsv } from "@/services/accidentCase.service";
 import type { CaseStage, CaseStatus } from "@/types/AccidentCase.type";
+import { toast } from "react-toastify";
 
 export function CaseManagement() {
 
@@ -35,6 +37,7 @@ export function CaseManagement() {
   const [selectedStatus, setSelectedStatus] = useState<CaseStatus | "">("");
   const [selectedStage, setSelectedStage] = useState<CaseStage | "">("");
   const [page, setPage] = useState(1);
+  const [exporting, setExporting] = useState(false);
   const { data, isLoading: loading, error: queryError } = useCases(
     page,
     caseNumber,
@@ -48,6 +51,24 @@ export function CaseManagement() {
   const error = queryError instanceof Error ? queryError.message : "";
 
   const handlePageChange = (nextPage: number) => setPage(nextPage);
+
+  const exportCsv = async () => {
+    setExporting(true);
+
+    try {
+      const csv = await downloadAccidentCasesCsv(caseNumber, selectedStatus, selectedStage);
+      const url = URL.createObjectURL(csv);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = `case-management-${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to export the case CSV file.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const formatLabel = (value: string) => {
     return value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -140,10 +161,13 @@ export function CaseManagement() {
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
+              onClick={exportCsv}
+              disabled={exporting}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
             >
-              <Download className="w-4 h-4" />
-              Export CSV
+              {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {exporting ? "Exporting..." : "Export CSV"}
             </button>
           </div>
         </div>

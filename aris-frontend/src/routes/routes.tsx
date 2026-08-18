@@ -12,7 +12,6 @@ import MyProfile from "@/components/pages/auth/MyProfile";
 
 import DashboardPage from "@/components/pages/DashboardPage";
 import ReportPage from "@/components/pages/ReportPage";
-import EvidencePage from "@/components/pages/EvidencePage";
 import { CaseManagement } from "@/components/pages/CaseManagement";
 import AdminPanel from "@/components/pages/AdminPanel";
 import Notifications from "@/components/pages/Notifications";
@@ -82,12 +81,6 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases",
         <CaseManagement />,
-        CHIEF_ACCOUNTANT_ACCESS_ROLES
-      ),
-
-      protectedPage(
-        "/evidence",
-        <EvidencePage />,
         CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 

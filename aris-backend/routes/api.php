@@ -90,6 +90,8 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     // Protected routes for accident cases
     Route::get('/cases',[AccidentCaseController::class, 'index']);
 
+    Route::get('/cases/export',[AccidentCaseController::class, 'export']);
+
     Route::get('/cases/{accidentCase}',[AccidentCaseController::class, 'show']);
 
     Route::put('/cases/{accidentCase}',[AccidentCaseController::class, 'update']);

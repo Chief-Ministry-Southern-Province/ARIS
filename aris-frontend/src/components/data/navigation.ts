@@ -1,4 +1,4 @@
-import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,FolderClock,FileSignature} from "lucide-react";
+import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,Bell,FolderClock,FileSignature} from "lucide-react";
 
 export const FULL_ACCESS_ROLES = [
   "subject_officer",
@@ -87,15 +87,6 @@ export const navItems = [
     label: "nav.caseManagement",
     roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
-
-  {
-    id: "evidence",
-    path: "/evidence",
-    icon: FileSearch,
-    label: "nav.evidence",
-    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
-  },
-
   {
     id: "analytics",
     path: "/analytics",

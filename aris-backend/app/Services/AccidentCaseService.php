@@ -7,7 +7,10 @@ use App\Models\AccidentCase;
 use App\Models\User;
 use App\Services\Notifications\NotificationService;
 use App\Services\AccidentTimelineService;
+use App\Services\InstitutionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Validation\ValidationException;
 
 class AccidentCaseService
@@ -149,11 +152,39 @@ class AccidentCaseService
     }
 
     public function getAll(
+        User $user,
         ?string $caseNumber = null,
         ?string $status = null,
         ?string $stage = null,
     ): LengthAwarePaginator
     {
+        return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
+            ->paginate(10)
+            ->withQueryString();
+    }
+
+    /**
+     * Return all cases matching the Case Management filters for CSV export.
+     */
+    public function exportCases(
+        User $user,
+        ?string $caseNumber = null,
+        ?string $status = null,
+        ?string $stage = null,
+    ): LazyCollection
+    {
+        return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
+            ->lazy(200);
+    }
+
+    private function filteredCasesQuery(
+        User $user,
+        ?string $caseNumber,
+        ?string $status,
+        ?string $stage,
+    ): Builder {
+        $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
+
         return AccidentCase::query()
             ->with([
                 'accident',
@@ -161,6 +192,7 @@ class AccidentCaseService
                 'assignee',
                 'institution',
             ])
+            ->whereIn('institution_id', $institutionIds)
             ->when($caseNumber, function ($query) use ($caseNumber) {
                 $caseNumber = trim($caseNumber);
 
@@ -178,9 +210,7 @@ class AccidentCaseService
             })
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($stage, fn ($query) => $query->where('current_stage', $stage))
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->latest();
     }
 
     public function findById(int $id): AccidentCase
