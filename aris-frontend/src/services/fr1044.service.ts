@@ -30,11 +30,10 @@ export const getFR1044AttachmentPreview = async (id: number, fieldKey: string): 
 export const downloadFR1044Attachment = async (
   id: number,
   fieldKey: string,
-  fileUrl?: string
 ): Promise<Blob> =>
   (
     await api.get(
-      fileUrl || `/fr1044/${id}/attachments/${fieldKey}/download`,
+      `/fr1044/${id}/attachments/${fieldKey}/download`,
       { responseType: "blob" }
     )
   ).data;

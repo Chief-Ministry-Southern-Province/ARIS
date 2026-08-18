@@ -18,7 +18,7 @@ export const getAction = (
       icon: FileText,
       color:
         "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
-      path: `/cases/${caseItem_id}/fr104-3/${modes.fr1043 === "create" ? "generate" : "view"}`,
+      path: `/cases/${caseItem_id}/fr104-3/${modes.fr1043 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr1043,
     },
 
@@ -27,7 +27,7 @@ export const getAction = (
       icon: FileText,
       color:
         "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
-      path: `/cases/${caseItem_id}/fr104-4/${modes.fr1044 === "create" ? "generate" : "view"}`,
+      path: `/cases/${caseItem_id}/fr104-4/${modes.fr1044 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr1044,
     },
 
@@ -36,7 +36,7 @@ export const getAction = (
       icon: ClipboardCheck,
       color:
         "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
-      path: `/cases/${caseItem_id}/fr109/${modes.fr109 === "create" ? "generate" : "view"}`,
+      path: `/cases/${caseItem_id}/fr109/${modes.fr109 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr109,
     },
   ].filter((action) => action.mode !== "none");
