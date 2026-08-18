@@ -60,23 +60,23 @@ export default function FR109Form({
   canCompleteChiefSecretaryDecision = false,
 }: Props) {
   const { t } = useTranslation();
-  const { id: currentUserId, role, institutionType } = useAuth();
+  const { id: currentUserId, role } = useAuth();
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
 
   const { data: loaded, isLoading, error } = useGetFR109(
-    readOnly ? "" : (caseId ?? "")
+    caseId ?? ""
   );
   const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const { data: finalReport } = useGetFR1044(readOnly ? undefined : accidentCaseId);
   const displayed = document ?? loaded;
-  const { data: accidentCase } = useCase(readOnly ? undefined : accidentCaseId);
+  const { data: accidentCase } = useCase(accidentCaseId);
   const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
   const downloadPdfMutation = useDownloadFR109Pdf();
   const { data: approvalGroups = [] } = useApprovalHistory(
-    readOnly ? 0 : accidentCaseId,
+    accidentCaseId,
     "FR109",
     displayed?.revision,
   );
@@ -96,6 +96,9 @@ export default function FR109Form({
   const resolvedApprovalTimeline = approvalTimeline.length > 0
     ? approvalTimeline
     : generatedApprovalTimeline;
+  const isCurrentUserPendingApprover = resolvedApprovalTimeline.some(
+    (approval) => approval.approver.id === currentUserId && approval.status === "PENDING",
+  );
 
   const [data, setData] = useState<FR109FormData>(initialFormData);
   const [status, setStatus] = useState<FR109Status | null>(null);
@@ -108,12 +111,11 @@ export default function FR109Form({
     status === "APPROVED" &&
     displayed?.creator.id === currentUserId;
   const chiefAccountingOrderEditable =
-    (!readOnly || canCompleteChiefAccountingOrder) &&
+    (!readOnly || canCompleteChiefAccountingOrder || isCurrentUserPendingApprover) &&
     status === "UNDER_APPROVAL" &&
-    role.includes("ministry_account_subject_officer") &&
-    institutionType === "MINISTRY";
+    role.includes("ministry_account_subject_officer");
   const chiefSecretaryDecisionEditable =
-    (!readOnly || canCompleteChiefSecretaryDecision) &&
+    (!readOnly || canCompleteChiefSecretaryDecision || isCurrentUserPendingApprover) &&
     status === "UNDER_APPROVAL" &&
     role.includes("chief_secretary");
 

@@ -5,6 +5,7 @@ import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
 import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
 import InvestigationTeamTab from "@/components/organisms/CaseManagement/InvestigationTeamTab";
 import { useTranslation } from "react-i18next";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 
 import { useParams } from "react-router-dom";
 import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck, Clock3} from "lucide-react";
@@ -24,6 +25,7 @@ function CaseDetails() {
   const { t } = useTranslation();
   const { caseId } = useParams<{ caseId: string }>();
   const numericId = Number(caseId);
+  const { data: accidentCase } = useCase(numericId);
 
   const [activeTab, setActiveTab] = useState("Details");
 
@@ -54,7 +56,7 @@ function CaseDetails() {
 
           {/* case actions */}
           {activeTab === "Action" && (
-            <CaseActionTab id={numericId} />
+            accidentCase && <CaseActionTab id={numericId} modes={accidentCase.form_actions} />
           )}
 
           {/* case workflow */}

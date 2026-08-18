@@ -74,11 +74,11 @@ export default function FR104_4Form({
   const accidentCaseId = Number(caseId);
 
   const { data: loaded, isLoading, error } = useGetFR1044(
-    readOnly ? undefined : accidentCaseId
+    accidentCaseId
   );
   const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
   const displayed = document ?? loaded;
-  const { data: accidentCase } = useCase(readOnly ? undefined : accidentCaseId);
+  const { data: accidentCase } = useCase(accidentCaseId);
   const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);

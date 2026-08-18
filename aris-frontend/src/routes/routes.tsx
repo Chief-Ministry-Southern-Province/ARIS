@@ -166,14 +166,29 @@ export const router = createBrowserRouter([
         FULL_ACCESS_ROLES
       ),
       protectedPage(
+        "/cases/:caseId/FR104-3/view",
+        <FR104_3Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
+      ),
+      protectedPage(
         "/cases/:caseId/FR104-4/generate",
         <FR104_4Form />,  
         FULL_ACCESS_ROLES
       ),
       protectedPage(
+        "/cases/:caseId/FR104-4/view",
+        <FR104_4Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
+      ),
+      protectedPage(
         "/cases/:caseId/FR109/generate",
         <FR109Form />,  
         FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/cases/:caseId/FR109/view",
+        <FR109Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
     ],
