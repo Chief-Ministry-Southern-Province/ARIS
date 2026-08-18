@@ -7,6 +7,7 @@ type AuthSession = {
   role: string[];
   id: number | null;
   name: string | null;
+  institutionId: number | null;
   institutionType: string | null;
 };
 
@@ -14,6 +15,7 @@ const emptySession: AuthSession = {
   role: [],
   id: null,
   name: null,
+  institutionId: null,
   institutionType: null,
 };
 
@@ -21,6 +23,7 @@ const profileToSession = ({ user, role }: ProfileResponse): AuthSession => ({
   role,
   id: user.id,
   name: user.name,
+  institutionId: user.institution_id,
   institutionType: user.institution?.type ?? null,
 });
 
@@ -30,6 +33,7 @@ interface AuthContextType {
   role: string[];
   id: number | null;
   name: string | null;
+  institutionId: number | null;
   institutionType: string | null;
   loginUser: (response: LoginResponse) => void;
   logoutUser: () => void;
@@ -67,9 +71,10 @@ export const AuthProvider = ({
   const loginUser = (response: LoginResponse) => {
     setSession({
       role: response.role,
-      id: response.id,
-      name: response.name ?? null,
-      institutionType: response.institutionType ?? null,
+        id: response.id,
+        name: response.name ?? null,
+        institutionId: response.institutionId ?? null,
+        institutionType: response.institutionType ?? null,
     });
   };
 
@@ -85,6 +90,7 @@ export const AuthProvider = ({
         role: session.role.map((r) => r[0].toLowerCase() + r.slice(1)),
         id: session.id,
         name: session.name,
+        institutionId: session.institutionId,
         institutionType: session.institutionType,
         loginUser,
         logoutUser,

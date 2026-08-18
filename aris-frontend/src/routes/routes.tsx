@@ -149,6 +149,11 @@ export const router = createBrowserRouter([
         CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
       protectedPage(
+        "/cases/:caseId/accident/edit",
+        <ReportPage mode="edit" />,
+        ["subject_officer"]
+      ),
+      protectedPage(
         "/vehicles/:vehicleId",
         <VehicleDetails />,  
         [...CHIEF_ACCOUNTANT_ACCESS_ROLES,"system_admin"]

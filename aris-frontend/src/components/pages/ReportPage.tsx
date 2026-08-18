@@ -8,8 +8,11 @@ import { SelectField } from "@/components/atoms/SelectField";
 import { ImageUploadField } from "@/components/molecules/ImageUploadField";
 import { useCurrentLocation } from "@/hooks/useGetCurrentLiveLocation";
 import { useCreateAccidentMutation } from "@/hooks/mutations/useResourceMutations";
+import { useUpdateAccidentMutation } from "@/hooks/mutations/useResourceMutations";
 import { useVehicles } from "@/hooks/queries/useVehicleQueries";
-import type { CreateAccidentRequest } from "@/types/accident.type";
+import { useCase } from "@/hooks/queries/useCaseQueries";
+import { useAccident } from "@/hooks/queries/useAccidentQueries";
+import type { CreateAccidentRequest, UpdateAccidentRequest } from "@/types/accident.type";
 import { Checkbox } from "@/components/atoms/Checkbox";
 import LocationPicker from "@/components/maps/LocationPicker";
 import { reverseGeocode } from "@/services/geocoding.service";
@@ -18,10 +21,19 @@ import { mapSriLankaLocation } from "@/utils/locationMapper";
 import { useAuth } from "@/context/auth/AuthContext";
 
 import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 
-const ReportPage = () => {
+type ReportPageProps = {
+  mode?: "create" | "edit";
+};
+
+const ReportPage = ({ mode = "create" }: ReportPageProps) => {
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { caseId } = useParams<{ caseId: string }>();
+  const isEditing = mode === "edit";
+  const numericCaseId = Number(caseId);
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
   const { role, id: userId } = useAuth();
   const isDriver = role.includes("driver");
@@ -29,7 +41,13 @@ const ReportPage = () => {
   const [vehicleSearch, setVehicleSearch] = useState("");
   const { data: vehicleResponse } = useVehicles(1, vehicleSearch);
   const vehicles = vehicleResponse?.data ?? [];
-  const { mutateAsync: createAccidentData, isPending: submitting, error: submitMutationError } = useCreateAccidentMutation();
+  const { data: accidentCase, isLoading: loadingCase } = useCase(isEditing ? numericCaseId : undefined);
+  const accidentId = accidentCase?.accident?.id;
+  const { data: existingAccident, isLoading: loadingAccident, error: accidentError } = useAccident(isEditing ? accidentId : undefined);
+  const { mutateAsync: createAccidentData, isPending: creating, error: createMutationError } = useCreateAccidentMutation();
+  const { mutateAsync: updateAccidentData, isPending: updating, error: updateMutationError } = useUpdateAccidentMutation();
+  const submitting = creating || updating;
+  const submitMutationError = updateMutationError ?? createMutationError;
   const submitError = submitMutationError instanceof Error ? submitMutationError.message : "";
 
 
@@ -67,6 +85,30 @@ const ReportPage = () => {
 }, [vehicles, userId, isDriver]);
 
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    if (!isEditing || !existingAccident) return;
+
+    setForm({
+      date: existingAccident.accident_date.slice(0, 10),
+      time: existingAccident.accident_time.slice(0, 5),
+      location: existingAccident.location,
+      province: existingAccident.province,
+      district: existingAccident.district,
+      vehicle_id: String(existingAccident.vehicle_id),
+      driver_id: existingAccident.driver_id ? String(existingAccident.driver_id) : "",
+      fatality_count: String(existingAccident.fatality_count ?? 0),
+      injury_count: String(existingAccident.injury_count ?? 0),
+      severity: existingAccident.severity,
+      road_condition: existingAccident.road_condition,
+      weather_condition: existingAccident.weather_condition,
+      mapLocation: "",
+      latitude: existingAccident.latitude === null ? "" : String(existingAccident.latitude),
+      longitude: existingAccident.longitude === null ? "" : String(existingAccident.longitude),
+      has_travel_permission: Boolean(existingAccident.has_travel_permission),
+      files: [],
+    });
+  }, [isEditing, existingAccident]);
 
   function update(field: string, value: any) {
     setForm((prev) => ({
@@ -197,11 +239,21 @@ const ReportPage = () => {
       files: form.files,
     };
 
-    const formData = buildFormData(payload);
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
     try {
+      if (isEditing) {
+        if (!existingAccident) return;
+
+        const { files: _files, ...updatePayload } = payload;
+        await updateAccidentData({
+          id: existingAccident.id,
+          data: updatePayload as UpdateAccidentRequest,
+        });
+        toast.success("Accident details updated successfully!");
+        navigate(`/cases/${numericCaseId}/details?tab=Details`);
+        return;
+      }
+
+      const formData = buildFormData(payload);
       await createAccidentData(formData as unknown as CreateAccidentRequest);
       
       toast.success("Accident report submitted successfully!");
@@ -231,6 +283,14 @@ const ReportPage = () => {
     }
   };
 
+  if (isEditing && (loadingCase || loadingAccident)) {
+    return <div className="py-12 text-center text-sm text-slate-500">Loading accident details...</div>;
+  }
+
+  if (isEditing && (!existingAccident || accidentError)) {
+    return <div className="py-12 text-center text-sm font-medium text-red-600">Unable to load accident details for editing.</div>;
+  }
+
   return (
     <div className="space-y-5">
       {/* Section Header */}
@@ -242,7 +302,7 @@ const ReportPage = () => {
 
           <div>
             <h1 className="text-2xl font-bold text-slate-900">
-              {t("report.incidentDetails")}
+              {isEditing ? "Update accident details" : t("report.incidentDetails")}
             </h1>
 
             <p className="text-sm text-slate-500">
@@ -384,6 +444,11 @@ const ReportPage = () => {
             <LocationPicker
               key={successMessage}
               onLocationSelect={handleMapLocationSelect}
+              initialLocation={isEditing && existingAccident ? {
+                latitude: existingAccident.latitude,
+                longitude: existingAccident.longitude,
+                address: existingAccident.location,
+              } : undefined}
             />
           </FormField>
         )}
@@ -482,28 +547,29 @@ const ReportPage = () => {
           </FormField>
         </div>
 
-        {/* Evidence Images */}
-        <FormField label={t("report.evidenceImages")}>
-          <ImageUploadField
-            key={successMessage}
-            onChange={(files) =>
-              setForm((prev) => ({
-                ...prev,
-                files: files,
-              }))
-            }
-          />
-        </FormField>
+        {!isEditing && (
+          <FormField label={t("report.evidenceImages")}>
+            <ImageUploadField
+              key={successMessage}
+              onChange={(files) =>
+                setForm((prev) => ({
+                  ...prev,
+                  files: files,
+                }))
+              }
+            />
+          </FormField>
+        )}
         {/* Submit */}
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>
             {submitting ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Submitting...
+                {isEditing ? "Updating..." : "Submitting..."}
               </span>
             ) : (
-              t("btn.submit")
+              isEditing ? "Update accident details" : t("btn.submit")
             )}
           </Button>
         </div>

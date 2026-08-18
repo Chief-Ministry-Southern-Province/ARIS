@@ -63,6 +63,8 @@ export interface Accident {
 
   weather_condition: WeatherCondition;
 
+  has_travel_permission: boolean;
+
   status: AccidentStatus;
 
   description: string | null;

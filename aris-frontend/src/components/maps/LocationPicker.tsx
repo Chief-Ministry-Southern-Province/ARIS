@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   Marker,
@@ -32,6 +32,11 @@ type Props = {
     province: string;
     district: string;
   }) => void;
+  initialLocation?: {
+    latitude: number | null;
+    longitude: number | null;
+    address: string;
+  };
 };
 
 interface NominatimSearchResult {
@@ -110,6 +115,7 @@ function MapFlyTo({
 
 export default function LocationPicker({
   onLocationSelect,
+  initialLocation,
 }: Props) {
   const [position, setPosition] =
     useState<[number, number] | null>(null);
@@ -121,6 +127,21 @@ export default function LocationPicker({
 
   const [searching, setSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const initializedLocation = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (initialLocation?.latitude === null || initialLocation?.latitude === undefined
+      || initialLocation.longitude === null || initialLocation.longitude === undefined) {
+      return;
+    }
+
+    const locationKey = `${initialLocation.latitude},${initialLocation.longitude},${initialLocation.address}`;
+    if (initializedLocation.current === locationKey) return;
+
+    setPosition([initialLocation.latitude, initialLocation.longitude]);
+    setSearchQuery(initialLocation.address);
+    initializedLocation.current = locationKey;
+  }, [initialLocation]);
 
   const handleSearch = async (query: string) => {
     const text = query.trim();

@@ -39,8 +39,8 @@ class AccidentPolicy
      */
     public function update(User $user, Accident $accident): bool
     {
-        return app(InstitutionService::class)
-            ->canAccessInstitution($user, $accident->institution);
+        return $user->hasRole('subject_officer')
+            && $user->institution_id === $accident->institution_id;
     }
 
     /**

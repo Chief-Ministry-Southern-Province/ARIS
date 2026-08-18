@@ -1,10 +1,14 @@
-import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAccident } from "@/hooks/queries/useAccidentQueries";
 import { useCase } from "@/hooks/queries/useCaseQueries";
+import { useAuth } from "@/context/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const DetailsTab = ({ id }: { id: number }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { role, institutionId } = useAuth();
   const { data: accidentCase, isLoading: loadingAccidentCase, error: accidentCaseError } = useCase(id);
   const accidentId = accidentCase?.accident.id;
   const { data: accident, isLoading: loadingAccident, error: accidentError } = useAccident(accidentId);
@@ -28,6 +32,9 @@ const DetailsTab = ({ id }: { id: number }) => {
       </div>
     );
   }
+
+  const canEditAccident = role.includes("subject_officer")
+    && institutionId === accident.institution_id;
 
   const details = [
     {
@@ -83,6 +90,17 @@ const DetailsTab = ({ id }: { id: number }) => {
               {t(`report.VehicleCollision`)} — {t(`report.severityOptions.${accident.severity}`)}
             </p>
           </div>
+
+          {canEditAccident && (
+            <button
+              type="button"
+              onClick={() => navigate(`/cases/${id}/accident/edit`)}
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-800 transition-colors hover:bg-blue-50"
+            >
+              <Pencil className="h-4 w-4" />
+              Update accident details
+            </button>
+          )}
         </div>
       </div>
 
