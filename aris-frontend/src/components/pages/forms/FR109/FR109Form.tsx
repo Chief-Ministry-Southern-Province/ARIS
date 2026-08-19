@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CheckCircle, Download, Eye, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -60,6 +60,7 @@ export default function FR109Form({
   canCompleteChiefSecretaryDecision = false,
 }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { id: currentUserId, role } = useAuth();
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
@@ -457,6 +458,37 @@ export default function FR109Form({
                   >
                     Back
                   </button>
+                  {chiefAccountingOrderEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefAccountingOrder}
+                      disabled={chiefAccountingOrder.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefAccountingOrder.isPending ? "Saving..." : "Save S.T. / Ref. No."}
+                    </button>
+                  )}
+                  {chiefSecretaryDecisionEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefSecretaryDecision}
+                      disabled={chiefSecretaryDecision.isPending || !data.writeOffStatus}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefSecretaryDecision.isPending ? "Saving..." : "Save Write-Off Decision"}
+                    </button>
+                  )}
+                  {!onDecision && isCurrentUserPendingApprover && currentApproval && (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/approvals/${currentApproval.id}`)}
+                      className="px-5 py-3 bg-blue-800 text-white rounded-lg"
+                    >
+                      Decision
+                    </button>
+                  )}
                   {onDecision && (
                     <button
                       type="button"

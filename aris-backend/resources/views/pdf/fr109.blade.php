@@ -1182,7 +1182,7 @@
                     <td class="field-ten-reference" style="width: 100mm">
                         <table class="no-border">
                             <tr>
-                                <td class="field-ten-reference-label" style="width: 14mm; padding: 0">* <span lang="si">එස්. ටී.</span><br /><span lang="ta">எஸ். ரி.</span><br />S. T.</td>
+                                <td class="field-ten-reference-label" style="width: 14mm; padding: 0">* <span lang="si">භා.ලේ.</span><br /><span lang="ta">எஸ். டி.</span><br />S. T.</td>
                                 <td class="field-nine-brace" style="width: 6mm; padding: 0">}</td>
                                 <td style="padding: 0; vertical-align: middle"><span class="field-nine-dots">{{ $value('chiefAccountingOfficerSTNo') ?: '.......................................' }}</span></td>
                             </tr>
