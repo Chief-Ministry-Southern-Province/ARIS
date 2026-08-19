@@ -22,6 +22,7 @@ class FR109Service
     public function saveDraft(AccidentCase $case, User $user, array $data): FR109
     {
         return DB::transaction(function () use ($case, $user, $data) {
+            $data = $this->normalizeProperties($data);
             $data = $this->withReportDetails($case, $data);
             $latest = $case->fr109s()->latest('revision')->first();
 
@@ -210,6 +211,33 @@ class FR109Service
     private function ensureFR1044Approved(AccidentCase $case): void
     {
         abort_unless($case->fr1044s()->latest('revision')->value('status') === 'APPROVED', 409, 'An approved FR1044 report is required before creating FR109.');
+    }
+
+    /** Keep existing single-property records compatible with the repeatable property list. */
+    private function normalizeProperties(array $data): array
+    {
+        $properties = collect($data['properties'] ?? [])
+            ->filter(static fn ($property): bool => is_array($property))
+            ->map(static fn (array $property): array => [
+                'id' => (string) ($property['id'] ?? ''),
+                'description' => (string) ($property['description'] ?? ''),
+                'quantity' => (string) ($property['quantity'] ?? ''),
+            ])
+            ->values();
+
+        if ($properties->isEmpty()) {
+            $properties = collect([[
+                'id' => 'legacy-property-1',
+                'description' => (string) ($data['descriptionOfProperty'] ?? ''),
+                'quantity' => (string) ($data['quantity'] ?? ''),
+            ]]);
+        }
+
+        $data['properties'] = $properties->all();
+        $data['descriptionOfProperty'] = $properties->first()['description'];
+        $data['quantity'] = $properties->first()['quantity'];
+
+        return $data;
     }
 
     /**

@@ -676,7 +676,10 @@
         (string $key, mixed $default = ''): string => trim((string)
         data_get($data, $key, $default)); $officers = collect(data_get($data,
         'surchargedOfficers', []))->filter(fn ($item) =>
-        is_array($item))->values()->take(4)->pad(4, []); $writeOffEntries =
+        is_array($item))->values()->take(4)->pad(4, []); $properties = collect(data_get($data,
+        'properties', []))->filter(fn ($item) => is_array($item))->values(); if ($properties->isEmpty()) {
+        $properties = collect([['description' => $value('descriptionOfProperty'), 'quantity' => $value('quantity')]]);
+        } $propertySlots = $properties->pad(3, []); $writeOffEntries =
         collect(data_get($data, 'writeOffEntries', []))->filter(fn ($item) =>
         is_array($item))->values()->take(1)->pad(1, []); $reference = (string)
         (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; $creditLines = static function (mixed $credit): array { $words = preg_split('/\s+/u', trim((string) $credit), -1, PREG_SPLIT_NO_EMPTY) ?: []; $lines = []; $line = ''; foreach ($words as $word) { $candidate = $line === '' ? $word : $line.' '.$word; if ($line !== '' && mb_strlen($candidate) > 28) { $lines[] = $line; $line = $word; } else { $line = $candidate; } } if ($line !== '') { $lines[] = $line; } return $lines ?: ['']; }; $currencyParts = static function (mixed $amount): array { $amount = trim(str_replace(',', '', (string) $amount)); if ($amount === '') { return ['', '']; } [$rupees, $cents] = array_pad(explode('.', $amount, 2), 2, '00'); return [$rupees, str_pad(substr($cents, 0, 2), 2, '0')]; }; @endphp
@@ -786,12 +789,16 @@
                         <span lang="ta">அளவு</span> / Quantity
                     </td>
                 </tr>
-                <tr>
-                    <td class="value h-42">
-                        {{ $value('descriptionOfProperty') }}
-                    </td>
-                    <td class="value h-42">{{ $value('quantity') }}</td>
-                </tr>
+                @foreach ($propertySlots as $property)
+                    <tr>
+                        <td class="value" style="height: 11mm; vertical-align: top;">
+                            {{ trim((string) data_get($property, 'description', '')) }}
+                        </td>
+                        <td class="value" style="height: 11mm; vertical-align: top;">
+                            {{ trim((string) data_get($property, 'quantity', '')) }}
+                        </td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td class="h-11">
                         <span lang="si">4. මුල් පිරිවැය</span><br /><span

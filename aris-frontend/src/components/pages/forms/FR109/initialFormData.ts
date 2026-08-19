@@ -12,6 +12,13 @@ export const initialFormData: FR109FormData = {
 
   descriptionOfProperty: "",
   quantity: "",
+  properties: [
+    {
+      id: "property-1",
+      description: "",
+      quantity: "",
+    },
+  ],
 
   originalCost: "",
   estimatedCostAtTimeOfLoss: "",

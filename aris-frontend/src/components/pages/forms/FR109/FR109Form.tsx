@@ -140,10 +140,18 @@ export default function FR109Form({
         ledgerFolio: ledgerFolio ?? "",
       };
       const hasLegacyEntry = Object.values(legacyEntry).some(Boolean);
+      const properties = formData.properties?.length
+        ? formData.properties
+        : [{
+            id: "legacy-property-1",
+            description: currentData.descriptionOfProperty ?? "",
+            quantity: currentData.quantity ?? "",
+          }];
 
       setData({
         ...initialFormData,
         ...currentData,
+        properties,
         preliminaryReportReferenceNo: preliminaryReport?.status === "APPROVED"
           ? preliminaryReport.reference_number
           : currentData.preliminaryReportReferenceNo,
@@ -191,8 +199,14 @@ export default function FR109Form({
     }
 
     try {
+      const primaryProperty = data.properties[0] ?? {
+        description: data.descriptionOfProperty,
+        quantity: data.quantity,
+      };
       const result = await saveFR109({
         ...data,
+        descriptionOfProperty: primaryProperty.description,
+        quantity: primaryProperty.quantity,
         originalCost: numericPayload(data.originalCost),
         netLoss: numericPayload(data.netLoss),
       });

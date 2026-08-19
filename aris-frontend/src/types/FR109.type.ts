@@ -23,6 +23,12 @@ export interface WriteOffEntry {
   ledgerFolio: string;
 }
 
+export interface PropertyItem {
+  id: string;
+  description: string;
+  quantity: string;
+}
+
 export interface FR109FormData {
   // 1. Department
   department: string;
@@ -38,6 +44,7 @@ export interface FR109FormData {
   // 3. Particulars of property
   descriptionOfProperty: string;
   quantity: string;
+  properties: PropertyItem[];
 
   // 4. Value of loss
   originalCost: string;
