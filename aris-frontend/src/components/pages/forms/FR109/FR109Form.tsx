@@ -67,8 +67,8 @@ export default function FR109Form({
   const { data: loaded, isLoading, error } = useGetFR109(
     caseId ?? ""
   );
-  const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
-  const { data: finalReport } = useGetFR1044(readOnly ? undefined : accidentCaseId);
+  const { data: preliminaryReport } = useGetFR1043(accidentCaseId);
+  const { data: finalReport } = useGetFR1044(accidentCaseId);
   const displayed = document ?? loaded;
   const { data: accidentCase } = useCase(accidentCaseId);
   const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;

@@ -283,6 +283,22 @@
             padding: 2mm;
         }
 
+        .repeating-item-row-cell {
+            height: 13mm;
+            padding: 1.2mm 2mm;
+            vertical-align: top;
+            line-height: 1.25;
+            overflow: hidden;
+        }
+
+        .repeating-compact-row-cell {
+            height: 5mm;
+            padding: 0.8mm 2mm;
+            vertical-align: top;
+            line-height: 1.2;
+            overflow: hidden;
+        }
+
         .item-total-row {
             height: 7mm;
             font-size: 9pt;
@@ -826,29 +842,14 @@
                     Value
                 </th>
             </tr>
-            <tr>
-                <td class="item-area" style="width: 77mm;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'description', ''), 90) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 45mm; text-align: center;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'quantity', ''), 20) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 42mm; text-align: center;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">
-                            {{ $text(data_get($item, 'unitOfMeasure', data_get($item, 'unit', '')), 25) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 36mm; text-align: right;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'value', ''), 25) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($itemSlots as $item)
+                <tr>
+                    <td class="repeating-item-row-cell" style="width: 77mm;">{{ $text(data_get($item, 'description', ''), 90) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 45mm; text-align: center;">{{ $text(data_get($item, 'quantity', ''), 20) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 42mm; text-align: center;">{{ $text(data_get($item, 'unitOfMeasure', data_get($item, 'unit', '')), 25) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 36mm; text-align: right;">{{ $text(data_get($item, 'value', ''), 25) }}</td>
+                </tr>
+            @endforeach
             <tr>
                 <td colspan="3" class="item-total-row" style="text-align: right;">
                     <span lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total
@@ -891,18 +892,12 @@
                     <span lang="si">තනතුර</span>/<span lang="ta">பதவிப்பெயர்</span>/Designation
                 </td>
             </tr>
-            <tr>
-                <td class="h-23 response" style="width: 100mm;">
-                    @foreach ($officerSlots as $officerSlot)
-                        <div class="officer-line">{{ $text(data_get($officerSlot, 'officer.name', ''), 70) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 100mm;">
-                    @foreach ($officerSlots as $officerSlot)
-                        <div class="officer-line">{{ $text(data_get($officerSlot, 'designation', ''), 70) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($officerSlots as $officerSlot)
+                <tr>
+                    <td class="repeating-compact-row-cell response" style="width: 100mm;">{{ $text(data_get($officerSlot, 'officer.name', ''), 70) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 100mm;">{{ $text(data_get($officerSlot, 'designation', ''), 70) }}</td>
+                </tr>
+            @endforeach
         </table>
 
         <table class="page-break-avoid">

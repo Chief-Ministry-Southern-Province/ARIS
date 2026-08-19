@@ -242,9 +242,33 @@
             padding: 2mm;
         }
 
+        .repeating-item-row-cell {
+            height: 14mm;
+            padding: 1.2mm 2mm;
+            vertical-align: top;
+            line-height: 1.25;
+            overflow: hidden;
+        }
+
+        .repeating-compact-row-cell {
+            height: 5mm;
+            padding: 0.8mm 2mm;
+            vertical-align: top;
+            line-height: 1.2;
+            overflow: hidden;
+        }
+
         .item-area-sm {
             height: 34mm;
             padding: 2mm;
+        }
+
+        .recovery-row-cell {
+            height: 10.8mm;
+            padding: 1.2mm 2mm;
+            vertical-align: top;
+            line-height: 1.25;
+            overflow: hidden;
         }
 
         .item-total-row {
@@ -869,43 +893,17 @@
                     Original Cost
                 </th>
             </tr>
-            <tr>
-                <td class="item-area" style="width: 40mm;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'description', ''), 60) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 16mm; text-align: center;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'unit', ''), 15) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 16mm; text-align: center;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'quantity', ''), 15) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 32mm; text-align: right;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'estimatedCost', ''), 20) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 32mm; text-align: right;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'replacementCost', ''), 20) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 32mm; text-align: right;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'fr105Value', ''), 20) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area" style="width: 32mm; text-align: right;">
-                    @foreach ($itemSlots as $item)
-                        <div class="item-line">{{ $text(data_get($item, 'originalCost', ''), 20) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($itemSlots as $item)
+                <tr>
+                    <td class="repeating-item-row-cell" style="width: 40mm;">{{ $text(data_get($item, 'description', ''), 60) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 16mm; text-align: center;">{{ $text(data_get($item, 'unit', ''), 15) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 16mm; text-align: center;">{{ $text(data_get($item, 'quantity', ''), 15) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">{{ $text(data_get($item, 'estimatedCost', ''), 20) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">{{ $text(data_get($item, 'replacementCost', ''), 20) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">{{ $text(data_get($item, 'fr105Value', ''), 20) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">{{ $text(data_get($item, 'originalCost', ''), 20) }}</td>
+                </tr>
+            @endforeach
             <tr>
                 <td colspan="6" class="item-total-row" style="text-align: right;">
                     <span lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total Value
@@ -949,33 +947,15 @@
                     Details of Punishment
                 </th>
             </tr>
-            <tr>
-                <td class="h-23 response" style="width: 40mm;">
-                    @foreach ($officerSlots as $officer)
-                        <div class="officer-line">{{ $text(data_get($officer, 'name', ''), 40) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 40mm;">
-                    @foreach ($officerSlots as $officer)
-                        <div class="officer-line">{{ $text(data_get($officer, 'designation', ''), 40) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 45mm;">
-                    @foreach ($officerSlots as $officer)
-                        <div class="officer-line">{{ $text(data_get($officer, 'responsibility', ''), 45) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 40mm; text-align: left;">
-                    @foreach ($officerSlots as $officer)
-                        <div class="officer-line">{{ $text(data_get($officer, 'disciplinaryAction', ''), 30) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 35mm;">
-                    @foreach ($officerSlots as $officer)
-                        <div class="officer-line">{{ $text(data_get($officer, 'punishment', ''), 30) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($officerSlots as $officer)
+                <tr>
+                    <td class="repeating-compact-row-cell response" style="width: 40mm;">{{ $text(data_get($officer, 'name', ''), 40) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 40mm;">{{ $text(data_get($officer, 'designation', ''), 40) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 45mm;">{{ $text(data_get($officer, 'responsibility', ''), 45) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 40mm; text-align: left;">{{ $text(data_get($officer, 'disciplinaryAction', ''), 30) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 35mm;">{{ $text(data_get($officer, 'punishment', ''), 30) }}</td>
+                </tr>
+            @endforeach
         </table>
 
                 </td>
@@ -1047,23 +1027,19 @@
                     How recovery is to be made
                 </th>
             </tr>
-            <tr>
-                <td class="item-area-sm" style="width: 70mm;">
-                    @foreach ($recoverySlots as $recovery)
-                        <div class="item-line">{{ $text(data_get($recovery, 'officer', ''), 40) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area-sm" style="width: 50mm; text-align: right;">
-                    @foreach ($recoverySlots as $recovery)
-                        <div class="item-line">{{ $text(data_get($recovery, 'amount', ''), 25) }}</div>
-                    @endforeach
-                </td>
-                <td class="item-area-sm" style="width: 80mm;">
-                    @foreach ($recoverySlots as $recovery)
-                        <div class="item-line">{{ $text(data_get($recovery, 'method', ''), 55) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($recoverySlots as $recovery)
+                <tr>
+                    <td class="recovery-row-cell" style="width: 70mm;">
+                        {{ $text(data_get($recovery, 'officer', ''), 40) }}
+                    </td>
+                    <td class="recovery-row-cell" style="width: 50mm; text-align: right;">
+                        {{ $text(data_get($recovery, 'amount', ''), 25) }}
+                    </td>
+                    <td class="recovery-row-cell" style="width: 80mm;">
+                        {{ $text(data_get($recovery, 'method', ''), 55) }}
+                    </td>
+                </tr>
+            @endforeach
         </table>
 
         <table class="page-break-avoid insurance-table" style="margin-top: 3mm;">
@@ -1126,18 +1102,12 @@
                     <span lang="si">පදවිය</span> / <span lang="ta">பதவிப் பெயர்</span> / Designations
                 </th>
             </tr>
-            <tr>
-                <td class="h-23 response" style="width: 120mm;">
-                    @foreach ($boardMemberSlots as $member)
-                        <div class="officer-line">{{ $text(data_get($member, 'memberName', ''), 70) }}</div>
-                    @endforeach
-                </td>
-                <td class="h-23 response" style="width: 80mm;">
-                    @foreach ($boardMemberSlots as $member)
-                        <div class="officer-line">{{ $text(data_get($member, 'designation', ''), 70) }}</div>
-                    @endforeach
-                </td>
-            </tr>
+            @foreach ($boardMemberSlots as $member)
+                <tr>
+                    <td class="repeating-compact-row-cell response" style="width: 120mm;">{{ $text(data_get($member, 'memberName', ''), 70) }}</td>
+                    <td class="repeating-compact-row-cell response" style="width: 80mm;">{{ $text(data_get($member, 'designation', ''), 70) }}</td>
+                </tr>
+            @endforeach
         </table>
 
     </div>
