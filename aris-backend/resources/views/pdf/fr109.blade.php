@@ -16,8 +16,7 @@
             table,
             td,
             th,
-            div,
-            span {
+            div {
                 color: #000;
                 font-family: iskoolapota, notosanstamil, sans-serif;
                 font-size: 9.5pt;
@@ -145,12 +144,10 @@
             }
             [lang="si"] {
                 font-family: iskoolapota, sans-serif;
-                font-size: 10pt;
                 font-weight: normal !important;
             }
             [lang="ta"] {
                 font-family: notosanstamil, sans-serif;
-                font-size: 8.5pt;
                 font-weight: normal !important;
             }
             .small {
@@ -163,24 +160,30 @@
                 text-align: center;
                 vertical-align: middle;
             }
-            .title {
-                height: 29mm;
+            .table-header-sinhala {
+                font-size: 10.5pt;
+                line-height: 1.02;
+            }
+            .form-header-title {
+                height: 50mm;
+                padding: 0 !important;
+                overflow: visible !important;
                 text-align: center;
                 vertical-align: middle;
             }
-            .title-si {
-                font-size: 16pt !important;
-                font-weight: bold !important;
-                line-height: 1.2;
-            }
-            .title-ta {
-                font-size: 13pt !important;
-                line-height: 1.15;
-            }
-            .title-en {
-                font-family: dejavuserifcondensed, serif;
-                font-size: 13pt;
+            .form-title-si {
+                font-size: 14pt;
                 font-weight: bold;
+                line-height: 1;
+            }
+            .form-title-ta {
+                font-size: 10pt;
+                line-height: 1.06;
+            }
+            .form-title-en {
+                font-family: dejavuserifcondensed, serif;
+                font-size: 9pt;
+                line-height: 1.02;
             }
             .admin {
                 height: 14mm;
@@ -194,19 +197,36 @@
                 font-size: 7.5pt;
                 line-height: 1.02;
             }
-            .reference {
-                font-size: 8.5pt;
+            .form-reference {
+                padding: 3mm 3.5mm !important;
                 vertical-align: middle;
             }
-            .dotted {
-                display: inline-block;
-                min-width: 45mm;
+            .form-reference-label {
+                font-size: 8.5pt;
+                line-height: 1.1;
+                text-align: left;
+            }
+            .form-reference-value {
+                display: block;
+                margin-top: 3mm;
+                padding-bottom: 0.7mm;
                 border-bottom: 0.25mm dotted #000;
+                font-family: dejavuserifcondensed, serif;
+                font-size: 10pt;
+                line-height: 1.1;
+                text-align: left;
             }
             .section-title {
                 padding: 1.5mm 0;
                 border-left: 0;
                 border-right: 0;
+            }
+            .section-sinhala-title {
+                font-size: 10.5pt;
+            }
+            .subsection-sinhala-title {
+                font-size: 10.5pt;
+                line-height: 1.05;
             }
             .field-nine-title {
                 padding: 1.5mm 5mm 1mm;
@@ -239,7 +259,7 @@
             .field-nine-caption-brace {
                 display: table-cell;
                 font-family: dejavuserifcondensed, serif;
-                font-size: 26pt;
+                font-size: 14pt;
                 line-height: 1;
                 vertical-align: middle;
             }
@@ -454,6 +474,12 @@
             }
             .h-11 {
                 height: 11mm;
+            }
+            .section-one-label {
+                height: 13mm;
+            }
+            .section-one-label-si {
+                line-height: 1.05;
             }
             .h-16 {
                 height: 16mm;
@@ -698,38 +724,36 @@
                 </tr>
             </table>
 
-            <table>
+            <table autosize="1">
                 <tr>
-                    <td class="title" style="width: 140mm">
-                        <span class="title-si" lang="si"
-                            >මූ. රෙ. 109 යටතේ අලාභයන් ලියාහැරීම සඳහා<br />ඉල්ලුම්
-                            පත්‍රය</span
-                        ><br />
-                        <span class="title-ta" lang="ta"
-                            >நி. பி. 109 இன் படி இழப்புக்களை பதியறித்ததற்கான<br />விண்ணப்பம்</span
-                        ><br />
-                        <span class="title-en"
-                            >APPLICATION FOR WRITE OFF OF LOSSES IN TERMS OF
-                            F.R. 109</span
-                        >
+                    <td class="form-header-title" style="width: 140mm">
+                        <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
+                            මූ. රෙ. 109 යටතේ අලාභයන් පොතෙන් කපා හැරීම සඳහා<br />ඉල්ලුම් පත්‍රය
+                        </div>
+                        <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06;">
+                            நி. பி. 109 இன் படி இழப்புக்களை பதியறித்ததற்கான<br />விண்ணப்பம்
+                        </div>
+                        <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
+                            APPLICATION FOR WRITE OFF OF LOSSES IN TERMS OF F.R. 109
+                        </div>
                     </td>
-                    <td class="reference" style="width: 60mm">
-                        <span lang="si">යොමු අංකය</span> /
-                        <span lang="ta">தொடர் இல.</span> / Ref. No.<br /><span
-                            class="dotted"
-                            >{{ $reference }}</span
-                        >
+                    <td class="form-reference" style="width: 60mm">
+                        <div class="form-reference-label">
+                            <span lang="si">යොමු අංකය</span> /
+                            <span lang="ta">தொடர் இல.</span> / Ref. No.
+                        </div>
+                        <div class="form-reference-value">{{ $reference }}</div>
                     </td>
                 </tr>
             </table>
 
             <table>
                 <tr>
-                    <td style="width: 35mm" class="h-11">
-                        <span lang="si">1. දෙපාර්තමේන්තුව</span><br /><span
-                            lang="ta"
+                    <td style="width: 35mm" class="section-one-label">
+                        <span class="section-one-label-si section-sinhala-title" lang="si">1. දෙපාර්තමේන්තුව</span><br /><span
+                            class="section-one-label-ta" lang="ta"
                             >திணைக்களம்</span
-                        ><br />Department
+                        ><br /><span class="section-one-label-en">Department</span>
                     </td>
                     <td class="h-11">{{ $value('department') }}</td>
                 </tr>
@@ -738,7 +762,7 @@
             <table>
                 <tr>
                     <td style="width: 35mm" rowspan="3" class="h-30">
-                        <span lang="si">2. වාර්තාව</span><br /><span lang="ta"
+                        <span class="section-sinhala-title" lang="si">2. වාර්තාව</span><br /><span lang="ta"
                             >அறிக்கை</span
                         ><br />Report
                     </td>
@@ -773,19 +797,19 @@
             <table>
                 <tr>
                     <td class="section-title" colspan="2">
-                        <span lang="si">3. දේපළ පිළිබඳ විස්තර</span> /
+                        <span class="section-sinhala-title" lang="si">3. දේපළ පිළිබඳ විස්තර</span> /
                         <span lang="ta">பொருட்களின் விவரம்</span> / Particulars
                         of Property -
                     </td>
                 </tr>
                 <tr>
                     <td class="header" style="width: 120mm">
-                        <span lang="si">දේපළ පිළිබඳ විස්තර</span> /
+                        <span class="table-header-sinhala" lang="si">දේපළ පිළිබඳ විස්තර</span> /
                         <span lang="ta">பொருட்களின் விவரணம்</span> / Description
                         of Property
                     </td>
                     <td class="header" style="width: 80mm">
-                        <span lang="si">ප්‍රමාණය</span> /
+                        <span class="table-header-sinhala" lang="si">ප්‍රමාණය</span> /
                         <span lang="ta">அளவு</span> / Quantity
                     </td>
                 </tr>
@@ -801,7 +825,7 @@
                 @endforeach
                 <tr>
                     <td class="h-11">
-                        <span lang="si">4. මුල් පිරිවැය</span><br /><span
+                        <span class="section-sinhala-title" lang="si">4. මුල් පිරිවැය</span><br /><span
                             lang="ta"
                             >மூலப் பெறுமதி</span
                         ><br />Original Cost
@@ -810,7 +834,7 @@
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si"
+                        <span class="subsection-sinhala-title" lang="si"
                             >අලාභය සිදු වූ අවස්ථාවේ දළ හෝ තක්සේරු පිරිවැය</span
                         ><br /><span lang="ta"
                             >இழப்பு நேர்ந்தபோது அதன் அண்ணளவான அல்லது
@@ -821,7 +845,7 @@
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si"
+                        <span class="subsection-sinhala-title" lang="si"
                             >ප්‍රතිස්ථාපන අගය හෝ අලුත්වැඩියා කිරීමේ වියදම</span
                         ><br /><span lang="ta"
                             >பதிலீடும் செலவு அல்லது திருத்தச் செலவு</span
@@ -831,7 +855,7 @@
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si">මූ. රෙ. 105(1) යටතේ වටිනාකම</span
+                        <span class="subsection-sinhala-title" lang="si">මූ. රෙ. 105(1) යටතේ වටිනාකම</span
                         ><br /><span lang="ta"
                             >நி. பி. 105(1) இன் படி பெறுமதி</span
                         ><br />Value in terms of F. R. 105(1)
@@ -840,7 +864,7 @@
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si"
+                        <span class="subsection-sinhala-title" lang="si"
                             >වගකියයුතු නිලධාරීන්ගෙන්/රක්ෂණයෙන්/ඇප සහතිකයෙන් අයකර ගන්නා ලද මුදල</span
                         ><br /><span lang="ta"
                             >இதற்குப் பொறுப்பான உத்தியோகத்தர்களிடமிருந்து/
@@ -851,7 +875,7 @@
                 </tr>
                 <tr>
                     <td class="h-11">
-                        <span lang="si">වි.වි.හි.ස., රේගුබදු, දෙපාර්තමේන්තු ගාස්තු යනාදිය ඇතුලත්ව ශුද්ධ අලාභය</span><br /><span lang="ta"
+                        <span class="subsection-sinhala-title" lang="si">වි.වි.හි.ස., රේගුබදු, දෙපාර්තමේන්තු ගාස්තු යනාදිය ඇතුලත්ව ශුද්ධ අලාභය</span><br /><span lang="ta"
                             >அ.செ.ஈ. சா., சுங்கத்தீர்வை, திணைக்களச் செலவுகள் முதலியன உட்பட்ட தேறிய நட்டம்</span
                         ><br />Net Loss inclusive of FEECs, Customs Duty,
                         Departmental charges, etc.,
@@ -884,7 +908,7 @@
                         <table>
                             <tr>
                                 <td class="section-title" style="width: 50%">
-                                    <span lang="si">5. නීතිමය ක්‍රියාවන්ගේ ප්‍රතිඵල</span>
+                                    <span class="section-sinhala-title" lang="si">5. නීතිමය ක්‍රියාවන්ගේ ප්‍රතිඵල</span>
                                     / <span lang="ta">சட்ட நடவடிக்கைகளின் விளைவு</span> /
                                     Outcome of legal action -
                                 </td>
@@ -898,8 +922,8 @@
                                 <td style="padding: 0">
                                     <table>
                                         <tr>
-                                            <td class="header" style="width: 55%"><span lang="si">උසාවියේ නම</span><br /><span lang="ta">நீதி மன்றத்தின் பெயர்</span><br />Name of Court</td>
-                                            <td class="header" style="width: 45%"><span lang="si">නඩු අංකය</span><br /><span lang="ta">வழக்கு இல.</span><br />Case No.</td>
+                                            <td class="header" style="width: 55%"><span class="table-header-sinhala" lang="si">උසාවියේ නම</span><br /><span lang="ta">நீதி மன்றத்தின் பெயர்</span><br />Name of Court</td>
+                                            <td class="header" style="width: 45%"><span class="table-header-sinhala" lang="si">නඩු අංකය</span><br /><span lang="ta">வழக்கு இல.</span><br />Case No.</td>
                                         </tr>
                                         <tr>
                                             <td class="value h-16">{{ $value('nameOfCourt') }}</td>
@@ -920,51 +944,51 @@
                         <table style="margin-top: 3mm">
                             <tr>
                                 <td class="section-title" colspan="8">
-                                    <span lang="si">6. නියම කරන ලද අධිභාරයේ විස්තර</span> /
+                                    <span class="section-sinhala-title" lang="si">6. නියම කරන ලද අධිභාරයේ විස්තර</span> /
                                     <span lang="ta">விதித்த மேலதிகக் கட்டணங்களின் விவரங்கள்</span> /
                                     Details of surcharges imposed -
                                 </td>
                             </tr>
                             <tr>
                                 <td class="header" style="width: 65mm">
-                                    <span lang="si">නිලධාරියාගේ නම</span><br />
+                                    <span class="table-header-sinhala" lang="si">නිලධාරියාගේ නම</span><br />
                                     <span lang="ta">உத்தியோகத்தரின் பெயர்</span><br />
                                     Name of Officer
                                 </td>
                                 <td class="header" style="width: 35mm">
-                                    <span lang="si">තනතුර</span><br />
+                                    <span class="table-header-sinhala" lang="si">තනතුර</span><br />
                                     <span lang="ta">பதவி</span><br />
                                     Designation
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">නියම කරන ලද අධිභාරය</span><br />
+                                    <span class="table-header-sinhala" lang="si">නියම කරන ලද අධිභාරය</span><br />
                                     <span lang="ta">மேலதிகக் கட்டணத் தொகை</span><br />
                                     Amount surcharged
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">අයකරගන්නා ලද මුදල</span><br />
+                                    <span class="table-header-sinhala" lang="si">අයකරගන්නා ලද මුදල</span><br />
                                     <span lang="ta">அறவிடப்பட்ட தொகை</span><br />
                                     Amount recovered
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
                                 </td>
                                 <td class="header" style="width: 30mm">
-                                    <span lang="si">අයකරගන්නා ලද දිනය</span><br />
+                                    <span class="table-header-sinhala" lang="si">අයකරගන්නා ලද දිනය</span><br />
                                     <span lang="ta">அறவிட்ட திகதி</span><br />
                                     Date of recovery
                                 </td>
                                 <td class="header" style="width: 25mm">
-                                    <span lang="si">කුවිතාන්සි අංකය</span><br />
+                                    <span class="table-header-sinhala" lang="si">කුවිතාන්සි අංකය</span><br />
                                     <span lang="ta">பற்றுச் சீட்டு இல.</span><br />
                                     Receipt No.
                                 </td>
                                 <td class="header" style="width: 47mm">
-                                    <span lang="si">ණය මුදල් පිළිබඳ විස්තර</span><br />
+                                    <span class="table-header-sinhala" lang="si">ණය මුදල් පිළිබඳ විස්තර</span><br />
                                     <span lang="ta">வரவு விவரங்கள்</span><br />
                                     Credit particulars
                                 </td>
                                 <td class="header section-six-currency-header" style="width: 25mm">
-                                    <span lang="si">අය නොකරන ලද මුදල් ශේෂය</span><br />
+                                    <span class="table-header-sinhala" lang="si">අය නොකරන ලද මුදල් ශේෂය</span><br />
                                     <span lang="ta">அறவிடாத மீதி</span><br />
                                     Balance not recovered
                                     <table class="currency-split-table"><tr><td class="currency-rupees" style="width: 50%; border-right: 0.4mm solid #000 !important">රු.<br />Rs.</td><td style="width: 50%">ශ.<br />Cts.</td></tr></table>
@@ -1000,7 +1024,7 @@
             <table>
                 <tr>
                     <td class="section-title">
-                        <span lang="si">7. නියමකරන ලද අධිභාරයන් අය නොකිරීමට හේතු</span> /
+                        <span class="section-sinhala-title" lang="si">7. නියමකරන ලද අධිභාරයන් අය නොකිරීමට හේතු</span> /
                         <span lang="ta">விதித்த மேலதிகக் கட்டணங்களை அறவிடாத காரணம்</span> /
                         Reasons for non-recoveries of surcharges imposed -
                     </td>
@@ -1015,7 +1039,7 @@
             <table class="page-three-section-eight" style="margin-top: 2mm">
                 <tr>
                     <td class="section-title">
-                        <span lang="si"
+                        <span class="section-sinhala-title" lang="si"
                             >8. (අ) නිලධාරියා සේවයේ නොමැති නම් ඔහුගේ වත්කම්වලින් අලාභහානි අයකර ගැනීමට ගන්නා ලද ක්‍රියාමාර්ගයන් පිළිබඳ විස්තර</span
                         ><br /><span lang="ta"
                             >(அ) உத்தியோகத்தர் சேவையிலில்லாவிடின், உத்தியோகத்தரின் சொத்துக்களிலிருந்து அறவிடுவதற்கு எடுத்துள்ள நடவடிக்கை</span
@@ -1107,7 +1131,7 @@
             <table>
                 <tr>
                     <td class="section-title field-nine-title" style="width: 100%; vertical-align: bottom;">
-                        <span lang="si"
+                        <span class="section-sinhala-title" lang="si"
                             >9. මූ. රෙ. 109 යටතේ දෙපාර්තමේන්තු ප්‍රධානියාගේ හෝ සංස්ථාවේ සභාපතිගේ නිර්දේශය හෝ නියෝගය</span
                         ><br /><span lang="ta"
                             >நி. பி. 109 இன் கீழ் திணைக்களத் தலைவரின் அல்லது கூட்டுத்தாபனத் தவிசாளரது கட்டளை அல்லது விதப்புரை</span
@@ -1169,7 +1193,7 @@
             <table style="margin-top: 3mm">
     <tr>
         <td class="section-title">
-            <span lang="si">10. මූ. රෙ. 108(1) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නියෝගය හෝ මූ. රෙ. 108(3) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නිර්දේශය</span><br />
+            <span class="section-sinhala-title" lang="si">10. මූ. රෙ. 108(1) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නියෝගය හෝ මූ. රෙ. 108(3) යටතේ ප්‍රධාන ගණන්දීමේ නිලධාරියාගේ නිර්දේශය</span><br />
             <span lang="ta">நி. பி. 108(1) இன் கீழ் பிரதான கணக்குப் பொறுப்பு உத்தியோகத்தரின் கட்டளை அல்லது நி. பி. 108 (3) இன் கீழ் பிரதான கணக்குப் பொறுப்பு உத்தியோகத்தரின் விதப்புரை</span><br />
             Order of the Chief Accounting Officer under F. R. 108 (1) or recommendation of Chief Accounting Officer
             under F. R. 108 (3) -
@@ -1232,7 +1256,7 @@
                                     <b>11.</b>
                                     <span class="field-nine-dots">..........ප්‍රධාන අමාත්‍යාංශය</span>
                                     <span class="field-nine-dots">....................</span>
-                                    <span lang="si" style="white-space: nowrap">අමාත්‍යාංශයේ ලේකම්</span><br />
+                                    <span class="section-sinhala-title" lang="si" style="white-space: nowrap">අමාත්‍යාංශයේ ලේකම්</span><br />
                                     <span style="display: inline-block; width: 10mm"></span>
                                     <span class="field-nine-dots">................................................................</span>
                                     <span lang="ta">அமைச்சின் செயலாளர்</span><br />
@@ -1311,29 +1335,29 @@
             <table style="margin-top: 3mm" class="writeoff">
                 <tr>
                     <td class="section-title" colspan="4">
-                        <span lang="si">12. පොතෙන් කපාහැරීම සටහන් කරන ලද්දේ -</span><br />
+                        <span class="section-sinhala-title" lang="si">12. පොතෙන් කපාහැරීම සටහන් කරන ලද්දේ -</span><br />
                         <span lang="ta">பதிவழித்தல் பின்வருவனவற்றில் குறிக்கப்பட்டுள்ளது -</span><br />
                         Write off noted in-
                     </td>
                 </tr>
                 <tr>
                     <td class="header" style="width: 43mm">
-                        <span lang="si">තොග පොතේ අංකය</span><br />
+                        <span class="table-header-sinhala" lang="si">තොග පොතේ අංකය</span><br />
                         <span lang="ta">இருப்புப் புத்தகப் பக்கம்</span><br />
                         Stock Book folio
                     </td>
                     <td class="header" style="width: 41mm">
-                        <span lang="si">බඩු වට්ටෝරු පිටුව</span><br />
+                        <span class="table-header-sinhala" lang="si">බඩු වට්ටෝරු පිටුව</span><br />
                         <span lang="ta">பதிவேட்டுப் புத்தகப் பக்கம்</span><br />
                         Inventory Book folio
                     </td>
                     <td class="header" style="width: 70mm">
-                        <span lang="si">ස්ථාවර වත්කම් ලේඛනය</span><br />
+                        <span class="table-header-sinhala" lang="si">ස්ථාවර වත්කම් ලේඛනය</span><br />
                         <span lang="ta">நிலையான சொத்துக்களின் பதிவேட்டுப் பக்கம்</span><br />
                         Register of fixed Assets folio
                     </td>
                     <td class="header" style="width: 46mm">
-                        <span lang="si">ලෙජර් පිටුව</span><br />
+                        <span class="table-header-sinhala" lang="si">ලෙජර් පිටුව</span><br />
                         <span lang="ta">பேரேட்டுப் பக்கம்</span><br />
                         Ledger folio
                     </td>
@@ -1362,3 +1386,4 @@
         </div>
     </body>
 </html>
+  

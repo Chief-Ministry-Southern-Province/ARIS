@@ -11,6 +11,7 @@ class NextApprovalNotification extends Notification
     use Queueable;
 
     public const TYPE = 'APPROVAL_REQUIRED';
+    public const RECOMMENDATION_TYPE = 'RECOMMENDATION_REQUIRED';
 
     public function __construct(
         private readonly Approval $approval,
@@ -38,12 +39,13 @@ class NextApprovalNotification extends Notification
     {
         $document = trim("{$this->approval->document_type} {$this->referenceNumber}");
         $caseNumber = $this->approval->accidentCase?->case_number ?? 'this case';
-        $message = "{$document} requires your approval for {$caseNumber}.";
+        $requiresRecommendation = $this->requiresRecommendation();
+        $action = $requiresRecommendation ? 'recommendation' : 'approval';
 
         return [
-            'title' => 'Approval Required',
-            'message' => $message,
-            'type' => self::TYPE,
+            'title' => $requiresRecommendation ? 'Recommendation Required' : 'Approval Required',
+            'message' => "{$document} requires your {$action} for {$caseNumber}.",
+            'type' => $requiresRecommendation ? self::RECOMMENDATION_TYPE : self::TYPE,
             'approval_id' => $this->approval->id,
             'accident_case_id' => $this->approval->accident_case_id,
             'document_type' => $this->approval->document_type,
@@ -57,5 +59,15 @@ class NextApprovalNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return $this->toArray($notifiable);
+    }
+
+    private function requiresRecommendation(): bool
+    {
+        return Approval::query()
+            ->where('accident_case_id', $this->approval->accident_case_id)
+            ->where('document_type', $this->approval->document_type)
+            ->where('revision', $this->approval->revision)
+            ->where('step', '>', $this->approval->step)
+            ->exists();
     }
 }
