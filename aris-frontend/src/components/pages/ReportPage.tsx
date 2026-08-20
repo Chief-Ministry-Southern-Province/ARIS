@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/atoms/Checkbox";
 import LocationPicker from "@/components/maps/LocationPicker";
 import { reverseGeocode } from "@/services/geocoding.service";
 import { mapSriLankaLocation } from "@/utils/locationMapper";
+import { useEvidenceUploadMutation } from "@/hooks/mutations/useEvidenceUploadMutation";
 
 import { useAuth } from "@/context/auth/AuthContext";
 
@@ -46,7 +47,8 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
   const { data: existingAccident, isLoading: loadingAccident, error: accidentError } = useAccident(isEditing ? accidentId : undefined);
   const { mutateAsync: createAccidentData, isPending: creating, error: createMutationError } = useCreateAccidentMutation();
   const { mutateAsync: updateAccidentData, isPending: updating, error: updateMutationError } = useUpdateAccidentMutation();
-  const submitting = creating || updating;
+  const { mutateAsync: uploadEvidenceFiles, isPending: uploadingEvidence } = useEvidenceUploadMutation();
+  const submitting = creating || updating || uploadingEvidence;
   const submitMutationError = updateMutationError ?? createMutationError;
   const submitError = submitMutationError instanceof Error ? submitMutationError.message : "";
 
@@ -248,6 +250,11 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
           id: existingAccident.id,
           data: updatePayload as UpdateAccidentRequest,
         });
+
+        if (form.files.length > 0) {
+          await uploadEvidenceFiles({ accidentId: existingAccident.id, files: form.files });
+        }
+
         toast.success("Accident details updated successfully!");
         navigate(`/cases/${numericCaseId}/details?tab=Details`);
         return;
@@ -547,19 +554,18 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
           </FormField>
         </div>
 
-        {!isEditing && (
-          <FormField label={t("report.evidenceImages")}>
-            <ImageUploadField
-              key={successMessage}
-              onChange={(files) =>
-                setForm((prev) => ({
-                  ...prev,
-                  files: files,
-                }))
-              }
-            />
-          </FormField>
-        )}
+        <FormField label={isEditing ? "Add new evidence photos" : t("report.evidenceImages")}>
+          <ImageUploadField
+            key={successMessage}
+            enableCamera
+            onChange={(files) =>
+              setForm((prev) => ({
+                ...prev,
+                files,
+              }))
+            }
+          />
+        </FormField>
         {/* Submit */}
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={submitting}>

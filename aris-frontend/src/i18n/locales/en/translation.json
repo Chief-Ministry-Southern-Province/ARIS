@@ -151,7 +151,20 @@
         "WINDY": "Windy",
         "OTHER": "Other"
       },
-      "EnvironmentalConditions": "Environmental Conditions"
+    "EnvironmentalConditions": "Environmental Conditions",
+    "camera": {
+      "takePhoto": "Take a photo",
+      "useDeviceCamera": "Use your device camera",
+      "permissionRequired": "Permission required",
+      "cameraTitle": "Take evidence photo",
+      "cameraAccessError": "Camera access was not granted. You can still upload an image from your device.",
+      "capturePhoto": "Capture photo",
+      "retake": "Retake",
+      "usePhoto": "Use photo",
+      "closeCamera": "Close camera",
+      "browsePhotos": "Click to browse photos",
+      "supportedImages": "JPG, PNG"
+    }
   },
   "btn": {
     "next": "Next",

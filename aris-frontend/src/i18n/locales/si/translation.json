@@ -116,7 +116,20 @@
       "WINDY": "සුළං සහිත",
       "OTHER": "වෙනත්"
     },
-    "EnvironmentalConditions": "පරිසර තත්ත්වය"
+    "EnvironmentalConditions": "පරිසර තත්ත්වය",
+    "camera": {
+      "takePhoto": "ඡායාරූපයක් ගන්න",
+      "useDeviceCamera": "ඔබගේ උපාංගයේ කැමරාව භාවිතා කරන්න",
+      "permissionRequired": "අවසර අවශ්‍යයි",
+      "cameraTitle": "සාක්ෂි ඡායාරූපයක් ගන්න",
+      "cameraAccessError": "කැමරා ප්‍රවේශයට අවසර ලබා දී නොමැත. ඔබට උපාංගයෙන් ඡායාරූපයක් උඩුගත කළ හැක.",
+      "capturePhoto": "ඡායාරූපය ගන්න",
+      "retake": "නැවත ගන්න",
+      "usePhoto": "ඡායාරූපය භාවිතා කරන්න",
+      "closeCamera": "කැමරාව වසන්න",
+      "browsePhotos": "ඡායාරූප තේරීමට ක්ලික් කරන්න",
+      "supportedImages": "JPG, PNG"
+    }
   },
   "btn": {
     "next": "ඊළඟ",
