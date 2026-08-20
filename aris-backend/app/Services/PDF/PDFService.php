@@ -101,6 +101,10 @@ final class PDFService
         return [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('%s; filename="%s"', $disposition, addcslashes($filename, "\\\"")),
+            // PDFs are rendered from the latest document data and Blade template.
+            // Prevent the browser from reusing an earlier preview/download.
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
         ];
     }
 }

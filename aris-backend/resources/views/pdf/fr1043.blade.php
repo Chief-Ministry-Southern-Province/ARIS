@@ -153,49 +153,54 @@
             font-weight: bold;
         }
 
-        .title-cell {
-            height: 22mm;
-            padding: 0;
+        /* Shared FR109-style document header. */
+        .form-header-title {
+            height: 50mm;
+            padding: 0 !important;
+            overflow: visible !important;
             text-align: center;
             vertical-align: middle;
         }
 
-        .title-stack {
-            width: 100%;
-            height: 100%;
-        }
-
-        .title-stack td {
-            border: 0;
-            padding: 0;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .title-si {
+        .form-title-si {
             font-family: iskoolapota, sans-serif;
-            font-size: 24pt;
+            font-size: 14pt;
             font-weight: bold;
-            line-height: 1.05;
+            line-height: 1;
         }
 
-        .title-ta {
-            font-size: 12pt;
-            font-weight: normal;
-            line-height: 1.2;
+        .form-title-ta {
+            font-family: notosanstamil, sans-serif;
+            font-size: 10pt;
+            line-height: 1.06;
         }
 
-        .title-en {
-            font-size: 12pt;
-            font-weight: bold;
-            line-height: 1.2;
+        .form-title-en {
+            font-family: dejavuserifcondensed, serif;
+            font-size: 9pt;
+            line-height: 1.02;
         }
 
-        .reference-cell {
-            font-size: 8.8pt;
+        .form-reference {
+            padding: 3mm 3.5mm !important;
+            vertical-align: middle;
+        }
+
+        .form-reference-label {
+            font-size: 8.5pt;
             line-height: 1.05;
             text-align: left;
-            vertical-align: middle;
+        }
+
+        .form-reference-value {
+            display: block;
+            margin-top: 3mm;
+            padding-bottom: 0.7mm;
+            border-bottom: 0.25mm dotted #000;
+            font-family: dejavuserifcondensed, serif;
+            font-size: 10pt;
+            line-height: 1.1;
+            text-align: left;
         }
 
         .ministry-table td {
@@ -704,33 +709,25 @@
             </tr>
         </table>
 
-        <table class="page-break-avoid">
+        <table autosize="1">
             <tr>
-                <td class="title-cell" style="width: 150mm;">
-                    <table class="no-border title-stack">
-                        <tr>
-                            <td class="title-si"
-                                style="font-family: iskoolapota, sans-serif !important; font-size: 32pt !important; line-height: 0.9 !important;">
-                                මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව</td>
-                        </tr>
-                        <tr>
-                            <td class="title-ta" lang="ta"
-                                style="font-family: notosanstamil, sans-serif; font-size: 12pt; line-height: 1.1;">
-                                நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை</td>
-                        </tr>
-                        <tr>
-                            <td class="title-en" style="font-size: 12pt; line-height: 1.1;">PRELIMINARY REPORT OF LOSSES
-                                UNDER F. R. 104 (3)</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="reference-cell" style="width: 50mm;">
-                    <div class="field-title">
-                        <span class="label-local" lang="si">යොමු අංක</span> /
-                        <span class="label-local" lang="ta">தொடர் இல.</span> /
-                        <span class="label-local">Ref. No.</span>
+                <td class="form-header-title" style="width: 140mm;">
+                    <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
+                        මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව
                     </div>
-                    <span class="dotted-value">{{ $text($referenceNumber, 30) }}</span>
+                    <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06;">
+                        நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை
+                    </div>
+                    <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
+                        PRELIMINARY REPORT OF LOSSES UNDER F. R. 104 (3)
+                    </div>
+                </td>
+                <td class="form-reference" style="width: 60mm;">
+                    <div class="form-reference-label">
+                        <span lang="si">යොමු අංකය</span> /
+                        <span lang="ta">தொடர் இல.</span> / Ref. No.
+                    </div>
+                    <div class="form-reference-value">{{ $text($referenceNumber, 30) }}</div>
                 </td>
             </tr>
         </table>
