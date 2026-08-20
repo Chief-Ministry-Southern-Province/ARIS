@@ -98,6 +98,19 @@
             font-weight: normal !important;
         }
 
+        [lang="si"] {
+            font-family: iskoolapota, sans-serif;
+            font-weight: normal !important;
+        }
+
+        /* FR109-style Sinhala emphasis, applied without altering FR1043's
+           official table structure or signature placement. */
+        .table-header [lang="si"],
+        .field-title [lang="si"] {
+            font-size: 10.5pt;
+            line-height: 1.02;
+        }
+
         .small {
             font-size: 7.8pt;
             line-height: 1.05;
@@ -163,14 +176,12 @@
         }
 
         .form-title-si {
-            font-family: iskoolapota, sans-serif;
             font-size: 14pt;
             font-weight: bold;
             line-height: 1;
         }
 
         .form-title-ta {
-            font-family: notosanstamil, sans-serif;
             font-size: 10pt;
             line-height: 1.06;
         }
@@ -188,7 +199,7 @@
 
         .form-reference-label {
             font-size: 8.5pt;
-            line-height: 1.05;
+            line-height: 1.1;
             text-align: left;
         }
 
@@ -713,10 +724,10 @@
             <tr>
                 <td class="form-header-title" style="width: 140mm;">
                     <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
-                        මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ ප්‍රාථමික වාර්තාව
+                        මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ<br>ප්‍රාථමික වාර්තාව
                     </div>
                     <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06;">
-                        நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய தொடக்க அறிக்கை
+                        நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய<br>தொடக்க அறிக்கை
                     </div>
                     <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
                         PRELIMINARY REPORT OF LOSSES UNDER F. R. 104 (3)
