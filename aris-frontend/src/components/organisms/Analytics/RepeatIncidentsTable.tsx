@@ -17,7 +17,7 @@ export default function RepeatIncidentsTable({ data = [], isLoading }: RepeatInc
       <SectionTitle>{t("analytics.charts.repeatIncidentsDriverAnalysis")}</SectionTitle>
       {isLoading ? (
         <div className="space-y-4">
-          {[...Array(4)].map((_, index) => <div key={index} className="h-9 animate-pulse rounded bg-slate-100" />)}
+          {[...Array(4)].map((_, index) => <div key={index} className="h-9 animate-pulse rounded bg-slate-100 dark:bg-slate-800/80" />)}
         </div>
       ) : data.length ? (
         <div className="space-y-4">
@@ -31,8 +31,8 @@ export default function RepeatIncidentsTable({ data = [], isLoading }: RepeatInc
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="mb-1.5 flex items-center justify-between gap-2">
-                    <span className="truncate text-sm font-medium text-blue-900">{item.driver}</span>
-                    <span className="max-w-[50%] truncate rounded-sm bg-blue-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-blue-700">{item.institution}</span>
+                    <span className="truncate text-sm font-medium text-blue-900 dark:text-blue-200">{item.driver}</span>
+                    <span className="max-w-[50%] truncate rounded-sm bg-blue-50 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:bg-blue-950/80 dark:text-blue-200">{item.institution}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-sm bg-slate-100">
                     <div className="h-full rounded-sm" style={{ width: `${(item.incidents / maximum) * 100}%`, background: color }} />

@@ -100,7 +100,9 @@ const UserTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">{formatRole(user.roles[0].name)}</span>
+                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950/80 dark:text-blue-200">
+                      {formatRole(user.roles[0].name)}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-600">{user.institution.name}</td>
                   <td className="px-4 py-3">

@@ -49,6 +49,8 @@
   /* Sidebar */
   --sidebar: #0f172a;
   --sidebar-foreground: #f8fafc;
+  --sidebar-gradient: linear-gradient(180deg, #0f2460 0%, #1e3a8a 40%, #1e40af 100%);
+  --sidebar-shadow: 4px 0 24px rgba(30, 64, 175, 0.18);
 
   --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
@@ -84,6 +86,9 @@
   --chart-3: #16a34a;
   --chart-4: #d97706;
   --chart-5: #dc2626;
+  --chart-grid: #d7e0eb;
+  --chart-axis: #64748b;
+  --chart-axis-strong: #475569;
 }
 
 /* DARK MODE */
@@ -118,6 +123,8 @@
 
   --sidebar: #020617;
   --sidebar-foreground: #f8fafc;
+  --sidebar-gradient: linear-gradient(180deg, #020617 0%, #0f172a 48%, #172554 100%);
+  --sidebar-shadow: 4px 0 24px rgba(2, 6, 23, 0.42);
 
   --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
@@ -127,6 +134,16 @@
 
   --sidebar-border: #334155;
   --sidebar-ring: #3b82f6;
+
+  /* Charts: brighter values retain contrast against dark surfaces. */
+  --chart-1: #60a5fa;
+  --chart-2: #38bdf8;
+  --chart-3: #4ade80;
+  --chart-4: #fbbf24;
+  --chart-5: #fb7185;
+  --chart-grid: #334155;
+  --chart-axis: #94a3b8;
+  --chart-axis-strong: #cbd5e1;
 }
 
 @theme inline {
@@ -252,6 +269,16 @@
   background-color: var(--muted) !important;
 }
 
+/* Tailwind hover variants are more specific than the fixed-color rules above. */
+.dark .hover\:bg-white:hover,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-blue-50:hover {
+  background-color: var(--secondary) !important;
+}
+
 .dark .border-slate-100,
 .dark .border-slate-200,
 .dark .border-slate-300,
@@ -285,4 +312,33 @@
   background-color: var(--input-background);
   color: var(--foreground);
   border-color: var(--border);
+}
+
+/* Native date/time picker glyphs follow the browser colour scheme. */
+.dark input[type="date"],
+.dark input[type="time"] {
+  color-scheme: dark;
+}
+
+/* Recharts assigns black text to default tooltip items inline. Keep chart
+   labels and values readable on both application themes. */
+.recharts-default-tooltip .recharts-tooltip-label,
+.recharts-default-tooltip .recharts-tooltip-item {
+  color: var(--popover-foreground) !important;
+}
+
+/* SweetAlert dialogs are rendered outside React, so they need explicit
+   variable-based styling rather than component Tailwind utilities. */
+.aris-swal-popup {
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+}
+
+.aris-swal-title {
+  color: var(--foreground) !important;
+}
+
+.aris-swal-text {
+  color: var(--muted-foreground) !important;
 }

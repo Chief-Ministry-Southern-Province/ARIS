@@ -36,25 +36,25 @@ export default function ApprovalCenter() {
 
       {/* Header */}
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 p-6">
 
           <div className="flex items-center gap-4">
 
-            <div className="w-14 h-14 rounded-2xl bg-[#0F4C81]/10 flex items-center justify-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-950/70">
 
-              <ClipboardCheck className="w-7 h-7 text-[#0F4C81]" />
+              <ClipboardCheck className="h-7 w-7 text-blue-700 dark:text-blue-300" />
 
             </div>
 
             <div>
 
-              <h1 className="text-2xl font-bold text-slate-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Approval Center
               </h1>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Review, approve and manage all pending document approvals.
               </p>
 
@@ -81,9 +81,9 @@ export default function ApprovalCenter() {
 
       </div>
 
-      <div className="flex gap-2 border-b border-slate-200">
-        <button onClick={() => { setView("pending"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "pending" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Pending Approvals</button>
-        <button onClick={() => { setView("decided"); setPage(1); }} className={`px-4 py-3 text-sm font-medium ${view === "decided" ? "border-b-2 border-[#0F4C81] text-[#0F4C81]" : "text-slate-500"}`}>Recommendations / Decisions</button>
+      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
+        <button onClick={() => { setView("pending"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "pending" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>Pending Approvals</button>
+        <button onClick={() => { setView("decided"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "decided" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>Recommendations / Decisions</button>
       </div>
 
       {/* Statistics */}

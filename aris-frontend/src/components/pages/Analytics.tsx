@@ -41,30 +41,20 @@ const InstitutionComparisonChart = lazy(
 
 function ChartSkeleton() {
   return (
-    <div
-      className="h-[280px] animate-pulse rounded-2xl"
-      style={{
-        background: "#D1D9E0",
-        border: "1px solid #D1D9E0",
-      }}
-    />
+    <div className="h-[280px] animate-pulse rounded-2xl border border-slate-200 bg-slate-200 dark:border-slate-700 dark:bg-slate-800/80" />
   );
 }
 
 export function AnalyticsSkeleton() {
   return (
-    <div className="p-6 space-y-6" style={{ background: "#F0F3F7" }}>
-      <div
-        className="rounded-sm px-6 py-4 h-16 animate-pulse"
-        style={{ background: "#1B3A6B" }}
-      />
+    <div className="space-y-6 bg-slate-100 p-6 dark:bg-slate-950">
+      <div className="h-16 animate-pulse rounded-sm bg-blue-800 dark:bg-blue-950" />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className="h-24 rounded-sm animate-pulse"
-            style={{ background: "#D1D9E0" }}
+            className="h-24 animate-pulse rounded-sm bg-slate-200 dark:bg-slate-800/80"
           />
         ))}
       </div>

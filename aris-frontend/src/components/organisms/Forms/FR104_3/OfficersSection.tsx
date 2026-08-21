@@ -31,10 +31,10 @@ const OfficersSection = ({
             flex items-center justify-center gap-2
             px-4 py-2
             text-sm font-medium
-            text-sky-700 bg-sky-50
-            border border-sky-200
+            border border-blue-200 bg-blue-50 text-blue-700
             rounded-lg
-            hover:bg-sky-100
+            hover:bg-blue-100
+            dark:border-blue-700/70 dark:bg-blue-950/65 dark:text-blue-300 dark:hover:bg-blue-900/65
             transition-colors
           "
         >
@@ -50,19 +50,19 @@ const OfficersSection = ({
             key={index}
             className="
               rounded-xl
-              border border-slate-200
-              bg-white
+              border border-slate-200 bg-white
               p-4
               shadow-sm
+              dark:border-slate-700 dark:bg-slate-950/35
             "
           >
             {/* Card Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/75 dark:text-blue-200">
                   <User size={14} />
                 </span>
-                <h4 className="font-medium text-slate-700">
+                <h4 className="font-medium text-slate-700 dark:text-slate-200">
                   {t("fr104_3.officer")} #{index + 1}
                 </h4>
               </div>
