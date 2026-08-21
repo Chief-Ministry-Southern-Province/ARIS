@@ -237,3 +237,52 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Compatibility layer for existing screens that still use Tailwind's fixed
+   white/gray/slate utility classes. New components should use semantic theme
+   utilities (bg-card, text-foreground, border-border) directly. */
+.dark .bg-white {
+  background-color: var(--card) !important;
+}
+
+.dark .bg-slate-50,
+.dark .bg-gray-50,
+.dark .bg-slate-100,
+.dark .bg-gray-100 {
+  background-color: var(--muted) !important;
+}
+
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-300,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: var(--border) !important;
+}
+
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-slate-700,
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  color: var(--foreground) !important;
+}
+
+.dark .text-slate-600,
+.dark .text-slate-500,
+.dark .text-slate-400,
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-gray-400 {
+  color: var(--muted-foreground) !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--input-background);
+  color: var(--foreground);
+  border-color: var(--border);
+}
