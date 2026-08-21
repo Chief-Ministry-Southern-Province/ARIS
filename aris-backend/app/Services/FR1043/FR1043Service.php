@@ -7,13 +7,15 @@ use App\Models\FR1043;
 use App\Models\User;
 use App\Services\Approval\ApprovalService;
 use App\Services\AccidentTimelineService;
+use App\Services\FRSubmissionValidationService;
 use Illuminate\Support\Facades\DB;
 
 class FR1043Service
 {
   public function __construct(
       protected ApprovalService $approvalService,
-      protected AccidentTimelineService $timelineService
+      protected AccidentTimelineService $timelineService,
+      protected FRSubmissionValidationService $submissionValidator,
   ) {}
 
   public function createDraft(AccidentCase $case,User $user,array $data): FR1043 
@@ -134,6 +136,8 @@ class FR1043Service
         $fr1043->status === 'DRAFT',
         400
     );
+
+    $this->submissionValidator->validateFR1043($fr1043->data ?? []);
 
     return DB::transaction(function () use ($fr1043, $user) {
 

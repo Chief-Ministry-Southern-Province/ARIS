@@ -15,10 +15,10 @@ class UpdateFR109WriteOffRequest extends FormRequest
     {
         return [
             'writeOffEntries' => ['required', 'array', 'min:1'],
-            'writeOffEntries.*.stockBookFolio' => ['nullable', 'string', 'max:255'],
-            'writeOffEntries.*.inventoryBookFolio' => ['nullable', 'string', 'max:255'],
-            'writeOffEntries.*.fixedAssetsRegisterFolio' => ['nullable', 'string', 'max:255'],
-            'writeOffEntries.*.ledgerFolio' => ['nullable', 'string', 'max:255'],
+            'writeOffEntries.*.stockBookFolio' => ['required', 'string', 'max:255'],
+            'writeOffEntries.*.inventoryBookFolio' => ['required', 'string', 'max:255'],
+            'writeOffEntries.*.fixedAssetsRegisterFolio' => ['required', 'string', 'max:255'],
+            'writeOffEntries.*.ledgerFolio' => ['required', 'string', 'max:255'],
         ];
     }
 }

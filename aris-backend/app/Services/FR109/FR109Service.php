@@ -8,14 +8,15 @@ use App\Models\FR109;
 use App\Models\User;
 use App\Services\AccidentTimelineService;
 use App\Services\Approval\ApprovalService;
+use App\Services\FRSubmissionValidationService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class FR109Service
 {
     public function __construct(
         protected ApprovalService $approvalService,
         protected AccidentTimelineService $timelineService,
+        protected FRSubmissionValidationService $submissionValidator,
     ) {
     }
 
@@ -79,11 +80,7 @@ class FR109Service
     {
         abort_unless($fr109->created_by === $user->id && $fr109->status === 'DRAFT', 400, 'This form cannot be submitted.');
 
-        if (blank($fr109->data['netLoss'] ?? null)) {
-            throw ValidationException::withMessages([
-                'data.netLoss' => 'Net loss is required to determine the FR109 approval workflow.',
-            ]);
-        }
+        $this->submissionValidator->validateFR109($fr109->data ?? []);
 
         return DB::transaction(function () use ($fr109, $user) {
             $fr109->update(['status' => 'UNDER_APPROVAL', 'submitted_at' => now()]);
