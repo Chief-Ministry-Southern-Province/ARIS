@@ -334,25 +334,25 @@ export default function FR109Form({
   if (!readOnly && isLoading) return <Loader text="Loading FR109 form..." />;
 
   return (
-    <div className="min-h-screen bg-slate-100 py-8">
+    <div className="min-h-screen bg-slate-100 py-8 dark:bg-slate-950">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 mb-8 overflow-hidden">
-          <div className="bg-blue-900 px-8 py-6">
+        <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
+          <div className="bg-linear-to-r from-blue-800 to-blue-700 px-8 py-6 dark:from-blue-950 dark:to-blue-900">
             <h1 className="text-3xl font-bold text-white">{t("fr109.title")}</h1>
             <p className="text-blue-200 mt-2">{t("fr109.subtitle")}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-8 py-4">
+          <div className="grid grid-cols-1 gap-4 border-t border-slate-200 bg-slate-50 px-8 py-4 dark:border-slate-700 dark:bg-slate-950/45 sm:grid-cols-3">
             <div>
               <p className="text-xs text-slate-500">{t("fr109.meta.refNo")}</p>
-              <p className="font-semibold">
+              <p className="font-semibold text-slate-900 dark:text-slate-100">
                 {referenceNumber ?? "—"}
               </p>
             </div>
 
             <div>
               <p className="text-xs text-slate-500">{t("fr109.meta.revisionLabel")}</p>
-              <p className="font-semibold">
+              <p className="font-semibold text-slate-900 dark:text-slate-100">
                 {t("fr109.meta.revisionValue")} {displayed?.revision ?? 1}
               </p>
             </div>

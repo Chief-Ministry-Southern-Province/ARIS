@@ -34,40 +34,40 @@ export default function ApprovalStats({
       title: "Pending",
       value: pending,
       icon: Clock3,
-      color: "text-yellow-600",
-      bg: "bg-yellow-100",
+      color: "text-yellow-600 dark:text-yellow-300",
+      bg: "bg-yellow-100 dark:bg-yellow-950/70",
     },
 
     {
       title: "Recommended",
       value: recommended,
       icon: ThumbsUp,
-      color: "text-blue-600",
-      bg: "bg-blue-100",
+      color: "text-blue-600 dark:text-blue-300",
+      bg: "bg-blue-100 dark:bg-blue-950/70",
     },
 
     {
       title: "Approved",
       value: approved,
       icon: CheckCircle2,
-      color: "text-green-600",
-      bg: "bg-green-100",
+      color: "text-green-600 dark:text-green-300",
+      bg: "bg-green-100 dark:bg-green-950/70",
     },
 
     {
       title: "Rejected",
       value: rejected,
       icon: XCircle,
-      color: "text-red-600",
-      bg: "bg-red-100",
+      color: "text-red-600 dark:text-red-300",
+      bg: "bg-red-100 dark:bg-red-950/70",
     },
 
     {
       title: "Total",
       value: total,
       icon: FileText,
-      color: "text-[#0F4C81]",
-      bg: "bg-[#0F4C81]/10",
+      color: "text-blue-700 dark:text-blue-300",
+      bg: "bg-blue-100 dark:bg-blue-950/70",
     },
 
   ];
@@ -84,20 +84,20 @@ export default function ApprovalStats({
 
           <div
             key={card.title}
-            className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
 
             <div className="flex items-center justify-between">
 
               <div>
 
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
 
                   {card.title}
 
                 </p>
 
-                <h2 className="text-3xl font-bold mt-2">
+                <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
 
                   {card.value}
 

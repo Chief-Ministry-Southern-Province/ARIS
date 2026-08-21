@@ -44,10 +44,10 @@ const LostItemsSection = ({
             flex items-center justify-center gap-2
             px-4 py-2
             text-sm font-medium
-            text-sky-700 bg-sky-50
-            border border-sky-200
+            border border-blue-200 bg-blue-50 text-blue-700
             rounded-lg
-            hover:bg-sky-100
+            hover:bg-blue-100
+            dark:border-blue-700/70 dark:bg-blue-950/65 dark:text-blue-300 dark:hover:bg-blue-900/65
             transition-colors
           "
         >
@@ -65,18 +65,18 @@ const LostItemsSection = ({
               key={index}
               className="
                 rounded-xl
-                border border-slate-200
-                bg-white
+                border border-slate-200 bg-white
                 p-4
                 shadow-sm
+                dark:border-slate-700 dark:bg-slate-950/35
               "
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 text-xs font-semibold">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700 dark:bg-blue-900/75 dark:text-blue-200">
                     {index + 1}
                   </span>
-                  <h3 className="font-medium text-slate-700">
+                  <h3 className="font-medium text-slate-700 dark:text-slate-200">
                     {t("fr104_3.item", "Item")} #{index + 1}
                   </h3>
                 </div>
@@ -151,9 +151,9 @@ const LostItemsSection = ({
                       flex items-center gap-2
                       h-10 px-3
                       rounded-lg
-                      bg-slate-50
-                      border border-slate-200
-                      text-slate-700 font-semibold
+                      border border-slate-200 bg-slate-50
+                      font-semibold text-slate-700
+                      dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200
                       read-only
                     "
                   >
@@ -172,18 +172,18 @@ const LostItemsSection = ({
             mt-4
             flex items-center justify-between
             rounded-xl
-            bg-sky-50
-            border border-sky-200
+            border border-blue-200 bg-blue-50
             px-4 py-3
+            dark:border-blue-700/70 dark:bg-blue-950/65
           "
         >
-          <div className="flex items-center gap-2 text-sky-800">
+          <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
             <Package size={18} />
             <span className="font-medium">
               {t("fr104_3.grandTotal")}
             </span>
           </div>
-          <span className="text-lg font-bold text-sky-900">
+          <span className="text-lg font-bold text-blue-900 dark:text-blue-100">
             Rs. {formatCurrency(grandTotal)}
           </span>
         </div>

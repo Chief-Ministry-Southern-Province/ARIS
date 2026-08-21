@@ -1,6 +1,16 @@
 import Swal from "sweetalert2";
 import type { AxiosError } from "axios";
 
+const themedPopup = {
+  background: "var(--card)",
+  color: "var(--foreground)",
+  customClass: {
+    popup: "aris-swal-popup",
+    title: "aris-swal-title",
+    htmlContainer: "aris-swal-text",
+  },
+};
+
 export const getErrorMessage = (
   error: unknown,
   fallback = "An unexpected error occurred"
@@ -64,6 +74,7 @@ export const getErrorMessage = (
 
 export const swalSuccess = (title: string, text?: string) =>
   Swal.fire({
+    ...themedPopup,
     icon: "success",
     title,
     text,
@@ -72,6 +83,7 @@ export const swalSuccess = (title: string, text?: string) =>
 
 export const swalError = (title: string, text?: string) =>
   Swal.fire({
+    ...themedPopup,
     icon: "error",
     title,
     text,
@@ -80,6 +92,7 @@ export const swalError = (title: string, text?: string) =>
 
 export const swalConfirm = (title: string, text: string): Promise<boolean> =>
   Swal.fire({
+    ...themedPopup,
     title,
     text,
     icon: "warning",
@@ -92,6 +105,7 @@ export const swalConfirm = (title: string, text: string): Promise<boolean> =>
 
 export const swalLoading = (title = "Processing...") =>
   Swal.fire({
+    ...themedPopup,
     title,
     allowOutsideClick: false,
     didOpen: () => {

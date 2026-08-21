@@ -28,20 +28,20 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                <LayoutDashboard className="h-6 w-6 text-blue-700" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-950/70">
+                <LayoutDashboard className="h-6 w-6 text-blue-700 dark:text-blue-300" />
               </div>
 
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                   {t("dashboard.title")}
                 </h1>
 
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   Fleet Management Dashboard
                 </p>
               </div>

@@ -85,7 +85,7 @@ const InstitutionTab = () => {
                 </p>
               </div>
               <div className="ml-4 flex items-center gap-2">
-                <span className="rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 whitespace-nowrap">
+                <span className="whitespace-nowrap rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950/80 dark:text-blue-200">
                   {inst.province}
                 </span>
 

@@ -85,8 +85,8 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
         }`}
         style={{
           width: collapsed ? 72 : 260,
-          background: "linear-gradient(180deg, #0F2460 0%, #1E3A8A 40%, #1E40AF 100%)",
-          boxShadow: "4px 0 24px rgba(30,64,175,0.18)"
+          background: "var(--sidebar-gradient)",
+          boxShadow: "var(--sidebar-shadow)",
         }}
       >
         {/* Header */}
@@ -267,7 +267,7 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
                 }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                      ? "bg-blue-900 text-blue-50 ring-1 ring-blue-700/70"
                       : "hover:bg-sidebar-accent"
                   } ${
                     collapsed
@@ -310,8 +310,10 @@ export function Sidebar({mobileOpen,setMobileOpen,}: SidebarProps) {
               </div>
             </div>
 
-            <button className="mt-2 w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-sidebar-accent transition-colors"
-            onClick={() => {handleLogout()}}
+            <button
+              type="button"
+              className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sidebar-foreground transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+              onClick={handleLogout}
             >
               <LogOut size={16} />
 

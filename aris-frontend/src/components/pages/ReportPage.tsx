@@ -301,18 +301,18 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
   return (
     <div className="space-y-5">
       {/* Section Header */}
-      <div className="bg-white rounded-2xl border shadow-sm p-6">
+      <div className="rounded-2xl border bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
-            <AlertCircle className="h-6 w-6 text-blue-700" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-950/70">
+            <AlertCircle className="h-6 w-6 text-blue-700 dark:text-blue-300" />
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
               {isEditing ? "Update accident details" : t("report.incidentDetails")}
             </h1>
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {t("report.subtitle")}
             </p>
           </div>
@@ -568,7 +568,11 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
         </FormField>
         {/* Submit */}
         <div className="flex justify-end">
-          <Button onClick={handleSubmit} disabled={submitting}>
+          <Button
+            onClick={handleSubmit}
+            disabled={submitting}
+            className="bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
+          >
             {submitting ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />

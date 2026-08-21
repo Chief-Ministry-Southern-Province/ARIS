@@ -1,6 +1,6 @@
 import {  useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Theme } from '../types/theme.type'
+import type { ResolvedTheme, Theme } from '../types/theme.type'
 import { ThemeContext } from './theme-context'
 
 const THEME_STORAGE_KEY = 'theme'
@@ -8,12 +8,17 @@ const THEME_STORAGE_KEY = 'theme'
 const getInitialTheme = (): Theme => {
   const stored = localStorage.getItem(THEME_STORAGE_KEY)
 
-  if (stored === 'light' || stored === 'dark') {
+  if (stored === 'light' || stored === 'dark' || stored === 'system') {
     return stored
   }
 
-  return 'light'
+  return 'system'
 }
+
+const resolveTheme = (theme: Theme): ResolvedTheme =>
+  theme === 'system'
+    ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    : theme
 
 type ThemeProviderProps = {
   children: ReactNode
@@ -21,17 +26,24 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => resolveTheme(getInitialTheme()))
 
   useEffect(() => {
     const root = document.documentElement
-
-    if (theme === 'dark') {
-      root.classList.add('dark')
-    } else {
-      root.classList.remove('dark')
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const applyTheme = () => {
+      const resolved = resolveTheme(theme)
+      setResolvedTheme(resolved)
+      root.classList.toggle('dark', resolved === 'dark')
     }
 
+    applyTheme()
     localStorage.setItem(THEME_STORAGE_KEY, theme)
+
+    if (theme === 'system') {
+      mediaQuery.addEventListener('change', applyTheme)
+      return () => mediaQuery.removeEventListener('change', applyTheme)
+    }
   }, [theme])
 
   const toggleTheme = () => {
@@ -41,10 +53,11 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const value = useMemo(
     () => ({
       theme,
+      resolvedTheme,
       setTheme,
       toggleTheme,
     }),
-    [theme],
+    [theme, resolvedTheme],
   )
 
   return (

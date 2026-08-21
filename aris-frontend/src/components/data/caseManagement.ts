@@ -17,7 +17,7 @@ export const getAction = (
       label: modes.fr1043 === "create" ? t("caseManagement.actionButtons.generateFR104_3") : "View FR104(3)",
       icon: FileText,
       color:
-        "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
+        "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-700/70 dark:bg-emerald-950/55 dark:text-emerald-300 dark:hover:bg-emerald-900/55",
       path: `/cases/${caseItem_id}/fr104-3/${modes.fr1043 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr1043,
     },
@@ -26,7 +26,7 @@ export const getAction = (
       label: modes.fr1044 === "create" ? t("caseManagement.actionButtons.generateFR104_4") : "View FR104(4)",
       icon: FileText,
       color:
-        "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
+        "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-700/70 dark:bg-emerald-950/55 dark:text-emerald-300 dark:hover:bg-emerald-900/55",
       path: `/cases/${caseItem_id}/fr104-4/${modes.fr1044 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr1044,
     },
@@ -35,7 +35,7 @@ export const getAction = (
       label: modes.fr109 === "create" ? t("caseManagement.actionButtons.generateFR109") : "View FR109",
       icon: ClipboardCheck,
       color:
-        "border-green-200 text-green-700 bg-green-50/50 hover:bg-green-50",
+        "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-700/70 dark:bg-emerald-950/55 dark:text-emerald-300 dark:hover:bg-emerald-900/55",
       path: `/cases/${caseItem_id}/fr109/${modes.fr109 === "create" ? "generate" : "view"}?tab=Action`,
       mode: modes.fr109,
     },
