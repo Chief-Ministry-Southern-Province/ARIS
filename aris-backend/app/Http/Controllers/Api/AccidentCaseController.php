@@ -25,7 +25,62 @@ class AccidentCaseController extends Controller
     {
         $this->authorize('viewAny', AccidentCase::class);
 
-        $filters = $request->validate([
+        $filters = $this->validatedFilters($request);
+
+        $cases = $this->accidentCaseService->getAll(
+            $request->user(),
+            $filters['case_number'] ?? null,
+            $filters['status'] ?? null,
+            $filters['stage'] ?? null,
+        );
+
+        return AccidentCaseResource::collection($cases);
+    }
+
+    /** Export the currently filtered Case Management results as CSV. */
+    public function export(Request $request)
+    {
+        $this->authorize('viewAny', AccidentCase::class);
+
+        $filters = $this->validatedFilters($request);
+        $cases = $this->accidentCaseService->exportCases(
+            $request->user(),
+            $filters['case_number'] ?? null,
+            $filters['status'] ?? null,
+            $filters['stage'] ?? null,
+        );
+
+        return response()->streamDownload(function () use ($cases) {
+            $output = fopen('php://output', 'w');
+            fwrite($output, "\xEF\xBB\xBF");
+
+            fputcsv($output, [
+                'Case ID',
+                'Institution',
+                'Date',
+                'Stage',
+            ]);
+
+            foreach ($cases as $case) {
+                $accident = $case->accident;
+
+                fputcsv($output, array_map([$this, 'csvValue'], [
+                    $case->case_number,
+                    $case->institution?->name,
+                    $accident?->accident_date?->format('Y-m-d'),
+                    $case->current_stage,
+                ]));
+            }
+
+            fclose($output);
+        }, 'case-management-' . now()->format('Y-m-d') . '.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function validatedFilters(Request $request): array
+    {
+        return $request->validate([
             'case_number' => ['nullable', 'string', 'max:50'],
             'status' => ['nullable', Rule::in([
                 'OPEN',
@@ -40,14 +95,13 @@ class AccidentCaseController extends Controller
                 'CLOSED',
             ])],
         ]);
+    }
 
-        $cases = $this->accidentCaseService->getAll(
-            $filters['case_number'] ?? null,
-            $filters['status'] ?? null,
-            $filters['stage'] ?? null,
-        );
+    private function csvValue(mixed $value): string
+    {
+        $value = (string) ($value ?? '');
 
-        return AccidentCaseResource::collection($cases);
+        return preg_match('/^[=+\-@]/', $value) ? "'{$value}" : $value;
     }
 
     public function show(AccidentCase $accidentCase)

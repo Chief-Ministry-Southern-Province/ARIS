@@ -168,6 +168,23 @@ export const TIMELINE_ACTIONS = {
     icon: CheckCircle2,
     badge: "bg-green-100 text-green-700 border-green-200",
   },
+
+  FR109_WRITE_OFF_NOTED: {
+    label: "FR109 Write-Off Register Completed",
+    icon: CheckCircle2,
+    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
+
+  FR109_CHIEF_ACCOUNTING_ORDER_COMPLETED: {
+    label: "FR109 Chief Accounting Officer Order Completed",
+    icon: CheckCircle2,
+    badge: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+  FR109_WRITE_OFF_DECISION_RECORDED: {
+    label: "FR109 Write-Off Decision Recorded",
+    icon: CheckCircle2,
+    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  },
 } as const;
 
 export const DEFAULT_ACTION = {

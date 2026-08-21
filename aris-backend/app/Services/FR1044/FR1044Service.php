@@ -8,27 +8,16 @@ use App\Models\AccidentEvidence;
 use App\Models\User;
 use App\Services\Approval\ApprovalService;
 use App\Services\AccidentTimelineService;
+use App\Services\FRSubmissionValidationService;
 use Illuminate\Support\Facades\DB;
 
 class FR1044Service
 {
   public function __construct(
       protected ApprovalService $approvalService,
-      protected AccidentTimelineService $timelineService
+      protected AccidentTimelineService $timelineService,
+      protected FRSubmissionValidationService $submissionValidator,
   ) {}
-
-  protected function generateReferenceNumber(): string
-  {
-      $year = now()->year;
-      $last = FR1044::latest('id')->first();
-      $next = $last ? $last->id + 1 : 1;
-
-      return sprintf(
-          'FR1044-%d-%04d',
-          $year,
-          $next
-      );
-  }
 
   public function createDraft(AccidentCase $case,User $user,array $data): FR1044 
   {
@@ -40,22 +29,10 @@ class FR1044Service
               'An FR1044 form already exists for this case.'
           );
 
-          $preliminaryReport = $case->fr1043s()
-              ->latest('revision')
-              ->first();
-
-          abort_unless(
-              $preliminaryReport && $preliminaryReport->status === 'APPROVED',
-              409,
-              'An approved FR1043 preliminary report is required before creating FR1044.'
-          );
-
-          $data['preliminaryReportRefNo'] = $preliminaryReport->reference_number;
-          $data['preliminaryReportDate'] = $preliminaryReport->data['date']
-              ?? $preliminaryReport->submitted_at?->toDateString();
+          $data = $this->withPreliminaryReportDetails($case, $data);
 
           $fr1044 = FR1044::create([
-              'reference_number' => $this->generateReferenceNumber(),
+              'reference_number' => $case->case_number,
               'accident_case_id' => $case->id,
               'created_by' => $user->id,
               'revision' => 1,
@@ -80,6 +57,7 @@ class FR1044Service
   {
       abort_unless($fr1044->created_by === $user->id, 403);
       $this->validateEvidenceReferences($fr1044->accidentCase, $data);
+      $data = $this->withPreliminaryReportDetails($fr1044->accidentCase, $data);
 
       if ($fr1044->status === 'CHANGES_REQUESTED') {
           return $this->createRevision($fr1044, $user, $data);
@@ -129,6 +107,28 @@ class FR1044Service
       abort_unless($valid === $ids->count(), 422, 'One or more attachments do not belong to this FR1044 case.');
   }
 
+  /**
+   * FR1044 always identifies its approved FR1043 preliminary report.
+   */
+  protected function withPreliminaryReportDetails(AccidentCase $case, array $data): array
+  {
+      $preliminaryReport = $case->fr1043s()
+          ->latest('revision')
+          ->first();
+
+      abort_unless(
+          $preliminaryReport && $preliminaryReport->status === 'APPROVED',
+          409,
+          'An approved FR1043 preliminary report is required before creating or updating FR1044.'
+      );
+
+      $data['preliminaryReportRefNo'] = $preliminaryReport->reference_number;
+      $data['preliminaryReportDate'] = $data['preliminaryReportDate']
+          ?? $preliminaryReport->approved_at?->toDateString();
+
+      return $data;
+  }
+
   protected function createRevision(FR1044 $rejectedRevision, User $user, array $data): FR1044
   {
       return DB::transaction(function () use ($rejectedRevision, $user, $data) {
@@ -175,6 +175,8 @@ class FR1044Service
         $fr1044->status === 'DRAFT',
         400
     );
+
+    $this->submissionValidator->validateFR1044($fr1044->data ?? []);
 
     return DB::transaction(function () use ($fr1044, $user) {
 

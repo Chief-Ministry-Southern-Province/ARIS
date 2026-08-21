@@ -2,7 +2,7 @@
   "nav": {
     "dashboard": "ප්‍රධාන පුවරුව",
     "reportAccident": "අනතුරු වාර්තා කිරීම",
-    "caseManagement": "නඩු කළමනාකරණය",
+    "caseManagement": "සිද්ධි කළමනාකරණය",
     "evidence": "සාක්ෂි",
     "investigation": "විමර්ශනය",
     "governmentForms": "රජයේ ආකෘති",
@@ -33,17 +33,33 @@
     "reportIncident": "නව අනතුරු වාර්තාව",
     "totalIncidents": "මුළු සිදුවීම්",
     "openInvestigations": "විවෘත පරීක්ෂණ",
+    "openCases": "විවෘත නඩු",
     "pendingApprovals": "අනුමැතිය බලාපොරොත්තු වන",
-    "completedCases": "සම්පූර්ණ කළ නඩු",
+    "pendingApprovalsRecommendations": "අනුමැතිය / නිර්දේශ බලාපොරොත්තුවෙන්",
+    "completedCases": "සම්පූර්ණ කළ සිද්ධි",
     "totalLosses": "මුළු අලාභ",
     "recoveries": "යළිලැබීම්",
+    "thisFiscalYear": "මෙම මූල්‍ය වර්ෂය",
+    "activeCases": "ක්‍රියාත්මක නඩු",
+    "awaitingReview": "ඔබගේ තීරණය බලාපොරොත්තුවෙන්",
+    "estimatedTotal": "ඇස්තමේන්තුගත මුළු අගය",
+    "recoveryRate": "අය කරගත් මුදල",
     "accidentTrends": "අනතුරු ප්‍රවණතා",
     "lossCategories": "අලාභ කාණ්ඩ",
-    "recentCases": "අලුත් නඩු",
+    "recentCases": "අලුත් සිද්ධි",
     "vehicleRisk": "වාහන අවදානම්",
     "locationRisks": "ස්ථානයේ අවදානම්",
     "accidentHotspotMp": "අනතුරු හොට්ස්පොට් සිතියම",
-    "recentActivities": "අලුත් ක්‍රියාකාරකම්"
+    "recentActivities": "අලුත් ක්‍රියාකාරකම්",
+    "overdueApprovals": "කල් ඉකුත් වූ අනුමැතීන්",
+    "overdueApprovalsSubtitle": "පැය 24ක් හෝ ඊට වැඩි කාලයක් සමාලෝචනය බලාපොරොත්තු වන අනුමැතීන්.",
+    "unassignedApprover": "අනුමත කරන්නෙකු පවරා නැත",
+    "step": "පියවර {{step}}",
+    "noOverdueApprovals": "කල් ඉකුත් වූ අනුමැතීන් නොමැත.",
+    "caseStageFunnel": "නඩු පියවර ප්‍රවාහය",
+    "caseStageFunnelSubtitle": "ප්‍රවේශ විය හැකි නඩු දැනට පවතින පියවර.",
+    "stageAccidentReported": "අනතුර වාර්තා කරන ලදී",
+    "stageCompleted": "සම්පූර්ණ කරන ලදී"
   },
   "report": {
     "title": "නව අනතුරු වාර්තාව",
@@ -100,7 +116,20 @@
       "WINDY": "සුළං සහිත",
       "OTHER": "වෙනත්"
     },
-    "EnvironmentalConditions": "පරිසර තත්ත්වය"
+    "EnvironmentalConditions": "පරිසර තත්ත්වය",
+    "camera": {
+      "takePhoto": "ඡායාරූපයක් ගන්න",
+      "useDeviceCamera": "ඔබගේ උපාංගයේ කැමරාව භාවිතා කරන්න",
+      "permissionRequired": "අවසර අවශ්‍යයි",
+      "cameraTitle": "සාක්ෂි ඡායාරූපයක් ගන්න",
+      "cameraAccessError": "කැමරා ප්‍රවේශයට අවසර ලබා දී නොමැත. ඔබට උපාංගයෙන් ඡායාරූපයක් උඩුගත කළ හැක.",
+      "capturePhoto": "ඡායාරූපය ගන්න",
+      "retake": "නැවත ගන්න",
+      "usePhoto": "ඡායාරූපය භාවිතා කරන්න",
+      "closeCamera": "කැමරාව වසන්න",
+      "browsePhotos": "ඡායාරූප තේරීමට ක්ලික් කරන්න",
+      "supportedImages": "JPG, PNG"
+    }
   },
   "btn": {
     "next": "ඊළඟ",
@@ -136,12 +165,12 @@
     "welcome": "නැවත සාදරයෙන් පිළිගනිමු"
   },
   "caseManagement": {
-    "title": "නඩු කළමනාකරණය",
-    "casesFound": "නඩු සොයා ගන්නා ලදී",
+    "title": "සිද්ධි කළමනාකරණය",
+    "casesFound": "සිද්ධි සොයා ගන්නා ලදී",
     "search": "සොයන්න",
 
     "table": {
-      "caseId": "නඩු අංකය",
+      "caseId": "සිද්ධි අංකය",
       "incident": "සිදුවීම",
       "institution": "ආයතනය",
       "date": "දිනය",
@@ -150,13 +179,13 @@
     },
 
     "empty": {
-      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන නඩු නොමැත"
+      "noCases": "ඔබගේ සෙවුම් නිර්ණායකවලට ගැලපෙන සිද්ධි නොමැත"
     },
 
     "pagination": {
       "showing": "පෙන්වන්නේ",
       "of": "අතුරින්",
-      "cases": "නඩු",
+      "cases": "සිද්ධි",
       "previous": "පෙර",
       "next": "ඊළඟ"
     },
@@ -168,7 +197,7 @@
     },
 
     "details": {
-      "caseId": "නඩු අංකය",
+      "caseId": "සිද්ධි අංකය",
       "dateTime": "දිනය සහ වේලාව",
       "location": "ස්ථානය",
       "vehicle": "වාහනය",
@@ -325,7 +354,7 @@
       "estimatedCost": "ඇස්තමේන්තුගත වටිනාකම",
       "replacementCost": "ප්‍රතිස්ථාපන වටිනාකම",
       "fr105Value": "මු.රෙ. 105(1) ප්‍රකාරව වටිනාකම",
-      "originalCost": "මුල් වටිනාකම",
+      "originalCost": "මුල් පිරිවැය",
       "addItem": "භාණ්ඩයක් එක් කරන්න",
       "remove": "ඉවත් කරන්න"
     },
@@ -342,17 +371,18 @@
 
     "police": {
       "station": "පොලිස් ස්ථානය",
-      "caseNumber": "නඩු අංකය",
+      "caseNumber": "සිද්ධි අංකය",
       "officerName": "නිලධාරියාගේ නම",
       "reportDate": "වාර්තා දිනය",
-      "attachReport": "පොලිස් වාර්තාවේ සාරාංශය අමුණන්න." 
+      "attachReport": "පොලිස් වාර්තාවේ සාරාංශය අමුණන්න.",
+      "summary": "පොලිස් වාර්තාවේ සාරාංශය"
     },
     "legalAction": {
       "courtName": "අධිකරණයේ නම",
-      "caseNo": "නඩු අංකය",
+      "caseNo": "සිද්ධි අංකය",
       "courtOrder": "අධිකරණ නියෝගය",
-      "courtOrderSummary": "අධිකරණ නියෝගයේ සාරාංශය",
-      "attachOrder": "අධිකරණ නියෝගයේ පිටපත අමුණන්න"
+      "attachOrder": "අධිකරණ නියෝගයේ පිටපත අමුණන්න",
+      "summary": "අධිකරණ නියෝගයේ සාරාංශය"
     },
     "investigation": {
       "findings": "විමර්ශන සොයාගැනීම්"
@@ -382,7 +412,8 @@
     "recommendations": {
       "title": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
       "label": "විමර්ශන මණ්ඩලයේ නිර්දේශ",
-      "attachReport": "මණ්ඩල වාර්තාවේ පිටපත අමුණන්න"
+      "attachReport": "මණ්ඩල වාර්තාවේ පිටපත අමුණන්න",
+      "summary": "මණ්ඩල වාර්තාවේ සාරාංශය"
     },
 
     "approval": {
@@ -498,7 +529,7 @@
       "amountRecovered": "වගකිව යුතු නිලධාරීන්ගෙන් / රක්ෂණයෙන් / ඇපකරයෙන් අය කරගත් මුදල",
       "netLoss": "විදේශ විනිමය පිරිවැය, රේගු බදු, දෙපාර්තමේන්තු ගාස්තු ඇතුළත් ශුද්ධ අලාභය",
       "nameOfCourt": "අධිකරණයේ නම",
-      "caseNo": "නඩු අංකය",
+      "caseNo": "සිද්ධි අංකය",
       "outcomeOfLegalAction": "නීතිමය ක්‍රියාමාර්ගයේ ප්‍රතිඵලය / අධිකරණ නියෝගය",
       "nameOfOfficer": "නිලධාරියාගේ නම",
       "designation": "තනතුර",
@@ -543,14 +574,14 @@
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",
-    "subtitle": "නඩු සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
+    "subtitle": "සිද්ධි සාක්ෂි, ලේඛන සහ වාර්තා කළමනාකරණය",
 
     "uploadEvidence": "සාක්ෂි උඩුගත කරන්න",
     "upload": "උඩුගත කරන්න",
     "cancel": "අවලංගු කරන්න",
 
     "evidenceType": "සාක්ෂි වර්ගය",
-    "caseReference": "නඩු යොමුව",
+    "caseReference": "සිද්ධි යොමුව",
     "description": "විස්තරය",
 
     "dragDrop": "ගොනු මෙතනට ඇද දමන්න",
@@ -566,7 +597,7 @@
     "policeReports": "පොලිස් වාර්තා",
 
     "search": "සොයන්න",
-    "allCases": "සියලු නඩු",
+    "allCases": "සියලු සිද්ධි",
 
     "preview": "පෙරදසුන",
     "download": "බාගත කරන්න",
@@ -619,7 +650,7 @@
       "district": "දිස්ත්‍රික්කය",
       "director": "අධ්‍යක්ෂ",
       "edit": "සංස්කරණය",
-      "viewCases": "නඩු බලන්න"
+      "viewCases": "සිද්ධි බලන්න"
     },
 
     "vehicles": {
@@ -637,14 +668,14 @@
     },
 
     "workflow": {
-      "description": "අනතුරු නඩු සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
+      "description": "අනතුරු සිද්ධි සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
       "appliesTo": "අදාළ වන්නේ",
 
       "rules": {
         "autoEscalate": "පැය 48ක් තුළ ක්‍රියාමාර්ගයක් නොමැති නම් ස්වයංක්‍රීයව උත්සන්න කරන්න",
-        "smsNotification": "නව පොරොත්තු නඩුවක් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
+        "smsNotification": "නව පොරොත්තු සිද්ධික් සඳහා අනුමතකරුට SMS දැනුම්දීමක් යවන්න",
         "mandatoryComment": "ප්‍රතික්ෂේප කිරීමේදී අනිවාර්ය අදහසක් එක් කිරීම අවශ්‍ය වේ",
-        "skipInvestigation": "සුළු නඩු සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
+        "skipInvestigation": "සුළු සිද්ධි සඳහා (< රු. 50,000) විමර්ශන නිලධාරියා මඟ හරින්න",
         "autoForward": "අමාත්‍යාංශ ලේකම් අනුමැතියෙන් පසු CAO වෙත ස්වයංක්‍රීයව යොමු කරන්න",
         "boardInquiry": "රු. මිලියන 1ට වැඩි පාඩු සඳහා පරීක්ෂණ මණ්ඩලයක් අවශ්‍ය වේ"
       }
@@ -664,7 +695,7 @@
       "triggers": {
         "newAccidentReport": "නව අනතුරු වාර්තාව",
         "approvalRequired": "අනුමැතිය අවශ්‍යයි",
-        "caseOverdue": "නඩුව ප්‍රමාද වී ඇත (දින 7)",
+        "caseOverdue": "සිද්ධිය ප්‍රමාද වී ඇත (දින 7)",
         "investigationComplete": "විමර්ශනය සම්පූර්ණයි",
         "pdfGenerated": "PDF වාර්තාව ජනනය කරන ලදී"
       }
@@ -685,10 +716,10 @@
 
     "auditActions": {
       "userCreated": "පරිශීලකයා නිර්මාණය කරන ලදී",
-      "caseUpdated": "නඩුව යාවත්කාලීන කරන ලදී",
+      "caseUpdated": "සිද්ධිය යාවත්කාලීන කරන ලදී",
       "evidenceUpload": "සාක්ෂි උඩුගත කරන ලදී",
       "loginFailed": "පිවිසුම අසාර්ථක විය",
-      "caseApproved": "නඩුව අනුමත කරන ලදී",
+      "caseApproved": "සිද්ධිය අනුමත කරන ලදී",
       "pdfGenerated": "PDF ජනනය කරන ලදී",
       "vehicleAdded": "වාහනය එක් කරන ලදී"
     },
@@ -705,7 +736,7 @@
     "title": "අනුමත කිරීමේ ක්‍රියාවලිය",
     "subtitle": "බහු මට්ටමේ අනුමත කිරීමේ දාම කළමනාකරණය",
 
-    "selectCase": "නඩුව තෝරන්න",
+    "selectCase": "සිද්ධිය තෝරන්න",
 
     "approvalChain": "අනුමත කිරීමේ දාමය",
     "approvalHistory": "අනුමත කිරීමේ ඉතිහාසය",
@@ -729,7 +760,7 @@
     "cancel": "අවලංගු කරන්න",
     "submitChanges": "වෙනස්කම් ඉල්ලන්න",
 
-    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන නඩු",
+    "casesAwaitingAction": "ඔබගේ ක්‍රියාව බලාපොරොත්තු වන සිද්ධි",
 
     "investigationOfficerReview": "විමර්ශන නිලධාරි සමාලෝචනය",
     "administrativeOfficerReview": "පරිපාලන නිලධාරි සමාලෝචනය",
@@ -754,8 +785,10 @@
   },
    "analytics": {
     "title": "විශ්ලේෂණ",
+    "subtitle": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "description": "සවිස්තරාත්මක අනතුරු විශ්ලේෂණ සහ අවබෝධතා",
     "refresh": "නවතම දත්ත ලබා ගන්න",
+    "noDataForPeriod": "තෝරාගත් කාලසීමාව සඳහා දත්ත නොමැත.",
 
     "kpi": {
       "accidentFrequencyMonthly": "අනතුරු සංඛ්‍යාතය (මාසික)",
@@ -769,9 +802,19 @@
       "costAnalysis": "පිරිවැය විශ්ලේෂණය",
       "recoveryAnalysis": "යළිලැබීම් විශ්ලේෂණය",
       "lossDistribution": "අලාභ බෙදාහැරීම",
+      "netLossByVehicleType": "වාහන වර්ගය අනුව ශුද්ධ අලාභය",
+      "highRiskVehicles": "ඉහළ අවදානම් වාහන",
       "repeatIncidentsDriverAnalysis": "නැවත සිදුවීම් — රියදුරු විශ්ලේෂණය",
       "institutionComparison": "ආයතන සංසන්දනය",
-      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්"
+      "gisAccidentHotspots": "GIS අනතුරු හොට්ස්පොට්",
+      "gisHotspots": "GIS අනතුරු හොට්ස්පොට්"
+    },
+
+    "sections": {
+      "overview": "අනතුරු සාරාංශය",
+      "financialInsights": "මූල්‍ය අවබෝධතා",
+      "riskAndPerformance": "අවදානම් සහ කාර්යසාධනය",
+      "institutionAndLocation": "ආයතන සහ ස්ථාන අවබෝධතා"
     },
 
     "legend": {
@@ -780,6 +823,7 @@
       "recovered": "අයකරගත් මුදල",
       "insurance": "රක්ෂණ",
       "disciplinary": "විනය ක්‍රියාමාර්ග",
+      "riskScore": "අවදානම් ලකුණු",
       "other": "වෙනත්",
       "lossesLKR": "අලාභ (රු.)"
     },

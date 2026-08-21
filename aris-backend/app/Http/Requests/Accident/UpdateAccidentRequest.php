@@ -121,6 +121,11 @@ class UpdateAccidentRequest extends FormRequest
                 ]),
             ],
 
+            'has_travel_permission' => [
+                'sometimes',
+                'boolean',
+            ],
+
             'status' => [
                 'sometimes',
                 Rule::in([

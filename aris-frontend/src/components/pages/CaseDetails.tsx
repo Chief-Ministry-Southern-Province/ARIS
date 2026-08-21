@@ -1,12 +1,12 @@
-import {  useState } from "react";
 import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import DetailsTab from "@/components/organisms/CaseManagement/DetailsTab";
 import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
 import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
 import InvestigationTeamTab from "@/components/organisms/CaseManagement/InvestigationTeamTab";
 import { useTranslation } from "react-i18next";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck, Clock3} from "lucide-react";
 
 
@@ -19,13 +19,27 @@ const caseDetailsTabs = [
     {id: "InvestigationTeam",icon: ShieldCheck,label: "Investigation Team",i18n: "caseDetails.tabs.investigationTeam"},
 ];
 
+const caseDetailsTabIds = new Set(caseDetailsTabs.map((tab) => tab.id));
+
 function CaseDetails() {
 
   const { t } = useTranslation();
   const { caseId } = useParams<{ caseId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const numericId = Number(caseId);
+  const { data: accidentCase } = useCase(numericId);
+  const requestedTab = searchParams.get("tab");
+  const activeTab = requestedTab && caseDetailsTabIds.has(requestedTab)
+    ? requestedTab
+    : "Details";
 
-  const [activeTab, setActiveTab] = useState("Details");
+  const selectTab = (tabId: string) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.set("tab", tabId);
+      return next;
+    });
+  };
 
   return (
     (<div className="p-6 space-y-5">
@@ -38,7 +52,7 @@ function CaseDetails() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
         <div className="flex overflow-x-auto border-b border-gray-100">
           {caseDetailsTabs.map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+            <button key={tab.id} onClick={() => selectTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-blue-600 text-blue-700 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
               <tab.icon className="w-4 h-4" />
               {t(tab.i18n)}
@@ -54,7 +68,7 @@ function CaseDetails() {
 
           {/* case actions */}
           {activeTab === "Action" && (
-            <CaseActionTab id={numericId} />
+            accidentCase && <CaseActionTab id={numericId} modes={accidentCase.form_actions} />
           )}
 
           {/* case workflow */}

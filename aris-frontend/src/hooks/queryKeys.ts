@@ -35,6 +35,13 @@ export const queryKeys = {
 
   fr1043: (caseId: number) => ["fr1043", caseId] as const,
   fr1044: (caseId: number) => ["fr1044", caseId] as const,
+  fr109: (caseId: number) => ["fr109", caseId] as const,
+  dashboard: {
+    statistics: ["dashboard", "statistics"] as const,
+  },
+  analytics: {
+    context: (period: string) => ["analytics", "context", period] as const,
+  },
 
   approvals: {
     all: ["approvals"] as const,

@@ -7,29 +7,16 @@ use App\Models\FR1043;
 use App\Models\User;
 use App\Services\Approval\ApprovalService;
 use App\Services\AccidentTimelineService;
+use App\Services\FRSubmissionValidationService;
 use Illuminate\Support\Facades\DB;
 
 class FR1043Service
 {
   public function __construct(
       protected ApprovalService $approvalService,
-      protected AccidentTimelineService $timelineService
+      protected AccidentTimelineService $timelineService,
+      protected FRSubmissionValidationService $submissionValidator,
   ) {}
-
-  protected function generateReferenceNumber(): string
-  {
-      $year = now()->year;
-
-      $last = FR1043::latest('id')->first();
-
-      $next = $last ? $last->id + 1 : 1;
-
-      return sprintf(
-          'FR1043-%d-%04d',
-          $year,
-          $next
-      );
-  }
 
   public function createDraft(AccidentCase $case,User $user,array $data): FR1043 
   {
@@ -44,7 +31,7 @@ class FR1043Service
 
           $fr1043 = FR1043::create([
 
-              'reference_number' => $this->generateReferenceNumber(),
+              'reference_number' => $case->case_number,
 
               'accident_case_id' => $case->id,
 
@@ -149,6 +136,8 @@ class FR1043Service
         $fr1043->status === 'DRAFT',
         400
     );
+
+    $this->submissionValidator->validateFR1043($fr1043->data ?? []);
 
     return DB::transaction(function () use ($fr1043, $user) {
 

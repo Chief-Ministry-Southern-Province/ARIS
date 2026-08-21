@@ -1,4 +1,4 @@
-import { Bell, AlertTriangle, CheckCircle, Clock, Eye, UserPlus, XCircle } from "lucide-react";
+import { Bell, AlertTriangle, CheckCircle, ClipboardCheck, Clock, Eye, UserPlus, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/atoms/Loader";
 import { useMarkAllNotificationsAsRead, useMarkNotificationAsRead, useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
@@ -8,6 +8,7 @@ const getNotificationIcon = (type: string) => {
   switch (type) {
     case "ACCIDENT_REPORTED": return { icon: AlertTriangle, bg: "bg-orange-100", color: "text-orange-600" };
     case "ASSIGNED": return { icon: UserPlus, bg: "bg-blue-100", color: "text-blue-600" };
+    case "RECOMMENDATION_REQUIRED": return { icon: ClipboardCheck, bg: "bg-blue-100", color: "text-blue-600" };
     case "APPROVAL_REQUIRED": return { icon: Clock, bg: "bg-yellow-100", color: "text-yellow-600" };
     case "APPROVED": return { icon: CheckCircle, bg: "bg-green-100", color: "text-green-600" };
     case "WORKFLOW_COMPLETED": return { icon: CheckCircle, bg: "bg-green-100", color: "text-green-600" };

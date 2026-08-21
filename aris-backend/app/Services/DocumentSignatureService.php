@@ -40,6 +40,7 @@ final readonly class DocumentSignatureService
             'name' => $approval->approver?->name,
             'role' => str_replace('_', ' ', $approval->approver?->roles->pluck('name')->implode(', ')),
             'institution' => $approval->institution?->name ?? $approval->approver?->institution?->name,
+            'institution_type' => $approval->institution?->type ?? $approval->approver?->institution?->type,
             'comments' => $approval->comments,
             'signature_public_id' => $approval->signature?->public_id,
             'signature_data_uri' => sprintf(

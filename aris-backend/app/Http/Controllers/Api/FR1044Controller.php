@@ -42,17 +42,51 @@ class FR1044Controller extends Controller
     {
         $this->authorize('view', $fr1044);
 
+        return new EvidenceResource($this->attachmentForField($fr1044, $fieldKey));
+    }
+
+    /** Download the uploaded file assigned to an FR1044 attachment field. */
+    public function attachmentDownload(FR1044 $fr1044, string $fieldKey, EvidenceService $evidenceService)
+    {
+        $this->authorize('view', $fr1044);
+
+        return $evidenceService->download(
+            $this->attachmentForField($fr1044, $fieldKey),
+            $fr1044->accidentCase->accident,
+        );
+    }
+
+    private function attachmentForField(FR1044 $fr1044, string $fieldKey): AccidentEvidence
+    {
         abort_unless(in_array($fieldKey, ['policeReportFile', 'courtOrderFile', 'boardReportFile'], true), 404);
 
-        $evidence = AccidentEvidence::query()
+        $evidenceKey = match ($fieldKey) {
+            'policeReportFile' => 'policeReportEvidenceId',
+            'courtOrderFile' => 'courtOrderEvidenceId',
+            'boardReportFile' => 'boardReportEvidenceId',
+        };
+
+        // Revisions retain the evidence ID from the earlier revision. Resolve that
+        // explicit reference first, then fall back to a file uploaded to this revision.
+        $evidenceId = data_get($fr1044->data, $evidenceKey);
+        if ($evidenceId) {
+            $referencedEvidence = AccidentEvidence::query()
+                ->whereKey($evidenceId)
+                ->where('accident_id', $fr1044->accidentCase->accident_id)
+                ->where('document_type', 'FR1044')
+                ->first();
+
+            if ($referencedEvidence) {
+                return $referencedEvidence;
+            }
+        }
+
+        return AccidentEvidence::query()
             ->where('accident_id', $fr1044->accidentCase->accident_id)
             ->where('document_type', 'FR1044')
-            ->where('document_revision', $fr1044->revision)
             ->where('field_key', $fieldKey)
             ->latest('id')
             ->firstOrFail();
-
-        return new EvidenceResource($evidence);
     }
 
     /**

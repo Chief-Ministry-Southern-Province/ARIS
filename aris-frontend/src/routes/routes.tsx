@@ -12,7 +12,6 @@ import MyProfile from "@/components/pages/auth/MyProfile";
 
 import DashboardPage from "@/components/pages/DashboardPage";
 import ReportPage from "@/components/pages/ReportPage";
-import EvidencePage from "@/components/pages/EvidencePage";
 import { CaseManagement } from "@/components/pages/CaseManagement";
 import AdminPanel from "@/components/pages/AdminPanel";
 import Notifications from "@/components/pages/Notifications";
@@ -34,6 +33,8 @@ import { AnalyticsSkeleton } from "@/components/pages/Analytics";
 import {protectedPage} from "@/routes/protectedPage";
 import {
   ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS,
+  CHIEF_ACCOUNTANT_ACCESS_ROLES,
+  FR109_APPROVAL_ACCESS_ROLES,
   FULL_ACCESS_ROLES,
   REPORT_ROLES,
   NOTIFICATION_ROLES,
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/dashboard",
         <DashboardPage />,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -80,13 +81,7 @@ export const router = createBrowserRouter([
       protectedPage(
         "/cases",
         <CaseManagement />,
-        FULL_ACCESS_ROLES
-      ),
-
-      protectedPage(
-        "/evidence",
-        <EvidencePage />,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -96,7 +91,7 @@ export const router = createBrowserRouter([
             <Analytics />
           </LazyChart>
         </Suspense>,
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
       protectedPage(
@@ -118,13 +113,13 @@ export const router = createBrowserRouter([
       protectedPage(
         "/profile",
         <MyProfile />,
-        [...FULL_ACCESS_ROLES, "driver","system_admin"],
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
         "/change-password",
         <ChangePassword />,
-        [...FULL_ACCESS_ROLES, "driver","system_admin"],
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES, "driver","system_admin"],
       ),
 
       protectedPage(
@@ -141,22 +136,27 @@ export const router = createBrowserRouter([
       protectedPage(
         "/approvals",
         <ApprovalCenter />,
-        FULL_ACCESS_ROLES
+        FR109_APPROVAL_ACCESS_ROLES
       ),
       protectedPage(
         "/approvals/:approvalId",
         <ApprovalDocumentViewer />,
-        FULL_ACCESS_ROLES
+        FR109_APPROVAL_ACCESS_ROLES
       ),
       protectedPage(
         "/cases/:caseId/details",
         <CaseDetails />,  
-        FULL_ACCESS_ROLES
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/cases/:caseId/accident/edit",
+        <ReportPage mode="edit" />,
+        ["subject_officer"]
       ),
       protectedPage(
         "/vehicles/:vehicleId",
         <VehicleDetails />,  
-        [...FULL_ACCESS_ROLES,"system_admin"]
+        [...CHIEF_ACCOUNTANT_ACCESS_ROLES,"system_admin"]
       ),
       protectedPage(
         "/cases/:caseId/FR104-3/generate",
@@ -164,14 +164,29 @@ export const router = createBrowserRouter([
         FULL_ACCESS_ROLES
       ),
       protectedPage(
+        "/cases/:caseId/FR104-3/view",
+        <FR104_3Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
+      ),
+      protectedPage(
         "/cases/:caseId/FR104-4/generate",
         <FR104_4Form />,  
         FULL_ACCESS_ROLES
       ),
       protectedPage(
+        "/cases/:caseId/FR104-4/view",
+        <FR104_4Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
+      ),
+      protectedPage(
         "/cases/:caseId/FR109/generate",
         <FR109Form />,  
         FULL_ACCESS_ROLES
+      ),
+      protectedPage(
+        "/cases/:caseId/FR109/view",
+        <FR109Form readOnly />,
+        CHIEF_ACCOUNTANT_ACCESS_ROLES
       ),
 
     ],

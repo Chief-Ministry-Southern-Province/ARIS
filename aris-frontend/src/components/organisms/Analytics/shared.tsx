@@ -24,8 +24,7 @@ export function SectionTitle({ children }: { children: React.ReactNode }) {
 export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`bg-white rounded-sm p-5 ${className}`}
-      style={{ border: "1px solid #D1D9E0", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+      className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}
     >
       {children}
     </div>

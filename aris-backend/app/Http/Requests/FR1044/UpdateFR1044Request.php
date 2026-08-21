@@ -64,13 +64,14 @@ class UpdateFR1044Request extends FormRequest
             'data.isDueToFraudNegligence' => ['sometimes', 'nullable', Rule::in(['yes', 'no'])],
 
             // Part D - Police Information (item 6)
+            'data.policeReportSummary' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'data.policeReportFile' => ['sometimes', 'nullable', 'string'],
             'data.policeReportEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
             // Part G - Legal Action (item 9)
             'data.courtName' => ['sometimes', 'nullable', 'string', 'max:255'],
             'data.courtCaseNo' => ['sometimes', 'nullable', 'string', 'max:100'],
-            'data.courtOrderSummary' => ['sometimes', 'nullable', 'string'],
+            'data.courtOrderSummary' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'data.courtOrderFile' => ['sometimes', 'nullable', 'string'],
             'data.courtOrderEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 
@@ -82,6 +83,7 @@ class UpdateFR1044Request extends FormRequest
 
             // Part L - Recommendations (item 13)
             'data.recommendations' => ['sometimes', 'nullable', 'string'],
+            'data.boardReportSummary' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'data.boardReportFile' => ['sometimes', 'nullable', 'string'],
             'data.boardReportEvidenceId' => ['sometimes', 'nullable', 'integer', 'exists:accident_evidence,id'],
 

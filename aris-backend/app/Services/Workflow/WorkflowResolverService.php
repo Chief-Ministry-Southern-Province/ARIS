@@ -5,6 +5,7 @@ namespace App\Services\Workflow;
 use App\Models\AccidentCase;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 use App\Models\Institution;
 use App\Models\User;
 use App\Services\WorkflowSettingService;
@@ -21,6 +22,17 @@ class WorkflowResolverService
 
   public function resolve(AccidentCase $case, string $documentType, int $revision): array
   {
+      $isFR109 = $documentType === 'FR109';
+      // FR109 requires the originating Base Hospital or RDHS Accountant to
+      // recommend, with a signature, before the MS or RD. FR1044 proceeds
+      // directly from the Administrative Officer to the MS or RD.
+      $includeAccountantRecommendation = $documentType === 'FR109';
+      // FR109 requires the PDHS Chief Accountant to recommend before the
+      // Provincial Director, regardless of the institution where the case began.
+      $includeChiefAccountant = $isFR109;
+      // The originating institution's Subject Officer creates FR109 and does
+      // not approve their own document.
+      $includeOriginatingSubjectOfficer = false;
       $case->loadMissing(['institution.parentInstitution', 'accident.vehicle.institution']);
       $institution = $case->institution;
       // Ministry subject-officer assignment follows the vehicle owner's institution,
@@ -28,11 +40,11 @@ class WorkflowResolverService
       $vehicleInstitutionDistrict = trim((string) $case->accident?->vehicle?->institution?->district);
 
       [$steps, $ministry] = match ($institution->type) {
-          'PDHS' => [$this->resolveProvincial($institution), $institution->parentInstitution],
-          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution), $institution->parentInstitution?->parentInstitution],
-          'RDHS' => [$this->resolveRegional($institution), $institution->parentInstitution?->parentInstitution],
+          'PDHS' => [$this->resolveProvincial($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer), $institution->parentInstitution],
+          'BASE_HOSPITAL' => [$this->resolveBaseHospital($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation), $institution->parentInstitution?->parentInstitution],
+          'RDHS' => [$this->resolveRegional($institution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation), $institution->parentInstitution?->parentInstitution],
           'DIVISIONAL_HOSPITAL', 'MOH', 'PMCU', 'UNITS', 'OTHER' => [
-              $this->resolveRegional($institution->parentInstitution),
+              $this->resolveRegional($institution->parentInstitution, $includeChiefAccountant, $includeOriginatingSubjectOfficer, $includeAccountantRecommendation),
               $institution->parentInstitution?->parentInstitution?->parentInstitution,
           ],
           default => throw new \Exception('Workflow not found.'),
@@ -45,6 +57,18 @@ class WorkflowResolverService
       $lossAmount = $this->lossAmount($case, $documentType, $revision);
       $configuration = $this->thresholdConfiguration();
 
+      if ($isFR109) {
+          if ($lossAmount > $configuration['pdhs_threshold']) {
+              $steps = [...$steps, ...$this->resolveFR109Ministry($ministry)];
+          }
+
+          if ($lossAmount > $configuration['ministry_threshold']) {
+              $steps[] = $this->resolveChiefSecretary();
+          }
+
+          return $this->renumber($steps);
+      }
+
       if ($lossAmount > $configuration['pdhs_threshold']) {
           if ($vehicleInstitutionDistrict === '') {
               throw ValidationException::withMessages([
@@ -53,10 +77,7 @@ class WorkflowResolverService
           }
 
           $steps = [...$steps, ...$this->resolveMinistry($ministry, $vehicleInstitutionDistrict, 1)];
-      }
-
-      if ($lossAmount > $configuration['ministry_threshold']) {
-          $steps[] = $this->resolveTreasurySecretary();
+          $steps[] = $this->resolveChiefSecretary();
       }
 
       return $this->renumber($steps);
@@ -90,6 +111,10 @@ class WorkflowResolverService
               ->where('accident_case_id', $case->id)
               ->where('revision', $revision)
               ->value('data'),
+          'FR109' => FR109::query()
+              ->where('accident_case_id', $case->id)
+              ->where('revision', $revision)
+              ->value('data'),
           default => throw new \InvalidArgumentException("Unsupported document type: {$documentType}"),
       };
 
@@ -102,6 +127,7 @@ class WorkflowResolverService
               return $this->money($item['value'] ?? 0) * ($quantity > 0 ? $quantity : 1);
           }),
           'FR1044' => collect($data['lostItems'] ?? [])->sum(fn (array $item) => $this->money($item['originalCost'] ?? 0)),
+          'FR109' => $this->money($data['netLoss'] ?? 0),
       };
   }
 
@@ -110,10 +136,10 @@ class WorkflowResolverService
       return (float) preg_replace('/[^0-9.\-]/', '', (string) $value ?: '0');
   }
 
-  private function resolveTreasurySecretary(): WorkflowStep
+  private function resolveChiefSecretary(): WorkflowStep
   {
       $user = User::query()
-          ->role('treasury_secretary')
+          ->role('chief_secretary')
           ->whereHas('institution', fn ($query) => $query->where('type', 'MINISTRY'))
           ->with('institution')
           ->orderBy('id')
@@ -121,14 +147,14 @@ class WorkflowResolverService
 
       if (! $user || ! $user->institution) {
           throw ValidationException::withMessages([
-              'workflow' => 'Create a Treasury Secretary user with an assigned institution before submitting a loss above the Ministry threshold.',
+              'workflow' => 'Create a Chief Secretary user with an assigned Ministry institution before submitting a loss above the Ministry threshold.',
           ]);
       }
 
       return new WorkflowStep(
           step: 1,
           institution: $user->institution,
-          role: 'treasury_secretary',
+          role: 'chief_secretary',
           approverId: $user->id,
       );
   }
@@ -144,31 +170,63 @@ class WorkflowResolverService
       ), $steps, array_keys($steps));
   }
 
-  protected function resolveBaseHospital(Institution $hospital): array
+  protected function resolveBaseHospital(
+      Institution $hospital,
+      bool $includeChiefAccountant = false,
+      bool $includeSubjectOfficer = false,
+      bool $includeAccountantRecommendation = false,
+  ): array
   {
       $pdhs = $hospital->parentInstitution;
       return [
+        ...($includeSubjectOfficer ? [
+            new WorkflowStep(
+                step: 1,
+                institution: $hospital,
+                role: 'subject_officer',
+            ),
+        ] : []),
         new WorkflowStep(
           step: 1,
           institution: $hospital,
           role: 'administrative_officer',
         ),
+        ...($includeAccountantRecommendation ? [
+            new WorkflowStep(
+                step: 2,
+                institution: $hospital,
+                role: 'accountant',
+            ),
+        ] : []),
         new WorkflowStep(
-          step: 2,
+          step: $includeAccountantRecommendation ? 3 : 2,
           institution: $hospital,
           role: 'medical_superintendent',
         ),
 
-        ...$this->resolvePDHS($pdhs,3),
+        ...$this->resolvePDHS($pdhs, $includeAccountantRecommendation ? 4 : 3, $includeChiefAccountant),
       ];
   }
 
-  protected function resolveRegional(Institution $rdhs): array 
+  protected function resolveRegional(
+      Institution $rdhs,
+      bool $includeChiefAccountant = false,
+      bool $includeSubjectOfficer = false,
+      bool $includeAccountantRecommendation = false,
+  ): array
   {
 
       $pdhs = $rdhs->parentInstitution;
 
       return [
+
+          ...($includeSubjectOfficer ? [
+              new WorkflowStep(
+                  step: 1,
+                  institution: $rdhs,
+                  role: 'subject_officer',
+              ),
+          ] : []),
 
           new WorkflowStep(
               step: 1,
@@ -176,18 +234,26 @@ class WorkflowResolverService
               role: 'administrative_officer',
           ),
 
+          ...($includeAccountantRecommendation ? [
+              new WorkflowStep(
+                  step: 2,
+                  institution: $rdhs,
+                  role: 'accountant',
+              ),
+          ] : []),
+
           new WorkflowStep(
-              step: 2,
+              step: $includeAccountantRecommendation ? 3 : 2,
               institution: $rdhs,
               role: 'regional_director',
           ),
 
-          ...$this->resolvePDHS($pdhs,3),
+          ...$this->resolvePDHS($pdhs, $includeAccountantRecommendation ? 4 : 3, $includeChiefAccountant),
 
       ];
   }
 
-  protected function resolvePDHS(Institution $pdhs,int $start): array 
+  protected function resolvePDHS(Institution $pdhs,int $start, bool $includeChiefAccountant = false): array
   {
 
       return [
@@ -210,11 +276,24 @@ class WorkflowResolverService
               role: 'deputy_director',
           ),
 
-          new WorkflowStep(
-              step: $start + 3,
-              institution: $pdhs,
-              role: 'provincial_director',
-          ),
+          ...($includeChiefAccountant ? [
+              new WorkflowStep(
+                  step: $start + 3,
+                  institution: $pdhs,
+                  role: 'chief_accountant',
+              ),
+              new WorkflowStep(
+                  step: $start + 4,
+                  institution: $pdhs,
+                  role: 'provincial_director',
+              ),
+          ] : [
+              new WorkflowStep(
+                  step: $start + 3,
+                  institution: $pdhs,
+                  role: 'provincial_director',
+              ),
+          ]),
 
       ];
   }
@@ -258,10 +337,48 @@ class WorkflowResolverService
       ];
   }
 
-  protected function resolveProvincial(Institution $pdhs): array 
+  /**
+   * FR109 continues from the Provincial Director to the Ministry Accounts
+   * approval chain when the FR109 loss exceeds the PDHS threshold.
+   */
+  protected function resolveFR109Ministry(Institution $ministry): array
+  {
+      return [
+          new WorkflowStep(
+              step: 1,
+              institution: $ministry,
+              role: 'ministry_account_subject_officer',
+          ),
+          new WorkflowStep(
+              step: 2,
+              institution: $ministry,
+              role: 'chief_accountant',
+          ),
+          new WorkflowStep(
+              step: 3,
+              institution: $ministry,
+              role: 'secretary',
+          ),
+      ];
+  }
+
+  protected function resolveProvincial(
+      Institution $pdhs,
+      bool $includeChiefAccountant = false,
+      bool $includeSubjectOfficer = false,
+  ): array
   {
 
       return [
+
+          ...($includeSubjectOfficer ? [
+              new WorkflowStep(
+                  step: 1,
+                  institution: $pdhs,
+                  role: 'subject_officer',
+              ),
+          ] : []),
+
           new WorkflowStep(
               step: 1,
               institution: $pdhs,
@@ -274,11 +391,24 @@ class WorkflowResolverService
               role: 'deputy_director',
           ),
 
-          new WorkflowStep(
-              step: 3,
-              institution: $pdhs,
-              role: 'provincial_director',
-          ),
+          ...($includeChiefAccountant ? [
+              new WorkflowStep(
+                  step: 3,
+                  institution: $pdhs,
+                  role: 'chief_accountant',
+              ),
+              new WorkflowStep(
+                  step: 4,
+                  institution: $pdhs,
+                  role: 'provincial_director',
+              ),
+          ] : [
+              new WorkflowStep(
+                  step: 3,
+                  institution: $pdhs,
+                  role: 'provincial_director',
+              ),
+          ]),
       ];
   }
 }

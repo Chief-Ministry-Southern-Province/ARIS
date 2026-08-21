@@ -2,6 +2,8 @@ import type { FR109FormData } from "@/types/FR109.type";
 
 export const initialFormData: FR109FormData = {
   department: "",
+  chiefAccountingOfficerSTNo: "",
+  writeOffStatus: "",
 
   preliminaryReportReferenceNo: "",
   finalReportReferenceNo: "",
@@ -10,6 +12,13 @@ export const initialFormData: FR109FormData = {
 
   descriptionOfProperty: "",
   quantity: "",
+  properties: [
+    {
+      id: "property-1",
+      description: "",
+      quantity: "",
+    },
+  ],
 
   originalCost: "",
   estimatedCostAtTimeOfLoss: "",
@@ -26,26 +35,14 @@ export const initialFormData: FR109FormData = {
   reasonsForNonRecovery: "",
   actionTakenDetails: "",
   resultsOfAction: "",
-  chiefAccountantDate: "",
-  chiefAccountantSignature: "",
-
-  headOfDeptSecretaryMinistry: "",
-  headOfDeptDate: "",
-
-  chiefAccountingSerialNo: "",
-  chiefAccountingRefNo: "",
-  chiefAccountingDate: "",
-  chiefAccountingSecretaryMinistry: "",
-
-  writeOffSecretaryMinistry: "",
-  writeOffRefNo: "",
-  writeOffDate: "",
-  writeOffStatus: "",
-
-  stockBookFolio: "",
-  inventoryBookFolio: "",
-  fixedAssetsRegisterFolio: "",
-  ledgerFolio: "",
+  writeOffEntries: [
+    {
+      stockBookFolio: "",
+      inventoryBookFolio: "",
+      fixedAssetsRegisterFolio: "",
+      ledgerFolio: "",
+    },
+  ],
 
   refNo: "",
 };

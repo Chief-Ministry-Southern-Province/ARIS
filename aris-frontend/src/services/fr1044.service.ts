@@ -15,7 +15,11 @@ export const submitFR1044 = async (id: number): Promise<FR1044Response> =>
   (await api.post(`/fr1044/${id}/submit`)).data;
 
 export const downloadFR1044Pdf = async (id: number): Promise<Blob> =>
-  (await api.get(`/fr1044/${id}/pdf`, { responseType: "blob" })).data;
+  (await api.get(`/fr1044/${id}/pdf`, {
+    responseType: "blob",
+    params: { render: Date.now() },
+    headers: { "Cache-Control": "no-cache" },
+  })).data;
 
 export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: string): Promise<EvidenceResponse> => {
   const payload = new FormData();
@@ -26,3 +30,14 @@ export const uploadFR1044Attachment = async (id: number, file: File, fieldKey: s
 
 export const getFR1044AttachmentPreview = async (id: number, fieldKey: string): Promise<EvidenceResponse> =>
   (await api.get(`/fr1044/${id}/attachments/${fieldKey}`)).data.data;
+
+export const downloadFR1044Attachment = async (
+  id: number,
+  fieldKey: string,
+): Promise<Blob> =>
+  (
+    await api.get(
+      `/fr1044/${id}/attachments/${fieldKey}/download`,
+      { responseType: "blob" }
+    )
+  ).data;

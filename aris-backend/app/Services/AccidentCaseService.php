@@ -7,7 +7,10 @@ use App\Models\AccidentCase;
 use App\Models\User;
 use App\Services\Notifications\NotificationService;
 use App\Services\AccidentTimelineService;
+use App\Services\InstitutionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Validation\ValidationException;
 
 class AccidentCaseService
@@ -21,21 +24,12 @@ class AccidentCaseService
         $this->notificationService = $notificationService;
     }
 
-    protected function generateCaseNumber(): string
-    {
-        $year = now()->year;
-
-        $lastCase = AccidentCase::latest('id')->first();
-
-        $next = $lastCase ? $lastCase->id + 1 : 1;
-
-        return sprintf('CASE-%d-%04d', $year, $next);
-    }
-
     public function create(Accident $accident, User $creator): AccidentCase
     {
         $case = AccidentCase::create([
-            'case_number' => $this->generateCaseNumber(),
+            // The accident reference is the case code and the single reference
+            // used by FR1043, FR1044, and FR109 for this case.
+            'case_number' => $accident->reference_number,
             'accident_id' => $accident->id,
             'institution_id' => $accident->institution_id,
             'created_by' => $creator->id,
@@ -158,11 +152,39 @@ class AccidentCaseService
     }
 
     public function getAll(
+        User $user,
         ?string $caseNumber = null,
         ?string $status = null,
         ?string $stage = null,
     ): LengthAwarePaginator
     {
+        return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
+            ->paginate(10)
+            ->withQueryString();
+    }
+
+    /**
+     * Return all cases matching the Case Management filters for CSV export.
+     */
+    public function exportCases(
+        User $user,
+        ?string $caseNumber = null,
+        ?string $status = null,
+        ?string $stage = null,
+    ): LazyCollection
+    {
+        return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
+            ->lazy(200);
+    }
+
+    private function filteredCasesQuery(
+        User $user,
+        ?string $caseNumber,
+        ?string $status,
+        ?string $stage,
+    ): Builder {
+        $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
+
         return AccidentCase::query()
             ->with([
                 'accident',
@@ -170,6 +192,7 @@ class AccidentCaseService
                 'assignee',
                 'institution',
             ])
+            ->whereIn('institution_id', $institutionIds)
             ->when($caseNumber, function ($query) use ($caseNumber) {
                 $caseNumber = trim($caseNumber);
 
@@ -187,9 +210,7 @@ class AccidentCaseService
             })
             ->when($status, fn ($query) => $query->where('status', $status))
             ->when($stage, fn ($query) => $query->where('current_stage', $stage))
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->latest();
     }
 
     public function findById(int $id): AccidentCase

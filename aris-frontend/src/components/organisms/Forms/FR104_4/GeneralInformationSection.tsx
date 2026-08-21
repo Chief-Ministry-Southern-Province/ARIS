@@ -6,13 +6,11 @@ import { useTranslation } from "react-i18next";
 interface Props {
   formData: FR104_4FormData;
   handleChange: (field: keyof FR104_4FormData, value: string) => void;
-  isPreliminaryLoading: boolean;
 }
 
 export default function GeneralInformationSection({
   formData,
   handleChange,
-  isPreliminaryLoading
 }: Props) {
 
   const { t } = useTranslation();
@@ -27,28 +25,14 @@ export default function GeneralInformationSection({
         />
       </FormField>
 
-      <FormField label={t("fr104_4.generalInformation.secretaryToMinistryOf")}>
-        <InputField
-          value={formData.secretaryOfMinistry}
-          onChange={(e) =>
-            handleChange("secretaryOfMinistry", e.target.value)
-          }
-        />
-      </FormField>
-
       <FormField
         label={t(
           "fr104_4.generalInformation.preliminaryReportRefNo"
         )}
       >
         <InputField
-          value={isPreliminaryLoading ? "Loading..." : formData.preliminaryReportRefNo}
-          onChange={(e) =>
-            handleChange(
-              "preliminaryReportRefNo",
-              e.target.value
-            )
-          }
+          value={formData.preliminaryReportRefNo}
+          readOnly
         />
       </FormField>
 
@@ -59,7 +43,7 @@ export default function GeneralInformationSection({
       >
         <InputField
           type="date"
-          value={isPreliminaryLoading ? "Loading..." : formData.preliminaryReportDate}
+          value={formData.preliminaryReportDate}
           onChange={(e) =>
             handleChange(
               "preliminaryReportDate",

@@ -5,6 +5,7 @@ export interface LoginResponse {
   role: string[];
   id: number;
   name?: string;
+  institutionId?: number | null;
   institutionType?: string;
 }
 

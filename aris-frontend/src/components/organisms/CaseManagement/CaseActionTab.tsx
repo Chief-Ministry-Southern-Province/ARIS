@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getAction } from "@/components/data/caseManagement";
+import type { FormActionMode } from "@/types/AccidentCase.type";
 
-const CaseActionTab = ({ id }: { id: number }) => {
+const CaseActionTab = ({ id, modes }: { id: number; modes: Record<"fr1043" | "fr1044" | "fr109", FormActionMode> }) => {
 
   const { t } = useTranslation();
-  const actions = getAction(id, t);
+  const actions = getAction(id, t, modes);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

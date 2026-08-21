@@ -20,6 +20,8 @@ export type CasePriority =
   | "HIGH"
   | "URGENT";
 
+export type FormActionMode = "create" | "view" | "none";
+
 export interface AccidentCase {
     id: number;
     case_number: string;
@@ -32,4 +34,5 @@ export interface AccidentCase {
     creator: User;
     assignee: User | null;
     institution: Institution;
+    form_actions: Record<"fr1043" | "fr1044" | "fr109", FormActionMode>;
 }

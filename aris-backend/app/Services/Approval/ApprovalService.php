@@ -7,9 +7,11 @@ use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 use App\Models\User;
 use App\Http\Resources\FR1043Resource;
 use App\Http\Resources\FR1044Resource;
+use App\Http\Resources\FR109Resource;
 use App\Services\Workflow\WorkflowResolverService;
 use App\Services\AccidentTimelineService;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +49,12 @@ class ApprovalService
             ),
             'FR1044' => new FR1044Resource(
                 FR1044::query()
+                    ->where('accident_case_id', $approval->accident_case_id)
+                    ->where('revision', $approval->revision)
+                    ->firstOrFail()
+            ),
+            'FR109' => new FR109Resource(
+                FR109::query()
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->firstOrFail()
@@ -196,12 +204,14 @@ class ApprovalService
             'medical_superintendent',
             'regional_director',
             'provincial_director',
+            'chief_accountant',
+            'accountant',
             'secretary',
         ]);
 
         $signature = $signatureRequired
             ? $this->getActiveSignature($user)
-            : null;
+            : ($user->hasRole('chief_secretary') ? $this->getOptionalSignature($user) : null);
 
         DB::transaction(function () use (
             $approval,
@@ -272,6 +282,7 @@ class ApprovalService
                 $document = match ($approval->document_type) {
                     'FR1043' => FR1043::query(),
                     'FR1044' => FR1044::query(),
+                    'FR109' => FR109::query(),
                     default => null,
                 };
 
@@ -290,6 +301,13 @@ class ApprovalService
                     }
 
                     if ($approval->document_type === 'FR1044') {
+                        $accidentCase->update([
+                            'current_stage' => 'FR109',
+                            'status' => 'IN_PROGRESS',
+                        ]);
+                    }
+
+                    if ($approval->document_type === 'FR109') {
                         $caseStatusBeforeCompletion = $accidentCase->status;
 
                         $accidentCase->update([
@@ -312,12 +330,12 @@ class ApprovalService
            
 
             if (!$nextApproval) {
-                if ($approval->document_type === 'FR1044' && $document) {
+                if ($approval->document_type === 'FR109' && $document) {
                     $this->timelineService->create(
                         accidentCase: $accidentCase,
                         user: $user,
                         action: 'CASE_COMPLETED',
-                        description: 'Case completed after final FR1044 approval.',
+                        description: 'Case completed after final FR109 approval.',
                         oldValue: ['status' => $caseStatusBeforeCompletion ?? 'IN_PROGRESS'],
                         newValue: ['status' => 'COMPLETED', 'current_stage' => 'FR109'],
                     );
@@ -391,8 +409,12 @@ class ApprovalService
                 );
             });
 
-            if (in_array($approval->document_type, ['FR1043', 'FR1044'], true)) {
-                $document = ($approval->document_type === 'FR1043' ? FR1043::query() : FR1044::query())
+            if (in_array($approval->document_type, ['FR1043', 'FR1044', 'FR109'], true)) {
+                $document = (match ($approval->document_type) {
+                    'FR1043' => FR1043::query(),
+                    'FR1044' => FR1044::query(),
+                    'FR109' => FR109::query(),
+                })
                     ->where('accident_case_id', $approval->accident_case_id)
                     ->where('revision', $approval->revision)
                     ->first();
@@ -584,5 +606,13 @@ class ApprovalService
         }
 
         return $signature;
+    }
+
+    protected function getOptionalSignature(User $user): ?UserSignature
+    {
+        return $user->signatures()
+            ->where('is_active', true)
+            ->latest('id')
+            ->first();
     }
 }

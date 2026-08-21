@@ -21,7 +21,13 @@ import PreventiveActionsSection from "@/components/organisms/Forms/FR104_4/Preve
 import { initialFormData } from "./initialFormData";
 import { useDownloadFR1044Pdf, useGetFR1044, useSaveFR1044, useSubmitFR1044 } from "@/hooks/useFR1044";
 import { useGetFR1043 } from "@/hooks/useFR1043";
-import { getFR1044AttachmentPreview, uploadFR1044Attachment } from "@/services/fr1044.service";
+import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
+import {
+  downloadFR1044Attachment,
+  getFR1044AttachmentPreview,
+  uploadFR1044Attachment,
+} from "@/services/fr1044.service";
 import type {
   FR104_4FormData,
   FR1044Response,
@@ -50,6 +56,12 @@ const badge: Record<FR1044Status, string> = {
 type AttachmentFieldKey = "policeReportFile" | "courtOrderFile" | "boardReportFile";
 type AttachmentEvidenceKey = "policeReportEvidenceId" | "courtOrderEvidenceId" | "boardReportEvidenceId";
 
+const attachmentEvidenceKeyByField: Record<AttachmentFieldKey, AttachmentEvidenceKey> = {
+  policeReportFile: "policeReportEvidenceId",
+  courtOrderFile: "courtOrderEvidenceId",
+  boardReportFile: "boardReportEvidenceId",
+};
+
 export default function FR104_4Form({
   readOnly = false,
   document,
@@ -62,16 +74,29 @@ export default function FR104_4Form({
   const accidentCaseId = Number(caseId);
 
   const { data: loaded, isLoading, error } = useGetFR1044(
-    readOnly ? undefined : accidentCaseId
+    accidentCaseId
   );
-  const { data: preliminaryReport, isLoading: preliminaryReportLoading } = useGetFR1043(
-    readOnly ? undefined : accidentCaseId
-  );
+  const { data: preliminaryReport } = useGetFR1043(readOnly ? undefined : accidentCaseId);
+  const displayed = document ?? loaded;
+  const { data: accidentCase } = useCase(accidentCaseId);
+  const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { saveFR1044, loading: saving } = useSaveFR1044(accidentCaseId);
   const submit = useSubmitFR1044(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1044Pdf();
+  const { data: approvalGroups = [] } = useApprovalHistory(
+    readOnly ? 0 : accidentCaseId,
+    "FR1044",
+    displayed?.revision,
+  );
 
-  const displayed = document ?? loaded;
+  const generatedApprovalTimeline = displayed
+    ? approvalGroups
+      .filter((group) => group.revision === displayed.revision)
+      .flatMap((group) => group.approvals)
+    : [];
+  const resolvedApprovalTimeline = approvalTimeline.length > 0
+    ? approvalTimeline
+    : generatedApprovalTimeline;
 
   const [data, setData] = useState<FR104_4FormData>(initialFormData);
   const [id, setId] = useState<number | null>(null);
@@ -84,20 +109,54 @@ export default function FR104_4Form({
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
-  const showAttachmentPreviews = Boolean(id && status && !editable);
+  const showAttachmentPreviews = Boolean(id);
+  const attachmentRefreshKey = [
+    data.policeReportEvidenceId,
+    data.courtOrderEvidenceId,
+    data.boardReportEvidenceId,
+  ].join(":");
 
   const currentApproval =
-    approvalTimeline.find((item) => item.status === "PENDING") ??
-    approvalTimeline.at(-1);
+    resolvedApprovalTimeline.find((item) => item.status === "PENDING") ??
+    resolvedApprovalTimeline.at(-1);
 
   useEffect(() => {
     if (displayed) {
       const { ministry: legacyMinistry, ...currentData } = displayed.data as FR104_4FormData & { ministry?: string };
-      setData({ ...currentData, secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "" });
+      const approvedPreliminaryReport = preliminaryReport?.status === "APPROVED"
+        ? preliminaryReport
+        : undefined;
+
+      setData({
+        ...currentData,
+        secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "",
+        policeReportSummary: currentData.policeReportSummary ?? "",
+        courtOrderSummary: currentData.courtOrderSummary ?? "",
+        boardReportSummary: currentData.boardReportSummary ?? "",
+        preliminaryReportRefNo: approvedPreliminaryReport?.reference_number
+          ?? currentData.preliminaryReportRefNo
+          ?? accidentCase?.case_number
+          ?? "",
+        preliminaryReportDate: currentData.preliminaryReportDate
+          || approvedPreliminaryReport?.approved_at?.slice(0, 10)
+          || "",
+      });
       setId(displayed.id);
       setStatus(displayed.status);
     }
-  }, [displayed]);
+  }, [accidentCase?.case_number, displayed, preliminaryReport]);
+
+  useEffect(() => {
+    if (preliminaryReport?.status !== "APPROVED") {
+      return;
+    }
+
+    setData((current) => ({
+      ...current,
+      preliminaryReportRefNo: preliminaryReport.reference_number,
+      preliminaryReportDate: current.preliminaryReportDate || preliminaryReport.approved_at?.slice(0, 10) || "",
+    }));
+  }, [preliminaryReport]);
 
   useEffect(() => () => {
     if (pdfPreviewUrl) {
@@ -124,7 +183,7 @@ export default function FR104_4Form({
       fieldKeys.map(async (fieldKey) => {
         try {
           const attachment = await getFR1044AttachmentPreview(id, fieldKey);
-          return [fieldKey, attachment.file_url] as const;
+          return [fieldKey, attachment] as const;
         } catch {
           return null;
         }
@@ -132,33 +191,32 @@ export default function FR104_4Form({
     ).then((attachments) => {
       if (!active) return;
 
-      setAttachmentPreviewUrls(
-        Object.fromEntries(
-          attachments.filter(
-            (attachment): attachment is readonly [AttachmentFieldKey, string] => attachment !== null
-          )
-        )
+      const savedAttachments = attachments.filter(
+        (attachment): attachment is readonly [AttachmentFieldKey, Awaited<ReturnType<typeof getFR1044AttachmentPreview>>] => attachment !== null
       );
+
+      setAttachmentPreviewUrls(
+        Object.fromEntries(savedAttachments.map(([fieldKey, attachment]) => [fieldKey, attachment.file_url]))
+      );
+      setData((previous) => {
+        const attachmentData = savedAttachments.reduce<Partial<FR104_4FormData>>(
+          (next, [fieldKey, attachment]) => {
+            next[fieldKey] = attachment.original_name;
+            next[attachmentEvidenceKeyByField[fieldKey]] = attachment.id;
+            return next;
+          },
+          {}
+        );
+
+        return { ...previous, ...attachmentData };
+      });
       setAttachmentPreviewsLoading(false);
     });
 
     return () => {
       active = false;
     };
-  }, [id, showAttachmentPreviews]);
-
-  useEffect(() => {
-    if (displayed || !preliminaryReport) return;
-
-    setData((previous) => ({
-      ...previous,
-      preliminaryReportRefNo: preliminaryReport.reference_number,
-      preliminaryReportDate:
-        preliminaryReport.data.date ||
-        preliminaryReport.submitted_at?.slice(0, 10) ||
-        "",
-    }));
-  }, [displayed, preliminaryReport]);
+  }, [attachmentRefreshKey, id, showAttachmentPreviews]);
 
   useEffect(() => {
     if (error && (error as { response?: { status?: number } }).response?.status !== 404) {
@@ -295,21 +353,43 @@ export default function FR104_4Form({
     }
   };
 
+  const downloadAttachment = async (
+    fieldKey: AttachmentFieldKey,
+    filename?: string,
+  ) => {
+    if (!id) {
+      toast.info("Save the FR104(4) form before downloading its attachment.");
+      return;
+    }
+
+    try {
+      const blob = await downloadFR1044Attachment(id, fieldKey);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = filename || "FR1044-attachment";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to download the attachment.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR104(4) form..." />;
 
   const cards = [
-    ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} isPreliminaryLoading={preliminaryReportLoading} />],
+    ["a", "generalInformation", <GeneralInformationSection formData={data} handleChange={handleChange} />],
     ["b", "lossDetails", <LossDetailsSection formData={data} handleChange={handleChange} />],
     ["c", "causeOfLoss", <CauseOfLossSection formData={data} handleChange={handleChange} />],
-    ["d", "policeInformation", <PoliceInformationSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} previewLoading={Boolean(data.policeReportFile) && attachmentPreviewsLoading} />],
+    ["d", "policeInformation", <PoliceInformationSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("policeReportFile", "policeReportEvidenceId")} previewUrl={attachmentPreviewUrls.policeReportFile} onDownloadAttachment={() => downloadAttachment("policeReportFile", typeof data.policeReportFile === "string" ? data.policeReportFile : data.policeReportFile?.name)} previewLoading={attachmentPreviewsLoading} />],
     ["e", "lostItems", <LostItemsSection formData={data} setFormData={setData} />],
     ["f", "responsibleOfficers", <OfficersResponsibleSection formData={data} setFormData={setData} />],
-    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
+    ["g", "legalAction", <LegalActionSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("courtOrderFile", "courtOrderEvidenceId")} previewUrl={attachmentPreviewUrls.courtOrderFile} onDownloadAttachment={() => downloadAttachment("courtOrderFile", typeof data.courtOrderFile === "string" ? data.courtOrderFile : data.courtOrderFile?.name)} previewLoading={Boolean(data.courtOrderFile) && attachmentPreviewsLoading} />],
     ["h", "investigation", <InvestigationSection formData={data} handleChange={handleChange} />],
     ["i", "recoveryInformation", <RecoveryInformationSection formData={data} setFormData={setData} />],
     ["j", "insuranceInformation", <InsuranceInformationSection formData={data} handleChange={handleChange} />],
     ["k", "boardOfInquiry", <BoardOfInquirySection formData={data} setFormData={setData} />],
-    ["l", "recommendations", <RecommendationsSection handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} previewLoading={Boolean(data.boardReportFile) && attachmentPreviewsLoading} />],
+    ["l", "recommendations", <RecommendationsSection formData={data} handleChange={handleChange} canEditAttachment={editable} attachmentName={typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name} canRemoveAttachment={status === "CHANGES_REQUESTED"} onRemoveAttachment={() => removeAttachment("boardReportFile", "boardReportEvidenceId")} previewUrl={attachmentPreviewUrls.boardReportFile} onDownloadAttachment={() => downloadAttachment("boardReportFile", typeof data.boardReportFile === "string" ? data.boardReportFile : data.boardReportFile?.name)} previewLoading={attachmentPreviewsLoading} />],
     ["m", "preventiveActions", <PreventiveActionsSection formData={data} handleChange={handleChange} />],
   ] as const;
 
@@ -330,7 +410,7 @@ export default function FR104_4Form({
                 {t("fr104_4.generalInformation.referenceNo")}
               </p>
               <p className="font-semibold">
-                {displayed?.reference_number || data.referenceNo || "—"}
+                {referenceNumber ?? "—"}
               </p>
             </div>
 
@@ -372,7 +452,7 @@ export default function FR104_4Form({
                 ? `Step ${currentApproval.step} — ${currentApproval.status}`
                 : "—"}
             </div>
-            <div>{approvalTimeline.length} approval steps</div>
+            <div>{resolvedApprovalTimeline.length} approval steps</div>
           </div>
         )}
 
@@ -393,7 +473,11 @@ export default function FR104_4Form({
             ))}
           </fieldset>
 
-          <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <DocumentApprovalSignatures approvals={resolvedApprovalTimeline} />
+          </div>
+
+          <div className="border-t bg-white p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
                 <>
@@ -406,29 +490,33 @@ export default function FR104_4Form({
                 <>
                   <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}</button>
-                  <button
-                    type="submit"
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle size={18} />
-                    {submit.isPending
-                      ? "Submitting..."
-                      : status === "CHANGES_REQUESTED" ||
-                        (displayed?.revision ?? 1) > 1
-                      ? "Submit Again"
-                      : "Submit"}
-                  </button>
+                  {status !== "APPROVED" && (
+                    <>
+                      <button
+                        type="submit"
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <CheckCircle size={18} />
+                        {submit.isPending
+                          ? "Submitting..."
+                          : status === "CHANGES_REQUESTED" ||
+                            (displayed?.revision ?? 1) > 1
+                          ? "Submit Again"
+                          : "Submit"}
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={save}
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <Save size={18} />
-                    {saving ? "Saving..." : "Save Draft"}
-                  </button>
+                      <button
+                        type="button"
+                        onClick={save}
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <Save size={18} />
+                        {saving ? "Saving..." : "Save Draft"}
+                      </button>
+                    </>
+                  )}
 
                   <button
                     type="button"
@@ -452,10 +540,6 @@ export default function FR104_4Form({
           />
         )}
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <DocumentApprovalSignatures approvals={approvalTimeline} />
-        </div>
-        
       </div>
     </div>
   );

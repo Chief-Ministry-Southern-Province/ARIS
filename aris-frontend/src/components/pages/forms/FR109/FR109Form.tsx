@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { CheckCircle, Printer, Save } from "lucide-react";
+import { CheckCircle, Download, Eye, Printer, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
-import { useGetFR109, useSaveFR109, useSubmitFR109 } from "@/hooks/useFR109";
+import { useDownloadFR109Pdf, useGetFR109, useSaveFR109, useSubmitFR109, useUpdateFR109WriteOff, useUpdateFR109ChiefAccountingOrder, useUpdateFR109ChiefSecretaryDecision } from "@/hooks/useFR109";
+import { useGetFR1043 } from "@/hooks/useFR1043";
+import { useGetFR1044 } from "@/hooks/useFR1044";
+import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
+import { useAuth } from "@/context/auth/AuthContext";
 import type { FR109FormData, FR109Response, FR109Status } from "@/types/FR109.type";
 import type { Approval } from "@/types/approval.type";
 import DocumentApprovalSignatures from "@/components/organisms/Forms/DocumentApprovalSignatures";
@@ -15,16 +20,27 @@ import PropertySection from "@/components/organisms/Forms/FR109/PropertySection"
 import ValueOfLossSection from "@/components/organisms/Forms/FR109/ValueOfLossSection";
 import NonRecoverySection from "@/components/organisms/Forms/FR109/NonRecoverySection";
 import LegalActionSection from "@/components/organisms/Forms/FR109/LegalActionSection";
-import HeadDepartmentSection from "@/components/organisms/Forms/FR109/HeadDepartmentSection";
-import ChiefAccountingSection from "@/components/organisms/Forms/FR109/ChiefAccountingSection";
+import WriteOffRegisterSection from "@/components/organisms/Forms/FR109/WriteOffRegisterSection";
+import ChiefAccountingOfficerOrderSection from "@/components/organisms/Forms/FR109/ChiefAccountingOfficerOrderSection";
 import WriteOffDecisionSection from "@/components/organisms/Forms/FR109/WriteOffDecisionSection";
+import PdfPreviewModal from "@/components/organisms/PDF/PdfPreviewModal";
 
 interface Props {
   readOnly?: boolean;
   document?: FR109Response;
   approvalTimeline?: Approval[];
   onBack?: () => void;
+  onDecision?: () => void;
+  canCompleteChiefAccountingOrder?: boolean;
+  canCompleteChiefSecretaryDecision?: boolean;
 }
+
+type LegacyWriteOffFields = {
+  stockBookFolio?: string;
+  inventoryBookFolio?: string;
+  fixedAssetsRegisterFolio?: string;
+  ledgerFolio?: string;
+};
 
 const badge: Record<FR109Status, string> = {
   DRAFT: "bg-slate-100 text-slate-700",
@@ -39,41 +55,143 @@ export default function FR109Form({
   document,
   approvalTimeline = [],
   onBack,
+  onDecision,
+  canCompleteChiefAccountingOrder = false,
+  canCompleteChiefSecretaryDecision = false,
 }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { id: currentUserId, role } = useAuth();
   const { caseId } = useParams();
   const accidentCaseId = Number(caseId);
 
   const { data: loaded, isLoading, error } = useGetFR109(
-    readOnly ? "" : (caseId ?? "")
+    caseId ?? ""
   );
+  const { data: preliminaryReport } = useGetFR1043(accidentCaseId);
+  const { data: finalReport } = useGetFR1044(accidentCaseId);
+  const displayed = document ?? loaded;
+  const { data: accidentCase } = useCase(accidentCaseId);
+  const referenceNumber = displayed?.reference_number ?? accidentCase?.case_number;
   const { mutateAsync: saveFR109, isPending: saving } = useSaveFR109(caseId ?? "");
   const submit = useSubmitFR109(caseId ?? "");
+  const downloadPdfMutation = useDownloadFR109Pdf();
+  const { data: approvalGroups = [] } = useApprovalHistory(
+    accidentCaseId,
+    "FR109",
+    displayed?.revision,
+  );
+  const writeOff = useUpdateFR109WriteOff(caseId ?? "");
+  const chiefAccountingOrder = useUpdateFR109ChiefAccountingOrder(
+    caseId ?? String(document?.case.id ?? ""),
+  );
+  const chiefSecretaryDecision = useUpdateFR109ChiefSecretaryDecision(
+    caseId ?? String(document?.case.id ?? ""),
+  );
 
-  const displayed = document ?? loaded;
+  const generatedApprovalTimeline = displayed
+    ? approvalGroups
+      .filter((group) => group.revision === displayed.revision)
+      .flatMap((group) => group.approvals)
+    : [];
+  const resolvedApprovalTimeline = approvalTimeline.length > 0
+    ? approvalTimeline
+    : generatedApprovalTimeline;
+  const isCurrentUserPendingApprover = resolvedApprovalTimeline.some(
+    (approval) => approval.approver.id === currentUserId && approval.status === "PENDING",
+  );
 
   const [data, setData] = useState<FR109FormData>(initialFormData);
   const [status, setStatus] = useState<FR109Status | null>(null);
+  const [pdfPreviewUrl, setPdfPreviewUrl] = useState<string | null>(null);
 
   const editable =
     !readOnly && (!status || ["DRAFT", "CHANGES_REQUESTED"].includes(status));
+  const writeOffEditable =
+    !readOnly &&
+    status === "APPROVED" &&
+    displayed?.creator.id === currentUserId;
+  const chiefAccountingOrderEditable =
+    (!readOnly || canCompleteChiefAccountingOrder || isCurrentUserPendingApprover) &&
+    status === "UNDER_APPROVAL" &&
+    role.includes("ministry_account_subject_officer");
+  const chiefSecretaryDecisionEditable =
+    (!readOnly || canCompleteChiefSecretaryDecision || isCurrentUserPendingApprover) &&
+    status === "UNDER_APPROVAL" &&
+    role.includes("chief_secretary");
 
   const currentApproval =
-    approvalTimeline.find((item) => item.status === "PENDING") ??
-    approvalTimeline.at(-1);
+    resolvedApprovalTimeline.find((item) => item.status === "PENDING") ??
+    resolvedApprovalTimeline.at(-1);
 
   useEffect(() => {
     if (displayed) {
-      setData(displayed.data);
+      const formData = displayed.data as FR109FormData & LegacyWriteOffFields;
+      const {
+        stockBookFolio,
+        inventoryBookFolio,
+        fixedAssetsRegisterFolio,
+        ledgerFolio,
+        ...currentData
+      } = formData;
+      const legacyEntry = {
+        stockBookFolio: stockBookFolio ?? "",
+        inventoryBookFolio: inventoryBookFolio ?? "",
+        fixedAssetsRegisterFolio: fixedAssetsRegisterFolio ?? "",
+        ledgerFolio: ledgerFolio ?? "",
+      };
+      const hasLegacyEntry = Object.values(legacyEntry).some(Boolean);
+      const properties = formData.properties?.length
+        ? formData.properties
+        : [{
+            id: "legacy-property-1",
+            description: currentData.descriptionOfProperty ?? "",
+            quantity: currentData.quantity ?? "",
+          }];
+
+      setData({
+        ...initialFormData,
+        ...currentData,
+        properties,
+        preliminaryReportReferenceNo: preliminaryReport?.status === "APPROVED"
+          ? preliminaryReport.reference_number
+          : currentData.preliminaryReportReferenceNo,
+        finalReportReferenceNo: finalReport?.status === "APPROVED"
+          ? finalReport.reference_number
+          : currentData.finalReportReferenceNo,
+        preliminaryDate: currentData.preliminaryDate || preliminaryReport?.approved_at?.slice(0, 10) || "",
+        finalDate: currentData.finalDate || finalReport?.approved_at?.slice(0, 10) || "",
+        writeOffEntries: formData.writeOffEntries?.length
+          ? formData.writeOffEntries
+          : hasLegacyEntry
+            ? [legacyEntry]
+            : initialFormData.writeOffEntries,
+      });
       setStatus(displayed.status);
     }
-  }, [displayed]);
+  }, [displayed, finalReport, preliminaryReport]);
+
+  useEffect(() => {
+    if (preliminaryReport?.status !== "APPROVED" || finalReport?.status !== "APPROVED") {
+      return;
+    }
+
+    setData((current) => ({
+      ...current,
+      preliminaryReportReferenceNo: preliminaryReport.reference_number,
+      finalReportReferenceNo: finalReport.reference_number,
+      preliminaryDate: current.preliminaryDate || preliminaryReport.approved_at?.slice(0, 10) || "",
+      finalDate: current.finalDate || finalReport.approved_at?.slice(0, 10) || "",
+    }));
+  }, [finalReport, preliminaryReport]);
 
   useEffect(() => {
     if (error && (error as { response?: { status?: number } }).response?.status !== 404) {
       toast.error("Failed to load FR109 form.");
     }
   }, [error]);
+
+  const numericPayload = (value: string): string => value.replace(/,/g, "").trim();
 
   const save = async () => {
     if (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0) {
@@ -82,7 +200,17 @@ export default function FR109Form({
     }
 
     try {
-      const result = await saveFR109(data);
+      const primaryProperty = data.properties[0] ?? {
+        description: data.descriptionOfProperty,
+        quantity: data.quantity,
+      };
+      const result = await saveFR109({
+        ...data,
+        descriptionOfProperty: primaryProperty.description,
+        quantity: primaryProperty.quantity,
+        originalCost: numericPayload(data.originalCost),
+        netLoss: numericPayload(data.netLoss),
+      });
       setData(result.data);
       setStatus(result.status);
       toast.success("FR109 draft saved successfully.");
@@ -113,6 +241,96 @@ export default function FR109Form({
     }
   };
 
+  const saveWriteOff = async () => {
+    if (!displayed?.id) return;
+
+    try {
+      const result = await writeOff.mutateAsync({
+        fr109Id: displayed.id,
+        writeOffEntries: data.writeOffEntries,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Write-off register saved successfully.");
+    } catch (reason: unknown) {
+      toast.error(
+        (reason as { response?: { data?: { message?: string } } }).response
+          ?.data?.message || "Failed to save write-off register."
+      );
+    }
+  };
+
+  const saveChiefAccountingOrder = async () => {
+    if (!displayed?.id) return;
+
+    try {
+      const result = await chiefAccountingOrder.mutateAsync({
+        fr109Id: displayed.id,
+        stNo: data.chiefAccountingOfficerSTNo,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Chief Accounting Officer order saved successfully.");
+    } catch (reason: unknown) {
+      toast.error(
+        (reason as { response?: { data?: { message?: string } } }).response
+          ?.data?.message || "Failed to save Chief Accounting Officer order."
+      );
+    }
+  };
+
+  const saveChiefSecretaryDecision = async () => {
+    if (!displayed?.id || !data.writeOffStatus) return;
+
+    try {
+      const result = await chiefSecretaryDecision.mutateAsync({
+        fr109Id: displayed.id,
+        writeOffStatus: data.writeOffStatus,
+      });
+      setData(result.data);
+      setStatus(result.status);
+      toast.success("Write-off decision saved successfully.");
+    } catch (reason: unknown) {
+      toast.error((reason as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to save write-off decision.");
+    }
+  };
+
+  const pdfDocumentId = displayed?.id;
+  const pdfFilename = `FR109-${displayed?.reference_number ?? pdfDocumentId ?? "preview"}.pdf`;
+
+  const previewPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR109 form before previewing its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      setPdfPreviewUrl(URL.createObjectURL(blob));
+    } catch {
+      toast.error("Unable to generate the FR109 PDF preview.");
+    }
+  };
+
+  const downloadPdf = async () => {
+    if (!pdfDocumentId) {
+      toast.info("Save the FR109 form before downloading its PDF.");
+      return;
+    }
+
+    try {
+      const blob = await downloadPdfMutation.mutateAsync(pdfDocumentId);
+      const url = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = url;
+      link.download = pdfFilename;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Unable to download the FR109 PDF.");
+    }
+  };
+
   if (!readOnly && isLoading) return <Loader text="Loading FR109 form..." />;
 
   return (
@@ -128,7 +346,7 @@ export default function FR109Form({
             <div>
               <p className="text-xs text-slate-500">{t("fr109.meta.refNo")}</p>
               <p className="font-semibold">
-                {displayed?.reference_number || data.refNo || "—"}
+                {referenceNumber ?? "—"}
               </p>
             </div>
 
@@ -166,7 +384,7 @@ export default function FR109Form({
                 ? `Step ${currentApproval.step} — ${currentApproval.status}`
                 : "—"}
             </div>
-            <div>{approvalTimeline.length} approval steps</div>
+            <div>{resolvedApprovalTimeline.length} approval steps</div>
           </div>
         )}
 
@@ -203,59 +421,146 @@ export default function FR109Form({
               setFormData={setData}
             />
 
-            <HeadDepartmentSection
-              formData={data}
-              setFormData={setData}
-            />
-
-            <ChiefAccountingSection
-              formData={data}
-              setFormData={setData}
-            />
-
-            <WriteOffDecisionSection
-              formData={data}
-              setFormData={setData}
-              editable={editable}
-            />
-
           </fieldset>
 
-          <div className="sticky bottom-0 bg-white border-t shadow-lg p-4">
+          <fieldset disabled={!chiefAccountingOrderEditable} className="space-y-8 disabled:opacity-70">
+            <ChiefAccountingOfficerOrderSection
+              formData={data}
+              setFormData={setData}
+            />
+          </fieldset>
+
+          <fieldset disabled={!chiefSecretaryDecisionEditable} className="space-y-8 disabled:opacity-70">
+            <WriteOffDecisionSection formData={data} setFormData={setData} />
+          </fieldset>
+
+          <fieldset disabled={!writeOffEditable} className="space-y-8 disabled:opacity-70">
+            <WriteOffRegisterSection
+              formData={data}
+              setFormData={setData}
+            />
+          </fieldset>
+
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <DocumentApprovalSignatures approvals={resolvedApprovalTimeline} />
+          </div>
+
+          <div className="border-t bg-white p-4">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
               {readOnly ? (
-                <button
-                  type="button"
-                  onClick={onBack}
-                  className="px-5 py-3 border rounded-lg"
-                >
-                  Back
-                </button>
-              ) : (
                 <>
-                  <button
-                    type="submit"
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <CheckCircle size={18} />
-                    {submit.isPending
-                      ? "Submitting..."
-                      : status === "CHANGES_REQUESTED" ||
-                        (displayed?.revision ?? 1) > 1
-                      ? "Submit Again"
-                      : "Submit"}
-                  </button>
-
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Review PDF"}</button>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button
                     type="button"
-                    onClick={save}
-                    disabled={!editable || saving || submit.isPending}
-                    className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    onClick={onBack}
+                    className="px-5 py-3 border rounded-lg"
                   >
-                    <Save size={18} />
-                    {saving ? "Saving..." : "Save Draft"}
+                    Back
                   </button>
+                  {chiefAccountingOrderEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefAccountingOrder}
+                      disabled={chiefAccountingOrder.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefAccountingOrder.isPending ? "Saving..." : "Save S.T. / Ref. No."}
+                    </button>
+                  )}
+                  {chiefSecretaryDecisionEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefSecretaryDecision}
+                      disabled={chiefSecretaryDecision.isPending || !data.writeOffStatus}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefSecretaryDecision.isPending ? "Saving..." : "Save Write-Off Decision"}
+                    </button>
+                  )}
+                  {!onDecision && isCurrentUserPendingApprover && currentApproval && (
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/approvals/${currentApproval.id}`)}
+                      className="px-5 py-3 bg-blue-800 text-white rounded-lg"
+                    >
+                      Decision
+                    </button>
+                  )}
+                  {onDecision && (
+                    <button
+                      type="button"
+                      onClick={onDecision}
+                      className="px-5 py-3 bg-blue-800 text-white rounded-lg"
+                    >
+                      Decision
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Review PDF"}</button>
+                  <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
+                  {status !== "APPROVED" && (
+                    <>
+                      <button
+                        type="submit"
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-6 py-3 bg-blue-800 text-white rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <CheckCircle size={18} />
+                        {submit.isPending
+                          ? "Submitting..."
+                          : status === "CHANGES_REQUESTED" ||
+                            (displayed?.revision ?? 1) > 1
+                          ? "Submit Again"
+                          : "Submit"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={save}
+                        disabled={!editable || saving || submit.isPending}
+                        className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <Save size={18} />
+                        {saving ? "Saving..." : "Save Draft"}
+                      </button>
+                    </>
+                  )}
+
+                  {writeOffEditable && (
+                    <button
+                      type="button"
+                      onClick={saveWriteOff}
+                      disabled={writeOff.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {writeOff.isPending ? "Saving..." : "Save Write-Off Details"}
+                    </button>
+                  )}
+
+                  {chiefAccountingOrderEditable && (
+                    <button
+                      type="button"
+                      onClick={saveChiefAccountingOrder}
+                      disabled={chiefAccountingOrder.isPending}
+                      className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <Save size={18} />
+                      {chiefAccountingOrder.isPending ? "Saving..." : "Save S.T. / Ref. No."}
+                    </button>
+                  )}
+
+                  {chiefSecretaryDecisionEditable && (
+                    <button type="button" onClick={saveChiefSecretaryDecision} disabled={chiefSecretaryDecision.isPending || !data.writeOffStatus} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2">
+                      <Save size={18} />
+                      {chiefSecretaryDecision.isPending ? "Saving..." : "Save Write-Off Decision"}
+                    </button>
+                  )}
 
                   <button
                     type="button"
@@ -271,9 +576,16 @@ export default function FR109Form({
           </div>
         </form>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <DocumentApprovalSignatures approvals={approvalTimeline} />
-        </div>
+        {pdfPreviewUrl && (
+          <PdfPreviewModal
+            filename={pdfFilename}
+            pdfUrl={pdfPreviewUrl}
+            onClose={() => {
+              URL.revokeObjectURL(pdfPreviewUrl);
+              setPdfPreviewUrl(null);
+            }}
+          />
+        )}
         
       </div>
     </div>

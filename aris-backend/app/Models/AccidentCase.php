@@ -11,6 +11,7 @@ use App\Models\CaseHistory;
 use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 
 use App\Models\Traits\BelongsToInstitution;
 
@@ -83,8 +84,14 @@ class AccidentCase extends Model
             ->ofMany('revision', 'max');
     }
 
-    // public function fr109()
-    // {
-    //     return $this->hasOne(FR109::class);
-    // }
+    public function fr109s()
+    {
+        return $this->hasMany(FR109::class, 'accident_case_id');
+    }
+
+    public function latestFR109()
+    {
+        return $this->hasOne(FR109::class, 'accident_case_id')
+            ->ofMany('revision', 'max');
+    }
 }

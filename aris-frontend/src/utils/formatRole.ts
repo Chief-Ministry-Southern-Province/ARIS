@@ -1,4 +1,8 @@
 export const formatRole = (role: string) => {
+  if (role === "ministry_account_subject_officer") {
+    return "Ministry Account Subject Officer";
+  }
+
   const formattedRole = role.replaceAll("_", " ");
   return formattedRole.charAt(0).toUpperCase() + formattedRole.slice(1);
 };
@@ -6,13 +10,13 @@ export const formatRole = (role: string) => {
 export const rolesForInstitution = (institutionType?: string) => {
   switch (institutionType) {
     case "MINISTRY":
-      return ["subject_officer", "secretary", "assistant_secretary", "senior_assistant_secretary", "treasury_secretary", "administrative_officer", "driver"];
+      return ["subject_officer", "ministry_account_subject_officer", "chief_accountant", "secretary", "assistant_secretary", "senior_assistant_secretary", "chief_secretary", "administrative_officer", "driver"];
     case "PDHS":
-      return ["administrative_officer", "deputy_director", "provincial_director", "driver"];
+      return ["subject_officer", "administrative_officer", "deputy_director", "chief_accountant", "provincial_director", "driver"];
     case "RDHS":
-      return ["administrative_officer", "regional_director", "driver"];
+      return ["subject_officer", "administrative_officer", "accountant", "regional_director", "driver"];
     case "BASE_HOSPITAL":
-      return ["administrative_officer", "medical_superintendent", "driver"];
+      return ["subject_officer", "administrative_officer", "accountant", "medical_superintendent", "driver"];
     default:
       return [];
   }

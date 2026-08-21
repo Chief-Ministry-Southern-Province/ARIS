@@ -52,12 +52,12 @@ export const updateAccident = async (
   data: UpdateAccidentRequest
 ) => {
 
-  const response = await api.put(
+  const response = await api.put<{ accident: AccidentResponse }>(
     `/accidents/${id}`,
     data
   );
 
-  return response.data;
+  return response.data.accident;
 };
 
 export const deleteAccident = async (

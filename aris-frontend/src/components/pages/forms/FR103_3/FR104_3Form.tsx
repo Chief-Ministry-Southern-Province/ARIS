@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDownloadFR1043Pdf, useGetFR1043, useSaveFR1043, useSubmitFR1043 } from "@/hooks/useFR1043";
 import { useApprovalHistory } from "@/hooks/useApprovals";
+import { useCase } from "@/hooks/queries/useCaseQueries";
 import type { FR1043Response, FR1043Status } from "@/types/form_104_3_types";
 import Loader from "@/components/atoms/Loader";
 import type { Approval } from "@/types/approval.type";
@@ -45,18 +46,25 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
   const [formStatus, setFormStatus] = useState<FR1043Status | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(readOnly ? undefined : accidentCaseId);
+  const { data: loadedForm, isLoading: loadingForm, error: loadError } = useGetFR1043(accidentCaseId);
+  const displayedForm = document ?? loadedForm;
+  const { data: accidentCase } = useCase(accidentCaseId);
+  const referenceNumber = displayedForm?.reference_number ?? accidentCase?.case_number;
   const { saveFR1043, loading: saving } = useSaveFR1043(accidentCaseId);
   const submitMutation = useSubmitFR1043(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1043Pdf();
   const { data: approvalGroups = [] } = useApprovalHistory(
     readOnly ? 0 : accidentCaseId,
     "FR1043",
+    displayedForm?.revision,
   );
   const submitting = submitMutation.isPending;
   const isEditable = !readOnly && (!formStatus || ["DRAFT", "CHANGES_REQUESTED"].includes(formStatus));
-  const displayedForm = document ?? loadedForm;
-  const generatedApprovalTimeline = approvalGroups.flatMap((group) => group.approvals);
+  const generatedApprovalTimeline = displayedForm
+    ? approvalGroups
+      .filter((group) => group.revision === displayedForm.revision)
+      .flatMap((group) => group.approvals)
+    : [];
   const resolvedApprovalTimeline = approvalTimeline.length > 0
     ? approvalTimeline
     : generatedApprovalTimeline;
@@ -64,7 +72,6 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
 
   const [formData, setFormData] = useState<FR1043FormData>({
     department: "",
-    secretaryOfMinistry: "",
     date: "",
     place: "",
 
@@ -220,10 +227,10 @@ useEffect(() => {
     if (!displayedForm || (!readOnly && (!Number.isInteger(accidentCaseId) || accidentCaseId <= 0))) {
       return;
     }
-    // Older drafts may contain the retired top-level loss value. Do not send it
-    // back when the user saves an updated draft.
-    const { loss: _retiredLoss, ministry: legacyMinistry, ...currentData } = displayedForm.data as FR1043FormData & { loss?: unknown; ministry?: string };
-    setFormData({ ...currentData, secretaryOfMinistry: currentData.secretaryOfMinistry ?? legacyMinistry ?? "" });
+    // Older drafts may contain retired fields. Do not send them back when the
+    // user saves an updated draft.
+    const { loss: _retiredLoss, ministry: _legacyMinistry, secretaryOfMinistry: _retiredSecretaryOfMinistry, ...currentData } = displayedForm.data as FR1043FormData & { loss?: unknown; ministry?: string; secretaryOfMinistry?: string };
+    setFormData(currentData);
     setFormId(displayedForm.id);
     setFormStatus(displayedForm.status);
   }, [displayedForm]);
@@ -300,7 +307,7 @@ useEffect(() => {
               </p>
 
               <p className="font-semibold text-slate-800">
-                {displayedForm?.reference_number ?? "Not saved"}
+                {referenceNumber ?? "Not saved"}
               </p>
             </div>
 
@@ -502,26 +509,52 @@ useEffect(() => {
                   </button>
               </>
             ) : <>
-            {/* Submit */}
-            <button
-              type="submit"
-              form="fr1043-form"
-              disabled={!isEditable || loadingForm || saving || submitting}
-              className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
-              <CheckCircle size={18} />
-              {submitting ? "Submitting..." : (formStatus === "CHANGES_REQUESTED" || (displayedForm?.revision ?? 1) > 1 ? "Submit Again" : t("fr104_3.submit"))}
-            </button>
+            {displayedForm?.id && (
+              <>
+                <button
+                  type="button"
+                  onClick={downloadPdf}
+                  disabled={downloadPdfMutation.isPending}
+                  className="order-2 sm:order-5 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"
+                >
+                  <Download size={18} />
+                  {downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}
+                </button>
 
-            {/* Save Draft */}
-            <button
-              type="button"
-              onClick={saveDraft}
-              disabled={!isEditable || loadingForm || saving || submitting}
-              className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
-            >
-              <Save size={18} />
-              {saving ? "Saving..." : t("fr104_3.saveDraft")}
-            </button>
+                <button
+                  type="button"
+                  onClick={previewPdf}
+                  disabled={downloadPdfMutation.isPending}
+                  className="order-2 sm:order-6 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"
+                >
+                  <Eye size={18} />
+                  {downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}
+                </button>
+              </>
+            )}
+
+            {formStatus !== "APPROVED" && (
+              <>
+                <button
+                  type="submit"
+                  form="fr1043-form"
+                  disabled={!isEditable || loadingForm || saving || submitting}
+                  className="order-1 sm:order-4 w-full sm:w-auto px-6 py-3 bg-blue-800 text-white rounded-lg hover:bg-blue-900 flex items-center justify-center gap-2 font-medium">
+                  <CheckCircle size={18} />
+                  {submitting ? "Submitting..." : (formStatus === "CHANGES_REQUESTED" || (displayedForm?.revision ?? 1) > 1 ? "Submit Again" : t("fr104_3.submit"))}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={saveDraft}
+                  disabled={!isEditable || loadingForm || saving || submitting}
+                  className=" order-3 sm:order-2 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 "
+                >
+                  <Save size={18} />
+                  {saving ? "Saving..." : t("fr104_3.saveDraft")}
+                </button>
+              </>
+            )}
 
             {/* Print */}
             <button

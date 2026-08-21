@@ -38,3 +38,17 @@ export const getAccidentCase = async (id: number) => {
 
   return response.data.data;
 }
+
+export const downloadAccidentCasesCsv = async (
+  caseNumber: string = "",
+  status: CaseStatus | "" = "",
+  stage: CaseStage | "" = "",
+): Promise<Blob> =>
+  (await api.get("/cases/export", {
+    params: {
+      case_number: caseNumber || undefined,
+      status: status || undefined,
+      stage: stage || undefined,
+    },
+    responseType: "blob",
+  })).data;

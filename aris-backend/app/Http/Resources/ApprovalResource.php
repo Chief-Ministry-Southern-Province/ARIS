@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\FR1043;
 use App\Models\FR1044;
+use App\Models\FR109;
 
 class ApprovalResource extends JsonResource
 {
@@ -17,6 +18,10 @@ class ApprovalResource extends JsonResource
                 ->where('revision', $this->revision)
                 ->value('reference_number'),
             'FR1044' => FR1044::query()
+                ->where('accident_case_id', $this->accident_case_id)
+                ->where('revision', $this->revision)
+                ->value('reference_number'),
+            'FR109' => FR109::query()
                 ->where('accident_case_id', $this->accident_case_id)
                 ->where('revision', $this->revision)
                 ->value('reference_number'),

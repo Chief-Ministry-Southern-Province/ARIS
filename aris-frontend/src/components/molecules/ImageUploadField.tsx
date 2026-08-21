@@ -1,28 +1,37 @@
 import { useState } from "react";
-import { Upload, X, ImageIcon } from "lucide-react";
+import { Camera, Upload, X, ImageIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { CameraCapture } from "@/components/molecules/CameraCapture";
 
 interface ImageUploadFieldProps {
   multiple?: boolean;
   accept?: string;
+  enableCamera?: boolean;
   onChange?: (files: File[]) => void;
 }
 
 export const ImageUploadField = ({
   multiple = true,
   accept = "image/*",
+  enableCamera = false,
   onChange,
 }: ImageUploadFieldProps) => {
+  const { t } = useTranslation();
   const [images, setImages] = useState<File[]>([]);
+  const [showCamera, setShowCamera] = useState(false);
+
+  const addFiles = (files: File[]) => {
+    const updatedImages = [...images, ...files];
+    setImages(updatedImages);
+    onChange?.(updatedImages);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const files = Array.from(e.target.files || []);
 
-    const updatedImages = [...images, ...files];
-
-    setImages(updatedImages);
-    onChange?.(updatedImages);
+    addFiles(files);
   };
 
   const removeImage = (index: number) => {
@@ -36,34 +45,52 @@ export const ImageUploadField = ({
 
   return (
     <div className="space-y-4">
-      {/* Upload Area */}
-      <label className="group relative flex flex-col items-center justify-center w-full min-h-[180px] p-6 border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
-        <input
-          type="file"
-          accept={accept}
-          multiple={multiple}
-          onChange={handleChange}
-          className="hidden"
+      {showCamera && (
+        <CameraCapture
+          onCapture={(file) => addFiles([file])}
+          onClose={() => setShowCamera(false)}
         />
+      )}
 
-        <div className="flex flex-col items-center text-center">
-          <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-            <Upload className="w-7 h-7 text-blue-600" />
+      {/* Upload Area */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        <label className="group relative flex min-h-[180px] w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50">
+          <input
+            type="file"
+            accept={accept}
+            multiple={multiple}
+            onChange={handleChange}
+            className="hidden"
+          />
+
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 transition-transform group-hover:scale-105">
+              <Upload className="h-7 w-7 text-blue-600" />
+            </div>
+
+            <h3 className="font-medium text-gray-800">{t("report.UploadEvidenceImages")}</h3>
+
+            <p className="mt-1 text-sm text-gray-500">{t("report.camera.browsePhotos")}</p>
+
+            <p className="mt-2 text-xs text-gray-400">{t("report.camera.supportedImages")}</p>
           </div>
+        </label>
 
-          <h3 className="font-medium text-gray-800">
-            Upload Evidence Images
-          </h3>
-
-          <p className="text-sm text-gray-500 mt-1">
-            Click to browse or drag & drop photos
-          </p>
-
-          <p className="text-xs text-gray-400 mt-2">
-            JPG, PNG, WEBP
-          </p>
-        </div>
-      </label>
+        {enableCamera && (
+          <button
+            type="button"
+            onClick={() => setShowCamera(true)}
+            className="group flex min-h-[180px] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 transition-all hover:border-blue-500 hover:bg-blue-100 lg:hidden"
+          >
+            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 transition-transform group-hover:scale-105">
+              <Camera className="h-7 w-7 text-white" />
+            </div>
+            <h3 className="font-medium text-slate-800">{t("report.camera.takePhoto")}</h3>
+            <p className="mt-1 text-sm text-slate-500">{t("report.camera.useDeviceCamera")}</p>
+            <p className="mt-2 text-xs text-slate-400">{t("report.camera.permissionRequired")}</p>
+          </button>
+        )}
+      </div>
 
       {/* Count */}
       {images.length > 0 && (

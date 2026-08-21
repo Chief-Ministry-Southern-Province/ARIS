@@ -1,4 +1,4 @@
-import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,FileSearch,Bell,FolderClock,FileSignature} from "lucide-react";
+import {LayoutDashboard,AlertTriangle,FolderOpen,BarChart2,Settings,Bell,FolderClock,FileSignature} from "lucide-react";
 
 export const FULL_ACCESS_ROLES = [
   "subject_officer",
@@ -10,20 +10,36 @@ export const FULL_ACCESS_ROLES = [
   "secretary",
   "assistant_secretary",
   "senior_assistant_secretary",
-  "treasury_secretary",
+  "chief_secretary",
+  "accountant",
+];
+
+export const CHIEF_ACCOUNTANT_ACCESS_ROLES = [
+  ...FULL_ACCESS_ROLES,
+  "chief_accountant",
+  "ministry_account_subject_officer",
+];
+
+export const FR109_APPROVAL_ACCESS_ROLES = [
+  ...FULL_ACCESS_ROLES,
+  "chief_accountant",
+  "ministry_account_subject_officer",
 ];
 
 export const SIGNATURE_ACCESS_ROLE = [
   "medical_superintendent",
   "regional_director",
   "provincial_director",
+  "chief_accountant",
   "secretary",
-  "treasury_secretary",
+  "chief_secretary",
+  "accountant",
 ]
 
 export const REPORT_ROLES = [
   "subject_officer",
   "driver",
+  "accountant",
 ];
 
 export const ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS = [
@@ -42,7 +58,8 @@ export const canAccessAdminPanel = (
     ADMIN_PANEL_SUBJECT_OFFICER_INSTITUTIONS.includes(institutionType));
 
 export const NOTIFICATION_ROLES = [
-  ...FULL_ACCESS_ROLES,
+  ...CHIEF_ACCOUNTANT_ACCESS_ROLES,
+  "ministry_account_subject_officer",
   "driver",
 ];
 
@@ -52,7 +69,7 @@ export const navItems = [
     path: "/dashboard",
     icon: LayoutDashboard,
     label: "nav.dashboard",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {
@@ -68,23 +85,14 @@ export const navItems = [
     path: "/cases",
     icon: FolderOpen,
     label: "nav.caseManagement",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
-
-  {
-    id: "evidence",
-    path: "/evidence",
-    icon: FileSearch,
-    label: "nav.evidence",
-    roles: FULL_ACCESS_ROLES,
-  },
-
   {
     id: "analytics",
     path: "/analytics",
     icon: BarChart2,
     label: "nav.analytics",
-    roles: FULL_ACCESS_ROLES,
+    roles: CHIEF_ACCOUNTANT_ACCESS_ROLES,
   },
 
   {
@@ -106,7 +114,7 @@ export const navItems = [
     path: "/approvals",
     icon: FolderClock,
     label: "nav.approvals",
-    roles: FULL_ACCESS_ROLES,
+    roles: FR109_APPROVAL_ACCESS_ROLES,
   },
 
   {

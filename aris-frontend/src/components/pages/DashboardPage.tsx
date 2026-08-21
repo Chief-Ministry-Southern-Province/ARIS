@@ -3,13 +3,27 @@ import { AccidentTrendChart } from "@/components/organisms/Dashboard/AccidentTre
 import { RecentCasesTable } from "@/components/organisms/Dashboard/RecentCasesTable";
 import { HotspotMapCard } from "@/components/organisms/Dashboard/HotspotMap";
 import { VehicleRisks } from "@/components/organisms/Dashboard/VehicleRisks";
+import { OverdueApprovalsCard } from "@/components/organisms/Dashboard/OverdueApprovalsCard";
+import { CaseStageFunnel } from "@/components/organisms/Dashboard/CaseStageFunnel";
 import { RecentActivities } from "../organisms/Dashboard/RecentActivities";
 import AwaitingCases from "../organisms/workflow/AwaitingCases";
+import { useDashboardStatistics } from "@/hooks/useDashboard";
+import { useAuth } from "@/context/auth/AuthContext";
+import { Link } from "react-router-dom";
 
 import { t } from "i18next";
 import { AlertTriangle,LayoutDashboard } from "lucide-react";
 
 export default function DashboardPage() {
+  const { data: statistics } = useDashboardStatistics();
+  const { role, institutionType } = useAuth();
+  const showApprovalInsights = !(
+    role.includes("subject_officer")
+    && ["BASE_HOSPITAL", "RDHS"].includes(institutionType ?? "")
+  );
+  const showAwaitingAction = (statistics?.pending_approvals ?? 0) > 0 && showApprovalInsights;
+  const showReportAccident = role.includes("subject_officer")
+    && ["BASE_HOSPITAL", "RDHS"].includes(institutionType ?? "");
 
   return (
     <div className="space-y-6">
@@ -34,7 +48,9 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <button
+          {showReportAccident && (
+          <Link
+            to="/report"
             className="
               inline-flex items-center gap-2
               px-5 py-3
@@ -48,29 +64,37 @@ export default function DashboardPage() {
           >
             <AlertTriangle className="h-4 w-4" />
             {t("dashboard.reportIncident")}
-          </button>
+          </Link>
+          )}
         </div>
       </div>
 
       <DashboardStats
-        totalIncidents={47}
-        openInvestigations={12}
-        pendingApprovals={8}
-        completedCases={27}
-        totalLosses={150000}
-        recoveries={50000}
+        totalIncidents={statistics?.total_incidents ?? 0}
+        openInvestigations={statistics?.open_investigations ?? 0}
+        pendingApprovals={statistics?.pending_approvals ?? 0}
+        completedCases={statistics?.completed_cases ?? 0}
+        totalLosses={statistics?.total_losses ?? 0}
+        recoveries={statistics?.recoveries ?? 0}
       />
+
+      {showAwaitingAction && <AwaitingCases />}
+
+      <div className={showApprovalInsights ? "grid grid-cols-1 gap-5 xl:grid-cols-2" : ""}>
+        {showApprovalInsights && <OverdueApprovalsCard />}
+        <CaseStageFunnel />
+      </div>
 
       <AccidentTrendChart />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <VehicleRisks />
         <HotspotMapCard />
-        <RecentActivities />
       </div>
 
+      <RecentActivities />
+
       <RecentCasesTable />
-      <AwaitingCases />
     </div>
   );
 }

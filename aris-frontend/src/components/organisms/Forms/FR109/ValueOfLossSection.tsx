@@ -23,6 +23,9 @@ export default function ValueOfLossSection({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormField label={t("fr109.fields.originalCost")}>
           <InputField
+            type="number"
+            min="0"
+            step="0.01"
             value={formData.originalCost}
             onChange={(e) =>
               setFormData((prev) => ({
@@ -83,6 +86,9 @@ export default function ValueOfLossSection({
 
         <FormField label={t("fr109.fields.netLoss")}>
           <InputField
+            type="number"
+            min="0"
+            step="0.01"
             value={formData.netLoss}
             onChange={(e) =>
               setFormData((prev) => ({

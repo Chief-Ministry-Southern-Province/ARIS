@@ -1,69 +1,66 @@
 import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { hotspotLocations } from "../../data/mockData";
+
+import type { AnalyticsHotspotPoint } from "@/types/analytics.type";
 import { Card, SectionTitle } from "./shared";
 
-export default function GISHotspotsTable() {
+interface GISHotspotsTableProps {
+  data?: AnalyticsHotspotPoint[];
+  isLoading: boolean;
+}
+
+const riskStyle = {
+  HIGH: { background: "#FDECEA", color: "#922B21", translation: "high" },
+  MEDIUM: { background: "#FEF3CD", color: "#B7791F", translation: "medium" },
+  LOW: { background: "#E6F4EC", color: "#1D6A3A", translation: "low" },
+} as const;
+
+export default function GISHotspotsTable({ data = [], isLoading }: GISHotspotsTableProps) {
   const { t } = useTranslation();
 
   return (
     <Card>
       <SectionTitle>{t("analytics.charts.gisHotspots")}</SectionTitle>
-      <div className="overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead>
-            <tr style={{ borderBottom: "1px solid #D1D9E0" }}>
-              {["Location", "Incidents", "Severity", "Coordinates"].map((col) => (
-                <th
-                  key={col}
-                  className="text-left py-2 px-3 font-semibold uppercase tracking-wider"
-                  style={{ color: "#4B5D6E" }}
-                >
-                  {col}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {hotspotLocations.map((spot, i) => (
-              <tr
-                key={i}
-                style={{ borderBottom: "1px solid #F0F3F7" }}
-                className="hover:bg-gray-50 transition-colors"
-              >
-                <td className="py-2.5 px-3">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: "#1B3A6B" }} />
-                    <span style={{ color: "#1B3A6B" }} className="font-medium">
-                      {spot.name}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-2.5 px-3 font-semibold" style={{ color: "#1B3A6B" }}>
-                  {spot.count}
-                </td>
-                <td className="py-2.5 px-3">
-                  <span
-                    className="px-2 py-0.5 rounded-sm text-xs font-semibold uppercase tracking-wide"
-                    style={
-                      spot.severity === "High"
-                        ? { background: "#FDECEA", color: "#922B21" }
-                        : spot.severity === "Medium"
-                        ? { background: "#FEF3CD", color: "#B7791F" }
-                        : { background: "#E6F4EC", color: "#1D6A3A" }
-                    }
-                  >
-                    {spot.severity}
-                  </span>
-                </td>
-                <td className="py-2.5 px-3" style={{ color: "#7A8F9E", fontFamily: "monospace" }}>
-                  {spot.lat?.toFixed(4)}, {spot.lng?.toFixed(4)}
-                </td>
+      {isLoading ? (
+        <div className="h-44 animate-pulse rounded-xl bg-slate-100" />
+      ) : data.length ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-slate-300">
+                {[t("analytics.table.location"), t("analytics.table.incidents"), t("analytics.table.severity"), t("analytics.table.coordinates")].map((column) => (
+                  <th key={column} className="px-3 py-2 text-left font-semibold uppercase tracking-wider text-slate-600">{column}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {data.map((spot) => {
+                const style = riskStyle[spot.risk];
+
+                return (
+                  <tr key={spot.id} className="border-b border-slate-100 transition-colors hover:bg-slate-50">
+                    <td className="px-3 py-2.5">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 shrink-0 text-blue-800" />
+                        <span className="font-medium text-blue-900">{spot.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5 font-semibold text-blue-900">{spot.count}</td>
+                    <td className="px-3 py-2.5">
+                      <span className="rounded-sm px-2 py-0.5 text-xs font-semibold uppercase tracking-wide" style={{ background: style.background, color: style.color }}>
+                        {t(`analytics.severity.${style.translation}`)}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 font-mono text-slate-500">{spot.latitude.toFixed(4)}, {spot.longitude.toFixed(4)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex h-44 items-center justify-center text-sm text-slate-400">{t("analytics.noDataForPeriod")}</div>
+      )}
     </Card>
   );
 }

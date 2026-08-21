@@ -37,6 +37,7 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'role' => $user->getRoleNames(),
+                'institutionId' => $user->institution_id,
                 'institutionType' => $user->institution->type ?? null,
             ]);
         }
