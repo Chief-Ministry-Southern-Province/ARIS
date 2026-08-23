@@ -60,6 +60,9 @@ class FR1044PdfGenerator implements PdfGeneratorInterface
 
         return [
             'document' => $document,
+            'case' => $document->accidentCase,
+            'signatures' => $signatures,
+            'approvals' => $signatures,
             'msRdSignature' => $this->firstSignatureForRoles(
                 $signatures,
                 ['medical superintendent', 'regional director'],

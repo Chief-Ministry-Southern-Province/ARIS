@@ -18,9 +18,7 @@
         body,
         table,
         td,
-        th,
-        div,
-        span {
+        th {
             color: #000;
             font-family: iskoolapota, notosanstamil, sans-serif;
             font-size: 9.5pt;
@@ -43,6 +41,16 @@
             page-break-after: auto;
         }
 
+        [lang="si"] {
+            font-family: iskoolapota, sans-serif;
+            font-weight: normal !important;
+        }
+
+        [lang="ta"] {
+            font-family: notosanstamil, sans-serif;
+            font-weight: normal !important;
+        }
+
         table {
             width: 100%;
             margin: 0;
@@ -55,7 +63,7 @@
         td,
         th {
             border: 0.25mm solid #000;
-            padding: 1.5mm 2mm;
+            padding: 1.4mm 2mm;
             vertical-align: top;
             overflow: hidden;
             overflow-wrap: break-word;
@@ -193,12 +201,12 @@
             line-height: 1;
         }
 
-        .fr1044-title-si {
+        .form-header-title .fr1044-header-si {
             font-family: iskoolapota, sans-serif !important;
-            /* mPDF scales this two-column header down by about 1.36. */
-            font-size: 34pt !important;
+            font-size: 24pt !important;
             font-weight: bold !important;
             line-height: 1.05 !important;
+            margin-bottom: 1mm;
         }
 
         .form-title-ta {
@@ -212,6 +220,68 @@
             font-family: dejavuserifcondensed, serif;
             font-size: 9pt;
             line-height: 1.02;
+        }
+
+        /* Fixed FR109-compatible approval grid. Keep this local so the
+           official FR1044 field geometry remains unchanged. */
+        .page-three-approval-signatures {
+            width: 200mm;
+            margin-top: 1mm;
+            table-layout: fixed;
+        }
+
+        .page-three-approval-signatures > tbody > tr {
+            height: 21mm;
+        }
+
+        .page-three-approval-signatures > tbody > tr.page-three-signature-separator,
+        .page-three-approval-signatures > tbody > tr.page-three-signature-separator td {
+            height: 1mm;
+            padding: 0 !important;
+            border-top: 0.35mm solid #000 !important;
+        }
+
+        .page-three-approval-signatures td {
+            border: 0;
+            padding: 0;
+        }
+
+        .page-three-approval-signatures .page-three-signature-comment {
+            height: 21mm;
+            padding-right: 4mm;
+            font-size: 8pt;
+            line-height: 1.15;
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .page-three-approval-signatures .page-three-signature-card {
+            height: 21mm;
+            padding-left: 4mm;
+            text-align: right;
+            vertical-align: bottom;
+        }
+
+        .page-three-approval-signatures .signature-space {
+            height: 8mm !important;
+            line-height: 0;
+            text-align: right;
+        }
+
+        .page-three-approval-signatures .approval-signature-image {
+            width: 28mm !important;
+            height: 8mm !important;
+            object-fit: contain;
+        }
+
+        .page-three-approval-signatures .signature-dots,
+        .page-three-approval-signatures .signature-approver-name,
+        .page-three-approval-signatures .signature-role,
+        .page-three-approval-signatures .signature-institution,
+        .page-three-approval-signatures .signature-date {
+            font-size: 6.8pt;
+            line-height: 1;
+            text-align: right;
         }
 
         .form-reference {
@@ -556,7 +626,7 @@
 
         .signature-grid-comment {
             width: 105mm;
-            height: 15mm;
+            height: 21mm;
             padding: 2mm 2mm 0 0 !important;
             font-size: 7.2pt;
             line-height: 1.08;
@@ -571,14 +641,14 @@
 
         .signature-grid-line {
             width: 70mm;
-            min-height: 6mm;
+            min-height: 8mm;
             margin-left: auto;
             border-bottom: 0.25mm dotted #000;
         }
 
         .signature-grid-image {
-            width: 23mm !important;
-            height: 6mm !important;
+            width: 28mm !important;
+            height: 8mm !important;
             object-fit: contain;
         }
 
@@ -607,7 +677,7 @@
         }
 
         .signature-full-card {
-            height: 15mm;
+            height: 21mm;
         }
 
         .signature-full-separator td {
@@ -709,6 +779,8 @@
 <body>
     @php
         $documentData = data_get($document, 'data', []);
+        $data = $data ?? $documentData;
+        $approvals = $approvals ?? ($signatures ?? []);
         $referenceNumber = data_get($document, 'reference_number', data_get($documentData, 'referenceNo', ''));
         // The official form must render the stored value, not a shortened
         // preview with an ellipsis. Fixed table geometry remains unchanged.
@@ -749,7 +821,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->toDateString();
+                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
             } catch (\Throwable) {
                 return '';
             }
@@ -771,12 +843,12 @@
             </tr>
         </table>
 
-        <table autosize="1">
+        <table>
             <tr>
                 <td class="form-header-title" style="width: 140mm;">
-                    <div class="form-title-si fr1044-title-si" style="font-family: iskoolapota, sans-serif; font-size: 34pt !important; font-weight: bold; line-height: 1.05;">
-                        මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව
-                    </div>
+                    <span class="form-title-si fr1044-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 24pt; font-weight: bold; line-height: 1.05;">
+                        මූ. රෙ. 104 (4) යටතේ<br>අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව
+                    </span>
                     <div class="form-title-ta" lang="ta">
                         நி.பி. 104 (4) இன் கீழ் இழப்புகள் பற்றிய<br>இறுதி அறிக்கை
                     </div>
@@ -1336,7 +1408,7 @@
                 ->values();
         @endphp
 
-        <table class="no-border signature-full-width page-break-avoid">
+        <table class="no-border signature-full-width page-three-approval-signatures page-break-avoid">
             @foreach ($localSignatureRows as $signatureRow)
                 <tr>
                     <td style="width: 200mm;">
@@ -1381,7 +1453,7 @@
         </table>
 
         @foreach ($ministrySignatureRows as $signatureRow)
-            <table class="no-border signature-full-width signature-ministry-single page-break-avoid">
+            <table class="no-border signature-full-width signature-ministry-single page-three-approval-signatures page-break-avoid">
                 <tr>
                     <td style="width: 200mm;">
                         <table class="no-border signature-grid-card signature-full-card">
