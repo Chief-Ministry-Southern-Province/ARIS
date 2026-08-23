@@ -9,37 +9,37 @@ export default function SignatureDetails({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-          <User className="w-6 h-6 text-blue-600" />
+    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+      <div className="flex items-center gap-3 sm:gap-4 mb-4">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+          <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
         </div>
 
-        <div>
-          <h3 className="font-semibold text-gray-900">
+        <div className="min-w-0 flex-1">
+          <h3 className="font-semibold text-gray-900 text-base sm:text-lg truncate">
             {user.name}
           </h3>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500 break-words">
             {user.role}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
         {hasSignature ? (
           <>
-            <CheckCircle className="w-5 h-5 text-green-500" />
+            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 shrink-0" />
 
-            <span className="text-green-600 font-medium">
+            <span className="text-xs sm:text-sm text-green-600 font-medium">
               {t("digitalSignature.signatureAvailable")}
             </span>
           </>
         ) : (
           <>
-            <XCircle className="w-5 h-5 text-red-500" />
+            <XCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0" />
 
-            <span className="text-red-600 font-medium">
+            <span className="text-xs sm:text-sm text-red-600 font-medium">
               {t("digitalSignature.signatureMissing")}
             </span>
           </>

@@ -17,43 +17,51 @@ export default function SignatureActions({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-3">
       <button
         onClick={onDrawToggle}
         disabled={isSubmitting}
         className={`
-          flex items-center gap-2
-          px-4 py-2
+          flex items-center justify-center gap-2
+          px-4 py-2.5 sm:py-2
+          w-full sm:w-auto
+          text-sm font-medium
           rounded-lg
           border
           transition-colors
           ${
             drawMode
               ? "bg-blue-50 border-blue-500 text-blue-700"
-              : "border-gray-300 hover:bg-gray-50"
+              : "border-gray-300 hover:bg-gray-50 text-gray-700"
           }
         `}
       >
-        <PenTool className="w-4 h-4" />
+        <PenTool className="w-4 h-4 shrink-0" />
 
-        {hasSignature
-          ? t("digitalSignature.updateSignature")
-          : t("digitalSignature.drawSignature")}
+        <span>
+          {hasSignature
+            ? t("digitalSignature.updateSignature")
+            : t("digitalSignature.drawSignature")}
+        </span>
       </button>
 
       <label
         className="
-          flex items-center gap-2
-          px-4 py-2
+          flex items-center justify-center gap-2
+          px-4 py-2.5 sm:py-2
+          w-full sm:w-auto
+          text-sm font-medium
           rounded-lg
           border border-gray-300
+          text-gray-700
           cursor-pointer
           hover:bg-gray-50
+          transition-colors
         "
       >
-        <Upload className="w-4 h-4" />
+        <Upload className="w-4 h-4 shrink-0" />
 
-        {t("digitalSignature.uploadSignature")}
+        <span>{t("digitalSignature.uploadSignature")}</span>
 
         <input
           type="file"
@@ -77,17 +85,20 @@ export default function SignatureActions({
           onClick={onRemove}
           disabled={isSubmitting}
           className="
-            flex items-center gap-2
-            px-4 py-2
+            flex items-center justify-center gap-2
+            px-4 py-2.5 sm:py-2
+            w-full sm:w-auto
+            text-sm font-medium
             rounded-lg
             border border-red-200
             text-red-600
             hover:bg-red-50
+            transition-colors
           "
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4 shrink-0" />
 
-          {t("digitalSignature.removeSignature")}
+          <span>{t("digitalSignature.removeSignature")}</span>
         </button>
       )}
     </div>

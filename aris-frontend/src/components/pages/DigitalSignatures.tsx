@@ -106,31 +106,32 @@ export default function DigitalSignatures() {
   const isSubmitting = uploadMutation.isPending || deleteMutation.isPending;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
       {/* Header */}
 
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
           {t("digitalSignature.title")}
         </h1>
 
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-xs sm:text-sm text-gray-500 mt-1">
           {t("digitalSignature.description")}
         </p>
       </div>
 
-      <div className="space-y-4">
-        
-        <SignatureDetails
-          user={selectedOfficer}
-          hasSignature={hasSignature}
-        />
+      <div className="space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          <SignatureDetails
+            user={selectedOfficer}
+            hasSignature={hasSignature}
+          />
 
-        <SignaturePreview
-          user={selectedOfficer}
-          signature={signatureUrl}
-          isLoading={hasSignature && isSignatureImageLoading}
-        />
+          <SignaturePreview
+            user={selectedOfficer}
+            signature={signatureUrl}
+            isLoading={hasSignature && isSignatureImageLoading}
+          />
+        </div>
 
         <SignatureActions
           hasSignature={hasSignature}
@@ -149,7 +150,6 @@ export default function DigitalSignatures() {
           />
         )}
       </div>
-      
     </div>
   );
 }

@@ -10,35 +10,35 @@ export default function SignaturePreview({
   const { t } = useTranslation();
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <h3 className="font-semibold text-gray-800 mb-4">
+    <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-xs">
+      <h3 className="font-semibold text-gray-800 text-base sm:text-lg mb-3 sm:mb-4">
         {t("digitalSignature.signaturePreview")}
       </h3>
 
-      <div className="min-h-55 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center">
+      <div className="min-h-44 sm:min-h-52 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center p-3 sm:p-4">
         {isLoading ? (
           <div className="text-center">
-            <LoaderCircle className="w-8 h-8 text-blue-600 mx-auto mb-3 animate-spin" />
+            <LoaderCircle className="w-7 h-7 sm:w-8 sm:h-8 text-blue-600 mx-auto mb-2 sm:mb-3 animate-spin" />
 
-            <p className="text-sm text-gray-500">Loading signature...</p>
+            <p className="text-xs sm:text-sm text-gray-500">Loading signature...</p>
           </div>
         ) : signature ? (
-          <div className="text-center">
+          <div className="text-center w-full overflow-hidden">
             <img
               src={signature}
               alt={`${user.name}'s signature`}
-              className="max-h-32 mx-auto"
+              className="max-h-28 sm:max-h-36 max-w-full object-contain mx-auto"
             />
 
-            <p className="text-sm text-gray-500 mt-3">
+            <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 truncate">
               {user.name}
             </p>
           </div>
         ) : (
           <div className="text-center">
-            <PenTool className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <PenTool className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 mx-auto mb-2 sm:mb-3" />
 
-            <p className="text-gray-400">
+            <p className="text-xs sm:text-sm text-gray-400">
               {t("digitalSignature.signatureMissing")}
             </p>
           </div>
