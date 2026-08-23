@@ -80,14 +80,14 @@ export const ImageUploadField = ({
           <button
             type="button"
             onClick={() => setShowCamera(true)}
-            className="group flex min-h-[180px] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 transition-all hover:border-blue-500 hover:bg-blue-100 lg:hidden"
+            className="group flex min-h-[180px] w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50 p-6 transition-all hover:border-blue-500 hover:bg-blue-100 dark:border-blue-700/80 dark:bg-blue-950/70 dark:hover:border-blue-500 dark:hover:bg-blue-900/65 lg:hidden"
           >
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 transition-transform group-hover:scale-105">
-              <Camera className="h-7 w-7 text-white" />
+            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 transition-transform group-hover:scale-105 dark:bg-blue-900">
+              <Camera className="h-7 w-7 text-white dark:text-blue-100" />
             </div>
-            <h3 className="font-medium text-slate-800">{t("report.camera.takePhoto")}</h3>
-            <p className="mt-1 text-sm text-slate-500">{t("report.camera.useDeviceCamera")}</p>
-            <p className="mt-2 text-xs text-slate-400">{t("report.camera.permissionRequired")}</p>
+            <h3 className="font-medium text-slate-800 dark:text-slate-100">{t("report.camera.takePhoto")}</h3>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-300">{t("report.camera.useDeviceCamera")}</p>
+            <p className="mt-2 text-xs text-slate-400 dark:text-slate-400">{t("report.camera.permissionRequired")}</p>
           </button>
         )}
       </div>

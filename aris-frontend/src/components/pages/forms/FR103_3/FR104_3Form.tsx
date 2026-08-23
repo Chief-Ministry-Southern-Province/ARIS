@@ -283,13 +283,13 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 py-8">
+    <div className="min-h-screen bg-slate-100 py-8 dark:bg-slate-950">
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden mb-8">
+        <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
 
-          <div className="bg-blue-900 px-8 py-8 text-center">
+          <div className="bg-linear-to-r from-blue-800 to-blue-700 px-8 py-8 text-center dark:from-blue-950 dark:to-blue-900">
             <h1 className="text-3xl font-bold text-white">
               {t("fr104_3.title")}
             </h1>
@@ -299,14 +299,14 @@ useEffect(() => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 px-8 py-5 bg-slate-50 border-t">
+          <div className="grid gap-6 border-t border-slate-200 bg-slate-50 px-8 py-5 dark:border-slate-700 dark:bg-slate-950/45 md:grid-cols-3">
 
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500">
                 {t("fr104_3.referenceNo")}
               </p>
 
-              <p className="font-semibold text-slate-800">
+              <p className="font-semibold text-slate-800 dark:text-slate-100">
                 {referenceNumber ?? "Not saved"}
               </p>
             </div>
@@ -316,7 +316,7 @@ useEffect(() => {
                 Revision
               </p>
 
-              <p className="font-semibold text-slate-800">
+              <p className="font-semibold text-slate-800 dark:text-slate-100">
                 {displayedForm ? `Revision ${displayedForm.revision}` : "Not saved"}
               </p>
 
@@ -356,7 +356,7 @@ useEffect(() => {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
 
           <form className="space-y-6 p-6 lg:p-8"
             id="fr1043-form"

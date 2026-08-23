@@ -49,11 +49,11 @@ function CaseDetails() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="flex overflow-x-auto border-b border-gray-100">
+      <div className="rounded-xl border border-border bg-card shadow-sm">
+        <div className="flex overflow-x-auto border-b border-border bg-muted/40">
           {caseDetailsTabs.map(tab => (
             <button key={tab.id} onClick={() => selectTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-blue-600 text-blue-700 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+              className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${activeTab === tab.id ? "border-primary bg-primary/15 text-primary" : "border-transparent text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>
               <tab.icon className="w-4 h-4" />
               {t(tab.i18n)}
             </button>

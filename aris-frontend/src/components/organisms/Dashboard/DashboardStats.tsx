@@ -36,7 +36,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
     title={t("dashboard.totalIncidents")}
     value={totalIncidents.toString()}
     subtitle={t("dashboard.thisFiscalYear")}
-    gradient="bg-gradient-to-br from-blue-500 to-blue-700"
+    iconSurfaceClassName="bg-blue-100 dark:bg-blue-950/75"
+    iconClassName="text-blue-700 dark:text-blue-300"
   />
 
   <StatCard
@@ -44,7 +45,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
     title={t("dashboard.openCases")}
     value={openInvestigations.toString()}
     subtitle={t("dashboard.activeCases")}
-    gradient="bg-gradient-to-br from-orange-400 to-orange-600"
+    iconSurfaceClassName="bg-orange-100 dark:bg-orange-950/75"
+    iconClassName="text-orange-700 dark:text-orange-300"
   />
 
   {showPendingApprovals && (
@@ -53,7 +55,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
       title={t("dashboard.pendingApprovalsRecommendations")}
       value={pendingApprovals.toString()}
       subtitle={t("dashboard.awaitingReview")}
-      gradient="bg-gradient-to-br from-yellow-400 to-amber-500"
+      iconSurfaceClassName="bg-amber-100 dark:bg-amber-950/75"
+      iconClassName="text-amber-700 dark:text-amber-300"
     />
   )}
 
@@ -62,7 +65,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
     title={t("dashboard.completedCases")}
     value={completedCases.toString()}
     subtitle={t("dashboard.thisFiscalYear")}
-    gradient="bg-gradient-to-br from-emerald-400 to-green-600"
+    iconSurfaceClassName="bg-emerald-100 dark:bg-emerald-950/75"
+    iconClassName="text-emerald-700 dark:text-emerald-300"
   />
 
   <StatCard
@@ -70,7 +74,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
     title={t("dashboard.totalLosses")}
     value={`LKR ${totalLosses.toLocaleString()}`}
     subtitle={t("dashboard.estimatedTotal")}
-    gradient="bg-gradient-to-br from-red-400 to-rose-600"
+    iconSurfaceClassName="bg-rose-100 dark:bg-rose-950/75"
+    iconClassName="text-rose-700 dark:text-rose-300"
   />
 
   <StatCard
@@ -78,7 +83,8 @@ export function DashboardStats({ totalIncidents, openInvestigations, pendingAppr
     title={t("dashboard.recoveries")}
     value={`LKR ${recoveries.toLocaleString()}`}
     subtitle={t("dashboard.recoveryRate")}
-    gradient="bg-gradient-to-br from-teal-400 to-cyan-600"
+    iconSurfaceClassName="bg-cyan-100 dark:bg-cyan-950/75"
+    iconClassName="text-cyan-700 dark:text-cyan-300"
   />
 </div>
 

@@ -12,10 +12,10 @@ export const FormCard = ({
   children,
 }: FormCardProps) => {
   return (
-    <section className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      <div className="bg-linear-to-r from-blue-900 to-blue-800 px-6 py-4">
+    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-4 dark:from-blue-950 dark:to-blue-900">
         <div className="flex items-center gap-3">
-          <span className="bg-white text-blue-800 px-3 py-1 rounded-full text-xs font-bold">
+          <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/25 dark:bg-white/10">
             {part}
           </span>
 
@@ -25,7 +25,7 @@ export const FormCard = ({
         </div>
       </div>
 
-      <div className="p-6">{children}</div>
+      <div className="p-6 text-slate-900 dark:text-slate-100">{children}</div>
     </section>
   );
 };

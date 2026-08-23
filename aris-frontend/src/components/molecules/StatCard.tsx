@@ -7,7 +7,8 @@ interface StatCardProps {
   title: string;
   value: string;
   subtitle?: string;
-  gradient?: string;
+  iconSurfaceClassName?: string;
+  iconClassName?: string;
   trend?: {
     up: boolean;
     value: string;
@@ -19,7 +20,8 @@ export function StatCard({
   title,
   value,
   subtitle,
-  gradient = "bg-primary",
+  iconSurfaceClassName = "bg-primary",
+  iconClassName = "text-white",
   trend,
 }: StatCardProps) {
   return (
@@ -30,10 +32,10 @@ export function StatCard({
             w-11 h-11 rounded-xl
             flex items-center justify-center
             shadow-sm
-            ${gradient}
+            ${iconSurfaceClassName}
           `}
         >
-          <Icon className="w-5 h-5 text-white" />
+          <Icon className={`h-5 w-5 ${iconClassName}`} />
         </div>
 
         {trend && (

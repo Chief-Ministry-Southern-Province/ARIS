@@ -141,9 +141,9 @@ function Login() {
           </div>
 
           {/* LOGIN CARD */}
-          <div className="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-transparent dark:border-slate-800/80 overflow-hidden">
             {/* CARD HEADER */}
-            <div className="bg-linear-to-r from-blue-900 to-blue-700 px-8 py-6 text-white">
+            <div className="bg-linear-to-r from-blue-900 to-blue-700 dark:from-blue-950 dark:to-blue-900 px-8 py-6 text-white">
               <h2 className="text-2xl font-bold">
                 {t("login.login")}
               </h2>
@@ -156,26 +156,28 @@ function Login() {
             <div className="p-6 sm:p-8">
               {/* LANGUAGE */}
               <div className="flex justify-end mb-6">
-                <div className="flex items-center bg-gray-100 rounded-xl p-1">
-                  <Globe className="w-4 h-4 text-gray-500 ml-2" />
+                <div className="flex items-center bg-gray-100 dark:bg-slate-800/80 rounded-xl p-1 border border-transparent dark:border-slate-700/50">
+                  <Globe className="w-4 h-4 text-gray-500 dark:text-slate-400 ml-2" />
 
                   <button
+                    type="button"
                     onClick={() => onLanguageChange("en")}
                     className={`px-3 py-1.5 text-xs rounded-lg transition ${
                       i18n.language === "en"
-                        ? "bg-blue-700 text-white"
-                        : "text-gray-600"
+                        ? "bg-blue-700 dark:bg-blue-600 text-white"
+                        : "text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white"
                     }`}
                   >
                     EN
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => onLanguageChange("si")}
                     className={`px-3 py-1.5 text-xs rounded-lg transition ${
                       i18n.language === "si"
-                        ? "bg-blue-700 text-white"
-                        : "text-gray-600"
+                        ? "bg-blue-700 dark:bg-blue-600 text-white"
+                        : "text-gray-600 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white"
                     }`}
                   >
                     සිං
@@ -184,10 +186,10 @@ function Login() {
               </div>
 
               {error && (
-                <div className="mb-5 bg-red-50 border border-red-200 rounded-xl p-3 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-600" />
+                <div className="mb-5 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-xl p-3 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
 
-                  <span className="text-sm text-red-700">
+                  <span className="text-sm text-red-700 dark:text-red-300">
                     {error}
                   </span>
                 </div>
@@ -196,19 +198,19 @@ function Login() {
               <form onSubmit={handleLogin} className="space-y-5">
                 {/* USERNAME */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-slate-200">
                     {t("login.username")}
                   </label>
 
                   <div className="relative mt-2">
-                    <User className="absolute left-3 top-4 w-4 h-4 text-gray-400" />
+                    <User className="absolute left-3 top-4 w-4 h-4 text-gray-400 dark:text-slate-500" />
 
                     <input
                       value={username}
                       onChange={(e) =>
                         setUsername(e.target.value)
                       }
-                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-600 outline-none transition"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border-2 border-gray-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-blue-600 dark:focus:border-blue-500 outline-none transition"
                       placeholder={t("login.username_placeholder")}
                     />
                   </div>
@@ -216,12 +218,12 @@ function Login() {
 
                 {/* PASSWORD */}
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-slate-200">
                     {t("login.password")}
                   </label>
 
                   <div className="relative mt-2">
-                    <Lock className="absolute left-3 top-4 w-4 h-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-4 w-4 h-4 text-gray-400 dark:text-slate-500" />
 
                     <input
                       type={
@@ -236,7 +238,7 @@ function Login() {
                           e.getModifierState("CapsLock")
                         )
                       }
-                      className="w-full pl-10 pr-10 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-600 outline-none transition"
+                      className="w-full pl-10 pr-10 py-3.5 rounded-xl border-2 border-gray-200 dark:border-slate-700/80 bg-white dark:bg-slate-800/80 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:border-blue-600 dark:focus:border-blue-500 outline-none transition"
                       placeholder={t("login.password_placeholder")}
                     />
 
@@ -248,15 +250,15 @@ function Login() {
                       className="absolute right-3 top-3.5"
                     >
                       {showPassword ? (
-                        <EyeOff className="w-5 h-5 text-gray-500" />
+                        <EyeOff className="w-5 h-5 text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200" />
                       ) : (
-                        <Eye className="w-5 h-5 text-gray-500" />
+                        <Eye className="w-5 h-5 text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200" />
                       )}
                     </button>
                   </div>
 
                   {capsLock && (
-                    <p className="text-xs text-amber-600 mt-2">
+                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
                       Caps Lock is ON
                     </p>
                   )}
@@ -264,13 +266,14 @@ function Login() {
 
                 {/* OPTIONS */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <label className="flex items-center gap-2 text-sm text-gray-600">
+                  <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-300 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={() =>
                         setRememberMe(!rememberMe)
                       }
+                      className="rounded accent-blue-600 dark:accent-blue-500"
                     />
 
                     {t("login.rememberMe")}
@@ -281,7 +284,7 @@ function Login() {
                     onClick={() =>
                       navigate("/forgot-password")
                     }
-                    className="text-sm text-blue-700 font-medium hover:underline text-left sm:text-right"
+                    className="text-sm text-blue-700 dark:text-blue-400 font-medium hover:underline text-left sm:text-right"
                   >
                     {t("login.forgotPassword")}
                   </button>
@@ -291,8 +294,7 @@ function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl text-white font-semibold bg-linear-to-r from-blue-800 to-blue-600 hover:shadow-xl hover:scale-[1.01] transition-all disabled:opacity-70"
-
+                  className="w-full py-3.5 rounded-xl text-white font-semibold bg-linear-to-r from-blue-800 to-blue-600 dark:from-blue-700 dark:to-blue-500 hover:shadow-xl hover:scale-[1.01] transition-all disabled:opacity-70 cursor-pointer"
                 >
                   {loading
                     ? t("login.signingIn")
@@ -301,8 +303,8 @@ function Login() {
               </form>
 
               {/* SECURITY */}
-              <div className="mt-8 border-t pt-6">
-                <div className="flex items-center justify-center gap-2 text-green-600">
+              <div className="mt-8 border-t border-gray-200 dark:border-slate-800 pt-6">
+                <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-400">
                   <CheckCircle className="w-4 h-4" />
 
                   <span className="text-xs font-medium">
@@ -311,12 +313,12 @@ function Login() {
                 </div>
 
                 <div className="flex justify-center mt-4">
-                  <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
+                  <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-transparent dark:border-blue-800/40 text-xs font-medium">
                     Government Secure Network
                   </span>
                 </div>
 
-                <p className="text-center text-xs text-gray-400 mt-4">
+                <p className="text-center text-xs text-gray-400 dark:text-slate-500 mt-4">
                   Version 2.4.1
                 </p>
               </div>

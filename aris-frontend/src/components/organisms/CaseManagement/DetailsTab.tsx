@@ -130,10 +130,12 @@ const DetailsTab = ({ id }: { id: number }) => {
                   flex items-center justify-center
                   shrink-0
                   group-hover:bg-blue-100
+                  dark:bg-blue-950/70
+                  dark:group-hover:bg-blue-900/75
                   transition-colors
                 "
               >
-                <Icon className="w-5 h-5 text-blue-600" />
+                <Icon className="w-5 h-5 text-blue-600 dark:text-blue-300" />
               </div>
 
               <div className="min-w-0">

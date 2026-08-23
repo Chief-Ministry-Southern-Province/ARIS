@@ -16,10 +16,10 @@ function KpiCard({ icon: Icon, label, value, changePercentage, increasedIsGood }
   const isFavourable = changePercentage !== null && (isIncrease ? increasedIsGood : !increasedIsGood);
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 border-l-4 border-l-blue-600 bg-white p-5 shadow-sm">
+    <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 border-l-4 border-l-blue-600 bg-white p-5 shadow-sm dark:border-slate-700 dark:border-l-blue-400 dark:bg-slate-900">
       <div className="flex items-start justify-between gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
-          <Icon className="h-4 w-4 text-blue-700" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/70">
+          <Icon className="h-4 w-4 text-blue-700 dark:text-blue-300" />
         </div>
         {changePercentage !== null && (
           <span className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold tracking-wide ${isFavourable ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
@@ -29,8 +29,8 @@ function KpiCard({ icon: Icon, label, value, changePercentage, increasedIsGood }
         )}
       </div>
       <div>
-        <div className="text-2xl font-bold tracking-tight text-blue-700">{value}</div>
-        <div className="mt-1 text-xs font-medium uppercase tracking-widest text-slate-600">{label}</div>
+        <div className="text-2xl font-bold tracking-tight text-blue-700 dark:text-blue-300">{value}</div>
+        <div className="mt-1 text-xs font-medium uppercase tracking-widest text-slate-600 dark:text-slate-300">{label}</div>
       </div>
     </div>
   );
@@ -54,7 +54,7 @@ export default function KpiGrid({ kpis, isLoading }: KpiGridProps) {
   if (isLoading || !kpis) {
     return (
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[...Array(4)].map((_, index) => <div key={index} className="h-32 animate-pulse rounded-2xl bg-slate-100" />)}
+        {[...Array(4)].map((_, index) => <div key={index} className="h-32 animate-pulse rounded-2xl bg-slate-100 dark:bg-slate-800/80" />)}
       </div>
     );
   }

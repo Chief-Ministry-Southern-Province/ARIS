@@ -3,12 +3,10 @@ import {
   User,
   LogOut,
   Menu,
-  Sun,
-  Moon,
 } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useTheme } from "../../hooks/useTheme";
 import { useUnreadNotificationCount } from "@/hooks/useNotifications";
+import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 
 interface TopNavProps {
   onMenuClick: () => void;
@@ -16,7 +14,6 @@ interface TopNavProps {
 
 export function TopNav({ onMenuClick }: TopNavProps) {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const { data: unreadNotificationCount = 0 } = useUnreadNotificationCount();
 
   const handleLogout = () => {
@@ -54,21 +51,7 @@ export function TopNav({ onMenuClick }: TopNavProps) {
       {/* Right Section */}
       <div className="flex items-center gap-2 md:gap-4">
         {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-          title={
-            theme === "dark"
-              ? "Switch to Light Mode"
-              : "Switch to Dark Mode"
-          }
-        >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5 text-muted-foreground" />
-          ) : (
-            <Moon className="w-5 h-5 text-muted-foreground" />
-          )}
-        </button>
+        <ThemeToggle />
 
         {/* Notifications */}
         <button

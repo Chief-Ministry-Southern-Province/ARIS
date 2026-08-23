@@ -28,7 +28,7 @@ const CaseActionTab = ({ id, modes }: { id: number; modes: Record<"fr1043" | "fr
           `}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-white/60 flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100/80 dark:bg-emerald-900/70">
               <Icon className="w-5 h-5" />
             </div>
 

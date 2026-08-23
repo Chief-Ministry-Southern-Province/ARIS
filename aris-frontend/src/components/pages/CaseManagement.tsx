@@ -15,22 +15,30 @@ export function CaseManagement() {
   const navigate = useNavigate();
 
   const statusBadgeColors: Record<string, string> = {
-    "OPEN": "bg-yellow-100 text-yellow-800",
-    "IN_PROGRESS": "bg-blue-100 text-blue-800",
-    "COMPLETED": "bg-green-100 text-green-800",
+    "OPEN": "bg-yellow-100 text-yellow-800 dark:bg-yellow-950/70 dark:text-yellow-200",
+    "IN_PROGRESS": "bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-200",
+    "COMPLETED": "bg-green-100 text-green-800 dark:bg-green-950/70 dark:text-green-200",
   };
 
   const severityBadgeColors: Record<string, string> = {
-    "MINOR": "bg-yellow-100 text-yellow-800",
-    "MAJOR": "bg-orange-100 text-orange-800",
-    "FATAL": "bg-red-100 text-red-800",
+    "MINOR": "bg-yellow-100 text-yellow-800 dark:bg-yellow-950/70 dark:text-yellow-200",
+    "MAJOR": "bg-orange-100 text-orange-800 dark:bg-orange-950/70 dark:text-orange-200",
+    "FATAL": "bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-200",
   };
 
   const priorityBadgeColors: Record<string, string> = {
-    "LOW": "bg-gray-100 text-gray-600",
-    "MEDIUM": "bg-blue-100 text-blue-700",
-    "HIGH": "bg-orange-100 text-orange-700",
-    "URGENT": "bg-red-100 text-red-700",
+    "LOW": "bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-300",
+    "MEDIUM": "bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-200",
+    "HIGH": "bg-orange-100 text-orange-700 dark:bg-orange-950/70 dark:text-orange-200",
+    "URGENT": "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-200",
+  };
+
+  const stageBadgeColors: Record<string, string> = {
+    ACCIDENT_REPORTED: "bg-sky-100 text-sky-800 dark:bg-sky-950/70 dark:text-sky-200",
+    FR1043: "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-200",
+    FR1044: "bg-violet-100 text-violet-800 dark:bg-violet-950/70 dark:text-violet-200",
+    FR109: "bg-purple-100 text-purple-800 dark:bg-purple-950/70 dark:text-purple-200",
+    CLOSED: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
   };
 
   const [caseNumber, setCaseNumber] = useState("");
@@ -103,7 +111,7 @@ export function CaseManagement() {
       )}
 
       {/* filters */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+      <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap gap-3 items-center">
 
           <div className="relative flex-1 min-w-56">
@@ -116,7 +124,7 @@ export function CaseManagement() {
                 setPage(1);
                 setCaseNumber(event.target.value);
               }}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-border bg-input px-3 py-2 pl-9 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
@@ -126,7 +134,7 @@ export function CaseManagement() {
             onChange={(e) =>
                 (setPage(1), setSelectedStage(e.target.value as CaseStage | ""))
             }
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">All Stages</option>
             <option value="ACCIDENT_REPORTED">Accident Reported</option>
@@ -141,7 +149,7 @@ export function CaseManagement() {
             onChange={(e) =>
                 (setPage(1), setSelectedStatus(e.target.value as CaseStatus | ""))
             }
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">
               All Status
@@ -152,9 +160,9 @@ export function CaseManagement() {
             <option value="COMPLETED">Completed</option>
           </select>
 
-          <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
-            <Filter className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-700">
+          <div className="flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 dark:border-blue-800 dark:bg-blue-950/80">
+            <Filter className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+            <span className="text-sm font-medium text-blue-700 dark:text-blue-200">
               {total} Results
             </span>
           </div>
@@ -164,7 +172,7 @@ export function CaseManagement() {
               type="button"
               onClick={exportCsv}
               disabled={exporting}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500"
             >
               {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
               {exporting ? "Exporting..." : "Export CSV"}
@@ -174,7 +182,7 @@ export function CaseManagement() {
       </div>
 
       {/* Cases Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="overflow-x-auto">
           {loading ? (
             <div className="py-12 text-center">
@@ -184,44 +192,44 @@ export function CaseManagement() {
           ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-border bg-muted">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t(
                     "caseManagement.table.caseId"
                   )}
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t(
                     "caseManagement.table.incident"
                   )}
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t(
                     "caseManagement.table.institution"
                   )}
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t(
                     "caseManagement.table.date"
                   )}
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Severity
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Stage
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Priority
                 </th>
 
-                <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   {t(
                     "caseManagement.table.status"
                   )}
@@ -229,11 +237,11 @@ export function CaseManagement() {
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-border">
               {accidentCases.map((accidentCase) => (
                 <tr
                   key={accidentCase.id}
-                  className="hover:bg-blue-50 transition-colors cursor-pointer"
+                  className="cursor-pointer transition-colors hover:bg-muted"
                   onClick={() => navigate(`/cases/${accidentCase.id}/details`)}
                 >
                   <td className="px-5 py-3">
@@ -263,7 +271,7 @@ export function CaseManagement() {
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accidentCase.accident?.severity] || "bg-gray-100 text-gray-800"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accidentCase.accident?.severity] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
                     >
                       {accidentCase.accident?.severity
                         ? formatLabel(accidentCase.accident.severity)
@@ -271,13 +279,15 @@ export function CaseManagement() {
                     </span>
                   </td>
 
-                  <td className="px-5 py-3 text-xs text-gray-600">
-                    {formatLabel(accidentCase.current_stage)}
+                  <td className="px-5 py-3">
+                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${stageBadgeColors[accidentCase.current_stage] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}>
+                      {formatLabel(accidentCase.current_stage)}
+                    </span>
                   </td>
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityBadgeColors[accidentCase.priority] || "bg-gray-100 text-gray-800"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityBadgeColors[accidentCase.priority] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
                     >
                       {formatLabel(accidentCase.priority)}
                     </span>
@@ -285,7 +295,7 @@ export function CaseManagement() {
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accidentCase.status] || "bg-gray-100 text-gray-800"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accidentCase.status] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
                     >
                       {formatLabel(accidentCase.status)}
                     </span>

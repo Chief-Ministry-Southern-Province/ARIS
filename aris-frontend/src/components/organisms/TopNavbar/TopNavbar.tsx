@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { LanguageSwitcher } from "@/components/molecules/LanguageSwitcher";
+import { ThemeToggle } from "@/components/molecules/ThemeToggle";
 import { navItems } from "@/components/data/navigation";
 import NotificationDropdown from "@/components/organisms/Notification/NotificationDropdown";
 import UserMenu from "@/components/organisms/TopNavbar/UserMenu";
@@ -112,6 +113,7 @@ export function TopNavbar({
         {/* Right Side */}
         <div className="flex items-center gap-1 sm:gap-3">
           <LanguageSwitcher />
+          <ThemeToggle />
 
           {/* Notifications */}
           <div

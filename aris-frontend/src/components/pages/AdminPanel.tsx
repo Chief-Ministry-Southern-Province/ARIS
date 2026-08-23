@@ -33,16 +33,16 @@ function AdminPanel() {
   return (
     <div className="p-6 space-y-5">
       <div>
-        <h1 className="text-gray-900">{t("adminPanel.title")}</h1>
-        <p className="text-sm text-gray-500 mt-0.5">{t("adminPanel.subtitle")}</p>
+        <h1 className="text-gray-900 dark:text-slate-100">{t("adminPanel.title")}</h1>
+        <p className="mt-0.5 text-sm text-gray-500 dark:text-slate-400">{t("adminPanel.subtitle")}</p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
-        <div className="flex overflow-x-auto border-b border-gray-100">
+      <div className="rounded-xl border border-gray-100 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="flex overflow-x-auto border-b border-gray-100 dark:border-slate-700">
           {visibleTabs.map(tab => (
             <button key={tab.id} onClick={() => selectTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${activeTab === tab.id ? "border-blue-600 text-blue-700 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+              className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab.id ? "border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "border-transparent text-gray-500 hover:bg-slate-50 hover:text-gray-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>
               <tab.icon className="w-4 h-4" />
               {t(tab.i18n)}
             </button>
