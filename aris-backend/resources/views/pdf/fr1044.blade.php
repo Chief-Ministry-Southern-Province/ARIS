@@ -90,7 +90,7 @@
         }
 
         .table-header {
-            font-size: 8.7pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.05;
             text-align: center;
@@ -104,7 +104,8 @@
 
         [lang="ta"] {
             font-family: notosanstamil, sans-serif;
-            font-size: 8.5pt;
+            font-size: 7.5pt;
+            line-height: 1.02;
             font-weight: normal !important;
         }
 
@@ -113,13 +114,14 @@
             font-weight: normal !important;
         }
 
-        /* Keep Sinhala larger only where it is a document heading or label.
-           A global size rule also overrides the separate form title in mPDF. */
+        /* Sinhala section/table labels match the normal table-content scale;
+           Tamil remains compact to balance the font's larger visual metrics. */
         .section-sinhala-title,
         .subsection-sinhala-title,
         .table-header-sinhala,
         .table-header [lang="si"] {
-            font-size: 14pt;
+            font-size: 9.5pt !important;
+            font-weight: normal !important;
             line-height: 1.02;
         }
 
@@ -128,7 +130,8 @@
         .insurance-title .label-local[lang="si"],
         .insurance-heading [lang="si"],
         .insurance-words-label [lang="si"] {
-            font-size: 10.5pt;
+            font-size: 9.5pt !important;
+            font-weight: normal !important;
             line-height: 1.02;
         }
 
@@ -203,7 +206,7 @@
 
         .form-header-title .fr1044-header-si {
             font-family: iskoolapota, sans-serif !important;
-            font-size: 24pt !important;
+            font-size: 14pt !important;
             font-weight: bold !important;
             line-height: 1.05 !important;
             margin-bottom: 1mm;
@@ -469,6 +472,7 @@
         .field-topic-cell {
             padding: 1mm 2mm;
             vertical-align: top;
+            font-size: 8.5pt;
         }
 
         .field-content-cell {
@@ -846,8 +850,8 @@
         <table>
             <tr>
                 <td class="form-header-title" style="width: 140mm;">
-                    <span class="form-title-si fr1044-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 24pt; font-weight: bold; line-height: 1.05;">
-                        මූ. රෙ. 104 (4) යටතේ<br>අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව
+                    <span class="form-title-si fr1044-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1.05;">
+                        මූ. රෙ. 104 (4) යටතේ අලාභයන් පිළිබඳ<br>අවසාන වාර්තාව
                     </span>
                     <div class="form-title-ta" lang="ta">
                         நி.பி. 104 (4) இன் கீழ் இழப்புகள் பற்றிய<br>இறுதி அறிக்கை

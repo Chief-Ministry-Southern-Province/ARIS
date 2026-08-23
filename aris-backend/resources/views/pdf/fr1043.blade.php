@@ -88,7 +88,7 @@
         }
 
         .table-header {
-            font-size: 8.7pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.05;
             text-align: center;
@@ -102,7 +102,8 @@
 
         [lang="ta"] {
             font-family: notosanstamil, sans-serif;
-            font-size: 8.5pt;
+            font-size: 7.5pt;
+            line-height: 1.02;
             font-weight: normal !important;
         }
 
@@ -115,7 +116,7 @@
            section text. Tamil and English retain their existing sizes. */
         .form-header-title .fr1043-header-si {
             font-family: iskoolapota, sans-serif;
-            font-size: 24pt !important;
+            font-size: 14pt !important;
             font-weight: bold !important;
             line-height: 1.05 !important;
             margin-bottom: 1mm;
@@ -123,9 +124,14 @@
 
         .fr1043-section-si {
             font-family: iskoolapota, sans-serif;
-            font-size: 10.5pt !important;
+            font-size: 9.5pt !important;
             font-weight: normal !important;
             line-height: 1.02;
+        }
+
+        .multilingual-section-heading {
+            font-size: 8.5pt;
+            line-height: 1.05;
         }
 
         .small {
@@ -438,6 +444,7 @@
         .field-topic-cell {
             padding: 1mm 2mm;
             vertical-align: top;
+            font-size: 8.5pt;
         }
 
         .field-content-cell {
@@ -809,8 +816,8 @@
         <table class="fr1043-form-header-table">
             <tr>
                 <td class="form-header-title" style="width: 140mm;">
-                    <span class="form-title-si fr1043-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 24pt; font-weight: bold; line-height: 1.05;">
-                        මූ. රෙ. 104 (3) යටතේ<br>අලාභයන් පිළිබඳ<br>ප්‍රාථමික වාර්තාව
+                    <span class="form-title-si fr1043-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1.05;">
+                        මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ<br>ප්‍රාථමික වාර්තාව
                     </span>
                     <div class="form-title-ta" lang="ta">
                         நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய<br>தொடக்க அறிக்கை
@@ -973,16 +980,16 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="compact" colspan="2">
+                <td class="compact multilingual-section-heading" colspan="2">
                     <span class="fr1043-section-si" lang="si">5. වගකිවයුතු නිලධාරින්/</span> <span lang="ta">பொறுப்பான
                         உத்தியோகத்தர்/</span> Officers responsible -
                 </td>
             </tr>
             <tr>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
                     <span class="fr1043-section-si" lang="si">නම</span>/<span lang="ta">பெயர்</span>/Name
                 </td>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
                     <span class="fr1043-section-si" lang="si">තනතුර</span>/<span lang="ta">பதவிப்பெயர்</span>/Designation
                 </td>
             </tr>
@@ -996,12 +1003,12 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
                     <span class="fr1043-section-si" lang="si">6. පොලිස් ස්ථානයේ නම</span>/<span lang="ta">பொலிஸ் நிலையத்தின்
                         பெயர்</span>/<br>
                     Name of Police Station
                 </td>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
                     <span class="fr1043-section-si" lang="si">පොලිසියට දැනුම් දුන් දිනය</span>/<span lang="ta">பொலிசுக்கு அறிவித்த
                         தேதி</span><br>
                     Date of reporting to Police
