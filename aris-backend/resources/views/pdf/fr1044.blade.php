@@ -1431,10 +1431,12 @@
                                     </div>
                                     <div class="signature-grid-name">
                                         {{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
-                                    <div class="signature-grid-label">
-                                        {{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}
-                                    </div>
-                                    @if ($signatureRow['show_institution'] ?? true)
+                                    @if (filled(data_get($signatureRow['signature'], 'role')))
+                                        <div class="signature-grid-label">
+                                            {{ $text(data_get($signatureRow['signature'], 'role'), 45) }}
+                                        </div>
+                                    @endif
+                                    @if (filled(data_get($signatureRow['signature'], 'institution')))
                                         <div class="signature-grid-institution">
                                             {{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif
@@ -1480,10 +1482,12 @@
                                     </div>
                                     <div class="signature-grid-name">
                                         {{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
-                                    <div class="signature-grid-label">
-                                        {{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}
-                                    </div>
-                                    @if ($signatureRow['show_institution'] ?? true)
+                                    @if (filled(data_get($signatureRow['signature'], 'role')))
+                                        <div class="signature-grid-label">
+                                            {{ $text(data_get($signatureRow['signature'], 'role'), 45) }}
+                                        </div>
+                                    @endif
+                                    @if (filled(data_get($signatureRow['signature'], 'institution')))
                                         <div class="signature-grid-institution">
                                             {{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif

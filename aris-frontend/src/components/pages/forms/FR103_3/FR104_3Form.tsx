@@ -54,7 +54,7 @@ const FR104_3Form = ({ readOnly = false, document, approvalTimeline = [], onBack
   const submitMutation = useSubmitFR1043(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1043Pdf();
   const { data: approvalGroups = [] } = useApprovalHistory(
-    readOnly ? 0 : accidentCaseId,
+    accidentCaseId,
     "FR1043",
     displayedForm?.revision,
   );

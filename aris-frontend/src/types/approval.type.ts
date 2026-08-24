@@ -12,6 +12,12 @@ export interface Approval {
   institution: { id: number; name: string };
   approver: { id: number; name: string; role: string | null };
   signature: { public_id: string } | null;
+  signature_caption: {
+    display_name: string;
+    designation: string | null;
+    institution_name: string | null;
+    institution_lines: string[];
+  } | null;
 }
 
 export interface PaginatedApprovals {

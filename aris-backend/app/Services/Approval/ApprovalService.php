@@ -209,11 +209,12 @@ class ApprovalService
             'chief_accountant',
             'accountant',
             'secretary',
+            'chief_secretary',
         ]);
 
         $signature = $signatureRequired
             ? $this->getActiveSignature($user)
-            : ($user->hasRole('chief_secretary') ? $this->getOptionalSignature($user) : null);
+            : null;
 
         $signatureCaption = $signature
             ? $this->signatureCaptionService->forUser($user)
@@ -616,11 +617,4 @@ class ApprovalService
         return $signature;
     }
 
-    protected function getOptionalSignature(User $user): ?UserSignature
-    {
-        return $user->signatures()
-            ->where('is_active', true)
-            ->latest('id')
-            ->first();
-    }
 }

@@ -652,7 +652,8 @@
                 margin: 0 0 0.8mm;
             }
             .signature-role,
-            .signature-institution {
+            .signature-institution,
+            .signature-extra-line {
                 display: block;
                 font-size: 8.5pt;
                 line-height: 1.15;
@@ -1114,7 +1115,7 @@
                     @php
                         $signature = $signatureRow['signature'];
                         $recordedSignature = data_get($signature, 'signature_data_uri');
-                        $role = \Illuminate\Support\Str::title(str_replace('_', ' ', (string) data_get($signature, 'role', $signatureRow['role'])));
+                        $role = \Illuminate\Support\Str::title(str_replace('_', ' ', (string) data_get($signature, 'role', '')));
                     @endphp
                     @if (($signatureRow['separate_before'] ?? false) && ! $loop->first)
                         <tr class="page-three-signature-separator-gap"><td colspan="2">&nbsp;</td></tr>
@@ -1133,7 +1134,9 @@
                             </div>
                             <div class="signature-dots">................................................</div>
                             <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'name', '')), 55) }}</div>
-                            <div class="signature-role">{{ $role }}</div>
+                            @if (filled($role))
+                                <div class="signature-role">{{ $role }}</div>
+                            @endif
                             @if (filled(data_get($signature, 'institution')))
                                 <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'institution')), 70) }}</div>
                             @endif
@@ -1202,10 +1205,17 @@
                         </div>
                         <div class="signature-dots">....................................</div>
                         <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'name', '')), 55) }}</div>
-                        <div class="field-nine-pd-designation" lang="si">
-                            පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,<br />
-                            දකුණු පළාත.
-                        </div>
+                        @if (filled(data_get($pdhsProvincialDirectorSignature, 'role')))
+                            <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'role')), 70) }}</div>
+                        @endif
+                        @if (filled(data_get($pdhsProvincialDirectorSignature, 'institution')))
+                            <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'institution')), 70) }}</div>
+                        @endif
+                        @foreach (array_slice((array) data_get($pdhsProvincialDirectorSignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                            @if (filled($institutionLine))
+                                <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                            @endif
+                        @endforeach
                         @if (data_get($pdhsProvincialDirectorSignature, 'signature_data_uri'))
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</div>
                         @endif
@@ -1255,11 +1265,17 @@
                         </div>
                         <div class="signature-dots">....................................</div>
                         <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'name', '')), 55) }}</span>
-                        <div lang="si" style="text-align: right; line-height: 1.12">
-                            ලේකම්,<br />
-                            ප්‍රධාන අමාත්‍යාංශය,<br />
-                            දකුණු පළාත.
-                        </div>
+                        @if (filled(data_get($ministrySecretarySignature, 'role')))
+                            <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'role')), 70) }}</div>
+                        @endif
+                        @if (filled(data_get($ministrySecretarySignature, 'institution')))
+                            <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'institution')), 70) }}</div>
+                        @endif
+                        @foreach (array_slice((array) data_get($ministrySecretarySignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                            @if (filled($institutionLine))
+                                <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                            @endif
+                        @endforeach
                         @if (data_get($ministrySecretarySignature, 'signature_data_uri'))
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($ministrySecretarySignature, 'approved_at')) }}</div>
                         @endif
@@ -1327,10 +1343,17 @@
                                     </div>
                                     <div class="signature-dots">....................................</div>
                                     <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'name', '')), 55) }}</span>
-                                    <div lang="si" style="line-height: 1.12">
-                                        ප්‍රධාන ලේකම්,<br />
-                                        දකුණු පළාත.
-                                    </div>
+                                    @if (filled(data_get($chiefSecretarySignature, 'role')))
+                                        <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'role')), 70) }}</div>
+                                    @endif
+                                    @if (filled(data_get($chiefSecretarySignature, 'institution')))
+                                        <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'institution')), 70) }}</div>
+                                    @endif
+                                    @foreach (array_slice((array) data_get($chiefSecretarySignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($chiefSecretarySignature, 'signature_data_uri'))
                                         <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($chiefSecretarySignature, 'approved_at')) }}</div>
                                     @endif

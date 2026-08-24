@@ -1,6 +1,7 @@
 import { LoaderCircle, PenTool } from "lucide-react";
 import type { SignaturePreviewProps } from "@/types/signature.type";
 import { useTranslation } from "react-i18next";
+import SignatureCaptionPreview from "@/components/organisms/Signature/SignatureCaptionPreview";
 
 export default function SignaturePreview({
   user,
@@ -31,14 +32,7 @@ export default function SignaturePreview({
               className="max-h-28 sm:max-h-36 max-w-full object-contain mx-auto"
             />
 
-            <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-500 dark:text-slate-300">
-              <p className="truncate">{caption?.display_name || user.name}</p>
-              {caption?.designation && <p className="truncate">{caption.designation}</p>}
-              {caption?.institution_name && <p className="truncate">{caption.institution_name}</p>}
-              {caption?.institution_lines.filter(Boolean).map((line, index) => (
-                <p key={index} className="truncate">{line}</p>
-              ))}
-            </div>
+            <SignatureCaptionPreview user={user} caption={caption} />
           </div>
         ) : (
           <div className="text-center">

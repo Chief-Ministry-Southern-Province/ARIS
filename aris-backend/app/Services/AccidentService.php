@@ -31,7 +31,7 @@ class AccidentService
 
     /**
      * Generate the shared case and document reference number.
-     * Format: CMSP/HLTH/PARENT[/LOCATION]/YYYY/0001
+     * Format: CMSP/HLTH/PARENT[/DISTRICT_OR_LOCATION]/YYYY/0001
      */
     protected function generateReferenceNumber(Institution $institution): string
     {
@@ -82,6 +82,24 @@ class AccidentService
             return ['BH', $location];
         }
 
+        $parent = match ($institution->type) {
+            'RDHS' => 'RDHS',
+            'MOH' => 'MOH',
+            'PMCU' => 'PMCU',
+            // These institutions use their parent RDHS district in the code.
+            'DIVISIONAL_HOSPITAL' => 'DH',
+            'UNITS', 'OTHER' => 'RDHS',
+            default => null,
+        };
+
+        abort_unless($parent, 422, "A case-code group could not be resolved for {$institution->name}.");
+
+        return [$parent, $this->resolveRdhsDistrict($institution)];
+    }
+
+    /** Resolve the configured district of an institution's RDHS ancestor. */
+    protected function resolveRdhsDistrict(Institution $institution): string
+    {
         $current = $institution;
 
         while ($current) {
@@ -90,7 +108,7 @@ class AccidentService
 
                 abort_unless($district, 422, "A case-code district is not configured for {$current->name}.");
 
-                return ['RDHS', $district];
+                return $district;
             }
 
             $current = $current->parentInstitution;
