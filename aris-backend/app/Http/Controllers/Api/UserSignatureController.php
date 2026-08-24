@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreSignatureRequest;
+use App\Http\Requests\UpdateSignatureProfileRequest;
 use App\Models\UserSignature;
 use App\Services\Signature\SignatureService;
 use App\Services\Signature\SignatureStorageService;
+use App\Services\Signature\SignatureCaptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -15,7 +17,8 @@ class UserSignatureController extends Controller
 {
     public function __construct(
         protected SignatureService $signatureService,
-        protected SignatureStorageService $storageService
+        protected SignatureStorageService $storageService,
+        protected SignatureCaptionService $captionService,
     ) {}
 
     /**
@@ -71,6 +74,21 @@ class UserSignatureController extends Controller
                     'created_at' => $signature->created_at,
                 ]
                 : null,
+        ]);
+    }
+
+    public function profile(Request $request): JsonResponse
+    {
+        return response()->json([
+            'data' => $this->captionService->forUser($request->user()),
+        ]);
+    }
+
+    public function updateProfile(UpdateSignatureProfileRequest $request): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Signature caption updated successfully.',
+            'data' => $this->captionService->save($request->user(), $request->validated()),
         ]);
     }
 

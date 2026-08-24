@@ -159,6 +159,10 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
 
     Route::get('/user/signature/status', [UserSignatureController::class, 'status']);
 
+    Route::get('/user/signature/profile', [UserSignatureController::class, 'profile']);
+
+    Route::put('/user/signature/profile', [UserSignatureController::class, 'updateProfile']);
+
     Route::get('/user/signature/{signature}', [UserSignatureController::class, 'show']);
 
     Route::delete('/user/signature', [UserSignatureController::class, 'destroy']);

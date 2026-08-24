@@ -37,9 +37,14 @@ final readonly class DocumentSignatureService
     {
         return [
             'approval_id' => $approval->id,
-            'name' => $approval->approver?->name,
-            'role' => str_replace('_', ' ', $approval->approver?->roles->pluck('name')->implode(', ')),
-            'institution' => $approval->institution?->name ?? $approval->approver?->institution?->name,
+            'name' => data_get($approval->signature_caption_snapshot, 'display_name') ?? $approval->approver?->name,
+            'role' => data_get($approval->signature_caption_snapshot, 'designation') ?? str_replace('_', ' ', $approval->approver?->roles->pluck('name')->implode(', ')),
+            'institution' => data_get($approval->signature_caption_snapshot, 'institution_name') ?? $approval->institution?->name ?? $approval->approver?->institution?->name,
+            'institution_lines' => data_get(
+                $approval->signature_caption_snapshot,
+                'institution_lines',
+                data_get($approval->signature_caption_snapshot, 'extra_lines', []),
+            ),
             'institution_type' => $approval->institution?->type ?? $approval->approver?->institution?->type,
             'comments' => $approval->comments,
             'signature_public_id' => $approval->signature?->public_id,

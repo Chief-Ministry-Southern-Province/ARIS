@@ -106,6 +106,7 @@
             .page-three-approval-signatures .signature-approver-name,
             .page-three-approval-signatures .signature-role,
             .page-three-approval-signatures .signature-institution,
+            .page-three-approval-signatures .signature-extra-line,
             .page-three-approval-signatures .signature-date {
                 font-size: 6.8pt;
                 line-height: 1;
@@ -1136,6 +1137,11 @@
                             @if (filled(data_get($signature, 'institution')))
                                 <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'institution')), 70) }}</div>
                             @endif
+                            @foreach (array_slice((array) data_get($signature, 'institution_lines', []), 0, 4) as $institutionLine)
+                                @if (filled($institutionLine))
+                                    <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                                @endif
+                            @endforeach
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signature, 'approved_at')) }}</div>
                         </td>
                     </tr>

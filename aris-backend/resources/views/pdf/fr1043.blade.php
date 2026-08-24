@@ -1136,6 +1136,11 @@
                                     @if ($signatureRow['show_institution'] ?? true)
                                         <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif
+                                    @foreach (array_slice((array) data_get($signatureRow['signature'], 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-grid-institution">{{ $text($institutionLine, 45) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
                                         <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
@@ -1170,6 +1175,11 @@
                                     @if ($signatureRow['show_institution'] ?? true)
                                         <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif
+                                    @foreach (array_slice((array) data_get($signatureRow['signature'], 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-grid-institution">{{ $text($institutionLine, 45) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
                                         <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif

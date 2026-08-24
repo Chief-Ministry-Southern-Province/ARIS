@@ -22,6 +22,7 @@ use App\Services\Notifications\NotificationService;
 use App\Services\AuditLogService;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
+use App\Services\Signature\SignatureCaptionService;
 
 class ApprovalService
 {
@@ -30,6 +31,7 @@ class ApprovalService
         protected AccidentTimelineService $timelineService,
         protected NotificationService $notificationService,
         protected AuditLogService $auditLogs,
+        protected SignatureCaptionService $signatureCaptionService,
     ) {}
 
     /**
@@ -213,12 +215,17 @@ class ApprovalService
             ? $this->getActiveSignature($user)
             : ($user->hasRole('chief_secretary') ? $this->getOptionalSignature($user) : null);
 
+        $signatureCaption = $signature
+            ? $this->signatureCaptionService->forUser($user)
+            : null;
+
         DB::transaction(function () use (
             $approval,
             $comments,
             $user,
             $accidentCase,
             $signature,
+            $signatureCaption,
         ) {
 
             $document = null;
@@ -254,6 +261,7 @@ class ApprovalService
                 'comments' => $comments,
                 'acted_at' => now(),
                 'user_signature_id' => $signature?->id,
+                'signature_caption_snapshot' => $signatureCaption,
             ]);
 
             DB::afterCommit(function () use ($approval, $decisionStatus) {
