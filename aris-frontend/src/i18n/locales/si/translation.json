@@ -93,7 +93,9 @@
     "JourneyAuthorized": "ගමන නිල වශයෙන් අනුමත",
     "journeyAuthorized": {
       "label": "ගමන නිල වශයෙන් අනුමත කර තිබුණාද?",
-      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න."
+      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න.",
+      "yes": "ඔව්",
+      "no": "නැත"
     },
     "severityOptions": {
     "MINOR": "සුළු",
@@ -174,8 +176,24 @@
       "incident": "සිදුවීම",
       "institution": "ආයතනය",
       "date": "දිනය",
+      "severity": "බරපතලකම",
+      "stage": "අදියර",
       "status": "තත්වය",
       "actions": "ක්‍රියා"
+    },
+
+    "severityOptions": {
+      "MINOR": "සුළු",
+      "MAJOR": "බරපතල",
+      "FATAL": "මාරාන්තික"
+    },
+
+    "stageOptions": {
+      "ACCIDENT_REPORTED": "අනතුර වාර්තා කරන ලදී",
+      "FR1043": "FR1043",
+      "FR1044": "FR1044",
+      "FR109": "FR109",
+      "CLOSED": "වසා දමන ලදී"
     },
 
     "empty": {
@@ -570,7 +588,23 @@
     "uploadSignature": "අත්සන උඩුගත කරන්න",
     "saveSignature": "අත්සන සුරකින්න",
     "clear": "පිරිසිදු කරන්න",
-    "cancel": "අවලංගු කරන්න"
+    "cancel": "අවලංගු කරන්න",
+    "caption": {
+      "title": "අත්සනට පහළින් මුද්‍රණය වන විස්තර",
+      "description": "මෙම විස්තර සෑම අනාගත අනුමැතියක් සමඟම සුරැකෙන අතර පැරණි PDF වෙනස් නොවේ.",
+      "name": "නම",
+      "designation": "තනතුර / භූමිකාව",
+      "institution": "ආයතනය",
+      "institutionLine": "ආයතන පේළිය {{number}}",
+      "additionalInstitutionLine": "අතිරේක ආයතන පේළිය",
+      "remove": "ඉවත් කරන්න",
+      "addInstitutionLine": "ආයතන පේළියක් එක් කරන්න",
+      "saving": "සුරකිමින්...",
+      "save": "අත්සන විස්තර සුරකින්න",
+      "confirmTitle": "අත්සන විස්තර සුරකින්නද?",
+      "confirmDescription": "මෙම විස්තර අනාගත අනුමැතීම් සඳහා භාවිත වන අතර PDF ලේඛනවල ඔබගේ අත්සනට පහළින් මුද්‍රණය වේ.",
+      "saved": "අත්සන විස්තර සාර්ථකව සුරකින ලදී."
+    }
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",

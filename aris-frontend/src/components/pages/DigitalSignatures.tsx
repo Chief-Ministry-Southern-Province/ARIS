@@ -123,8 +123,8 @@ export default function DigitalSignatures() {
 
   const handleSaveCaption = async () => {
     const confirmed = await swalConfirm(
-      "Save signature details?",
-      "These details will be used for future approvals and printed below your signature in PDF documents.",
+      t("digitalSignature.caption.confirmTitle"),
+      t("digitalSignature.caption.confirmDescription"),
     );
 
     if (!confirmed) {
@@ -136,7 +136,7 @@ export default function DigitalSignatures() {
         ...caption,
         institution_lines: caption.institution_lines.filter((line) => line.trim()),
       });
-      toast.success("Signature caption saved successfully.");
+      toast.success(t("digitalSignature.caption.saved"));
     } catch (error) {
       toast.error(errorMessage(error));
     }
@@ -209,30 +209,30 @@ export default function DigitalSignatures() {
 
         <section className="bg-white border border-gray-200 rounded-xl p-4 sm:p-5 shadow-xs dark:bg-slate-900 dark:border-slate-700">
           <div className="mb-4">
-            <h2 className="font-semibold text-gray-900 dark:text-white">Details printed below the signature</h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-slate-300">These details are saved with each future approval and will not change older PDFs.</p>
+            <h2 className="font-semibold text-gray-900 dark:text-white">{t("digitalSignature.caption.title")}</h2>
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-300">{t("digitalSignature.caption.description")}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">Name
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">{t("digitalSignature.caption.name")}
               <input value={caption.display_name} onChange={(event) => updateCaption("display_name", event.target.value)} maxLength={100} className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" />
             </label>
-            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">Designation / role
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">{t("digitalSignature.caption.designation")}
               <input value={caption.designation ?? ""} onChange={(event) => updateCaption("designation", event.target.value)} maxLength={150} className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" />
             </label>
-            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">Institution
+            <label className="text-sm font-medium text-gray-700 dark:text-slate-200">{t("digitalSignature.caption.institution")}
               <input value={caption.institution_name ?? ""} onChange={(event) => updateCaption("institution_name", event.target.value)} maxLength={150} className="mt-1.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white" />
             </label>
             <div className="md:col-span-2">
               {caption.institution_lines.map((line, index) => (
                 <div key={index} className="mt-3 flex gap-2">
-                  <input aria-label={`Institution line ${index + 2}`} value={line} onChange={(event) => updateInstitutionLine(index, event.target.value)} maxLength={100} placeholder="Additional institution line" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400" />
-                  <button type="button" onClick={() => removeInstitutionLine(index)} className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-800 dark:text-red-300">Remove</button>
+                  <input aria-label={t("digitalSignature.caption.institutionLine", { number: index + 2 })} value={line} onChange={(event) => updateInstitutionLine(index, event.target.value)} maxLength={100} placeholder={t("digitalSignature.caption.additionalInstitutionLine")} className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400" />
+                  <button type="button" onClick={() => removeInstitutionLine(index)} className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-700 dark:border-red-800 dark:text-red-300">{t("digitalSignature.caption.remove")}</button>
                 </div>
               ))}
               {caption.institution_lines.length < 4 && (
                 <button type="button" onClick={addInstitutionLine} className="mt-3 rounded-lg border border-blue-300 px-3 py-2 text-sm font-medium text-blue-700 dark:border-blue-700 dark:text-blue-300">
-                  + Add institution line
+                  + {t("digitalSignature.caption.addInstitutionLine")}
                 </button>
               )}
             </div>
@@ -240,7 +240,7 @@ export default function DigitalSignatures() {
 
           <div className="mt-4 flex justify-end">
             <button type="button" onClick={handleSaveCaption} disabled={updateCaptionMutation.isPending || !caption.display_name.trim()} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
-              {updateCaptionMutation.isPending ? "Saving..." : "Save signature details"}
+              {updateCaptionMutation.isPending ? t("digitalSignature.caption.saving") : t("digitalSignature.caption.save")}
             </button>
           </div>
         </section>

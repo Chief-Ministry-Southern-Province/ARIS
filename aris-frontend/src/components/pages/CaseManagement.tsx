@@ -8,6 +8,8 @@ import { downloadAccidentCasesCsv } from "@/services/accidentCase.service";
 import type { CaseStage, CaseStatus } from "@/types/AccidentCase.type";
 import { toast } from "react-toastify";
 
+const inProgressStages = new Set<CaseStage>(["FR1043", "FR1044", "FR109"]);
+
 export function CaseManagement() {
 
   const { t } = useTranslation();
@@ -24,13 +26,6 @@ export function CaseManagement() {
     "MINOR": "bg-yellow-100 text-yellow-800 dark:bg-yellow-950/70 dark:text-yellow-200",
     "MAJOR": "bg-orange-100 text-orange-800 dark:bg-orange-950/70 dark:text-orange-200",
     "FATAL": "bg-red-100 text-red-800 dark:bg-red-950/70 dark:text-red-200",
-  };
-
-  const priorityBadgeColors: Record<string, string> = {
-    "LOW": "bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-slate-300",
-    "MEDIUM": "bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-200",
-    "HIGH": "bg-orange-100 text-orange-700 dark:bg-orange-950/70 dark:text-orange-200",
-    "URGENT": "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-200",
   };
 
   const stageBadgeColors: Record<string, string> = {
@@ -218,15 +213,11 @@ export function CaseManagement() {
                 </th>
 
                 <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Severity
+                  {t("caseManagement.table.severity")}
                 </th>
 
                 <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Stage
-                </th>
-
-                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Priority
+                  {t("caseManagement.table.stage")}
                 </th>
 
                 <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -238,8 +229,13 @@ export function CaseManagement() {
             </thead>
 
             <tbody className="divide-y divide-border">
-              {accidentCases.map((accidentCase) => (
-                <tr
+              {accidentCases.map((accidentCase) => {
+                const displayStatus = accidentCase.status !== "COMPLETED" && inProgressStages.has(accidentCase.current_stage)
+                  ? "IN_PROGRESS"
+                  : accidentCase.status;
+
+                return (
+                  <tr
                   key={accidentCase.id}
                   className="cursor-pointer transition-colors hover:bg-muted"
                   onClick={() => navigate(`/cases/${accidentCase.id}/details`)}
@@ -274,34 +270,27 @@ export function CaseManagement() {
                       className={`px-2 py-1 rounded-full text-xs font-semibold ${severityBadgeColors[accidentCase.accident?.severity] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
                     >
                       {accidentCase.accident?.severity
-                        ? formatLabel(accidentCase.accident.severity)
+                        ? t(`caseManagement.severityOptions.${accidentCase.accident.severity}`)
                         : "N/A"}
                     </span>
                   </td>
 
                   <td className="px-5 py-3">
                     <span className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${stageBadgeColors[accidentCase.current_stage] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}>
-                      {formatLabel(accidentCase.current_stage)}
+                      {t(`caseManagement.stageOptions.${accidentCase.current_stage}`)}
                     </span>
                   </td>
 
                   <td className="px-5 py-3">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${priorityBadgeColors[accidentCase.priority] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
+                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[displayStatus] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
                     >
-                      {formatLabel(accidentCase.priority)}
+                      {formatLabel(displayStatus)}
                     </span>
                   </td>
-
-                  <td className="px-5 py-3">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColors[accidentCase.status] || "bg-gray-100 text-gray-800 dark:bg-slate-800 dark:text-slate-200"}`}
-                    >
-                      {formatLabel(accidentCase.status)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           )}

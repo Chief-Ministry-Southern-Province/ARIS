@@ -128,7 +128,9 @@
     "VehicleCollision": "Vehicle Collision",
     "journeyAuthorized": {
       "label": "Was the journey officially authorized?",
-      "description": "Check this if the vehicle had official permission for the journey."
+      "description": "Check this if the vehicle had official permission for the journey.",
+      "yes": "Yes",
+      "no": "No"
     },
     "severityOptions": {
         "MINOR": "Minor",
@@ -184,8 +186,24 @@
       "incident": "Incident",
       "institution": "Institution",
       "date": "Date",
+      "severity": "Severity",
+      "stage": "Stage",
       "status": "Status",
       "actions": "Actions"
+    },
+
+    "severityOptions": {
+      "MINOR": "Minor",
+      "MAJOR": "Major",
+      "FATAL": "Fatal"
+    },
+
+    "stageOptions": {
+      "ACCIDENT_REPORTED": "Accident Reported",
+      "FR1043": "FR1043",
+      "FR1044": "FR1044",
+      "FR109": "FR109",
+      "CLOSED": "Closed"
     },
 
     "empty": {
@@ -582,7 +600,23 @@
     "uploadSignature": "Upload Signature",
     "saveSignature": "Save Signature",
     "clear": "Clear",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "caption": {
+      "title": "Details printed below the signature",
+      "description": "These details are saved with each future approval and will not change older PDFs.",
+      "name": "Name",
+      "designation": "Designation / role",
+      "institution": "Institution",
+      "institutionLine": "Institution line {{number}}",
+      "additionalInstitutionLine": "Additional institution line",
+      "remove": "Remove",
+      "addInstitutionLine": "Add institution line",
+      "saving": "Saving...",
+      "save": "Save signature details",
+      "confirmTitle": "Save signature details?",
+      "confirmDescription": "These details will be used for future approvals and printed below your signature in PDF documents.",
+      "saved": "Signature details saved successfully."
+    }
   },
   "evidenceManagement": {
     "title": "Evidence Management",
