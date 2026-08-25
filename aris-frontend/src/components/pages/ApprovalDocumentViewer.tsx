@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 import FR104_3Form from "@/components/pages/forms/FR103_3/FR104_3Form";
 import FR104_4Form from "@/components/pages/forms/FR104_4/FR104_4Form";
@@ -18,6 +19,7 @@ import {
 type Decision = "approve" | "reject" | null;
 
 export default function ApprovalDocumentViewer() {
+  const { t } = useTranslation();
   const { approvalId } = useParams();
   const navigate = useNavigate();
 
@@ -50,18 +52,18 @@ export default function ApprovalDocumentViewer() {
   const approvalActionLabel = isFinalStep ? "Approve" : "Recommend";
 
   if (isLoading) {
-    return <Loader text="Loading approval document..." />;
+    return <Loader text={t("approvalCenter.loadingApprovalDocument")} />;
   }
 
   if (error || !document) {
     return (
       <div className="rounded-2xl border border-[#1565C0]/20 bg-blue-50 p-6 text-[#0F4C81] shadow-sm">
         <h2 className="mb-2 text-lg font-semibold">
-          Unable to Load Document
+          {t("approvalCenter.unableToLoadDocument")}
         </h2>
 
         <p className="text-sm text-slate-600">
-          The approval document could not be loaded. Please try again later.
+          {t("approvalCenter.unableToLoadDocumentDescription")}
         </p>
       </div>
     );
@@ -84,8 +86,8 @@ export default function ApprovalDocumentViewer() {
 
         toast.success(
           isFinalStep
-            ? "Document approved successfully."
-            : "Document recommended successfully.",
+            ? t("approvalCenter.documentApprovedSuccessfully")
+            : t("approvalCenter.documentRecommendedSuccessfully"),
         );
       } else {
         await rejectMutation.mutateAsync({
@@ -93,14 +95,14 @@ export default function ApprovalDocumentViewer() {
           comments,
         });
 
-        toast.success("Document returned for changes.");
+        toast.success(t("approvalCenter.documentReturnedForChanges"));
       }
 
       navigate("/approvals");
     } catch (reason: unknown) {
       toast.error(
         (reason as { response?: { data?: { message?: string } } }).response
-          ?.data?.message || "Unable to update the approval."
+          ?.data?.message || t("approvalCenter.unableToUpdateApproval")
       );
     }
   };
@@ -149,12 +151,11 @@ export default function ApprovalDocumentViewer() {
             {/* Header */}
             <div>
               <h2 className="text-2xl font-semibold text-[#0F4C81]">
-                Approval Decision
+                {t("approvalCenter.approvalDecision")}
               </h2>
 
               <p className="mt-2 text-sm text-slate-600">
-                Please review the document carefully before making your
-                decision.
+                {t("approvalCenter.reviewBeforeDecision")}
               </p>
             </div>
 
@@ -165,7 +166,11 @@ export default function ApprovalDocumentViewer() {
                 onClick={() => chooseDecision("approve")}
                 className="flex-1 rounded-xl bg-[#0F4C81] px-5 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#1565C0] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#1565C0] focus:ring-offset-2"
               >
-                ✓ {approvalActionLabel} Document
+                {t("approvalCenter.actionDocument", {
+                  action: approvalActionLabel === "Approve"
+                    ? t("approvalCenter.approve")
+                    : t("approvalCenter.recommend"),
+                })}
               </button>
 
               <button
@@ -173,7 +178,7 @@ export default function ApprovalDocumentViewer() {
                 onClick={() => chooseDecision("reject")}
                 className="flex-1 rounded-xl border-2 border-[#0F4C81] bg-white px-5 py-3 font-semibold text-[#0F4C81] transition-all duration-200 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-[#1565C0] focus:ring-offset-2"
               >
-                ↺ Return for Changes
+                {t("approvalCenter.returnForChanges")}
               </button>
             </div>
 
@@ -183,7 +188,7 @@ export default function ApprovalDocumentViewer() {
               onClick={() => setIsDecisionPickerOpen(false)}
               className="w-full rounded-xl border border-slate-300 bg-white py-3 font-medium text-slate-600 transition-colors hover:bg-slate-100"
             >
-              Cancel
+              {t("approvalCenter.cancel")}
             </button>
           </div>
         </Modal>

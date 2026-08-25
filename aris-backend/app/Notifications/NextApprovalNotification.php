@@ -50,6 +50,7 @@ class NextApprovalNotification extends Notification
             'accident_case_id' => $this->approval->accident_case_id,
             'document_type' => $this->approval->document_type,
             'reference_number' => $this->referenceNumber,
+            'case_number' => $this->approval->accidentCase?->case_number,
             'revision' => $this->approval->revision,
             'step' => $this->approval->step,
             'url' => "/approvals/{$this->approval->id}",

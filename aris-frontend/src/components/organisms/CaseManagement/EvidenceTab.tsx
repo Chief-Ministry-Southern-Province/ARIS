@@ -33,12 +33,6 @@ const EvidenceTab = ({ id }: { id: number }) => {
   const photos = evidence.filter((e) => e.evidence_type === "PHOTO");
   const videos = evidence.filter((e) => e.evidence_type === "VIDEO");
   const documents = evidence.filter((e) => e.evidence_type === "DOCUMENT");
-  const policeReports = evidence.filter(
-    (e) => e.evidence_type === "POLICE_REPORT"
-  );
-  const courtOrders = evidence.filter(
-    (e) => e.evidence_type === "COURT_ORDER"
-  );
 
   const handleDownload = (evidenceItem: EvidenceResponse) => {
     if (accidentId === undefined) return;
@@ -63,27 +57,13 @@ const EvidenceTab = ({ id }: { id: number }) => {
     }
   };
 
-  const getTypeLabel = (type: EvidenceType) => {
-    switch (type) {
-      case "PHOTO":
-        return "Photo";
-      case "VIDEO":
-        return "Video";
-      case "DOCUMENT":
-        return "Document";
-      case "POLICE_REPORT":
-        return "Police Report";
-      case "COURT_ORDER":
-        return "Court Order";
-      default:
-        return "Other";
-    }
-  };
+  const getTypeLabel = (type: EvidenceType) =>
+    t(`evidenceManagement.types.${type}`);
 
   const renderPreviewIcon = (type: EvidenceType,file_url:string) => {
     switch (type) {
       case "PHOTO":
-        return <img className="w-full h-full object-cover" src={file_url} alt="preview" />;
+        return <img className="w-full h-full object-cover" src={file_url} alt={t("evidenceManagement.imagePreview")} />;
 
       case "VIDEO":
         return <Video className="w-14 h-14 text-amber-50" />;
@@ -135,9 +115,9 @@ const EvidenceTab = ({ id }: { id: number }) => {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <EvidenceSummaryCard
-          title="Photos"
+          title={t("evidenceManagement.photos")}
           count={photos.length}
           icon={Image}
           color="blue"
@@ -146,7 +126,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
         />
 
         <EvidenceSummaryCard
-          title="Videos"
+          title={t("evidenceManagement.videos")}
           count={videos.length}
           icon={Video}
           color="purple"
@@ -155,7 +135,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
         />
 
         <EvidenceSummaryCard
-          title="Documents"
+          title={t("evidenceManagement.documents")}
           count={documents.length}
           icon={FileText}
           color="slate"
@@ -164,25 +144,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
         />
 
         <EvidenceSummaryCard
-          title="Police Reports"
-          count={policeReports.length}
-          icon={Shield}
-          color="red"
-          active={selectedType === "POLICE_REPORT"}
-          onClick={() => setSelectedType("POLICE_REPORT")}
-        />
-
-        <EvidenceSummaryCard
-          title="Court Orders"
-          count={courtOrders.length}
-          icon={Gavel}
-          color="purple"
-          active={selectedType === "COURT_ORDER"}
-          onClick={() => setSelectedType("COURT_ORDER")}
-        />
-
-        <EvidenceSummaryCard
-          title="All Evidence"
+          title={t("evidenceManagement.allEvidence")}
           count={evidence.length}
           icon={Eye}
           color="slate"
@@ -194,12 +156,12 @@ const EvidenceTab = ({ id }: { id: number }) => {
       {/* Evidence List */}
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100">
-          <h3 className="font-semibold text-slate-900">Recent Evidence</h3>
+          <h3 className="font-semibold text-slate-900">{t("evidenceManagement.recentEvidence")}</h3>
         </div>
 
         {filteredEvidence.length === 0 ? (
           <div className="py-12 text-center text-sm text-slate-400">
-            No evidence found.
+            {t("evidenceManagement.noEvidenceFound")}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-4">
@@ -240,7 +202,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
                   </div>
 
                   <div className="mt-1 text-xs text-slate-500">
-                    Uploaded by: {ev.uploaded_by?.name ?? "Unknown"}
+                    {t("evidenceManagement.uploadedBy", { name: ev.uploaded_by?.name ?? t("evidenceManagement.unknownUser") })}
                   </div>
 
                   <div className="flex gap-2 mt-4">
@@ -257,7 +219,7 @@ const EvidenceTab = ({ id }: { id: number }) => {
                       className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 py-2 text-sm text-blue-700 transition-colors hover:bg-blue-100 dark:border-blue-700/70 dark:bg-blue-950/65 dark:text-blue-300 dark:hover:bg-blue-900/65"
                     >
                       <Download className="w-4 h-4" />
-                      {downloadLoading ? "Downloading..." : t("common.download")}
+                      {downloadLoading ? t("evidenceManagement.downloading") : t("common.download")}
                     </button>
                   </div>
                 </div>
