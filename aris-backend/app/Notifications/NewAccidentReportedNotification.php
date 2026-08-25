@@ -62,6 +62,8 @@ class NewAccidentReportedNotification extends Notification
 
             'accident_case_id' => $this->accident->accidentCase->id,
 
+            'case_number' => $this->accident->accidentCase->case_number,
+
             'url' => "/cases/{$this->accident->accidentCase->id}/details",
 
         ];

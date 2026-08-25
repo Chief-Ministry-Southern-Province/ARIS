@@ -31,7 +31,15 @@ export interface UserListProps {
 export interface SignaturePreviewProps {
   user: Signatory;
   signature?: string;
+  caption?: SignatureCaption;
   isLoading?: boolean;
+}
+
+export interface SignatureCaption {
+  display_name: string;
+  designation: string | null;
+  institution_name: string | null;
+  institution_lines: string[];
 }
 
 export interface SignatureDetailsProps {

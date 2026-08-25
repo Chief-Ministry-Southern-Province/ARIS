@@ -239,6 +239,7 @@ private function storeNewAccidentNotification(User $user, Accident $accident): v
             'message' => $message,
             'type' => 'ACCIDENT_REPORTED',
             'institution_name' => $institutionName,
+            'case_number' => $case->case_number,
             'accident_id' => $accident->id,
             'accident_case_id' => $case->id,
             'url' => "/cases/{$case->id}/details",

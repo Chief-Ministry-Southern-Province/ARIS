@@ -7,6 +7,8 @@ export interface NotificationPayload {
   approval_id?: number;
   document_type?: string;
   reference_number?: string | null;
+  case_number?: string | null;
+  institution_name?: string | null;
   revision?: number;
   step?: number;
   comments?: string;

@@ -64,6 +64,7 @@ export const queryKeys = {
   signatures: {
     all: ["signatures"] as const,
     status: ["signatures", "status"] as const,
+    profile: ["signatures", "profile"] as const,
     imageRoot: ["signatures", "image"] as const,
     image: (publicId: string) => ["signatures", "image", publicId] as const,
   },

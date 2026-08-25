@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {ClipboardCheck,RefreshCw,} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import ApprovalStats from "@/components/approval/ApprovalStats";
 import ApprovalSearch from "@/components/approval/ApprovalSearch";
@@ -12,6 +13,7 @@ import type{ Approval } from "@/types/approval.type";
 type View = "pending" | "decided";
 
 export default function ApprovalCenter() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -51,11 +53,11 @@ export default function ApprovalCenter() {
             <div>
 
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Approval Center
+                {t("approvalCenter.title")}
               </h1>
 
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Review, approve and manage all pending document approvals.
+                {t("approvalCenter.subtitle")}
               </p>
 
             </div>
@@ -73,7 +75,7 @@ export default function ApprovalCenter() {
               }`}
             />
 
-            Refresh
+            {t("approvalCenter.refresh")}
 
           </button>
 
@@ -82,8 +84,8 @@ export default function ApprovalCenter() {
       </div>
 
       <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
-        <button onClick={() => { setView("pending"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "pending" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>Pending Approvals</button>
-        <button onClick={() => { setView("decided"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "decided" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>Recommendations / Decisions</button>
+        <button onClick={() => { setView("pending"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "pending" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>{t("approvalCenter.pendingApprovals")}</button>
+        <button onClick={() => { setView("decided"); setPage(1); }} className={`rounded-t-lg px-4 py-3 text-sm font-medium transition-colors ${view === "decided" ? "border-b-2 border-blue-600 bg-blue-50/80 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>{t("approvalCenter.recommendationsDecisions")}</button>
       </div>
 
       {/* Statistics */}
@@ -102,8 +104,8 @@ export default function ApprovalCenter() {
 
       {view === "decided" && (
         <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-2">
-          <label className="text-sm font-medium text-slate-700">Document type<select value={documentType} onChange={(event) => { setDocumentType(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All document types</option><option value="FR1043">FR1043</option><option value="FR1044">FR1044</option><option value="FR109">FR109</option></select></label>
-          <label className="text-sm font-medium text-slate-700">Decision<select value={decisionStatus} onChange={(event) => { setDecisionStatus(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">All decisions</option><option value="RECOMMENDED">Recommended</option><option value="APPROVED">Approved</option><option value="REJECTED">Rejected</option></select></label>
+          <label className="text-sm font-medium text-slate-700">{t("approvalCenter.documentType")}<select value={documentType} onChange={(event) => { setDocumentType(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">{t("approvalCenter.allDocumentTypes")}</option><option value="FR1043">FR1043</option><option value="FR1044">FR1044</option><option value="FR109">FR109</option></select></label>
+          <label className="text-sm font-medium text-slate-700">{t("approvalCenter.decision")}<select value={decisionStatus} onChange={(event) => { setDecisionStatus(event.target.value); setPage(1); }} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 font-normal"><option value="">{t("approvalCenter.allDecisions")}</option><option value="RECOMMENDED">{t("approvalCenter.recommended")}</option><option value="APPROVED">{t("approvalCenter.approved")}</option><option value="REJECTED">{t("approvalCenter.rejected")}</option></select></label>
         </div>
       )}
 
@@ -120,14 +122,10 @@ export default function ApprovalCenter() {
           <div className="flex items-center justify-between">
 
             <p className="text-sm text-slate-500">
-              Showing page{" "}
-              <span className="font-semibold text-slate-700">
-                {meta.current_page}
-              </span>{" "}
-              of{" "}
-              <span className="font-semibold text-slate-700">
-                {meta.last_page}
-              </span>
+              {t("approvalCenter.pageInfo", {
+                current: meta.current_page,
+                total: meta.last_page,
+              })}
             </p>
 
             <div className="flex gap-2">
@@ -137,7 +135,7 @@ export default function ApprovalCenter() {
                 onClick={() => setPage((p) => p - 1)}
                 className="rounded-xl border border-slate-200 px-4 py-2 text-sm hover:bg-slate-50 disabled:opacity-50"
               >
-                Previous
+                {t("approvalCenter.previous")}
               </button>
 
               <button
@@ -145,7 +143,7 @@ export default function ApprovalCenter() {
                 onClick={() => setPage((p) => p + 1)}
                 className="rounded-xl bg-[#0F4C81] px-4 py-2 text-sm text-white hover:bg-[#1565C0] disabled:opacity-50"
               >
-                Next
+                {t("approvalCenter.next")}
               </button>
 
             </div>

@@ -3,6 +3,7 @@ import {
   FileText,
   Loader2,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import type{ Approval } from "@/types/approval.type";
 
@@ -21,6 +22,7 @@ export default function ApprovalTable({
   loading = false,
   onView,
 }: Props) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-72 flex items-center justify-center">
@@ -29,7 +31,7 @@ export default function ApprovalTable({
           <Loader2 className="w-8 h-8 animate-spin text-[#0F4C81]" />
 
           <p className="text-slate-500">
-            Loading pending approvals...
+            {t("approvalCenter.loadingPendingApprovals")}
           </p>
 
         </div>
@@ -46,11 +48,11 @@ export default function ApprovalTable({
           <ClipboardCheck className="mx-auto w-16 h-16 text-slate-300" />
 
           <h3 className="mt-5 text-xl font-semibold text-slate-700">
-            No Pending Approvals
+            {t("approvalCenter.noPendingApprovals")}
           </h3>
 
           <p className="mt-2 text-slate-500">
-            All approval requests have been processed.
+            {t("approvalCenter.allApprovalRequestsProcessed")}
           </p>
 
         </div>
@@ -69,11 +71,11 @@ export default function ApprovalTable({
         <div>
 
           <h2 className="text-lg font-semibold text-slate-900">
-            Pending Approvals
+            {t("approvalCenter.pendingApprovals")}
           </h2>
 
           <p className="text-sm text-slate-500 mt-1">
-            Review and process document approvals.
+            {t("approvalCenter.reviewAndProcess")}
           </p>
 
         </div>
@@ -91,31 +93,31 @@ export default function ApprovalTable({
             <tr className="text-left text-sm text-slate-600">
 
               <th className="px-6 py-4 font-semibold">
-                Reference No
+                {t("approvalCenter.referenceNumber")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Case Number
+                {t("approvalCenter.caseNumber")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Document
+                {t("approvalCenter.document")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Revision
+                {t("approvalCenter.revisionLabel")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Institution
+                {t("approvalCenter.institution")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Status
+                {t("approvalCenter.status")}
               </th>
 
               <th className="px-6 py-4 font-semibold">
-                Action
+                {t("approvalCenter.action")}
               </th>
 
             </tr>
@@ -183,7 +185,7 @@ export default function ApprovalTable({
 
                   <span className="font-semibold text-slate-700">
 
-                    Rev {approval.revision}
+                    {t("approvalCenter.revision", { number: approval.revision })}
 
                   </span>
 

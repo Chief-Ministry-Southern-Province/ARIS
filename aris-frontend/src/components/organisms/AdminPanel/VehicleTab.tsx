@@ -1,5 +1,6 @@
 import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import AddVehicleForm from "@/components/pages/forms/common/vehicle/AddVehicleForm";
 import Modal from "@/components/molecules/Modal";
@@ -16,6 +17,7 @@ import Loader from "@/components/atoms/Loader";
 import Pagination from "@/components/molecules/Pagination";
 
 const VehicleTab = () => {
+  const { t } = useTranslation();
 
   const [showAddVehicle, setShowAddVehicle] = useState(false);
 
@@ -35,10 +37,13 @@ const VehicleTab = () => {
   const { mutateAsync: deleteVehicleData } = useDeleteVehicleMutation();
 
   const handleDeleteVehicle = async (vehicleId: number) => {
-    const confirmed = await swalConfirm("Are you sure?", "This action cannot be undone.");
+    const confirmed = await swalConfirm(
+      t("adminPanel.vehicles.deleteConfirmationTitle"),
+      t("adminPanel.vehicles.deleteConfirmationText"),
+    );
     if (confirmed) {
       await deleteVehicleData(vehicleId);
-      toast.success("Vehicle deleted successfully");
+      toast.success(t("adminPanel.vehicles.deleteSuccess"));
     }
   }
 
@@ -65,7 +70,7 @@ const VehicleTab = () => {
 
           <input
             type="text"
-            placeholder="Search vehicles..."
+            placeholder={t("adminPanel.vehicles.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -78,7 +83,7 @@ const VehicleTab = () => {
           style={{ background: "#1E40AF" }}
         >
           <Plus className="w-4 h-4" />
-          Register Vehicle
+          {t("adminPanel.vehicles.registerVehicle")}
         </button>
       </div>
 
@@ -88,13 +93,13 @@ const VehicleTab = () => {
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               {[
-                "Reg. No.",
-                "Type",
-                "Institution",
-                "Incidents",
-                "Assigned Driver",
-                "Status",
-                "Actions",
+                t("adminPanel.vehicles.registrationNumber"),
+                t("adminPanel.vehicles.type"),
+                t("adminPanel.vehicles.institution"),
+                t("adminPanel.vehicles.incidents"),
+                t("adminPanel.vehicles.assignedDriver"),
+                t("adminPanel.vehicles.status"),
+                t("adminPanel.vehicles.actions"),
               ].map((header) => (
                 <th
                   key={header}
@@ -110,7 +115,7 @@ const VehicleTab = () => {
             {loading ? (
               <tr>
                 <td colSpan={7} className="px-4 py-8">
-                  <Loader text="loading vehicles..." />
+                  <Loader text={t("adminPanel.vehicles.loading")} />
                 </td>
               </tr>
             ) : (
@@ -124,7 +129,9 @@ const VehicleTab = () => {
                   </td>
 
                   <td className="px-4 py-3 text-xs text-gray-700">
-                    {vehicle.vehicle_type}
+                    {t(`adminPanel.vehicles.types.${vehicle.vehicle_type}`, {
+                      defaultValue: vehicle.vehicle_type,
+                    })}
                   </td>
 
                   <td className="px-4 py-3 text-xs text-gray-600">
@@ -150,7 +157,7 @@ const VehicleTab = () => {
                     <div className="flex items-center gap-2">
                       <img
                         src={vehicle.driver?.name ? `https://ui-avatars.com/api/?name=${encodeURIComponent(vehicle.driver.name)}&background=1E40AF&color=fff` : "https://ui-avatars.com/api/?name=No+Driver&background=1E40AF&color=fff"}
-                        alt={vehicle.driver?.name}
+                        alt={vehicle.driver?.name ?? t("adminPanel.vehicles.noDriver")}
                         className="w-7 h-7 rounded-full object-cover"
                       />
 
@@ -174,14 +181,16 @@ const VehicleTab = () => {
                           : "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {vehicle.status.replace(/_/g, " ")}
+                      {t(`adminPanel.vehicles.statuses.${vehicle.status}`, {
+                        defaultValue: vehicle.status.replace(/_/g, " "),
+                      })}
                     </span>
                   </td>
 
                   <td className="px-4 py-3">
                     <button
                       className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                      title="View Vehicle"
+                      title={t("adminPanel.vehicles.viewVehicle")}
                       onClick={() => {
                         setViewingVehicle(Number(vehicle.id));
                         setShowViewVehicle(true);
@@ -191,7 +200,7 @@ const VehicleTab = () => {
                     </button>
                     <button
                       className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                      title="Edit Vehicle"
+                      title={t("adminPanel.vehicles.editVehicle")}
                       onClick={() => {
                         setSelectedVehicle(Number(vehicle.id));
                         setShowEditVehicle(true);
@@ -202,7 +211,7 @@ const VehicleTab = () => {
 
                     <button
                       className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
-                      title="Delete Vehicle"
+                      title={t("adminPanel.vehicles.deleteVehicle")}
                       onClick={()=> handleDeleteVehicle(Number(vehicle.id))}
                     >
                       <Trash2 className="w-4 h-4" />

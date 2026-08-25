@@ -103,5 +103,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserSignature::class);
     }
+
+    public function signatureProfile()
+    {
+        return $this->hasOne(UserSignatureProfile::class);
+    }
     
 }

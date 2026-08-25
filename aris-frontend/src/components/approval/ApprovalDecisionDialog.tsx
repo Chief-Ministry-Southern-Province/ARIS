@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Modal from "@/components/molecules/Modal";
 import type { Approval } from "@/types/approval.type";
 
@@ -19,6 +20,7 @@ export default function ApprovalDecisionDialog({
   onClose,
   onConfirm,
 }: ApprovalDecisionDialogProps) {
+  const { t } = useTranslation();
   const [comments, setComments] = useState("");
   const [error, setError] = useState("");
   const isReject = action === "reject";
@@ -27,7 +29,7 @@ export default function ApprovalDecisionDialog({
     event.preventDefault();
 
     if (isReject && !comments.trim()) {
-      setError("A rejection reason is required.");
+      setError(t("approvalCenter.rejectionReasonRequired"));
       return;
     }
 
@@ -40,16 +42,24 @@ export default function ApprovalDecisionDialog({
       <form onSubmit={submit} className="space-y-5">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">
-            {isReject ? "Reject approval" : `${approvalActionLabel} document`}
+            {isReject
+              ? t("approvalCenter.rejectApproval")
+              : t("approvalCenter.actionDocument", {
+                  action: approvalActionLabel === "Approve"
+                    ? t("approvalCenter.approve")
+                    : t("approvalCenter.recommend"),
+                })}
           </h2>
           <p className="mt-2 text-sm text-slate-600">
-            {approval.reference_number} · Revision {approval.revision}
+            {approval.reference_number} · {t("approvalCenter.revision", { number: approval.revision })}
           </p>
         </div>
 
         <div>
           <label htmlFor="approval-comments" className="mb-2 block text-sm font-medium text-slate-700">
-            {isReject ? "Rejection reason" : "Comments (optional)"}
+            {isReject
+              ? t("approvalCenter.rejectionReason")
+              : t("approvalCenter.commentsOptional")}
           </label>
           <textarea
             id="approval-comments"
@@ -66,10 +76,16 @@ export default function ApprovalDecisionDialog({
 
         <div className="flex justify-end gap-3">
           <button type="button" onClick={onClose} disabled={isPending} className="rounded-lg border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50 disabled:opacity-50">
-            Cancel
+            {t("approvalCenter.cancel")}
           </button>
           <button type="submit" disabled={isPending} className={`rounded-lg px-4 py-2 text-sm text-white disabled:opacity-50 ${isReject ? "bg-red-600 hover:bg-red-700" : "bg-[#0F4C81] hover:bg-[#0B3C66]"}`}>
-            {isPending ? "Saving..." : isReject ? "Reject" : approvalActionLabel}
+            {isPending
+              ? t("approvalCenter.saving")
+              : isReject
+                ? t("approvalCenter.reject")
+                : approvalActionLabel === "Approve"
+                  ? t("approvalCenter.approve")
+                  : t("approvalCenter.recommend")}
           </button>
         </div>
       </form>

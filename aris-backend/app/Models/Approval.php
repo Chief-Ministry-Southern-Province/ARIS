@@ -14,16 +14,17 @@ class Approval extends Model
         'revision',
         'approver_id',
         'user_signature_id',
+        'signature_caption_snapshot',
         'status',
         'comments',
         'acted_at',
-        'user_signature_id',
     ];
 
     protected function casts(): array
     {
         return [
             'acted_at' => 'datetime',
+            'signature_caption_snapshot' => 'array',
         ];
     }
 

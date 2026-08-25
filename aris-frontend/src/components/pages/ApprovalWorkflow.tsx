@@ -11,10 +11,10 @@ interface ApprovalWorkflowProps {
   view?: "approvals" | "timeline";
 }
 
-function formatDate(dateString: string | null): string {
-  if (!dateString) return "Not acted yet";
+function formatDate(dateString: string | null, locale: string, notActedYet: string): string {
+  if (!dateString) return notActedYet;
 
-  return new Date(dateString).toLocaleString("en-LK", {
+  return new Date(dateString).toLocaleString(locale === "si" ? "si-LK" : "en-LK", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -24,7 +24,7 @@ function formatDate(dateString: string | null): string {
 }
 
 function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const numericCaseId = Number(caseId);
   const { timeline, loading, error } = useTimeline(view === "timeline" ? caseId : 0);
   const { data: approvalGroups = [], isLoading: approvalsLoading } = useApprovalHistory(view === "approvals" ? numericCaseId : 0);
@@ -32,23 +32,26 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
   const latestAction = timeline.length > 0
     ? TIMELINE_ACTIONS[timeline[0].action as keyof typeof TIMELINE_ACTIONS] ?? DEFAULT_ACTION
     : DEFAULT_ACTION;
+  const latestActionKey = timeline.length > 0 ? timeline[0].action : "UNKNOWN";
   const HeaderIcon = latestAction.icon;
+  const timelineActionLabel = (action: string, fallback: string) =>
+    t(`approvalWorkflow.timelineActions.${action}`, { defaultValue: fallback });
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">{view === "approvals" ? t("approvalWorkflow.approvalHistory") : "Case Timeline"}</h2>
-          <p className="mt-1 text-sm text-slate-500">{view === "approvals" ? "Review approvals across every document revision." : "Review all activity recorded for this case."}</p>
+          <h2 className="text-lg font-semibold text-slate-900">{view === "approvals" ? t("approvalWorkflow.approvalHistory") : t("approvalWorkflow.caseTimeline")}</h2>
+          <p className="mt-1 text-sm text-slate-500">{view === "approvals" ? t("approvalWorkflow.approvalHistoryDescription") : t("approvalWorkflow.caseTimelineDescription")}</p>
         </div>
-        {view === "timeline" && <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium ${latestAction.badge}`}><HeaderIcon className="h-4 w-4" />{latestAction.label}</span>}
+        {view === "timeline" && <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium ${latestAction.badge}`}><HeaderIcon className="h-4 w-4" />{timelineActionLabel(latestActionKey, latestAction.label)}</span>}
       </div>
 
       <div className="p-6">
         {view === "approvals" && <>
-        <h3 className="mb-3 text-base font-semibold text-slate-900">Approval history</h3>
-        {approvalsLoading && <p className="mb-6 text-sm text-slate-500">Loading approval history...</p>}
-        {!approvalsLoading && approvalGroups.length === 0 && <p className="mb-6 text-sm text-slate-500">No approvals have been created yet.</p>}
+        <h3 className="mb-3 text-base font-semibold text-slate-900">{t("approvalWorkflow.approvalHistory")}</h3>
+        {approvalsLoading && <p className="mb-6 text-sm text-slate-500">{t("approvalWorkflow.loadingApprovalHistory")}</p>}
+        {!approvalsLoading && approvalGroups.length === 0 && <p className="mb-6 text-sm text-slate-500">{t("approvalWorkflow.noApprovals")}</p>}
 
         <div className="space-y-3">
           {approvalGroups.map((group) => (
@@ -57,8 +60,8 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
                 <span className="flex items-center gap-3">
                   <GitBranch className="h-4 w-4 text-blue-700" />
                   <span>{group.document_type}</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-xs text-slate-600">Revision {group.revision}</span>
-                  <span className="text-xs font-normal text-slate-500">{group.approvals.length} step{group.approvals.length === 1 ? "" : "s"}</span>
+                  <span className="rounded-full bg-white px-2 py-0.5 text-xs text-slate-600">{t("approvalWorkflow.revision", { number: group.revision })}</span>
+                  <span className="text-xs font-normal text-slate-500">{t("approvalWorkflow.steps", { count: group.approvals.length })}</span>
                 </span>
                 <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
               </summary>
@@ -79,7 +82,7 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
                           <h4 className="font-semibold text-slate-900">{approval.approver.name}</h4>
                           <p className="mt-1 flex items-center gap-1 text-sm capitalize text-slate-500">
                             <UserRound className="h-3.5 w-3.5" />
-                            {(approval.approver.role ?? "Approver").replace(/_/g, " ")} · {approval.institution.name}
+                            {(approval.approver.role ?? t("approvalWorkflow.approver")).replace(/_/g, " ")} · {approval.institution.name}
                           </p>
                         </div>
                         <ApprovalStatusBadge status={approval.status} />
@@ -93,7 +96,7 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
 
                       <div className="mt-4 flex items-center gap-2 text-xs text-slate-400">
                         <Clock className="h-3 w-3" />
-                        {formatDate(approval.acted_at)}
+                        {formatDate(approval.acted_at, i18n.language, t("approvalWorkflow.notActedYet"))}
                       </div>
                     </div>
                   </div>
@@ -105,10 +108,10 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
         </>}
 
         {view === "timeline" && <>
-        <h3 className="mb-3 text-base font-semibold text-slate-900">Case timeline</h3>
-        {loading && <div className="flex justify-center py-10 text-sm text-slate-400">Loading timeline...</div>}
+        <h3 className="mb-3 text-base font-semibold text-slate-900">{t("approvalWorkflow.caseTimeline")}</h3>
+        {loading && <div className="flex justify-center py-10 text-sm text-slate-400">{t("approvalWorkflow.loadingTimeline")}</div>}
         {!loading && error && <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-500"><AlertCircle className="h-4 w-4" />{error}</div>}
-        {!loading && !error && timeline.length === 0 && <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-400"><FileText className="h-4 w-4" />No activity recorded for this case yet.</div>}
+        {!loading && !error && timeline.length === 0 && <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-400"><FileText className="h-4 w-4" />{t("approvalWorkflow.noCaseActivity")}</div>}
         {!loading && !error && timeline.length > 0 && (
           <div className="space-y-6">
             {timeline.map((item: TimelineEntry, index: number) => {
@@ -129,10 +132,10 @@ function ApprovalWorkflow({ caseId, view = "approvals" }: ApprovalWorkflowProps)
                         <h4 className="font-semibold text-slate-900">{item.user.name}</h4>
                         <p className="mt-1 text-sm capitalize text-slate-500">{item.user.role.replace(/_/g, " ")}</p>
                       </div>
-                      <span className={`whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium ${action.badge}`}>{action.label}</span>
+                      <span className={`whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium ${action.badge}`}>{timelineActionLabel(item.action, action.label)}</span>
                     </div>
                     <div className="mt-3 rounded-lg border border-slate-100 bg-slate-50 p-3 text-sm text-slate-600">{item.description}</div>
-                    <div className="mt-4 flex items-center gap-2 text-xs text-slate-400"><Clock className="h-3 w-3" />{formatDate(item.created_at)}</div>
+                    <div className="mt-4 flex items-center gap-2 text-xs text-slate-400"><Clock className="h-3 w-3" />{formatDate(item.created_at, i18n.language, t("approvalWorkflow.notActedYet"))}</div>
                   </div>
                 </div>
               );

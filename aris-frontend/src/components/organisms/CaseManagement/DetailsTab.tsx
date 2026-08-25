@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2, Pencil } from "lucide-react";
+import { Calendar, MapPin, Car, User, Building2, FileText, Hash, Loader2, Pencil, ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAccident } from "@/hooks/queries/useAccidentQueries";
 import { useCase } from "@/hooks/queries/useCaseQueries";
@@ -69,6 +69,13 @@ const DetailsTab = ({ id }: { id: number }) => {
       icon: Building2,
       label: t("caseManagement.details.institution"),
       value: accident.institution?.name || "N/A",
+    },
+    {
+      icon: ShieldCheck,
+      label: t("report.journeyAuthorized.label"),
+      value: accident.has_travel_permission
+        ? t("report.journeyAuthorized.yes")
+        : t("report.journeyAuthorized.no"),
     },
   ];
 

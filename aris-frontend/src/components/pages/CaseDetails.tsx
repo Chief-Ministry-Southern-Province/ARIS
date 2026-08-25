@@ -2,12 +2,11 @@ import ApprovalWorkflow from "@/components/pages/ApprovalWorkflow";
 import DetailsTab from "@/components/organisms/CaseManagement/DetailsTab";
 import CaseActionTab from "@/components/organisms/CaseManagement/CaseActionTab";
 import EvidenceTab from "@/components/organisms/CaseManagement/EvidenceTab";
-import InvestigationTeamTab from "@/components/organisms/CaseManagement/InvestigationTeamTab";
 import { useTranslation } from "react-i18next";
 import { useCase } from "@/hooks/queries/useCaseQueries";
 
 import { useParams, useSearchParams } from "react-router-dom";
-import {FileText,ClipboardCheck,GitBranch, Files,ShieldCheck, Clock3} from "lucide-react";
+import {FileText,ClipboardCheck,GitBranch, Files, Clock3} from "lucide-react";
 
 
 const caseDetailsTabs = [
@@ -16,7 +15,6 @@ const caseDetailsTabs = [
     {id: "Workflow",icon: GitBranch,label: "Workflow",i18n: "caseDetails.tabs.workflow"},
     {id: "Timeline",icon: Clock3,label: "Timeline",i18n: "caseDetails.tabs.timeline"},
     {id: "Evidence",icon: Files,label: "Evidence",i18n: "caseDetails.tabs.evidence"},
-    {id: "InvestigationTeam",icon: ShieldCheck,label: "Investigation Team",i18n: "caseDetails.tabs.investigationTeam"},
 ];
 
 const caseDetailsTabIds = new Set(caseDetailsTabs.map((tab) => tab.id));
@@ -83,11 +81,6 @@ function CaseDetails() {
           {/* case evidence */}
           {activeTab === "Evidence" && (
             <EvidenceTab id={numericId} />
-          )}
-
-          {/* investigation team */}
-          {activeTab === "InvestigationTeam" && (
-            <InvestigationTeamTab />
           )}
 
         </div>

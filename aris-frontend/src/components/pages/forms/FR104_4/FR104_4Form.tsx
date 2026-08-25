@@ -84,7 +84,7 @@ export default function FR104_4Form({
   const submit = useSubmitFR1044(accidentCaseId);
   const downloadPdfMutation = useDownloadFR1044Pdf();
   const { data: approvalGroups = [] } = useApprovalHistory(
-    readOnly ? 0 : accidentCaseId,
+    accidentCaseId,
     "FR1044",
     displayed?.revision,
   );

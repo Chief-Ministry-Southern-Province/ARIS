@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Save, Settings2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { useUpdateWorkflowSettings, useWorkflowSettings } from "@/hooks/useWorkflowSetting";
 import type { WorkflowSetting } from "@/types/workflow-setting.type";
 
 const EMPTY_WORKFLOW_SETTINGS: WorkflowSetting[] = [];
 
+const settingTranslationKeys: Record<string, string> = {
+  "workflow.pdhs_threshold": "pdhsThreshold",
+  "workflow.ministry_threshold": "ministryThreshold",
+};
+
 const WorkflowSettingTab = () => {
+  const { t } = useTranslation();
   const { data: settings = EMPTY_WORKFLOW_SETTINGS, isLoading, isError } = useWorkflowSettings();
   const updateSettings = useUpdateWorkflowSettings();
   const [values, setValues] = useState<Record<string, string>>({});
@@ -33,18 +40,18 @@ const WorkflowSettingTab = () => {
     });
   };
 
-  if (isLoading) return <Loader text="Loading workflow settings..." />;
+  if (isLoading) return <Loader text={t("adminPanel.workflow.loading")} />;
 
   if (isError) {
-    return <p className="py-8 text-center text-sm text-red-600">Unable to load workflow settings.</p>;
+    return <p className="py-8 text-center text-sm text-red-600">{t("adminPanel.workflow.loadError")}</p>;
   }
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Workflow Settings</h2>
-          <p className="mt-1 text-sm text-gray-500">Configure the approval rules used for newly submitted reports.</p>
+          <h2 className="text-lg font-semibold text-gray-900">{t("adminPanel.workflow.title")}</h2>
+          <p className="mt-1 text-sm text-gray-500">{t("adminPanel.workflow.subtitle")}</p>
         </div>
         <button
           type="button"
@@ -53,12 +60,14 @@ const WorkflowSettingTab = () => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Save className="h-4 w-4" />
-          {updateSettings.isPending ? "Saving..." : "Save settings"}
+          {updateSettings.isPending
+            ? t("adminPanel.workflow.saving")
+            : t("adminPanel.workflow.saveSettings")}
         </button>
       </div>
 
       {settings.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">No workflow settings are available.</p>
+        <p className="rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">{t("adminPanel.workflow.noSettings")}</p>
       ) : (
         <div className="divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white">
           {settings.map((setting) => (
@@ -66,7 +75,10 @@ const WorkflowSettingTab = () => {
               <div className="min-w-0">
                 <div className="flex items-center gap-2 text-sm font-medium text-gray-800">
                   <Settings2 className="h-4 w-4 text-blue-700" />
-                  {setting.description}
+                  {t(
+                    `adminPanel.workflow.settings.${settingTranslationKeys[setting.key]}`,
+                    { defaultValue: setting.description },
+                  )}
                 </div>
                 <p className="mt-1 font-mono text-xs text-gray-400">{setting.key}</p>
               </div>
@@ -79,7 +91,7 @@ const WorkflowSettingTab = () => {
                     onChange={(event) => updateValue(setting, event.target.checked)}
                     className="h-4 w-4 rounded border-gray-300 text-blue-700 focus:ring-blue-500"
                   />
-                  Enabled
+                  {t("adminPanel.workflow.enabled")}
                 </label>
               ) : (
                 <input

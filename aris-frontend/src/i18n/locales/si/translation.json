@@ -28,6 +28,38 @@
     "search": "සොයන්න",
     "approverSignatures": "අනුමත කරන්නන්ගේ අත්සන්"
   },
+  "notifications": {
+    "title": "දැනුම්දීම්",
+    "subtitle": "පද්ධති දැනුම්දීම් සහ යාවත්කාලීන බැලීම",
+    "markAllRead": "සියල්ල කියවූ ලෙස සලකන්න",
+    "marking": "සලකුණු කරමින්...",
+    "total": "මුළු දැනුම්දීම්",
+    "unread": "නොකියවූ",
+    "read": "කියවූ",
+    "empty": "තවමත් දැනුම්දීම් නොමැත.",
+    "loading": "දැනුම්දීම් පූරණය වෙමින් පවතී...",
+    "loadError": "දැනුම්දීම් පූරණය කිරීමට නොහැකි විය.",
+    "fallbackTitle": "දැනුම්දීම",
+    "fallbackMessage": "ඔබට නව දැනුම්දීමක් ඇත.",
+    "view": "බලන්න",
+    "thisCase": "මෙම සිද්ධිය",
+    "thisDocument": "මෙම ලේඛනය",
+    "unknownInstitution": "අදාළ ආයතනය",
+    "noReason": "හේතුවක් සපයා නොමැත",
+    "messages": {
+      "accidentReportedTitle": "නව අනතුරු වාර්තාව",
+      "accidentReported": "{{institutionName}} විසින් නව අනතුරක් ({{caseNumber}}) වාර්තා කර ඇත.",
+      "approvalRequiredTitle": "අනුමැතිය අවශ්‍යයි",
+      "approvalRequired": "{{caseNumber}} සඳහා {{document}} ඔබගේ අනුමැතිය අවශ්‍ය කරයි.",
+      "recommendationRequiredTitle": "නිර්දේශය අවශ්‍යයි",
+      "recommendationRequired": "{{caseNumber}} සඳහා {{document}} ඔබගේ නිර්දේශය අවශ්‍ය කරයි.",
+      "documentRejectedTitle": "ලේඛන සංශෝධන ඉල්ලා ඇත",
+      "documentRejected": "{{document}} ප්‍රතික්ෂේප කරන ලදී. හේතුව: {{reason}}",
+      "workflowCompletedTitle": "අනුමත කිරීමේ කාර්ය ප්‍රවාහය සම්පූර්ණයි",
+      "workflowCompleted": "{{document}} හි සියලු අනුමත පියවර සම්පූර්ණ කර ඇත.",
+      "fr1043ChangesRequestedTitle": "FR1043 සඳහා වෙනස්කම් ඉල්ලා ඇත"
+    }
+  },
   "dashboard": {
     "title": "ප්‍රධාන පුවරුව",
     "reportIncident": "නව අනතුරු වාර්තාව",
@@ -93,7 +125,9 @@
     "JourneyAuthorized": "ගමන නිල වශයෙන් අනුමත",
     "journeyAuthorized": {
       "label": "ගමන නිල වශයෙන් අනුමත කර තිබුණාද?",
-      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න."
+      "description": "වාහනයට මෙම ගමන සඳහා නිල අවසරයක් තිබුණේ නම් මෙය සලකුණු කරන්න.",
+      "yes": "ඔව්",
+      "no": "නැත"
     },
     "severityOptions": {
     "MINOR": "සුළු",
@@ -174,8 +208,24 @@
       "incident": "සිදුවීම",
       "institution": "ආයතනය",
       "date": "දිනය",
+      "severity": "බරපතලකම",
+      "stage": "අදියර",
       "status": "තත්වය",
       "actions": "ක්‍රියා"
+    },
+
+    "severityOptions": {
+      "MINOR": "සුළු",
+      "MAJOR": "බරපතල",
+      "FATAL": "මාරාන්තික"
+    },
+
+    "stageOptions": {
+      "ACCIDENT_REPORTED": "අනතුර වාර්තා කරන ලදී",
+      "FR1043": "FR1043",
+      "FR1044": "FR1044",
+      "FR109": "FR109",
+      "CLOSED": "වසා දමන ලදී"
     },
 
     "empty": {
@@ -570,7 +620,23 @@
     "uploadSignature": "අත්සන උඩුගත කරන්න",
     "saveSignature": "අත්සන සුරකින්න",
     "clear": "පිරිසිදු කරන්න",
-    "cancel": "අවලංගු කරන්න"
+    "cancel": "අවලංගු කරන්න",
+    "caption": {
+      "title": "අත්සනට පහළින් මුද්‍රණය වන විස්තර",
+      "description": "මෙම විස්තර සෑම අනාගත අනුමැතියක් සමඟම සුරැකෙන අතර පැරණි PDF වෙනස් නොවේ.",
+      "name": "නම",
+      "designation": "තනතුර / භූමිකාව",
+      "institution": "ආයතනය",
+      "institutionLine": "ආයතන පේළිය {{number}}",
+      "additionalInstitutionLine": "අතිරේක ආයතන පේළිය",
+      "remove": "ඉවත් කරන්න",
+      "addInstitutionLine": "ආයතන පේළියක් එක් කරන්න",
+      "saving": "සුරකිමින්...",
+      "save": "අත්සන විස්තර සුරකින්න",
+      "confirmTitle": "අත්සන විස්තර සුරකින්නද?",
+      "confirmDescription": "මෙම විස්තර අනාගත අනුමැතීම් සඳහා භාවිත වන අතර PDF ලේඛනවල ඔබගේ අත්සනට පහළින් මුද්‍රණය වේ.",
+      "saved": "අත්සන විස්තර සාර්ථකව සුරකින ලදී."
+    }
   },
   "evidenceManagement": {
     "title": "සාක්ෂි කළමනාකරණය",
@@ -604,6 +670,20 @@
     "delete": "මකන්න",
 
     "noEvidenceFound": "සාක්ෂි හමු නොවීය",
+    "recentEvidence": "මෑත සාක්ෂි",
+    "uploadedBy": "උඩුගත කළේ: {{name}}",
+    "unknownUser": "නොදන්නා පරිශීලකයා",
+    "downloading": "බාගත කරමින්...",
+    "imagePreview": "සාක්ෂි රූප පෙරදසුන",
+
+    "types": {
+      "PHOTO": "ඡායාරූපය",
+      "VIDEO": "වීඩියෝව",
+      "DOCUMENT": "ලේඛනය",
+      "POLICE_REPORT": "පොලිස් වාර්තාව",
+      "COURT_ORDER": "අධිකරණ නියෝගය",
+      "OTHER": "වෙනත්"
+    },
 
     "photo": "ඡායාරූපය",
     "video": "වීඩියෝව",
@@ -661,15 +741,56 @@
       "makeYear": "නිෂ්පාදකයා සහ වර්ෂය",
       "institution": "ආයතනය",
       "incidents": "සිදුවීම්",
+      "assignedDriver": "පවරා ඇති රියදුරු",
       "status": "තත්ත්වය",
+      "actions": "ක්‍රියාමාර්ග",
+      "loading": "වාහන පූරණය වෙමින් පවතී...",
+      "noDriver": "රියදුරෙකු නොමැත",
+      "viewVehicle": "වාහනය බලන්න",
+      "editVehicle": "වාහනය සංස්කරණය කරන්න",
+      "deleteVehicle": "වාහනය මකන්න",
+      "deleteConfirmationTitle": "වාහනය මකන්න",
+      "deleteConfirmationText": "මෙම වාහනය මකා දැමීමට ඔබට විශ්වාසද? මෙම ක්‍රියාව අවලංගු කළ නොහැක.",
+      "deleteSuccess": "වාහනය සාර්ථකව මකා දමන ලදී.",
       "active": "සක්‍රීය",
       "underRepair": "අලුත්වැඩියාවේ",
-      "inactive": "අක්‍රීය"
+      "inactive": "අක්‍රීය",
+      "types": {
+        "CAR": "මෝටර් රථය",
+        "VAN": "වෑන් රථය",
+        "BUS": "බස් රථය",
+        "TRUCK": "ට්‍රක් රථය",
+        "MOTORCYCLE": "යතුරුපැදිය",
+        "CAB": "කැබ් රථය",
+        "THREE_WHEELER": "ත්‍රිරෝද රථය",
+        "BOWSER": "බවුසරය",
+        "AMBULANCE": "ගිලන් රථය",
+        "OTHER": "වෙනත්"
+      },
+      "statuses": {
+        "ACTIVE": "සක්‍රීයයි",
+        "UNDER_MAINTENANCE": "නඩත්තු කටයුතුවල පවතී",
+        "OUT_OF_SERVICE": "සේවයෙන් ඉවත් කර ඇත",
+        "DISPOSED": "අපහරණය කර ඇත"
+      }
     },
 
     "workflow": {
+      "title": "කාර්ය ප්‍රවාහ සැකසුම්",
+      "subtitle": "නව වාර්තා සඳහා භාවිත වන අනුමැති නීති වින්‍යාස කරන්න.",
+      "loading": "කාර්ය ප්‍රවාහ සැකසුම් පූරණය වෙමින් පවතී...",
+      "loadError": "කාර්ය ප්‍රවාහ සැකසුම් පූරණය කළ නොහැක.",
+      "saveSettings": "සැකසුම් සුරකින්න",
+      "saving": "සුරකිමින් පවතී...",
+      "saveSuccess": "කාර්ය ප්‍රවාහ සැකසුම් යාවත්කාලීන කරන ලදී.",
+      "noSettings": "කාර්ය ප්‍රවාහ සැකසුම් නොමැත.",
+      "enabled": "සක්‍රීයයි",
       "description": "අනතුරු සිද්ධි සඳහා අනුමත කිරීමේ දාමය සහ උත්සන්න කිරීමේ නීති වින්‍යාස කරන්න.",
       "appliesTo": "අදාළ වන්නේ",
+      "settings": {
+        "pdhsThreshold": "FR1043 සහ FR1044 සඳහා PDHS විසින් හසුරුවන උපරිම පාඩු මුදල",
+        "ministryThreshold": "FR1043 සහ FR1044 සඳහා අමාත්‍යාංශය විසින් හසුරුවන උපරිම පාඩු මුදල"
+      },
 
       "rules": {
         "autoEscalate": "පැය 48ක් තුළ ක්‍රියාමාර්ගයක් නොමැති නම් ස්වයංක්‍රීයව උත්සන්න කරන්න",
@@ -704,14 +825,35 @@
     "audit": {
       "searchPlaceholder": "විගණන ලොග් සොයන්න...",
       "exportCsv": "CSV ලෙස අපනයනය කරන්න",
+      "allModules": "සියලු මොඩියුල",
+      "allActions": "සියලු ක්‍රියා",
+      "fromDate": "ආරම්භක දිනය",
+      "toDate": "අවසන් දිනය",
       "time": "වේලාව",
       "user": "පරිශීලකයා",
       "action": "ක්‍රියාව",
       "resource": "සම්පත",
       "ipAddress": "IP ලිපිනය",
+      "details": "විස්තර",
       "status": "තත්ත්වය",
       "success": "සාර්ථකයි",
-      "failed": "අසාර්ථකයි"
+      "failed": "අසාර්ථකයි",
+      "loading": "විගණන ලොග් පූරණය වෙමින් පවතී...",
+      "loadError": "විගණන ලොග් පූරණය කළ නොහැක.",
+      "noEvents": "විගණන සිදුවීම් හමු නොවීය.",
+      "system": "පද්ධතිය",
+      "events": "සිදුවීම් {{count}}",
+      "pageInfo": "පිටුව {{current}} / {{total}}",
+      "previousPage": "පෙර පිටුව",
+      "nextPage": "ඊළඟ පිටුව",
+      "modules": {
+        "Authentication": "සත්‍යාපනය", "Users": "පරිශීලකයන්", "Roles": "භූමිකා", "Permissions": "අවසර", "Institutions": "ආයතන", "Vehicles": "වාහන", "Accidents": "අනතුරු", "Evidence": "සාක්ෂි", "Investigation": "විමර්ශනය", "FR1043": "FR1043", "FR1044": "FR1044", "FR109": "FR109", "Approval": "අනුමැතිය", "Workflow": "කාර්ය ප්‍රවාහය", "Dashboard": "උපකරණ පුවරුව"
+      },
+      "actions": {
+        "CREATE": "නිර්මාණය", "UPDATE": "යාවත්කාලීන", "DELETE": "මකන්න", "LOGIN": "පිවිසුම", "LOGIN_FAILED": "පිවිසුම අසාර්ථකයි", "LOGOUT": "පිටවීම", "SUBMIT": "ඉදිරිපත් කිරීම", "APPROVE": "අනුමත කිරීම", "REJECT": "ප්‍රතික්ෂේප කිරීම", "RETURN": "ආපසු යැවීම", "RECOMMEND": "නිර්දේශ කිරීම", "ASSIGN": "පැවරීම", "UPLOAD": "උඩුගත කිරීම", "DOWNLOAD": "බාගත කිරීම", "PRINT": "මුද්‍රණය", "EXPORT": "අපනයනය", "RESTORE": "ප්‍රතිස්ථාපනය"
+      },
+      "entities": { "User": "පරිශීලකයා", "Institution": "ආයතනය", "Vehicle": "වාහනය", "Approval": "අනුමැතිය", "WorkflowSetting": "කාර්ය ප්‍රවාහ සැකසුම" },
+      "descriptions": { "loggedIn": "පිවිසුණි.", "failedLoginAttempt": "අසාර්ථක පිවිසුම් උත්සාහයකි.", "loggedOut": "පිටවුණි." }
     },
 
     "auditActions": {
@@ -732,6 +874,67 @@
       "emailSystem": "විද්‍යුත් තැපෑල + පද්ධතිය"
     }
   },
+  "approvalCenter": {
+    "title": "අනුමත කිරීමේ මධ්‍යස්ථානය",
+    "subtitle": "පොරොත්තු ලේඛන අනුමැතීම් සමාලෝචනය කර අනුමත කර කළමනාකරණය කරන්න.",
+    "refresh": "නැවුම් කරන්න",
+    "pendingApprovals": "පොරොත්තු අනුමැතීම්",
+    "recommendationsDecisions": "නිර්දේශ / තීරණ",
+    "documentType": "ලේඛන වර්ගය",
+    "allDocumentTypes": "සියලු ලේඛන වර්ග",
+    "decision": "තීරණය",
+    "allDecisions": "සියලු තීරණ",
+    "pending": "පොරොත්තු",
+    "recommended": "නිර්දේශිතයි",
+    "approved": "අනුමතයි",
+    "rejected": "ප්‍රතික්ෂේපිතයි",
+    "total": "මුළු",
+    "searchPlaceholder": "සිද්ධි අංකය හෝ යොමු අංකය මඟින් සොයන්න...",
+    "loadingPendingApprovals": "පොරොත්තු අනුමැතීම් පූරණය වෙමින් පවතී...",
+    "noPendingApprovals": "පොරොත්තු අනුමැතීම් නොමැත",
+    "allApprovalRequestsProcessed": "සියලු අනුමැති ඉල්ලීම් ක්‍රියාත්මක කර ඇත.",
+    "reviewAndProcess": "ලේඛන අනුමැතීම් සමාලෝචනය කර ක්‍රියාත්මක කරන්න.",
+    "loadingDecidedDocuments": "තීරණය කළ ලේඛන පූරණය වෙමින් පවතී...",
+    "noDecidedDocuments": "තීරණය කළ ලේඛන නොමැත",
+    "noDecidedDocumentsDescription": "මෙම පෙරහන්වලට ගැළපෙන නිර්දේශ හෝ තීරණ නොමැත.",
+    "openExactRevision": "සෑම තීරණයකටම අදාළ නිවැරදි සංශෝධනය විවෘත කරන්න.",
+    "referenceNumber": "යොමු අංකය",
+    "caseNumber": "සිද්ධි අංකය",
+    "document": "ලේඛනය",
+    "revisionLabel": "සංශෝධනය",
+    "revision": "සංශෝධනය {{number}}",
+    "institution": "ආයතනය",
+    "status": "තත්ත්වය",
+    "comments": "අදහස්",
+    "decisionDate": "තීරණ දිනය",
+    "action": "ක්‍රියාව",
+    "viewDocument": "ලේඛනය බලන්න",
+    "openDocument": "ලේඛනය විවෘත කරන්න",
+    "fr109ViewerUnavailable": "FR109 ලේඛන නරඹනය තවම ලබාගත නොහැක.",
+    "loadingApprovalDocument": "අනුමැති ලේඛනය පූරණය වෙමින් පවතී...",
+    "unableToLoadDocument": "ලේඛනය පූරණය කළ නොහැක",
+    "unableToLoadDocumentDescription": "අනුමැති ලේඛනය පූරණය කළ නොහැකි විය. කරුණාකර පසුව නැවත උත්සාහ කරන්න.",
+    "documentApprovedSuccessfully": "ලේඛනය සාර්ථකව අනුමත කරන ලදී.",
+    "documentRecommendedSuccessfully": "ලේඛනය සාර්ථකව නිර්දේශ කරන ලදී.",
+    "documentReturnedForChanges": "ලේඛනය වෙනස්කම් සඳහා ආපසු යොමු කරන ලදී.",
+    "unableToUpdateApproval": "අනුමැතිය යාවත්කාලීන කළ නොහැක.",
+    "approvalDecision": "අනුමැති තීරණය",
+    "reviewBeforeDecision": "තීරණයක් ගැනීමට පෙර කරුණාකර ලේඛනය හොඳින් සමාලෝචනය කරන්න.",
+    "actionDocument": "ලේඛනය {{action}} කරන්න",
+    "approve": "අනුමත",
+    "recommend": "නිර්දේශ",
+    "returnForChanges": "වෙනස්කම් සඳහා ආපසු යවන්න",
+    "cancel": "අවලංගු කරන්න",
+    "rejectApproval": "අනුමැතිය ප්‍රතික්ෂේප කරන්න",
+    "rejectionReason": "ප්‍රතික්ෂේප කිරීමේ හේතුව",
+    "rejectionReasonRequired": "ප්‍රතික්ෂේප කිරීමේ හේතුවක් අවශ්‍ය වේ.",
+    "commentsOptional": "අදහස් (විකල්ප)",
+    "saving": "සුරකිමින් පවතී...",
+    "reject": "ප්‍රතික්ෂේප",
+    "pageInfo": "පිටුව {{current}} / {{total}} පෙන්වමින්",
+    "previous": "පෙර",
+    "next": "ඊළඟ"
+  },
   "approvalWorkflow": {
     "title": "අනුමත කිරීමේ ක්‍රියාවලිය",
     "subtitle": "බහු මට්ටමේ අනුමත කිරීමේ දාම කළමනාකරණය",
@@ -740,11 +943,67 @@
 
     "approvalChain": "අනුමත කිරීමේ දාමය",
     "approvalHistory": "අනුමත කිරීමේ ඉතිහාසය",
+    "approvalHistoryDescription": "සෑම ලේඛන සංශෝධනයක් පුරාම අනුමැතීම් සමාලෝචනය කරන්න.",
+    "caseTimeline": "සිද්ධි කාලරේඛාව",
+    "caseTimelineDescription": "මෙම සිද්ධිය සඳහා සටහන් වූ සියලු ක්‍රියාකාරකම් සමාලෝචනය කරන්න.",
+    "loadingApprovalHistory": "අනුමත කිරීමේ ඉතිහාසය පූරණය වෙමින් පවතී...",
+    "noApprovals": "තවමත් අනුමැතීම් නිර්මාණය කර නොමැත.",
+    "revision": "සංශෝධනය {{number}}",
+    "steps": "පියවර {{count}}",
+    "approver": "අනුමත කරන්නා",
+    "notActedYet": "තවමත් ක්‍රියා කර නොමැත",
+    "loadingTimeline": "කාලරේඛාව පූරණය වෙමින් පවතී...",
+    "noCaseActivity": "මෙම සිද්ධිය සඳහා තවමත් ක්‍රියාකාරකමක් සටහන් වී නොමැත.",
 
     "approved": "අනුමතයි",
     "inProgress": "ක්‍රියාත්මක වේ",
     "pending": "අපේක්ෂිතයි",
     "rejected": "ප්‍රතික්ෂේපයි",
+    "statuses": {
+      "pending": "අපේක්ෂිතයි",
+      "waiting": "බලාපොරොත්තුවෙන්",
+      "recommended": "නිර්දේශිතයි",
+      "approved": "අනුමතයි",
+      "rejected": "ප්‍රතික්ෂේපයි"
+    },
+    "timelineActions": {
+      "CASE_CREATED": "සිද්ධිය නිර්මාණය කරන ලදී",
+      "CASE_ASSIGNED": "සිද්ධිය පවරන ලදී",
+      "CASE_CLOSED": "සිද්ධිය වසා දමන ලදී",
+      "CASE_COMPLETED": "සිද්ධිය සම්පූර්ණ කරන ලදී",
+      "ACCIDENT_REPORTED": "අනතුර වාර්තා කරන ලදී",
+      "STAGE_CHANGED": "අදියර වෙනස් කරන ලදී",
+      "STATUS_CHANGED": "තත්ත්වය වෙනස් කරන ලදී",
+      "EVIDENCE_UPLOADED": "සාක්ෂි උඩුගත කරන ලදී",
+      "FR1043_DRAFT_CREATED": "FR104(3) කෙටුම්පත නිර්මාණය කරන ලදී",
+      "FR1043_DRAFT_UPDATED": "FR104(3) කෙටුම්පත යාවත්කාලීන කරන ලදී",
+      "FR1043_REVISION_CREATED": "FR104(3) සංශෝධනය නිර්මාණය කරන ලදී",
+      "FR1043_RESUBMITTED": "FR104(3) නැවත ඉදිරිපත් කරන ලදී",
+      "FR1043_SUBMITTED": "FR104(3) ඉදිරිපත් කරන ලදී",
+      "FR1043_APPROVED": "FR104(3) අනුමත කරන ලදී",
+      "FR1043_RECOMMENDED": "FR104(3) නිර්දේශ කරන ලදී",
+      "FR1043_REJECTED": "FR104(3) ප්‍රතික්ෂේප කරන ලදී",
+      "FR1043_WORKFLOW_COMPLETED": "FR104(3) කාර්ය ප්‍රවාහය සම්පූර්ණ කරන ලදී",
+      "FR1044_DRAFT_CREATED": "FR104(4) කෙටුම්පත නිර්මාණය කරන ලදී",
+      "FR1044_DRAFT_UPDATED": "FR104(4) කෙටුම්පත යාවත්කාලීන කරන ලදී",
+      "FR1044_REVISION_CREATED": "FR104(4) සංශෝධනය නිර්මාණය කරන ලදී",
+      "FR1044_RESUBMITTED": "FR104(4) නැවත ඉදිරිපත් කරන ලදී",
+      "FR1044_SUBMITTED": "FR104(4) ඉදිරිපත් කරන ලදී",
+      "FR1044_ATTACHMENT_UPLOADED": "FR104(4) ඇමුණුම උඩුගත කරන ලදී",
+      "FR1044_APPROVED": "FR104(4) අනුමත කරන ලදී",
+      "FR1044_RECOMMENDED": "FR104(4) නිර්දේශ කරන ලදී",
+      "FR1044_REJECTED": "FR104(4) ප්‍රතික්ෂේප කරන ලදී",
+      "FR1044_WORKFLOW_COMPLETED": "FR104(4) කාර්ය ප්‍රවාහය සම්පූර්ණ කරන ලදී",
+      "FR109_SUBMITTED": "FR109 ඉදිරිපත් කරන ලදී",
+      "FR109_APPROVED": "FR109 අනුමත කරන ලදී",
+      "FR109_RECOMMENDED": "FR109 නිර්දේශ කරන ලදී",
+      "FR109_REJECTED": "FR109 ප්‍රතික්ෂේප කරන ලදී",
+      "FR109_WORKFLOW_COMPLETED": "FR109 කාර්ය ප්‍රවාහය සම්පූර්ණ කරන ලදී",
+      "FR109_WRITE_OFF_NOTED": "FR109 කපාහැරීමේ ලේඛනය සම්පූර්ණ කරන ලදී",
+      "FR109_CHIEF_ACCOUNTING_ORDER_COMPLETED": "FR109 ප්‍රධාන ගිණුම් නිලධාරි නියෝගය සම්පූර්ණ කරන ලදී",
+      "FR109_WRITE_OFF_DECISION_RECORDED": "FR109 කපාහැරීමේ තීරණය සටහන් කරන ලදී",
+      "UNKNOWN": "නොදන්නා ක්‍රියාව"
+    },
 
     "act": "ක්‍රියා කරන්න",
     "review": "සමාලෝචනය",

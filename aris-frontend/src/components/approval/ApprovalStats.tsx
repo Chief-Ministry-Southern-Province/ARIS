@@ -5,6 +5,7 @@ import {
   FileText,
   XCircle,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import type{ Approval, ApprovalStatsCounts } from "@/types/approval.type";
 
@@ -17,6 +18,7 @@ export default function ApprovalStats({
   approvals,
   counts,
 }: Props) {
+  const { t } = useTranslation();
 
   const pending = counts?.pending ?? approvals.filter(a => a.status === "PENDING").length;
 
@@ -31,7 +33,7 @@ export default function ApprovalStats({
   const cards = [
 
     {
-      title: "Pending",
+      title: t("approvalCenter.pending"),
       value: pending,
       icon: Clock3,
       color: "text-yellow-600 dark:text-yellow-300",
@@ -39,7 +41,7 @@ export default function ApprovalStats({
     },
 
     {
-      title: "Recommended",
+      title: t("approvalCenter.recommended"),
       value: recommended,
       icon: ThumbsUp,
       color: "text-blue-600 dark:text-blue-300",
@@ -47,7 +49,7 @@ export default function ApprovalStats({
     },
 
     {
-      title: "Approved",
+      title: t("approvalCenter.approved"),
       value: approved,
       icon: CheckCircle2,
       color: "text-green-600 dark:text-green-300",
@@ -55,7 +57,7 @@ export default function ApprovalStats({
     },
 
     {
-      title: "Rejected",
+      title: t("approvalCenter.rejected"),
       value: rejected,
       icon: XCircle,
       color: "text-red-600 dark:text-red-300",
@@ -63,7 +65,7 @@ export default function ApprovalStats({
     },
 
     {
-      title: "Total",
+      title: t("approvalCenter.total"),
       value: total,
       icon: FileText,
       color: "text-blue-700 dark:text-blue-300",

@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   search: string;
@@ -9,6 +10,7 @@ export default function ApprovalSearch({
   search,
   onSearch,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
 
@@ -19,7 +21,7 @@ export default function ApprovalSearch({
         <input
           value={search}
           onChange={(e) => onSearch(e.target.value)}
-          placeholder="Search by Case Number or Reference Number..."
+          placeholder={t("approvalCenter.searchPlaceholder")}
           className="w-full rounded-xl border border-slate-200 pl-12 pr-4 py-3 outline-none focus:border-[#0F4C81]"
         />
 

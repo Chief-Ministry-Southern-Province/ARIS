@@ -106,6 +106,7 @@
             .page-three-approval-signatures .signature-approver-name,
             .page-three-approval-signatures .signature-role,
             .page-three-approval-signatures .signature-institution,
+            .page-three-approval-signatures .signature-extra-line,
             .page-three-approval-signatures .signature-date {
                 font-size: 6.8pt;
                 line-height: 1;
@@ -148,6 +149,8 @@
             }
             [lang="ta"] {
                 font-family: notosanstamil, sans-serif;
+                font-size: 7.5pt;
+                line-height: 1.02;
                 font-weight: normal !important;
             }
             .small {
@@ -155,13 +158,14 @@
                 line-height: 1.03;
             }
             .header {
-                font-size: 8.4pt;
+                font-size: 8.5pt;
                 font-weight: bold;
                 text-align: center;
                 vertical-align: middle;
             }
             .table-header-sinhala {
-                font-size: 10.5pt;
+                font-size: 9.5pt;
+                font-weight: normal !important;
                 line-height: 1.02;
             }
             .form-header-title {
@@ -217,15 +221,28 @@
                 text-align: left;
             }
             .section-title {
+                font-size: 8.5pt;
                 padding: 1.5mm 0;
                 border-left: 0;
                 border-right: 0;
             }
             .section-sinhala-title {
-                font-size: 10.5pt;
+                font-size: 9.5pt;
+                font-weight: normal !important;
+            }
+            .section-title > [lang="si"] {
+                font-size: 9.5pt;
+                font-weight: normal !important;
+                line-height: 1.02;
             }
             .subsection-sinhala-title {
-                font-size: 10.5pt;
+                font-size: 9.5pt;
+                font-weight: normal !important;
+                line-height: 1.05;
+            }
+
+            .multilingual-section-heading {
+                font-size: 8.5pt;
                 line-height: 1.05;
             }
             .field-nine-title {
@@ -477,6 +494,7 @@
             }
             .section-one-label {
                 height: 13mm;
+                font-size: 8.5pt;
             }
             .section-one-label-si {
                 line-height: 1.05;
@@ -559,7 +577,7 @@
                 padding: 0.7mm !important;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 7.5pt;
+                font-size: 8.5pt;
             }
             .section-six-currency-area {
                 height: 58mm;
@@ -634,7 +652,8 @@
                 margin: 0 0 0.8mm;
             }
             .signature-role,
-            .signature-institution {
+            .signature-institution,
+            .signature-extra-line {
                 display: block;
                 font-size: 8.5pt;
                 line-height: 1.15;
@@ -692,7 +711,7 @@
             }
             .writeoff .header {
                 height: 17mm !important;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 line-height: 1.02;
             }
         </style>
@@ -761,7 +780,7 @@
 
             <table>
                 <tr>
-                    <td style="width: 35mm" rowspan="3" class="h-30">
+                    <td style="width: 35mm" rowspan="3" class="h-30 multilingual-section-heading">
                         <span class="section-sinhala-title" lang="si">2. වාර්තාව</span><br /><span lang="ta"
                             >அறிக்கை</span
                         ><br />Report
@@ -824,7 +843,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="section-sinhala-title" lang="si">4. මුල් පිරිවැය</span><br /><span
                             lang="ta"
                             >மூலப் பெறுமதி</span
@@ -833,7 +852,7 @@
                     <td>{{ $value('originalCost') }}</td>
                 </tr>
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="subsection-sinhala-title" lang="si"
                             >අලාභය සිදු වූ අවස්ථාවේ දළ හෝ තක්සේරු පිරිවැය</span
                         ><br /><span lang="ta"
@@ -844,7 +863,7 @@
                     <td>{{ $value('estimatedCostAtTimeOfLoss') }}</td>
                 </tr>
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="subsection-sinhala-title" lang="si"
                             >ප්‍රතිස්ථාපන අගය හෝ අලුත්වැඩියා කිරීමේ වියදම</span
                         ><br /><span lang="ta"
@@ -854,7 +873,7 @@
                     <td>{{ $value('replacementValue') }}</td>
                 </tr>
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="subsection-sinhala-title" lang="si">මූ. රෙ. 105(1) යටතේ වටිනාකම</span
                         ><br /><span lang="ta"
                             >நி. பி. 105(1) இன் படி பெறுமதி</span
@@ -863,7 +882,7 @@
                     <td>{{ $value('valueUnderFr105') }}</td>
                 </tr>
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="subsection-sinhala-title" lang="si"
                             >වගකියයුතු නිලධාරීන්ගෙන්/රක්ෂණයෙන්/ඇප සහතිකයෙන් අයකර ගන්නා ලද මුදල</span
                         ><br /><span lang="ta"
@@ -874,7 +893,7 @@
                     <td>{{ $value('amountRecovered') }}</td>
                 </tr>
                 <tr>
-                    <td class="h-11">
+                    <td class="h-11 multilingual-section-heading">
                         <span class="subsection-sinhala-title" lang="si">වි.වි.හි.ස., රේගුබදු, දෙපාර්තමේන්තු ගාස්තු යනාදිය ඇතුලත්ව ශුද්ධ අලාභය</span><br /><span lang="ta"
                             >அ.செ.ஈ. சா., சுங்கத்தீர்வை, திணைக்களச் செலவுகள் முதலியன உட்பட்ட தேறிய நட்டம்</span
                         ><br />Net Loss inclusive of FEECs, Customs Duty,
@@ -1096,7 +1115,7 @@
                     @php
                         $signature = $signatureRow['signature'];
                         $recordedSignature = data_get($signature, 'signature_data_uri');
-                        $role = \Illuminate\Support\Str::title(str_replace('_', ' ', (string) data_get($signature, 'role', $signatureRow['role'])));
+                        $role = \Illuminate\Support\Str::title(str_replace('_', ' ', (string) data_get($signature, 'role', '')));
                     @endphp
                     @if (($signatureRow['separate_before'] ?? false) && ! $loop->first)
                         <tr class="page-three-signature-separator-gap"><td colspan="2">&nbsp;</td></tr>
@@ -1115,10 +1134,17 @@
                             </div>
                             <div class="signature-dots">................................................</div>
                             <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'name', '')), 55) }}</div>
-                            <div class="signature-role">{{ $role }}</div>
+                            @if (filled($role))
+                                <div class="signature-role">{{ $role }}</div>
+                            @endif
                             @if (filled(data_get($signature, 'institution')))
                                 <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($signature, 'institution')), 70) }}</div>
                             @endif
+                            @foreach (array_slice((array) data_get($signature, 'institution_lines', []), 0, 4) as $institutionLine)
+                                @if (filled($institutionLine))
+                                    <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                                @endif
+                            @endforeach
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signature, 'approved_at')) }}</div>
                         </td>
                     </tr>
@@ -1179,10 +1205,17 @@
                         </div>
                         <div class="signature-dots">....................................</div>
                         <div class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'name', '')), 55) }}</div>
-                        <div class="field-nine-pd-designation" lang="si">
-                            පළාත් සෞඛ්‍යය සේවා අධ්‍යක්ෂක,<br />
-                            දකුණු පළාත.
-                        </div>
+                        @if (filled(data_get($pdhsProvincialDirectorSignature, 'role')))
+                            <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'role')), 70) }}</div>
+                        @endif
+                        @if (filled(data_get($pdhsProvincialDirectorSignature, 'institution')))
+                            <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($pdhsProvincialDirectorSignature, 'institution')), 70) }}</div>
+                        @endif
+                        @foreach (array_slice((array) data_get($pdhsProvincialDirectorSignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                            @if (filled($institutionLine))
+                                <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                            @endif
+                        @endforeach
                         @if (data_get($pdhsProvincialDirectorSignature, 'signature_data_uri'))
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($pdhsProvincialDirectorSignature, 'approved_at')) }}</div>
                         @endif
@@ -1232,11 +1265,17 @@
                         </div>
                         <div class="signature-dots">....................................</div>
                         <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'name', '')), 55) }}</span>
-                        <div lang="si" style="text-align: right; line-height: 1.12">
-                            ලේකම්,<br />
-                            ප්‍රධාන අමාත්‍යාංශය,<br />
-                            දකුණු පළාත.
-                        </div>
+                        @if (filled(data_get($ministrySecretarySignature, 'role')))
+                            <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'role')), 70) }}</div>
+                        @endif
+                        @if (filled(data_get($ministrySecretarySignature, 'institution')))
+                            <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($ministrySecretarySignature, 'institution')), 70) }}</div>
+                        @endif
+                        @foreach (array_slice((array) data_get($ministrySecretarySignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                            @if (filled($institutionLine))
+                                <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                            @endif
+                        @endforeach
                         @if (data_get($ministrySecretarySignature, 'signature_data_uri'))
                             <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($ministrySecretarySignature, 'approved_at')) }}</div>
                         @endif
@@ -1304,10 +1343,17 @@
                                     </div>
                                     <div class="signature-dots">....................................</div>
                                     <span class="signature-approver-name">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'name', '')), 55) }}</span>
-                                    <div lang="si" style="line-height: 1.12">
-                                        ප්‍රධාන ලේකම්,<br />
-                                        දකුණු පළාත.
-                                    </div>
+                                    @if (filled(data_get($chiefSecretarySignature, 'role')))
+                                        <div class="signature-role">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'role')), 70) }}</div>
+                                    @endif
+                                    @if (filled(data_get($chiefSecretarySignature, 'institution')))
+                                        <div class="signature-institution">{{ \Illuminate\Support\Str::limit(trim((string) data_get($chiefSecretarySignature, 'institution')), 70) }}</div>
+                                    @endif
+                                    @foreach (array_slice((array) data_get($chiefSecretarySignature, 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-extra-line">{{ \Illuminate\Support\Str::limit(trim((string) $institutionLine), 70) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($chiefSecretarySignature, 'signature_data_uri'))
                                         <div class="signature-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($chiefSecretarySignature, 'approved_at')) }}</div>
                                     @endif

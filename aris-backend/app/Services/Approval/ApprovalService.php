@@ -22,6 +22,7 @@ use App\Services\Notifications\NotificationService;
 use App\Services\AuditLogService;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
+use App\Services\Signature\SignatureCaptionService;
 
 class ApprovalService
 {
@@ -30,6 +31,7 @@ class ApprovalService
         protected AccidentTimelineService $timelineService,
         protected NotificationService $notificationService,
         protected AuditLogService $auditLogs,
+        protected SignatureCaptionService $signatureCaptionService,
     ) {}
 
     /**
@@ -207,11 +209,16 @@ class ApprovalService
             'chief_accountant',
             'accountant',
             'secretary',
+            'chief_secretary',
         ]);
 
         $signature = $signatureRequired
             ? $this->getActiveSignature($user)
-            : ($user->hasRole('chief_secretary') ? $this->getOptionalSignature($user) : null);
+            : null;
+
+        $signatureCaption = $signature
+            ? $this->signatureCaptionService->forUser($user)
+            : null;
 
         DB::transaction(function () use (
             $approval,
@@ -219,6 +226,7 @@ class ApprovalService
             $user,
             $accidentCase,
             $signature,
+            $signatureCaption,
         ) {
 
             $document = null;
@@ -254,6 +262,7 @@ class ApprovalService
                 'comments' => $comments,
                 'acted_at' => now(),
                 'user_signature_id' => $signature?->id,
+                'signature_caption_snapshot' => $signatureCaption,
             ]);
 
             DB::afterCommit(function () use ($approval, $decisionStatus) {
@@ -608,11 +617,4 @@ class ApprovalService
         return $signature;
     }
 
-    protected function getOptionalSignature(User $user): ?UserSignature
-    {
-        return $user->signatures()
-            ->where('is_active', true)
-            ->latest('id')
-            ->first();
-    }
 }

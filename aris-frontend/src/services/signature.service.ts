@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import type { SignatureCaption } from "@/types/signature.type";
 
 export interface SignatureStatus {
   has_signature: boolean;
@@ -16,6 +17,12 @@ export interface UploadSignatureResponse {
     is_active: boolean;
     created_at: string;
   };
+}
+
+export type { SignatureCaption } from "@/types/signature.type";
+
+interface SignatureCaptionResponse {
+  data: SignatureCaption;
 }
 
 export const getSignatureStatus = async (): Promise<SignatureStatus> => {
@@ -43,4 +50,16 @@ export const uploadSignature = async (signature: File): Promise<UploadSignatureR
 
 export const deleteSignature = async (): Promise<void> => {
   await api.delete("/user/signature");
+};
+
+export const getSignatureCaption = async (): Promise<SignatureCaption> => {
+  const response = await api.get<SignatureCaptionResponse>("/user/signature/profile");
+
+  return response.data.data;
+};
+
+export const updateSignatureCaption = async (caption: SignatureCaption): Promise<SignatureCaption> => {
+  const response = await api.put<SignatureCaptionResponse>("/user/signature/profile", caption);
+
+  return response.data.data;
 };

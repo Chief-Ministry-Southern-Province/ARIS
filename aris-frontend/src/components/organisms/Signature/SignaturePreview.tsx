@@ -1,10 +1,12 @@
 import { LoaderCircle, PenTool } from "lucide-react";
 import type { SignaturePreviewProps } from "@/types/signature.type";
 import { useTranslation } from "react-i18next";
+import SignatureCaptionPreview from "@/components/organisms/Signature/SignatureCaptionPreview";
 
 export default function SignaturePreview({
   user,
   signature,
+  caption,
   isLoading = false,
 }: SignaturePreviewProps) {
   const { t } = useTranslation();
@@ -30,9 +32,7 @@ export default function SignaturePreview({
               className="max-h-28 sm:max-h-36 max-w-full object-contain mx-auto"
             />
 
-            <p className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 truncate">
-              {user.name}
-            </p>
+            <SignatureCaptionPreview user={user} caption={caption} />
           </div>
         ) : (
           <div className="text-center">

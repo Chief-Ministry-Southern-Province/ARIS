@@ -18,9 +18,7 @@
         body,
         table,
         td,
-        th,
-        div,
-        span {
+        th {
             color: #000;
             font-family: iskoolapota, notosanstamil, sans-serif;
             font-size: 9.5pt;
@@ -41,6 +39,16 @@
             page-break-after: auto;
         }
 
+        [lang="si"] {
+            font-family: iskoolapota, sans-serif;
+            font-weight: normal !important;
+        }
+
+        [lang="ta"] {
+            font-family: notosanstamil, sans-serif;
+            font-weight: normal !important;
+        }
+
         table {
             width: 100%;
             margin: 0;
@@ -53,7 +61,7 @@
         td,
         th {
             border: 0.25mm solid #000;
-            padding: 1.5mm 2mm;
+            padding: 1.4mm 2mm;
             vertical-align: top;
             overflow: hidden;
             overflow-wrap: break-word;
@@ -80,7 +88,7 @@
         }
 
         .table-header {
-            font-size: 8.7pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.05;
             text-align: center;
@@ -94,7 +102,8 @@
 
         [lang="ta"] {
             font-family: notosanstamil, sans-serif;
-            font-size: 8.5pt;
+            font-size: 7.5pt;
+            line-height: 1.02;
             font-weight: normal !important;
         }
 
@@ -103,12 +112,26 @@
             font-weight: normal !important;
         }
 
-        /* FR109-style Sinhala emphasis, applied without altering FR1043's
-           official table structure or signature placement. */
-        .table-header [lang="si"],
-        .field-title [lang="si"] {
-            font-size: 10.5pt;
+        /* FR1043 uses independent Sinhala scales for its main heading and
+           section text. Tamil and English retain their existing sizes. */
+        .form-header-title .fr1043-header-si {
+            font-family: iskoolapota, sans-serif;
+            font-size: 14pt !important;
+            font-weight: bold !important;
+            line-height: 1.05 !important;
+            margin-bottom: 1mm;
+        }
+
+        .fr1043-section-si {
+            font-family: iskoolapota, sans-serif;
+            font-size: 9.5pt !important;
+            font-weight: normal !important;
             line-height: 1.02;
+        }
+
+        .multilingual-section-heading {
+            font-size: 8.5pt;
+            line-height: 1.05;
         }
 
         .small {
@@ -175,6 +198,11 @@
             vertical-align: middle;
         }
 
+        .fr1043-form-header-table {
+            width: 200mm;
+            table-layout: fixed;
+        }
+
         .form-title-si {
             font-size: 14pt;
             font-weight: bold;
@@ -190,6 +218,68 @@
             font-family: dejavuserifcondensed, serif;
             font-size: 9pt;
             line-height: 1.02;
+        }
+
+        /* Fixed FR109-compatible approval grid. Keep this local so the
+           official FR1043 field geometry remains unchanged. */
+        .page-three-approval-signatures {
+            width: 200mm;
+            margin-top: 1mm;
+            table-layout: fixed;
+        }
+
+        .page-three-approval-signatures > tbody > tr {
+            height: 21mm;
+        }
+
+        .page-three-approval-signatures > tbody > tr.page-three-signature-separator,
+        .page-three-approval-signatures > tbody > tr.page-three-signature-separator td {
+            height: 1mm;
+            padding: 0 !important;
+            border-top: 0.35mm solid #000 !important;
+        }
+
+        .page-three-approval-signatures td {
+            border: 0;
+            padding: 0;
+        }
+
+        .page-three-approval-signatures .page-three-signature-comment {
+            height: 21mm;
+            padding-right: 4mm;
+            font-size: 8pt;
+            line-height: 1.15;
+            text-align: right;
+            vertical-align: middle;
+        }
+
+        .page-three-approval-signatures .page-three-signature-card {
+            height: 21mm;
+            padding-left: 4mm;
+            text-align: right;
+            vertical-align: bottom;
+        }
+
+        .page-three-approval-signatures .signature-space {
+            height: 8mm !important;
+            line-height: 0;
+            text-align: right;
+        }
+
+        .page-three-approval-signatures .approval-signature-image {
+            width: 28mm !important;
+            height: 8mm !important;
+            object-fit: contain;
+        }
+
+        .page-three-approval-signatures .signature-dots,
+        .page-three-approval-signatures .signature-approver-name,
+        .page-three-approval-signatures .signature-role,
+        .page-three-approval-signatures .signature-institution,
+        .page-three-approval-signatures .signature-date {
+            font-size: 6.8pt;
+            line-height: 1;
+            text-align: right;
         }
 
         .form-reference {
@@ -354,6 +444,7 @@
         .field-topic-cell {
             padding: 1mm 2mm;
             vertical-align: top;
+            font-size: 8.5pt;
         }
 
         .field-content-cell {
@@ -513,12 +604,12 @@
         }
 
         .signature-full-card {
-            height: 15mm;
+            height: 21mm;
         }
 
         .signature-full-card .signature-grid-comment {
             width: 105mm;
-            height: 15mm;
+            height: 21mm;
         }
 
         .signature-full-card .signature-grid-signature {
@@ -527,12 +618,12 @@
 
         .signature-full-card .signature-grid-line {
             width: 70mm;
-            min-height: 6mm;
+            min-height: 8mm;
         }
 
         .signature-full-card .signature-grid-image {
-            width: 23mm !important;
-            height: 6mm !important;
+            width: 28mm !important;
+            height: 8mm !important;
         }
 
         .signature-full-separator td {
@@ -659,6 +750,8 @@
 <body>
     @php
         $documentData = data_get($document, 'data', []);
+        $data = $data ?? $documentData;
+        $approvals = $approvals ?? ($signatures ?? []);
         $referenceNumber = data_get($document, 'reference_number', '');
         $text = static fn(mixed $value, int $limit): string => \Illuminate\Support\Str::limit(
             trim((string) $value),
@@ -671,7 +764,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->toDateString();
+                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
             } catch (\Throwable) {
                 return '';
             }
@@ -720,16 +813,16 @@
             </tr>
         </table>
 
-        <table autosize="1">
+        <table class="fr1043-form-header-table">
             <tr>
                 <td class="form-header-title" style="width: 140mm;">
-                    <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
+                    <span class="form-title-si fr1043-header-si" lang="si" style="display: block; font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1.05;">
                         මූ. රෙ. 104 (3) යටතේ අලාභයන් පිළිබඳ<br>ප්‍රාථමික වාර්තාව
-                    </div>
-                    <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06;">
+                    </span>
+                    <div class="form-title-ta" lang="ta">
                         நி.பி. 104 (3) இன் கீழ் இழப்புகள் பற்றிய<br>தொடக்க அறிக்கை
                     </div>
-                    <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
+                    <div class="form-title-en">
                         PRELIMINARY REPORT OF LOSSES UNDER F. R. 104 (3)
                     </div>
                 </td>
@@ -769,7 +862,7 @@
             </tr>
             <tr>
                 <td class="copy-line compact">
-                    <span class="label-local" lang="si">පිටපත: විගණකාධිපති</span><br>
+                    <span class="label-local fr1043-section-si" lang="si">පිටපත: විගණකාධිපති</span><br>
                     <span class="label-local" lang="ta">பிரதி: கணக்காய்வு அதிபதி</span><br>
                     <span class="label-local">Copy to : Auditor- General</span>
                 </td>
@@ -780,7 +873,7 @@
             <tr>
                 <td class="h-12 compact" style="width: 57mm;">
                     <div class="field-title">
-                        <span class="label-local" lang="si">1. දෙපාර්තමේන්තුව / සංස්ථාව</span><br>
+                        <span class="label-local fr1043-section-si" lang="si">1. දෙපාර්තමේන්තුව / සංස්ථාව</span><br>
                         <span class="label-local" lang="ta">திணைக்களம்/கூட்டுத்தாபனம்</span><br>
                         <span class="label-local">Department / Corporation</span>
                     </div>
@@ -793,15 +886,15 @@
         <table class="page-break-avoid">
             <tr>
                 <td class="field-topic-cell" rowspan="2" style="width: 76mm; height: 31mm; vertical-align: middle;">
-                    <span class="label-local" lang="si">2. අලාභය</span><br>
+                    <span class="label-local fr1043-section-si" lang="si">2. අලාභය</span><br>
                     <span class="label-local" lang="ta">இழப்பு</span><br>
                     <span class="label-local">Loss</span>
                 </td>
                 <td class="field-topic-cell" style="width: 45mm; height: 11mm; text-align: center;"><span
-                        class="label-local" lang="si">දිනය</span> / <span class="label-local"
+                        class="label-local fr1043-section-si" lang="si">දිනය</span> / <span class="label-local"
                         lang="ta">திகதி</span> / <span class="label-local">Date</span></td>
                 <td class="field-topic-cell" style="width: 79mm; height: 11mm; text-align: center;"><span
-                        class="label-local" lang="si">ස්ථානය</span> / <span class="label-local"
+                        class="label-local fr1043-section-si" lang="si">ස්ථානය</span> / <span class="label-local"
                         lang="ta">இடம்</span> / <span class="label-local">Place</span></td>
             </tr>
             <tr>
@@ -816,7 +909,7 @@
             <tr>
                 <td class="h-26 compact" style="width: 44mm;">
                     <div class="field-title">
-                        <span class="label-local" lang="si">3. අලාභයේ ස්වභාවය</span><br>
+                        <span class="label-local fr1043-section-si" lang="si">3. අලාභයේ ස්වභාවය</span><br>
                         <span class="label-local" lang="ta">இழப்பின் தன்மை</span><br>
                         <span class="label-local">Nature of Loss</span>
                     </div>
@@ -830,22 +923,22 @@
         <table class="page-break-avoid">
             <tr>
                 <th class="h-13 table-header header-cell" style="width: 77mm;">
-                    <span lang="si">අහිමි වූ භාණ්ඩවල විස්තරය</span><br>
+                    <span class="fr1043-section-si" lang="si">අහිමි වූ භාණ්ඩවල විස්තරය</span><br>
                     <span lang="ta">இழந்த பொருட்களின் விவரணம்</span><br>
                     Description of items lost
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 45mm;">
-                    <span lang="si">ප්‍රමාණය</span><br>
+                    <span class="fr1043-section-si" lang="si">ප්‍රමාණය</span><br>
                     <span lang="ta">தொகை</span><br>
                     Quantity
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 42mm;">
-                    <span lang="si">මිනුම් ඒකක</span><br>
+                    <span class="fr1043-section-si" lang="si">මිනුම් ඒකක</span><br>
                     <span lang="ta">அளவுக்கூறு</span><br>
                     Units of Measure
                 </th>
                 <th class="h-13 table-header header-cell" style="width: 36mm;">
-                    <span lang="si">වටිනාකම</span><br>
+                    <span class="fr1043-section-si" lang="si">වටිනාකම</span><br>
                     <span lang="ta">பெறுமதி</span><br>
                     Value
                 </th>
@@ -860,7 +953,7 @@
             @endforeach
             <tr>
                 <td colspan="3" class="item-total-row" style="text-align: right;">
-                    <span lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total
+                    <span class="fr1043-section-si" lang="si">මුළු වටිනාකම</span> / <span lang="ta">மொத்தப் பெறுமதி</span> / Total
                     Value
                 </td>
                 <td class="item-total-row" style="text-align: right;">
@@ -871,7 +964,7 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="height: 8mm;"><span class="label-local" lang="si">4. අලාභයට
+                <td class="field-topic-cell" style="height: 8mm;"><span class="label-local fr1043-section-si" lang="si">4. අලාභයට
                         හේතුව</span> / <span class="label-local" lang="ta">இழப்புக்குக் காரணம்</span> / <span
                         class="label-local">Cause of Loss</span></td>
             </tr>
@@ -887,17 +980,17 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="compact" colspan="2">
-                    <span lang="si">5. වගකිවයුතු නිලධාරින්/</span> <span lang="ta">பொறுப்பான
+                <td class="compact multilingual-section-heading" colspan="2">
+                    <span class="fr1043-section-si" lang="si">5. වගකිවයුතු නිලධාරින්/</span> <span lang="ta">பொறுப்பான
                         உத்தியோகத்தர்/</span> Officers responsible -
                 </td>
             </tr>
             <tr>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
-                    <span lang="si">නම</span>/<span lang="ta">பெயர்</span>/Name
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
+                    <span class="fr1043-section-si" lang="si">නම</span>/<span lang="ta">பெயர்</span>/Name
                 </td>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
-                    <span lang="si">තනතුර</span>/<span lang="ta">பதவிப்பெயர்</span>/Designation
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
+                    <span class="fr1043-section-si" lang="si">තනතුර</span>/<span lang="ta">பதவிப்பெயர்</span>/Designation
                 </td>
             </tr>
             @foreach ($officerSlots as $officerSlot)
@@ -910,13 +1003,13 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
-                    <span lang="si">6. පොලිස් ස්ථානයේ නම</span>/<span lang="ta">பொலிஸ் நிலையத்தின்
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
+                    <span class="fr1043-section-si" lang="si">6. පොලිස් ස්ථානයේ නම</span>/<span lang="ta">பொலிஸ் நிலையத்தின்
                         பெயர்</span>/<br>
                     Name of Police Station
                 </td>
-                <td class="compact" style="width: 100mm; text-align: center; vertical-align: middle;">
-                    <span lang="si">පොලිසියට දැනුම් දුන් දිනය</span>/<span lang="ta">பொலிசுக்கு அறிவித்த
+                <td class="compact multilingual-section-heading" style="width: 100mm; text-align: center; vertical-align: middle;">
+                    <span class="fr1043-section-si" lang="si">පොලිසියට දැනුම් දුන් දිනය</span>/<span lang="ta">பொலிசுக்கு அறிவித்த
                         தேதி</span><br>
                     Date of reporting to Police
                 </td>
@@ -933,7 +1026,7 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="height: 11mm;"><span class="label-local" lang="si">7.
+                <td class="field-topic-cell" style="height: 11mm;"><span class="label-local fr1043-section-si" lang="si">7.
                         පවත්වාගෙන යනු ලබන පරීක්ෂණයේ ස්වභාවය :</span><br><span class="label-local"
                         lang="ta">நடைபெறும் விசாரணையின் தன்மை :</span><br><span class="label-local">Nature of
                         Investigation being carried out :</span></td>
@@ -946,7 +1039,7 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="height: 12mm;"><span class="label-local" lang="si">8.
+                <td class="field-topic-cell" style="height: 12mm;"><span class="label-local fr1043-section-si" lang="si">8.
                         පොත්පත් වාර්තා ආදියේ ආරක්ෂාව සඳහා යොදන ලද විධිවිධාන :</span><br><span class="label-local"
                         lang="ta">புத்தகங்கள், பதிவேடுகள் முதலியவற்றின் பாதுகாப்புக்கு எடுத்துள்ள ஒழுங்குகள்
                         :</span><br><span class="label-local">Arrangements made for the security of the books, records,
@@ -960,7 +1053,7 @@
 
         <table class="page-break-avoid">
             <tr>
-                <td class="field-topic-cell" style="height: 12mm;"><span class="label-local" lang="si">9.
+                <td class="field-topic-cell" style="height: 12mm;"><span class="label-local fr1043-section-si" lang="si">9.
                         මෙවැනි අලාභයන් වැළැක්වීම සඳහා යොදා ඇති විධිවිධාන :</span><br><span class="label-local"
                         lang="ta">மேலும் இழப்புக்கள் ஏற்படாமல் தடுப்பதற்கு எடுத்துள்ள ஒழுங்குகள் :</span><br><span
                         class="label-local">Arrangements made for the prevention of further losses :</span></td>
@@ -1023,7 +1116,7 @@
                 ->values();
         @endphp
 
-        <table class="no-border signature-full-width page-break-avoid">
+        <table class="no-border signature-full-width page-three-approval-signatures page-break-avoid">
             @foreach ($localSignatureRows as $signatureRow)
                 <tr>
                     <td style="width: 200mm;">
@@ -1039,10 +1132,17 @@
                                         @endif
                                     </div>
                                     <div class="signature-grid-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
-                                    <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}</div>
-                                    @if ($signatureRow['show_institution'] ?? true)
+                                    @if (filled(data_get($signatureRow['signature'], 'role')))
+                                        <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role'), 45) }}</div>
+                                    @endif
+                                    @if (filled(data_get($signatureRow['signature'], 'institution')))
                                         <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif
+                                    @foreach (array_slice((array) data_get($signatureRow['signature'], 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-grid-institution">{{ $text($institutionLine, 45) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
                                         <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
@@ -1058,7 +1158,7 @@
         </table>
 
         @foreach ($ministrySignatureRows as $signatureRow)
-            <table class="no-border signature-full-width signature-ministry-single page-break-avoid">
+            <table class="no-border signature-full-width signature-ministry-single page-three-approval-signatures page-break-avoid">
                 <tr>
                     <td style="width: 200mm;">
                         <table class="no-border signature-grid-card signature-full-card">
@@ -1073,10 +1173,17 @@
                                         @endif
                                     </div>
                                     <div class="signature-grid-name">{{ $text(data_get($signatureRow['signature'], 'name', ''), 45) }}</div>
-                                    <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role') ?: $signatureRow['label'], 45) }}</div>
-                                    @if ($signatureRow['show_institution'] ?? true)
+                                    @if (filled(data_get($signatureRow['signature'], 'role')))
+                                        <div class="signature-grid-label">{{ $text(data_get($signatureRow['signature'], 'role'), 45) }}</div>
+                                    @endif
+                                    @if (filled(data_get($signatureRow['signature'], 'institution')))
                                         <div class="signature-grid-institution">{{ data_get($signatureRow['signature'], 'institution', '') }}</div>
                                     @endif
+                                    @foreach (array_slice((array) data_get($signatureRow['signature'], 'institution_lines', []), 0, 4) as $institutionLine)
+                                        @if (filled($institutionLine))
+                                            <div class="signature-grid-institution">{{ $text($institutionLine, 45) }}</div>
+                                        @endif
+                                    @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
                                         <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
