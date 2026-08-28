@@ -21,7 +21,7 @@
         th {
             color: #000;
             font-family: iskoolapota, notosanstamil, sans-serif;
-            font-size: 9.5pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -124,7 +124,7 @@
 
         .fr1043-section-si {
             font-family: iskoolapota, sans-serif;
-            font-size: 9.5pt !important;
+            font-size: 8.5pt !important;
             font-weight: normal !important;
             line-height: 1.02;
         }
@@ -135,7 +135,7 @@
         }
 
         .small {
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
         }
 
@@ -169,6 +169,10 @@
             font-size: 8.5pt;
         }
 
+        .field-title [lang="ta"] {
+            font-size: 7.5pt;
+        }
+
         .admin-cell {
             height: 14mm;
             padding: 0;
@@ -179,13 +183,13 @@
         .admin-block {
             display: inline-block;
             width: 48mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
             text-align: right;
         }
 
         .form-number {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
         }
 
@@ -247,7 +251,7 @@
         .page-three-approval-signatures .page-three-signature-comment {
             height: 21mm;
             padding-right: 4mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: right;
             vertical-align: middle;
@@ -277,7 +281,7 @@
         .page-three-approval-signatures .signature-role,
         .page-three-approval-signatures .signature-institution,
         .page-three-approval-signatures .signature-date {
-            font-size: 6.8pt;
+            font-size: 8.5pt;
             line-height: 1;
             text-align: right;
         }
@@ -407,7 +411,7 @@
 
         .item-total-row {
             height: 7mm;
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
             padding: 1.5mm 2mm;
         }
@@ -555,7 +559,7 @@
             width: 48mm;
             height: 24mm;
             padding: 2mm 2mm 0 0 !important;
-            font-size: 7.2pt;
+            font-size: 8.5pt;
             line-height: 1.08;
             text-align: left;
             vertical-align: middle !important;
@@ -590,12 +594,12 @@
         .signature-grid-name,
         .signature-grid-label,
         .signature-grid-institution {
-            font-size: 8pt;
+            font-size: 8.5pt;
         }
 
         .signature-grid-date {
             margin-top: 0.5mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             white-space: nowrap;
         }
 
@@ -642,7 +646,7 @@
         }
 
         .signature-card-institution {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.15;
         }
@@ -658,13 +662,13 @@
         }
 
         .signature-card-date {
-            font-size: 7.5pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             white-space: nowrap;
         }
 
         .signature-label {
-            font-size: 9pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -719,7 +723,7 @@
         }
 
         .approval-signature-comment {
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: left;
             vertical-align: middle;
@@ -740,7 +744,7 @@
 
         .footer-note {
             height: 3mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             text-align: left;
             vertical-align: bottom;
         }

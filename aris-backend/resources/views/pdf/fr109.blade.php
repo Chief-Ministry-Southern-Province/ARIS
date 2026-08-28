@@ -19,7 +19,7 @@
             div {
                 color: #000;
                 font-family: iskoolapota, notosanstamil, sans-serif;
-                font-size: 9.5pt;
+                font-size: 8.5pt;
                 line-height: 1.12;
             }
             .page {
@@ -73,7 +73,7 @@
                 height: 21mm;
                 vertical-align: middle;
                 padding-right: 4mm;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 line-height: 1.15;
                 text-align: right;
                 overflow: hidden;
@@ -100,7 +100,7 @@
                 object-fit: contain;
             }
             .page-three-approval-signatures .signature-dots {
-                font-size: 6.8pt;
+                font-size: 8.5pt;
                 line-height: 1;
             }
             .page-three-approval-signatures .signature-approver-name,
@@ -108,7 +108,7 @@
             .page-three-approval-signatures .signature-institution,
             .page-three-approval-signatures .signature-extra-line,
             .page-three-approval-signatures .signature-date {
-                font-size: 6.8pt;
+                font-size: 8.5pt;
                 line-height: 1;
                 text-align: right;
             }
@@ -154,7 +154,7 @@
                 font-weight: normal !important;
             }
             .small {
-                font-size: 7.6pt;
+                font-size: 8.5pt;
                 line-height: 1.03;
             }
             .header {
@@ -164,7 +164,7 @@
                 vertical-align: middle;
             }
             .table-header-sinhala {
-                font-size: 9.5pt;
+                font-size: 8.5pt;
                 font-weight: normal !important;
                 line-height: 1.02;
             }
@@ -186,7 +186,7 @@
             }
             .form-title-en {
                 font-family: dejavuserifcondensed, serif;
-                font-size: 9pt;
+                font-size: 10pt;
                 line-height: 1.02;
             }
             .admin {
@@ -198,7 +198,7 @@
                 display: inline-block;
                 width: 45mm;
                 text-align: right;
-                font-size: 7.5pt;
+                font-size: 8.5pt;
                 line-height: 1.02;
             }
             .form-reference {
@@ -227,16 +227,16 @@
                 border-right: 0;
             }
             .section-sinhala-title {
-                font-size: 9.5pt;
+                font-size: 8.5pt;
                 font-weight: normal !important;
             }
             .section-title > [lang="si"] {
-                font-size: 9.5pt;
+                font-size: 8.5pt;
                 font-weight: normal !important;
                 line-height: 1.02;
             }
             .subsection-sinhala-title {
-                font-size: 9.5pt;
+                font-size: 8.5pt;
                 font-weight: normal !important;
                 line-height: 1.05;
             }
@@ -270,7 +270,7 @@
                 padding: 1.2mm 2mm !important;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 line-height: 1.04;
             }
             .field-nine-caption-brace {
@@ -316,7 +316,7 @@
                 display: inline-block;
                 color: #000;
                 font-family: dejavuserifcondensed, serif;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 letter-spacing: 0.1mm;
                 white-space: nowrap;
             }
@@ -478,7 +478,7 @@
             }
             .field-eleven-copy {
                 padding: 3mm 0 0 1mm !important;
-                font-size: 7pt;
+                font-size: 8.5pt;
                 line-height: 1.02;
                 vertical-align: top;
             }
@@ -538,7 +538,7 @@
                 height: auto;
                 overflow: visible;
                 font-family: iskoolapota, sans-serif;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 line-height: 1.22;
                 overflow-wrap: break-word;
                 word-wrap: break-word;
@@ -563,7 +563,7 @@
                 padding: 1.5mm;
                 border-bottom: 0.2mm dotted #777;
                 font-family: iskoolapota, sans-serif;
-                font-size: 7.5pt;
+                font-size: 8.5pt;
                 line-height: 1.2;
                 overflow: hidden;
                 white-space: nowrap;
@@ -624,7 +624,7 @@
             .footer {
                 border: 0;
                 padding-top: 2mm;
-                font-size: 7.5pt;
+                font-size: 8.5pt;
             }
             .signature-space {
                 height: 10mm;
@@ -638,7 +638,7 @@
                 display: block;
                 color: #000;
                 font-family: dejavuserifcondensed, serif;
-                font-size: 8pt;
+                font-size: 8.5pt;
                 letter-spacing: 0.1mm;
                 line-height: 1;
                 white-space: nowrap;
@@ -660,7 +660,7 @@
             }
             .signature-date,
             .signature-card-date {
-                font-size: 7.5pt;
+                font-size: 8.5pt;
                 line-height: 1.15;
                 white-space: nowrap;
             }
@@ -675,7 +675,7 @@
                 font-size: 8.5pt;
             }
             .signature-comment {
-                font-size: 8pt;
+                font-size: 8.5pt;
                 line-height: 1.15;
                 text-align: left;
                 vertical-align: middle;
@@ -749,7 +749,7 @@
                         <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
                             මූ. රෙ. 109 යටතේ අලාභයන් පොතෙන් කපා හැරීම සඳහා<br />ඉල්ලුම් පත්‍රය
                         </div>
-                        <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06;">
+                        <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 14pt; line-height: 2">
                             நி. பி. 109 இன் படி இழப்புக்களை பதியறித்ததற்கான<br />விண்ணப்பம்
                         </div>
                         <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
