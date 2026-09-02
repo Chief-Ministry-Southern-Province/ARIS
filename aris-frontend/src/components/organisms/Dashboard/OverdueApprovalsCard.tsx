@@ -29,6 +29,9 @@ export function OverdueApprovalsCard() {
         <div className="space-y-3">
           {approvals.map((approval) => {
             const critical = approval.waiting_hours >= 48;
+            const displayTime = approval.waiting_hours < 24 
+              ? `${Math.round(approval.waiting_hours)}h` 
+              : `${Math.round(approval.waiting_hours / 24)}d`;
 
             return (
               <div key={approval.id} className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2.5">
@@ -39,7 +42,7 @@ export function OverdueApprovalsCard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`whitespace-nowrap rounded-md px-2 py-1 text-xs font-semibold ${critical ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>
-                    {approval.waiting_hours}h
+                    {displayTime}
                   </span>
                   <Link to={`/approvals/${approval.id}`} aria-label={`Open approval for ${approval.case_number ?? "case"}`} className="text-blue-700 hover:text-blue-900">
                     <ExternalLink className="h-4 w-4" />
