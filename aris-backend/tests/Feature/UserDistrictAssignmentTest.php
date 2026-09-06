@@ -2,17 +2,18 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Institution;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class UserDistrictAssignmentTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $admin;
+
     protected $ministry;
 
     protected function setUp(): void
@@ -54,7 +55,7 @@ class UserDistrictAssignmentTest extends TestCase
             'districts' => ['Galle', 'Matara'],
         ];
 
-        $response = $this->actingAs($this->admin)
+        $response = $this->fromStatefulSpa()->actingAs($this->admin)
             ->postJson('/api/users', $payload);
 
         $response->assertStatus(201)
@@ -91,7 +92,7 @@ class UserDistrictAssignmentTest extends TestCase
             'districts' => ['Matara', 'Hambantota'],
         ];
 
-        $response = $this->actingAs($this->admin)
+        $response = $this->fromStatefulSpa()->actingAs($this->admin)
             ->putJson("/api/users/{$user->id}", $payload);
 
         $response->assertStatus(200)
@@ -123,7 +124,7 @@ class UserDistrictAssignmentTest extends TestCase
             'districts' => ['Colombo'], // Invalid district
         ];
 
-        $response = $this->actingAs($this->admin)
+        $response = $this->fromStatefulSpa()->actingAs($this->admin)
             ->postJson('/api/users', $payload);
 
         $response->assertStatus(422)
