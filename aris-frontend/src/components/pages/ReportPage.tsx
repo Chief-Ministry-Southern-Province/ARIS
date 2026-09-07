@@ -36,7 +36,7 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
   const isEditing = mode === "edit";
   const numericCaseId = Number(caseId);
   const { loadingLocation, getCurrentLocation } = useCurrentLocation();
-  const { role, id: userId } = useAuth();
+  const { role, id: userId, name: userName } = useAuth();
   const isDriver = role.includes("driver");
 
   const [vehicleSearch, setVehicleSearch] = useState("");
@@ -75,16 +75,23 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
 
    
   useEffect(() => {
-    if (!isDriver || vehicles.length === 0) return;
+    // The vehicles endpoint is already limited to the logged-in driver's
+    // assignments. Keep an existing selection when possible, otherwise choose
+    // the first assigned vehicle as the initial value.
+    if (!isDriver || isEditing) return;
 
-    const assignedVehicle = vehicles[0];
+    setForm((prev) => {
+      const assignedVehicle = vehicles.find(
+        (vehicle) => String(vehicle.id) === prev.vehicle_id
+      ) ?? vehicles[0];
 
-    setForm(prev => ({
+      return {
         ...prev,
         driver_id: userId === null ? "" : String(userId),
-        vehicle_id: String(assignedVehicle.id),
-    }));
-}, [vehicles, userId, isDriver]);
+        vehicle_id: assignedVehicle ? String(assignedVehicle.id) : prev.vehicle_id,
+      };
+    });
+  }, [vehicles, userId, isDriver, isEditing]);
 
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -383,10 +390,21 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     
             {isDriver ? (
-                <InputField
+                vehicles.length === 0 ? (
+                  <InputField
                     disabled
-                    value={`${vehicles[0]?.vehicle_number} - ${vehicles[0]?.brand} ${vehicles[0]?.model}`}
-                />
+                    value="No vehicle is assigned to your account"
+                  />
+                ) : (
+                  <SelectField
+                    value={form.vehicle_id}
+                    onChange={(e) => handleVehicleChange(e.target.value)}
+                    options={vehicles.map((vehicle) => ({
+                      value: String(vehicle.id),
+                      label: `${vehicle.vehicle_number} — ${vehicle.brand} ${vehicle.model}`,
+                    }))}
+                  />
+                )
             ) : (
                 <>
                     <InputField
@@ -411,7 +429,9 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
               type="text"
               value={
                 form.driver_id
-                  ? vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`
+                  ? (isDriver
+                    ? userName ?? "Driver"
+                    : vehicles.find((v) => v.driver_id === Number(form.driver_id))?.driver?.name || `Driver ID: ${form.driver_id}`)
                   : "No driver assigned"
               }
               disabled
