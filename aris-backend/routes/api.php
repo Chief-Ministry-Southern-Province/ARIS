@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\AuditLogController;
 use App\Http\Controllers\Api\PushSubscriptionController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\AnalyticsController;
+use App\Http\Controllers\Api\BackupController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -58,6 +59,16 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::delete('/push-subscriptions', [PushSubscriptionController::class, 'destroy']);
 
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
+
+    Route::prefix('admin/backups')->group(function () {
+        Route::get('/', [BackupController::class, 'index']);
+        Route::post('/', [BackupController::class, 'store'])->middleware('throttle:5,1');
+        Route::get('/status', [BackupController::class, 'status']);
+        Route::get('/{backup}', [BackupController::class, 'show']);
+        Route::get('/{backup}/download', [BackupController::class, 'download'])->middleware('throttle:20,1');
+        Route::delete('/{backup}', [BackupController::class, 'destroy'])->middleware('throttle:5,1');
+        Route::post('/{backup}/restore', [BackupController::class, 'restore'])->middleware('throttle:2,1');
+    });
 
     Route::apiResource('users', UserController::class);
 

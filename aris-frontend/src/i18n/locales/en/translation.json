@@ -713,7 +713,8 @@
       "vehicles": "Vehicles",
       "workflow": "Workflow Rules",
       "notifications": "Notifications",
-      "audit": "Audit Logs"
+      "audit": "Audit Logs",
+      "backup": "Backup"
     },
 
     "users": {
@@ -840,6 +841,31 @@
       "unread": "Unread",
       "read": "Read",
       "view": "View"
+    },
+
+    "backup": {
+      "title": "Backup Management",
+      "subtitle": "Secure backup history and recovery administration.",
+      "create": "Create Backup",
+      "creating": "Creating…",
+      "lastSuccessful": "Last Successful Backup",
+      "nextScheduled": "Next Scheduled Backup",
+      "status": "Backup Status",
+      "healthy": "Healthy",
+      "attention": "Attention required",
+      "total": "Total Backups",
+      "allTypes": "All types",
+      "allStatuses": "All statuses",
+      "loading": "Loading backups…",
+      "loadError": "Unable to load backups.",
+      "noBackups": "No backups match the selected filters.",
+      "viewDetails": "View details",
+      "download": "Download",
+      "delete": "Delete",
+      "restore": "Restore",
+      "types": { "automatic": "Automatic", "manual": "Manual" },
+      "statuses": { "pending": "Pending", "running": "Running", "completed": "Completed", "failed": "Failed" },
+      "columns": { "id": "Backup ID", "type": "Type", "dateTime": "Date & Time", "size": "Size", "status": "Status", "actions": "Actions" }
     },
 
     "audit": {

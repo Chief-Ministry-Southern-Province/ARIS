@@ -5,6 +5,7 @@ import InstitutionTab from "@/components/organisms/AdminPanel/InstitutionTab";
 import VehicleTab from "@/components/organisms/AdminPanel/VehicleTab";
 import AuditLogTab from "@/components/organisms/AdminPanel/AuditLogTab";
 import WorkflowSettingTab from "@/components/organisms/AdminPanel/WorkflowSettingTab";
+import BackupTab from "@/components/organisms/AdminPanel/BackupTab";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/auth/AuthContext";
 
@@ -73,6 +74,10 @@ function AdminPanel() {
           {/* Audit Logs */}
           {role.includes("system_admin") && activeTab === "audit" && (
             <AuditLogTab />
+          )}
+
+          {role.includes("system_admin") && activeTab === "backup" && (
+            <BackupTab />
           )}
         </div>
       </div>

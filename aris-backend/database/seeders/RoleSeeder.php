@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::firstOrCreate(['name' => 'system_admin']);
+        $systemAdmin = Role::firstOrCreate(['name' => 'system_admin']);
         Role::firstOrCreate(['name' => 'driver']);
         Role::firstOrCreate(['name' => 'subject_officer']);
         Role::firstOrCreate(['name' => 'administrative_officer']);
@@ -28,5 +29,11 @@ class RoleSeeder extends Seeder
         Role::firstOrCreate(['name' => 'chief_accountant']);
         Role::firstOrCreate(['name' => 'accountant']);
         Role::firstOrCreate(['name' => 'ministry_account_subject_officer']);
+
+        $permissions = collect([
+            'backup.view', 'backup.create', 'backup.download', 'backup.delete', 'backup.restore',
+        ])->map(fn (string $name) => Permission::firstOrCreate(['name' => $name]));
+
+        $systemAdmin->givePermissionTo($permissions);
     }
 }

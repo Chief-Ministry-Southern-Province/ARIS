@@ -31,4 +31,6 @@ enum AuditModule: string
     case WORKFLOW = 'Workflow';
 
     case DASHBOARD = 'Dashboard';
+
+    case BACKUP = 'Backup';
 }
