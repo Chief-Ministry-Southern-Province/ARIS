@@ -12,7 +12,7 @@ return [
     ],
     // Only application uploads are archived. Never add the backup disk itself here.
     'source_directories' => [
-        ['disk' => 'public', 'path' => 'evidence'],
+        ['disk' => 'public', 'path' => 'accidents'],
         ['disk' => 'private', 'path' => 'signatures'],
         ['disk' => 'private', 'path' => 'fr1044'],
     ],
