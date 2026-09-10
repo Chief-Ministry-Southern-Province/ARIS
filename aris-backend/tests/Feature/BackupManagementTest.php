@@ -11,6 +11,7 @@ use App\Services\BackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -109,6 +110,22 @@ class BackupManagementTest extends TestCase
 
         $this->assertDatabaseHas('backup_restores', ['backup_id' => $backup->id, 'requested_by' => $user->id, 'status' => 'pending']);
         Queue::assertPushed(RestoreBackupJob::class, fn (RestoreBackupJob $job) => $job->restore->backup_id === $backup->id && $job->restore->requested_by === $user->id);
+    }
+
+    public function test_authorized_user_can_upload_a_backup_zip_for_later_restore(): void
+    {
+        Storage::fake('private');
+        config(['backups.restore_enabled' => true]);
+        $user = $this->userWith(['backup.restore']);
+
+        $this->fromStatefulSpa()->actingAs($user)->post('/api/admin/backups/upload', [
+            'backup' => UploadedFile::fake()->create('aris-recovery.zip', 128, 'application/zip'),
+        ])->assertCreated()->assertJsonPath('data.status', 'completed');
+
+        $backup = Backup::query()->latest('id')->firstOrFail();
+        $this->assertStringStartsWith('backups/imported/', $backup->file_path);
+        $this->assertNotNull($backup->checksum);
+        Storage::disk('private')->assertExists($backup->file_path);
     }
 
     public function test_retention_keeps_current_backups_and_removes_expired_ones(): void

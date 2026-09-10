@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::prefix('admin/backups')->group(function () {
         Route::get('/', [BackupController::class, 'index']);
         Route::post('/', [BackupController::class, 'store'])->middleware('throttle:5,1');
+        Route::post('/upload', [BackupController::class, 'upload'])->middleware('throttle:5,1');
         Route::get('/status', [BackupController::class, 'status']);
         Route::get('/{backup}', [BackupController::class, 'show']);
         Route::get('/{backup}/download', [BackupController::class, 'download'])->middleware('throttle:20,1');

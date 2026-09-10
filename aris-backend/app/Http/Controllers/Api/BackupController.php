@@ -7,6 +7,7 @@ use App\Enums\AuditModule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBackupRequest;
 use App\Http\Requests\RestoreBackupRequest;
+use App\Http\Requests\UploadBackupRequest;
 use App\Http\Resources\BackupResource;
 use App\Jobs\CreateBackupJob;
 use App\Jobs\RestoreBackupJob;
@@ -43,6 +44,49 @@ class BackupController extends Controller
         $backup = $this->backups->createRecord('manual', $request->user()->id);
         CreateBackupJob::dispatch($backup);
         return (new BackupResource($backup))->response()->setStatusCode(202);
+    }
+
+    public function upload(UploadBackupRequest $request)
+    {
+        if (! config('backups.restore_enabled')) {
+            return response()->json(['message' => 'Backup upload is not available until approved recovery procedures are configured.'], 409);
+        }
+
+        $file = $request->file('backup');
+        $now = now();
+        $backup = Backup::create([
+            'backup_code' => sprintf('ARIS-UPLOAD-%s-%s', $now->format('Ymd-Hi'), strtoupper(str()->random(4))),
+            'type' => 'manual',
+            'status' => 'pending',
+            'disk' => config('backups.disk'),
+            'created_by' => $request->user()->id,
+        ]);
+        $storagePath = 'backups/imported/'.$now->format('Y/m').'/'.$backup->backup_code.'.zip';
+
+        try {
+            $storedPath = Storage::disk($backup->disk)->putFileAs(dirname($storagePath), $file, basename($storagePath));
+            if (! $storedPath || ! Storage::disk($backup->disk)->exists($storagePath)) {
+                throw new \RuntimeException('Unable to store the uploaded backup archive.');
+            }
+
+            $backup->update([
+                'status' => 'completed',
+                'file_path' => $storagePath,
+                'file_name' => basename($file->getClientOriginalName()),
+                'file_size' => Storage::disk($backup->disk)->size($storagePath),
+                'checksum' => hash_file('sha256', $file->getRealPath()),
+                'started_at' => $now,
+                'completed_at' => now(),
+            ]);
+        } catch (\Throwable $exception) {
+            Storage::disk($backup->disk)->delete($storagePath);
+            $backup->update(['status' => 'failed', 'completed_at' => now(), 'error_message' => 'Uploaded backup could not be stored.']);
+            throw $exception;
+        }
+
+        $this->auditLogs->log(AuditAction::UPLOAD, AuditModule::BACKUP, $backup, [], ['file_name' => $backup->file_name, 'file_size' => $backup->file_size], 'Backup ZIP uploaded for recovery.', $request);
+
+        return (new BackupResource($backup))->response()->setStatusCode(201);
     }
 
     public function show(Backup $backup)

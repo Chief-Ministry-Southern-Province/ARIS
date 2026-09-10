@@ -6,5 +6,6 @@ const keys = { all: ["backups"] as const, list: (filters: BackupFilters) => ["ba
 export const useBackups = (filters: BackupFilters) => useQuery({ queryKey: keys.list(filters), queryFn: () => backupService.list(filters), refetchInterval: (query) => query.state.data?.data.some((backup) => backup.status === "pending" || backup.status === "running" || backup.restore?.status === "pending" || backup.restore?.status === "running") ? 5000 : false });
 export const useBackupStatus = () => useQuery({ queryKey: keys.status, queryFn: backupService.status, refetchInterval: 30000 });
 export const useCreateBackup = () => { const client = useQueryClient(); return useMutation({ mutationFn: backupService.create, onSuccess: () => client.invalidateQueries({ queryKey: keys.all }) }); };
+export const useUploadBackup = () => { const client = useQueryClient(); return useMutation({ mutationFn: backupService.upload, onSuccess: () => client.invalidateQueries({ queryKey: keys.all }) }); };
 export const useDeleteBackup = () => { const client = useQueryClient(); return useMutation({ mutationFn: backupService.remove, onSuccess: () => client.invalidateQueries({ queryKey: keys.all }) }); };
 export const useRestoreBackup = () => { const client = useQueryClient(); return useMutation({ mutationFn: backupService.restore, onSuccess: () => client.invalidateQueries({ queryKey: keys.all }) }); };

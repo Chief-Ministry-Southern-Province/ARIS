@@ -18,6 +18,7 @@ return [
     ],
     'mysqldump_binary' => env('BACKUP_MYSQLDUMP_BINARY', 'mysqldump'),
     'mysql_binary' => env('BACKUP_MYSQL_BINARY', 'mysql'),
+    'upload_max_kb' => (int) env('BACKUP_UPLOAD_MAX_KB', 1048576),
     's3' => [
         'server_side_encryption' => env('BACKUP_S3_SSE', 'aws:kms'),
         'kms_key_id' => env('BACKUP_S3_KMS_KEY_ID'),
