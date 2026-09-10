@@ -9,7 +9,9 @@ use App\Http\Requests\CreateBackupRequest;
 use App\Http\Requests\RestoreBackupRequest;
 use App\Http\Resources\BackupResource;
 use App\Jobs\CreateBackupJob;
+use App\Jobs\RestoreBackupJob;
 use App\Models\Backup;
+use App\Models\BackupRestore;
 use App\Services\AuditLogService;
 use App\Services\BackupService;
 use Illuminate\Http\Request;
@@ -27,7 +29,7 @@ class BackupController extends Controller
             'from' => ['nullable', 'date'], 'to' => ['nullable', 'date', 'after_or_equal:from'],
             'type' => ['nullable', Rule::in(['manual', 'automatic'])], 'status' => ['nullable', Rule::in(['pending', 'running', 'completed', 'failed'])],
         ]);
-        $backups = Backup::with('creator:id,name')->latest()
+        $backups = Backup::with(['creator:id,name', 'latestRestore'])->latest()
             ->when($filters['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
             ->when($filters['to'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date))
             ->when($filters['type'] ?? null, fn ($q, $type) => $q->where('type', $type))
@@ -46,7 +48,7 @@ class BackupController extends Controller
     public function show(Backup $backup)
     {
         $this->authorize('view', $backup);
-        return new BackupResource($backup->load('creator:id,name'));
+        return new BackupResource($backup->load(['creator:id,name', 'latestRestore']));
     }
 
     public function status(Request $request)
@@ -89,6 +91,15 @@ class BackupController extends Controller
             ], 409);
         }
 
-        abort(501, 'Automated backup restore is not configured for this environment.');
+        abort_unless($backup->status === 'completed' && $backup->file_path && $backup->checksum, 422, 'The selected backup is incomplete.');
+
+        $restore = BackupRestore::create(['backup_id' => $backup->id, 'requested_by' => $request->user()->id, 'status' => 'pending', 'message' => 'Backup restore has been queued.']);
+        $this->auditLogs->log(AuditAction::BACKUP_RESTORE_STARTED, AuditModule::BACKUP, $backup, [], ['restore_id' => $restore->id], 'Backup restore queued.', $request);
+        RestoreBackupJob::dispatch($restore);
+
+        return response()->json([
+            'data' => $restore,
+            'message' => 'Backup restore has been queued. The system will be temporarily unavailable while recovery is in progress.',
+        ], 202);
     }
 }

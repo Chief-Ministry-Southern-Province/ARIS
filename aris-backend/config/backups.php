@@ -17,6 +17,7 @@ return [
         ['disk' => 'private', 'path' => 'fr1044'],
     ],
     'mysqldump_binary' => env('BACKUP_MYSQLDUMP_BINARY', 'mysqldump'),
+    'mysql_binary' => env('BACKUP_MYSQL_BINARY', 'mysql'),
     's3' => [
         'server_side_encryption' => env('BACKUP_S3_SSE', 'aws:kms'),
         'kms_key_id' => env('BACKUP_S3_KMS_KEY_ID'),

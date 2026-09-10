@@ -863,6 +863,10 @@
       "download": "Download",
       "delete": "Delete",
       "restore": "Restore",
+      "restoreQueued": "Backup restore has been queued.",
+      "restoreInProgress": "Restore is in progress. The system may be temporarily unavailable.",
+      "restoreCompleted": "Backup restore completed successfully.",
+      "restoreFailed": "Backup restore failed. Check Audit Logs.",
       "types": { "automatic": "Automatic", "manual": "Manual" },
       "statuses": { "pending": "Pending", "running": "Running", "completed": "Completed", "failed": "Failed" },
       "columns": { "id": "Backup ID", "type": "Type", "dateTime": "Date & Time", "size": "Size", "status": "Status", "actions": "Actions" }

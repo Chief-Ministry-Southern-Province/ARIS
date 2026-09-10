@@ -27,7 +27,7 @@ class BackupService
         return $backup;
     }
 
-    public function run(Backup $backup): void
+    public function run(Backup $backup): bool
     {
         $backup->update(['status' => 'running', 'started_at' => now(), 'error_message' => null]);
         $this->auditLogs->log(AuditAction::BACKUP_STARTED, AuditModule::BACKUP, $backup, [], [], 'Backup processing started.');
@@ -55,10 +55,12 @@ class BackupService
 
             $backup->update(['status' => 'completed', 'file_path' => $storagePath, 'file_name' => basename($storagePath), 'file_size' => Storage::disk($backup->disk)->size($storagePath), 'checksum' => $checksum, 'completed_at' => now()]);
             $this->auditLogs->log(AuditAction::BACKUP_COMPLETED, AuditModule::BACKUP, $backup, [], ['file_size' => $backup->file_size], 'Backup verified and stored.');
+            return true;
         } catch (\Throwable $exception) {
             Log::error('Backup failed', ['backup_id' => $backup->id, 'exception' => $exception]);
             $backup->update(['status' => 'failed', 'completed_at' => now(), 'error_message' => 'Backup processing failed. Review protected server logs for details.']);
             $this->auditLogs->log(AuditAction::BACKUP_FAILED, AuditModule::BACKUP, $backup, [], [], 'Backup processing failed.');
+            return false;
         } finally {
             if (is_file($archivePath)) @unlink($archivePath);
         }
@@ -112,8 +114,13 @@ class BackupService
         if ($zip->open($archivePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) throw new RuntimeException('Unable to create backup archive.');
         try {
             $zip->addFile($dumpPath, 'database/aris.sql');
+            $zip->addFromString('backup-manifest.json', json_encode([
+                'format_version' => 1,
+                'source_directories' => config('backups.source_directories'),
+            ], JSON_THROW_ON_ERROR));
             foreach (config('backups.source_directories') as $source) {
                 $disk = Storage::disk($source['disk']);
+                $zip->addEmptyDir('uploads/'.$source['disk'].'/'.$source['path']);
                 foreach ($disk->allFiles($source['path']) as $path) {
                     $contents = $disk->get($path);
                     if ($contents === false || ! $zip->addFromString('uploads/'.$source['disk'].'/'.$path, $contents)) throw new RuntimeException('Unable to archive an uploaded file.');

@@ -1,10 +1,17 @@
 export type BackupStatus = "pending" | "running" | "completed" | "failed";
+export type RestoreStatus = "pending" | "running" | "completed" | "failed";
 export type BackupType = "manual" | "automatic";
+
+export interface BackupRestore {
+  id: number; status: RestoreStatus; message: string | null;
+  started_at: string | null; completed_at: string | null;
+}
 
 export interface Backup {
   id: number; backup_code: string; type: BackupType; status: BackupStatus;
   file_name: string | null; file_size: number | null; started_at: string | null;
   completed_at: string | null; created_at: string; error_message?: string | null;
+  restore?: BackupRestore | null;
   permissions: { download: boolean; delete: boolean; restore: boolean };
 }
 export interface BackupFilters { page: number; from?: string; to?: string; type?: BackupType | ""; status?: BackupStatus | ""; }
