@@ -18,7 +18,7 @@ class BackupResource extends JsonResource
             'permissions' => [
                 'download' => $request->user()?->can('download', $this->resource) ?? false,
                 'delete' => $request->user()?->can('delete', $this->resource) ?? false,
-                'restore' => $request->user()?->can('restore', $this->resource) ?? false,
+                'restore' => config('backups.restore_enabled') && ($request->user()?->can('restore', $this->resource) ?? false),
             ],
         ];
     }

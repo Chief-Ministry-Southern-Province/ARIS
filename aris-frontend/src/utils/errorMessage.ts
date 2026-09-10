@@ -28,6 +28,14 @@ export const getUserFriendlyErrorMessage = (
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<ApiErrorPayload>;
     const status = axiosError.response?.status;
+    const serverMessage = axiosError.response?.data?.message;
+
+    if (
+      status === 409 &&
+      serverMessage === 'Backup restore is not available until approved recovery procedures are configured.'
+    ) {
+      return serverMessage;
+    }
 
     if (status && messagesByStatus[status]) return messagesByStatus[status];
     if (axiosError.code === "ERR_NETWORK") {

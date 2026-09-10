@@ -83,7 +83,12 @@ class BackupController extends Controller
     public function restore(RestoreBackupRequest $request, Backup $backup)
     {
         // No destructive restore command is shipped without an approved, environment-specific recovery runbook.
-        abort_unless(config('backups.restore_enabled'), 409, 'Backup restore is disabled until production recovery procedures are configured.');
+        if (! config('backups.restore_enabled')) {
+            return response()->json([
+                'message' => 'Backup restore is not available until approved recovery procedures are configured.',
+            ], 409);
+        }
+
         abort(501, 'Automated backup restore is not configured for this environment.');
     }
 }
