@@ -35,10 +35,11 @@ return [
         ],
     ],
 
-     'twilio' => [
-        'sid' => env('TWILIO_SID'),
-        'token' => env('TWILIO_AUTH_TOKEN'),
-        'from' => env('TWILIO_PHONE_NUMBER'),
+    'textit' => [
+        'api_key' => env('TEXTIT_API_KEY'),
+        'endpoint' => env('TEXTIT_ENDPOINT', 'https://api.textit.biz/'),
+        'api_version' => env('TEXTIT_API_VERSION', 'v1'),
+        'timeout' => env('TEXTIT_TIMEOUT', 15),
     ],
 
 ];

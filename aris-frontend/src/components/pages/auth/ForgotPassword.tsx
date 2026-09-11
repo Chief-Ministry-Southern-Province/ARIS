@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { useSendOtp,useVerifyOtp,useResetPassword } from "@/hooks/useAuth";
 import { useAuth } from "@/context/auth/AuthContext";
 
+const apiErrorMessage = (error: unknown): string | undefined =>
+  (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const { logoutUser } = useAuth();
@@ -23,7 +26,7 @@ export default function ForgotPassword() {
 
   const [loading, setLoading] = useState(false);
 
-  const { sendOtpUser, error: sendOtpError } = useSendOtp();
+  const { sendOtpUser } = useSendOtp();
   const { verifyOtpUser, error: verifyOtpError } = useVerifyOtp();
   const { resetPasswordUser, error: resetPasswordError } = useResetPassword();
 
@@ -36,12 +39,12 @@ export default function ForgotPassword() {
       const response = await sendOtpUser(nic);
 
       toast.success(
-        response?.data?.message ||
+        response?.message ||
           "OTP sent successfully"
       );
 
-      if (response?.data?.mobile) {
-        setMobile(response.data.mobile);
+      if (response?.mobile) {
+        setMobile(response.mobile);
       }
 
       setStep(2);
@@ -49,7 +52,7 @@ export default function ForgotPassword() {
       console.error(error);
 
       toast.error(
-        sendOtpError || "Failed to send OTP"
+        apiErrorMessage(error) || "Failed to send OTP"
       );
     } finally {
       setLoading(false);
