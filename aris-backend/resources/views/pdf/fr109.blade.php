@@ -727,7 +727,7 @@
         } $propertySlots = $properties->pad(3, []); $writeOffEntries =
         collect(data_get($data, 'writeOffEntries', []))->filter(fn ($item) =>
         is_array($item))->values()->take(1)->pad(1, []); $reference = (string)
-        (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; $creditLines = static function (mixed $credit): array { $words = preg_split('/\s+/u', trim((string) $credit), -1, PREG_SPLIT_NO_EMPTY) ?: []; $lines = []; $line = ''; foreach ($words as $word) { $candidate = $line === '' ? $word : $line.' '.$word; if ($line !== '' && mb_strlen($candidate) > 28) { $lines[] = $line; $line = $word; } else { $line = $candidate; } } if ($line !== '') { $lines[] = $line; } return $lines ?: ['']; }; $currencyParts = static function (mixed $amount): array { $amount = trim(str_replace(',', '', (string) $amount)); if ($amount === '') { return ['', '']; } [$rupees, $cents] = array_pad(explode('.', $amount, 2), 2, '00'); return [$rupees, str_pad(substr($cents, 0, 2), 2, '0')]; }; @endphp
+        (data_get($document, 'reference_number') ?: $value('refNo')); $signatureDate = static fn (mixed $date): string => filled($date) ? \Carbon\Carbon::parse($date)->toDateString() : ''; $currencyAmount = static fn (mixed $amount): string => filled($amount) ? 'රු. '.trim((string) $amount) : ''; $creditLines = static function (mixed $credit): array { $words = preg_split('/\s+/u', trim((string) $credit), -1, PREG_SPLIT_NO_EMPTY) ?: []; $lines = []; $line = ''; foreach ($words as $word) { $candidate = $line === '' ? $word : $line.' '.$word; if ($line !== '' && mb_strlen($candidate) > 28) { $lines[] = $line; $line = $word; } else { $line = $candidate; } } if ($line !== '') { $lines[] = $line; } return $lines ?: ['']; }; $currencyParts = static function (mixed $amount): array { $amount = trim(str_replace(',', '', (string) $amount)); if ($amount === '') { return ['', '']; } [$rupees, $cents] = array_pad(explode('.', $amount, 2), 2, '00'); return [$rupees, str_pad(substr($cents, 0, 2), 2, '0')]; }; @endphp
 
         <div class="page page-1">
             <table class="no-border">
@@ -849,7 +849,7 @@
                             >மூலப் பெறுமதி</span
                         ><br />Original Cost
                     </td>
-                    <td>{{ $value('originalCost') }}</td>
+                    <td>{{ $currencyAmount($value('originalCost')) }}</td>
                 </tr>
                 <tr>
                     <td class="h-11 multilingual-section-heading">
@@ -860,7 +860,7 @@
                             மதிப்பிட்ட பெறுமதி</span
                         ><br />Approximate or Estimated cost at time of loss
                     </td>
-                    <td>{{ $value('estimatedCostAtTimeOfLoss') }}</td>
+                    <td>{{ $currencyAmount($value('estimatedCostAtTimeOfLoss')) }}</td>
                 </tr>
                 <tr>
                     <td class="h-11 multilingual-section-heading">
@@ -870,7 +870,7 @@
                             >பதிலீடும் செலவு அல்லது திருத்தச் செலவு</span
                         ><br />Replacement value or cost of repairs
                     </td>
-                    <td>{{ $value('replacementValue') }}</td>
+                    <td>{{ $currencyAmount($value('replacementValue')) }}</td>
                 </tr>
                 <tr>
                     <td class="h-11 multilingual-section-heading">
@@ -879,7 +879,7 @@
                             >நி. பி. 105(1) இன் படி பெறுமதி</span
                         ><br />Value in terms of F. R. 105(1)
                     </td>
-                    <td>{{ $value('valueUnderFr105') }}</td>
+                    <td>{{ $currencyAmount($value('valueUnderFr105')) }}</td>
                 </tr>
                 <tr>
                     <td class="h-11 multilingual-section-heading">
@@ -890,7 +890,7 @@
                             காப்புறுதியிலிருந்து/உத்தரவாதத்திலிருந்து அறவிடப்பட்ட தொகை</span
                         ><br />Amount recovered from officers responsible/ Insurance/Guarantee
                     </td>
-                    <td>{{ $value('amountRecovered') }}</td>
+                    <td>{{ $currencyAmount($value('amountRecovered')) }}</td>
                 </tr>
                 <tr>
                     <td class="h-11 multilingual-section-heading">
@@ -899,7 +899,7 @@
                         ><br />Net Loss inclusive of FEECs, Customs Duty,
                         Departmental charges, etc.,
                     </td>
-                    <td>{{ $value('netLoss') }}</td>
+                    <td>{{ $currencyAmount($value('netLoss')) }}</td>
                 </tr>
             </table>
 

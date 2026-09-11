@@ -768,7 +768,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
             } catch (\Throwable) {
                 return '';
             }
@@ -952,7 +952,11 @@
                     <td class="repeating-item-row-cell" style="width: 77mm;">{{ $text(data_get($item, 'description', ''), 90) }}</td>
                     <td class="repeating-item-row-cell" style="width: 45mm; text-align: center;">{{ $text(data_get($item, 'quantity', ''), 20) }}</td>
                     <td class="repeating-item-row-cell" style="width: 42mm; text-align: center;">{{ $text(data_get($item, 'unitOfMeasure', data_get($item, 'unit', '')), 25) }}</td>
-                    <td class="repeating-item-row-cell" style="width: 36mm; text-align: right;">{{ $text(data_get($item, 'value', ''), 25) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 36mm; text-align: right;">
+                        @if (filled(data_get($item, 'value')))
+                            <span lang="si">රු.</span> {{ $text(data_get($item, 'value'), 25) }}
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             <tr>
@@ -961,7 +965,7 @@
                     Value
                 </td>
                 <td class="item-total-row" style="text-align: right;">
-                    {{ number_format($totalItemValue, 2) }}
+                    <span lang="si">රු.</span> {{ number_format($totalItemValue, 2) }}
                 </td>
             </tr>
         </table>
@@ -1148,7 +1152,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>
@@ -1189,7 +1193,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>

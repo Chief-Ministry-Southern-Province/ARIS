@@ -793,6 +793,9 @@
         // The official form must render the stored value, not a shortened
         // preview with an ellipsis. Fixed table geometry remains unchanged.
         $text = static fn(mixed $value, int $limit): string => trim((string) $value);
+        $currencyAmount = static fn(mixed $value): string => filled($value)
+            ? 'රු. '.trim((string) $value)
+            : '';
 
         $lostItems = collect(data_get($documentData, 'lostItems', []))
             ->filter(static fn($item): bool => is_array($item) || is_object($item))
@@ -829,7 +832,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
             } catch (\Throwable) {
                 return '';
             }
@@ -1084,13 +1087,13 @@
                                 <td class="repeating-item-row-cell" style="width: 16mm; text-align: center;">
                                     {{ $text(data_get($item, 'quantity', ''), 15) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'estimatedCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'estimatedCost')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'replacementCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'replacementCost')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'fr105Value', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'fr105Value')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'originalCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'originalCost')) }}</td>
                             </tr>
                         @endforeach
                         <tr>
@@ -1099,7 +1102,7 @@
                                 / Total Value
                             </td>
                             <td class="item-total-row" style="text-align: right;">
-                                {{ number_format($totalOriginalCost, 2) }}</td>
+                                රු. {{ number_format($totalOriginalCost, 2) }}</td>
                         </tr>
                     </table>
 
@@ -1236,7 +1239,7 @@
                         {{ $text(data_get($recovery, 'officer', ''), 40) }}
                     </td>
                     <td class="recovery-row-cell" style="width: 50mm; text-align: right;">
-                        {{ $text(data_get($recovery, 'amount', ''), 25) }}
+                        {{ $currencyAmount(data_get($recovery, 'amount')) }}
                     </td>
                     <td class="recovery-row-cell" style="width: 80mm;">
                         {{ $text(data_get($recovery, 'method', ''), 55) }}
@@ -1292,10 +1295,10 @@
             <tr>
                 <td class="insurance-value insurance-divider" style="width: 40mm;">
                     {{ $text(data_get($documentData, 'policyNo', ''), 25) }}</td>
-                <td class="insurance-value insurance-divider" style="width: 115mm;">
-                    {{ $text(data_get($documentData, 'amountInsured', ''), 25) }}</td>
-                <td class="insurance-value" style="width: 45mm;">
-                    {{ $text(data_get($documentData, 'amountRecoverable', ''), 25) }}</td>
+                <td class="insurance-value insurance-divider" style="width: 115mm; text-align: right;">
+                    {{ $currencyAmount(data_get($documentData, 'amountInsured')) }}</td>
+                <td class="insurance-value" style="width: 45mm; text-align: right;">
+                    {{ $currencyAmount(data_get($documentData, 'amountRecoverable')) }}</td>
             </tr>
         </table>
 
@@ -1450,11 +1453,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span
-                                                lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span
-                                                lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date /
-                                            {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}
-                                        </div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>
@@ -1501,11 +1500,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span
-                                                lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span
-                                                lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date /
-                                            {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}
-                                        </div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>
