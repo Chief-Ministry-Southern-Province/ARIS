@@ -9,6 +9,11 @@ class TextitService
 {
     public function sendOtp(string $mobile, string|int $otp): void
     {
+        $this->send($mobile, "Your ARIS verification code is: {$otp}");
+    }
+
+    public function send(string $mobile, string $message): void
+    {
         $config = config('services.textit');
 
         if (blank($config['api_key'] ?? null)) {
@@ -24,7 +29,7 @@ class TextitService
             ])
             ->post($config['endpoint'], [
                 'to' => $this->normaliseSriLankanMobile($mobile),
-                'text' => "Your ARIS verification code is: {$otp}",
+                'text' => $message,
             ]);
 
         if (! $response->successful()) {
