@@ -27,6 +27,8 @@ export interface User {
   institution: Institution;
   roles: Role[];
   districts?: { id: number; user_id: number; district: string }[];
+  setup_sms_sent?: boolean;
+  message?: string;
 }
 
 export interface createUserRequest{
@@ -34,7 +36,6 @@ export interface createUserRequest{
   nic: string;
   mobile: string;
   institution_id: number;
-  password: string;
   role: string;
   districts?: string[];
 }

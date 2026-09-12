@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\PasswordSetupController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\AccidentController;
 use App\Http\Controllers\Api\EvidenceController;
@@ -31,6 +32,9 @@ Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'send
 Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);
 
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword']);
+
+Route::post('/auth/password/setup/validate', [PasswordSetupController::class, 'validateToken'])->middleware('throttle:10,1');
+Route::post('/auth/password/setup', [PasswordSetupController::class, 'setup'])->middleware('throttle:10,1');
 
 
 Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned'])->group(function () {
@@ -71,6 +75,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
         Route::post('/{backup}/restore', [BackupController::class, 'restore'])->middleware('throttle:2,1');
     });
 
+    Route::post('/users/{user}/password-setup/resend', [UserController::class, 'resendPasswordSetup'])->middleware('throttle:5,1');
     Route::apiResource('users', UserController::class);
 
     Route::get('/available-drivers', [UserController::class, 'getAvailableDrivers']);

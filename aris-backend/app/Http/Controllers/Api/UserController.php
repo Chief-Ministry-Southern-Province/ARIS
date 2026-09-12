@@ -8,8 +8,11 @@ use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Services\InstitutionService;
-use Illuminate\Support\Facades\Hash;
+use App\Services\PasswordSetupService;
 use App\Models\Institution;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\RateLimiter;
+use RuntimeException;
 
 class UserController extends Controller
 {
@@ -47,11 +50,11 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request, PasswordSetupService $passwordSetup): JsonResponse
     {
-        $data = $request->validated();
+        $this->authorize('create', User::class);
 
-        $data['password'] = Hash::make($data['password']);
+        $data = $request->validated();
 
         $user = User::create($data);
 
@@ -66,7 +69,49 @@ class UserController extends Controller
             }
         }
 
+        $smsSent = true;
+        $message = 'User created. A password setup link was sent by SMS.';
+
+        try {
+            $passwordSetup->sendSetupLink($user);
+        } catch (RuntimeException $exception) {
+            report($exception);
+            $smsSent = false;
+            $message = 'User created, but the password setup SMS could not be sent. Check the mobile number and use resend.';
+        }
+
+        $user->setAttribute('setup_sms_sent', $smsSent);
+        $user->setAttribute('message', $message);
+
         return response()->json($user->load(['institution', 'roles', 'districts']), 201);
+    }
+
+    public function resendPasswordSetup(Request $request, User $user, PasswordSetupService $passwordSetup): JsonResponse
+    {
+        $this->authorize('create', User::class);
+
+        $key = 'password-setup-resend:'.$user->id;
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            return response()->json([
+                'message' => 'Please wait '.RateLimiter::availableIn($key).' seconds before sending another setup link.',
+            ], 429);
+        }
+
+        try {
+            $passwordSetup->sendSetupLink($user);
+        } catch (RuntimeException $exception) {
+            report($exception);
+
+            return response()->json([
+                'message' => 'The password setup SMS could not be sent. Check the mobile number and try again.',
+            ], 503);
+        }
+
+        RateLimiter::hit($key, config('password-setup.resend_cooldown_seconds'));
+
+        return response()->json([
+            'message' => 'A new password setup link was sent by SMS. Earlier unused links no longer work.',
+        ]);
     }
 
     /**

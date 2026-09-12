@@ -7,6 +7,7 @@ import RootLayout from "@/components/templates/RootLayout/RootLayout";
 
 import Login from "@/components/pages/auth/Login";
 import ForgotPassword from "@/components/pages/auth/ForgotPassword";
+import SetPassword from "@/components/pages/auth/SetPassword";
 import ChangePassword from "@/components/pages/auth/ChangePassword";
 import MyProfile from "@/components/pages/auth/MyProfile";
 
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/set-password",
+    element: <SetPassword />,
   },
   {
     path: "/unauthorized",

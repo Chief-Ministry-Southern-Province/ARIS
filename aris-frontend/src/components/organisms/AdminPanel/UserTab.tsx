@@ -1,4 +1,4 @@
-import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye, Send } from "lucide-react";
 import { useState } from "react";
 import AddUserForm from "@/components/pages/forms/common/user/AddUserForm";
 import Modal from "@/components/molecules/Modal";
@@ -13,6 +13,7 @@ import EditUserForm from "@/components/pages/forms/common/user/EditUserForm";
 import Pagination from "@/components/molecules/Pagination";
 import { useDeleteUserMutation } from "@/hooks/mutations/useResourceMutations";
 import {swalConfirm} from "@/utils/swal";
+import { resendPasswordSetup } from "@/services/user.service";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
@@ -20,6 +21,7 @@ const UserTab = () => {
   const [viewingUser, setViewingUser] = useState<User | null>(null);
   const [showEditUser, setShowEditUser] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [resendingUserId, setResendingUserId] = useState<number | null>(null);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -40,10 +42,29 @@ const UserTab = () => {
     }
   }
 
-  const onSuccess = async () => {
+  const onSuccess = async (user: User) => {
     setShowAddUser(false);
-    toast.success("User created successfully");
+    if (user.setup_sms_sent === false) {
+      toast.error(user.message || "User created, but the password setup SMS could not be sent.");
+      return;
+    }
+    toast.success(user.message || "User created and password setup SMS sent.");
   }
+
+  const handleResendSetup = async (user: User) => {
+    if (resendingUserId !== null) return;
+
+    try {
+      setResendingUserId(user.id);
+      const response = await resendPasswordSetup(user.id);
+      toast.success(response.message);
+    } catch (error) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(message || "Could not send the password setup SMS.");
+    } finally {
+      setResendingUserId(null);
+    }
+  };
 
   const onSuccessUpdate = async () => {
     setShowEditUser(false);
@@ -119,6 +140,13 @@ const UserTab = () => {
                           setShowEditUser(true);
                         }}
                       ><Edit2 className="w-3.5 h-3.5" /></button>
+
+                      <button
+                        className="p-1.5 rounded hover:bg-amber-50 text-amber-600 cursor-pointer disabled:opacity-50"
+                        onClick={() => handleResendSetup(user)}
+                        disabled={resendingUserId === user.id}
+                        title="Resend password setup link"
+                      ><Send className="w-3.5 h-3.5" /></button>
 
                       <button className="p-1.5 rounded hover:bg-red-50 text-red-500 cursor-pointer"
                         onClick={() => handleDeleteUser(String(user.id))}
