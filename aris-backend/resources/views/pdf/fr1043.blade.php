@@ -21,7 +21,7 @@
         th {
             color: #000;
             font-family: iskoolapota, notosanstamil, sans-serif;
-            font-size: 9.5pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -124,7 +124,7 @@
 
         .fr1043-section-si {
             font-family: iskoolapota, sans-serif;
-            font-size: 9.5pt !important;
+            font-size: 8.5pt !important;
             font-weight: normal !important;
             line-height: 1.02;
         }
@@ -135,7 +135,7 @@
         }
 
         .small {
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
         }
 
@@ -169,6 +169,10 @@
             font-size: 8.5pt;
         }
 
+        .field-title [lang="ta"] {
+            font-size: 7.5pt;
+        }
+
         .admin-cell {
             height: 14mm;
             padding: 0;
@@ -179,13 +183,13 @@
         .admin-block {
             display: inline-block;
             width: 48mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
             text-align: right;
         }
 
         .form-number {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
         }
 
@@ -247,7 +251,7 @@
         .page-three-approval-signatures .page-three-signature-comment {
             height: 21mm;
             padding-right: 4mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: right;
             vertical-align: middle;
@@ -277,7 +281,7 @@
         .page-three-approval-signatures .signature-role,
         .page-three-approval-signatures .signature-institution,
         .page-three-approval-signatures .signature-date {
-            font-size: 6.8pt;
+            font-size: 8.5pt;
             line-height: 1;
             text-align: right;
         }
@@ -407,7 +411,7 @@
 
         .item-total-row {
             height: 7mm;
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
             padding: 1.5mm 2mm;
         }
@@ -555,7 +559,7 @@
             width: 48mm;
             height: 24mm;
             padding: 2mm 2mm 0 0 !important;
-            font-size: 7.2pt;
+            font-size: 8.5pt;
             line-height: 1.08;
             text-align: left;
             vertical-align: middle !important;
@@ -590,12 +594,12 @@
         .signature-grid-name,
         .signature-grid-label,
         .signature-grid-institution {
-            font-size: 8pt;
+            font-size: 8.5pt;
         }
 
         .signature-grid-date {
             margin-top: 0.5mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             white-space: nowrap;
         }
 
@@ -642,7 +646,7 @@
         }
 
         .signature-card-institution {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.15;
         }
@@ -658,13 +662,13 @@
         }
 
         .signature-card-date {
-            font-size: 7.5pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             white-space: nowrap;
         }
 
         .signature-label {
-            font-size: 9pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -719,7 +723,7 @@
         }
 
         .approval-signature-comment {
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: left;
             vertical-align: middle;
@@ -740,7 +744,7 @@
 
         .footer-note {
             height: 3mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             text-align: left;
             vertical-align: bottom;
         }
@@ -764,7 +768,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
             } catch (\Throwable) {
                 return '';
             }
@@ -948,7 +952,11 @@
                     <td class="repeating-item-row-cell" style="width: 77mm;">{{ $text(data_get($item, 'description', ''), 90) }}</td>
                     <td class="repeating-item-row-cell" style="width: 45mm; text-align: center;">{{ $text(data_get($item, 'quantity', ''), 20) }}</td>
                     <td class="repeating-item-row-cell" style="width: 42mm; text-align: center;">{{ $text(data_get($item, 'unitOfMeasure', data_get($item, 'unit', '')), 25) }}</td>
-                    <td class="repeating-item-row-cell" style="width: 36mm; text-align: right;">{{ $text(data_get($item, 'value', ''), 25) }}</td>
+                    <td class="repeating-item-row-cell" style="width: 36mm; text-align: right;">
+                        @if (filled(data_get($item, 'value')))
+                            <span lang="si">රු.</span> {{ $text(data_get($item, 'value'), 25) }}
+                        @endif
+                    </td>
                 </tr>
             @endforeach
             <tr>
@@ -957,7 +965,7 @@
                     Value
                 </td>
                 <td class="item-total-row" style="text-align: right;">
-                    {{ number_format($totalItemValue, 2) }}
+                    <span lang="si">රු.</span> {{ number_format($totalItemValue, 2) }}
                 </td>
             </tr>
         </table>
@@ -1144,7 +1152,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>
@@ -1185,7 +1193,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date / {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>

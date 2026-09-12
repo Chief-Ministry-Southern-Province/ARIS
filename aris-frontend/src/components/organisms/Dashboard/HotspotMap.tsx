@@ -28,7 +28,7 @@ const HotspotMap = () => {
   const hotspots = statistics?.hotspots ?? [];
 
   return (
-    <div className="relative h-64 overflow-hidden rounded-xl border border-blue-100">
+    <div className="relative z-0 isolate h-64 overflow-hidden rounded-xl border border-blue-100">
       <MapContainer
         center={[7.8731, 80.7718]}
         zoom={7}

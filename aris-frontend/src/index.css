@@ -342,3 +342,11 @@
 .aris-swal-text {
   color: var(--muted-foreground) !important;
 }
+
+/* Leaflet uses high z-index values for map panes and controls. Keep them in
+   their own stacking context so a map cannot paint over the mobile sidebar or
+   other application overlays. */
+.leaflet-container {
+  isolation: isolate;
+  z-index: 0;
+}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   MapContainer,
   Marker,
+  GeoJSON,
   TileLayer,
   useMap,
   useMapEvents,
@@ -18,6 +19,11 @@ import {
   searchLocation,
 } from "@/services/geocoding.service";
 import { mapSriLankaLocation } from "@/utils/locationMapper";
+import {
+  isPointInSriLanka,
+  SRI_LANKA_MAP_BOUNDS,
+  type SriLankaBoundary,
+} from "@/constants/sriLankaBoundary";
 
 L.Icon.Default.mergeOptions({
   iconUrl: icon,
@@ -58,15 +64,21 @@ function MapClick({
   onLocationSelect,
   setPosition,
   setSearchQuery,
+  boundary,
 }: {
   onLocationSelect: Props["onLocationSelect"];
   setPosition: (pos: [number, number]) => void;
   setSearchQuery: (q: string) => void;
+  boundary: SriLankaBoundary | null;
 }) {
   useMapEvents({
     async click(e) {
       const lat = e.latlng.lat;
       const lng = e.latlng.lng;
+
+      if (!isPointInSriLanka(boundary, lat, lng)) {
+        return;
+      }
 
       setPosition([lat, lng]);
 
@@ -127,7 +139,23 @@ export default function LocationPicker({
 
   const [searching, setSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [boundary, setBoundary] = useState<SriLankaBoundary | null>(null);
   const initializedLocation = useRef<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/sri-lanka-boundary.geojson", { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: SriLankaBoundary | null) => setBoundary(data))
+      .catch((error: unknown) => {
+        if ((error as { name?: string }).name !== "AbortError") {
+          console.error("Unable to load the Sri Lanka boundary.", error);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (initialLocation?.latitude === null || initialLocation?.latitude === undefined
@@ -138,10 +166,12 @@ export default function LocationPicker({
     const locationKey = `${initialLocation.latitude},${initialLocation.longitude},${initialLocation.address}`;
     if (initializedLocation.current === locationKey) return;
 
-    setPosition([initialLocation.latitude, initialLocation.longitude]);
-    setSearchQuery(initialLocation.address);
+    if (isPointInSriLanka(boundary, initialLocation.latitude, initialLocation.longitude)) {
+      setPosition([initialLocation.latitude, initialLocation.longitude]);
+      setSearchQuery(initialLocation.address);
+    }
     initializedLocation.current = locationKey;
-  }, [initialLocation]);
+  }, [boundary, initialLocation]);
 
   const handleSearch = async (query: string) => {
     const text = query.trim();
@@ -181,6 +211,10 @@ export default function LocationPicker({
   ) => {
     const lat = Number(result.lat);
     const lon = Number(result.lon);
+
+    if (!isPointInSriLanka(boundary, lat, lon)) {
+      return;
+    }
 
     setPosition([lat, lon]);
 
@@ -262,8 +296,11 @@ export default function LocationPicker({
       </div>
 
       <MapContainer
-        center={[6.9271, 79.8612]}
-        zoom={8}
+        center={[7.8731, 80.7718]}
+        zoom={7}
+        minZoom={7}
+        maxBounds={SRI_LANKA_MAP_BOUNDS}
+        maxBoundsViscosity={1}
         style={{
           width: "100%",
           height: "500px",
@@ -274,10 +311,22 @@ export default function LocationPicker({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        {boundary && <GeoJSON
+          data={boundary}
+          pathOptions={{
+            color: "#2563eb",
+            weight: 2,
+            fillColor: "#60a5fa",
+            fillOpacity: 0.12,
+            interactive: false,
+          }}
+        />}
+
         <MapClick
           onLocationSelect={onLocationSelect}
           setPosition={setPosition}
           setSearchQuery={setSearchQuery}
+          boundary={boundary}
         />
 
         <MapFlyTo position={position} />
@@ -286,7 +335,9 @@ export default function LocationPicker({
       </MapContainer>
 
       <p className="text-xs text-gray-500">
-        Search a location or click on the map.
+        {boundary
+          ? "Search a location or click within the highlighted Sri Lanka territory."
+          : "Loading the Sri Lanka territory boundary..."}
       </p>
     </div>
   );

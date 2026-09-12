@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { CheckCircle, Download, Eye, Printer, Save } from "lucide-react";
+import { CheckCircle, Download, Eye, Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { initialFormData } from "./initialFormData";
@@ -562,14 +562,6 @@ export default function FR109Form({
                     </button>
                   )}
 
-                  <button
-                    type="button"
-                    onClick={() => window.print()}
-                    className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"
-                  >
-                    <Printer size={18} />
-                    Print
-                  </button>
                 </>
               )}
             </div>

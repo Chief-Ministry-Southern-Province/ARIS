@@ -5,9 +5,6 @@ namespace App\Services;
 use App\Models\Accident;
 use App\Models\AccidentCase;
 use App\Models\User;
-use App\Services\Notifications\NotificationService;
-use App\Services\AccidentTimelineService;
-use App\Services\InstitutionService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\LazyCollection;
@@ -16,12 +13,10 @@ use Illuminate\Validation\ValidationException;
 class AccidentCaseService
 {
     protected AccidentTimelineService $timelineService;
-    protected NotificationService $notificationService;
 
-    public function __construct(AccidentTimelineService $timelineService, NotificationService $notificationService)
+    public function __construct(AccidentTimelineService $timelineService)
     {
         $this->timelineService = $timelineService;
-        $this->notificationService = $notificationService;
     }
 
     public function create(Accident $accident, User $creator): AccidentCase
@@ -45,8 +40,6 @@ class AccidentCaseService
             action: 'CASE_CREATED',
             description: "Case {$case->case_number} created",
         );
-
-        $this->notificationService->notifyNewAccidentReported($accident);
 
         return $case;
     }
@@ -156,8 +149,7 @@ class AccidentCaseService
         ?string $caseNumber = null,
         ?string $status = null,
         ?string $stage = null,
-    ): LengthAwarePaginator
-    {
+    ): LengthAwarePaginator {
         return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
             ->paginate(10)
             ->withQueryString();
@@ -171,8 +163,7 @@ class AccidentCaseService
         ?string $caseNumber = null,
         ?string $status = null,
         ?string $stage = null,
-    ): LazyCollection
-    {
+    ): LazyCollection {
         return $this->filteredCasesQuery($user, $caseNumber, $status, $stage)
             ->lazy(200);
     }
@@ -204,7 +195,7 @@ class AccidentCaseService
                     $caseQuery->orWhere(
                         'case_number',
                         'like',
-                        '%' . addcslashes($caseNumber, '\\%_') . '%',
+                        '%'.addcslashes($caseNumber, '\\%_').'%',
                     );
                 });
             })
@@ -216,12 +207,12 @@ class AccidentCaseService
     public function findById(int $id): AccidentCase
     {
         return AccidentCase::with([
-                'accident',
-                'creator',
-                'assignee',
-                'institution',
-                'histories.user',
-            ])
+            'accident',
+            'creator',
+            'assignee',
+            'institution',
+            'histories.user',
+        ])
             ->findOrFail($id);
     }
 }

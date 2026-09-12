@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class AdminSeeder extends Seeder
 {
@@ -15,13 +14,24 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'name' => 'Admin User',
-            'nic' => '123456789V',
-            'mobile' => '0771234567',
-            'institution_id' => 1,
-            'password' => Hash::make('123456789'),
-        ]);
-        $user->assignRole('system_admin');
+        $admin = config('system-admin');
+
+        foreach (['name', 'nic', 'mobile', 'password'] as $key) {
+            if (blank($admin[$key] ?? null)) {
+                throw new RuntimeException("SYSTEM_ADMIN_{$key} must be set in the .env file.");
+            }
+        }
+
+        $user = User::query()->updateOrCreate(
+            ['nic' => $admin['nic']],
+            [
+                'name' => $admin['name'],
+                'mobile' => $admin['mobile'],
+                'institution_id' => $admin['institution_id'],
+                'password' => Hash::make($admin['password']),
+            ],
+        );
+
+        $user->syncRoles(['system_admin']);
     }
 }

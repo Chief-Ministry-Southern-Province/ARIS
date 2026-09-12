@@ -35,3 +35,8 @@ export const getAvailableDrivers = async (): Promise<User[]> => {
   const response = await api.get("/available-drivers");
   return response.data;
 }
+
+export const resendPasswordSetup = async (userId: number): Promise<{ message: string }> => {
+  const response = await api.post(`/users/${userId}/password-setup/resend`);
+  return response.data;
+};

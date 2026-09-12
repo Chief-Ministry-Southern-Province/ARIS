@@ -3,34 +3,44 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Otp;
+use App\Models\PushSubscription;
 use App\Models\User;
-use App\Services\TwilioService;
+use App\Services\TextitService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Models\PushSubscription;
 
 class ForgotPasswordController extends Controller
 {
-    public function sendOtp(Request $request, TwilioService $twilioService)
+    public function sendOtp(Request $request, TextitService $textitService)
     {
         $request->validate([
             'nic' => 'required',
         ]);
 
-       $user = User::where(
+        $user = User::where(
             'nic', $request->nic
         )->first();
-       
-        if (!$user) {
+
+        if (! $user) {
             return response()->json([
                 'message' => 'User not found',
             ], 404);
         }
 
-        $otp = rand(100000, 999999);
+        $otp = random_int(100000, 999999);
+
+        try {
+            $textitService->sendOtp($user->mobile, $otp);
+        } catch (\RuntimeException $exception) {
+            report($exception);
+
+            return response()->json([
+                'message' => 'Unable to send the verification code. Please try again later.',
+            ], 503);
+        }
 
         Otp::create([
             'mobile' => $user->mobile,
@@ -38,15 +48,9 @@ class ForgotPasswordController extends Controller
             'expires_at' => now()->addMinutes(5),
         ]);
 
-        $phone = '+94' . ltrim(
-            $user->mobile,
-            '0'
-        );
-
-        $twilioService->sendOtp($phone, $otp);
-
         return response()->json([
-            'message' => 'OTP sent successfully.'
+            'message' => 'OTP sent successfully.',
+            'mobile' => $user->mobile,
         ]);
     }
 
@@ -63,20 +67,20 @@ class ForgotPasswordController extends Controller
             'is_used' => false,
         ])->first();
 
-        if (!$otpRecord) {
+        if (! $otpRecord) {
             return response()->json([
-                'message' => 'Invalid OTP.'
+                'message' => 'Invalid OTP.',
             ], 400);
         }
 
         if ($otpRecord->expires_at < now()) {
             return response()->json([
-                'message' => 'OTP has expired.'
+                'message' => 'OTP has expired.',
             ], 400);
         }
 
         return response()->json([
-            'message' => 'OTP verified successfully.'
+            'message' => 'OTP verified successfully.',
         ]);
     }
 
@@ -94,22 +98,22 @@ class ForgotPasswordController extends Controller
             'is_used' => false,
         ])->first();
 
-        if (!$otpRecord) {
+        if (! $otpRecord) {
             return response()->json([
-                'message' => 'Invalid OTP.'
+                'message' => 'Invalid OTP.',
             ], 400);
         }
 
         if ($otpRecord->expires_at < now()) {
             return response()->json([
-                'message' => 'OTP has expired.'
+                'message' => 'OTP has expired.',
             ], 400);
         }
 
         $user = User::where('mobile', $request->mobile)->first();
-        if (!$user) {
+        if (! $user) {
             return response()->json([
-                'message' => 'User not found.'
+                'message' => 'User not found.',
             ], 404);
         }
 
@@ -133,7 +137,7 @@ class ForgotPasswordController extends Controller
         $request->session()->regenerateToken();
 
         return response()->json([
-            'message' => 'Password reset successfully.'
+            'message' => 'Password reset successfully.',
         ]);
     }
 }

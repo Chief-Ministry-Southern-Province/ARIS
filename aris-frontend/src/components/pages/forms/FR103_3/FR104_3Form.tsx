@@ -11,7 +11,7 @@ import SecurityArrangementSection from "@/components/organisms/Forms/FR104_3/Sec
 import PreventionArrangementSection from "@/components/organisms/Forms/FR104_3/PreventionArrangementSection";
 import { useTranslation } from "react-i18next";
 import {FormCard} from "@/components/molecules/FormCard";
-import { CheckCircle, Download, Eye, Save, Printer } from "lucide-react";
+import { CheckCircle, Download, Eye, Save } from "lucide-react";
 import type { approvalWorkflowStep } from "@/types/approvalWorkflow.type";
 import ActionModal from "@/components/organisms/Forms/ActionModel";
 import { useParams } from "react-router-dom";
@@ -556,14 +556,6 @@ useEffect(() => {
               </>
             )}
 
-            {/* Print */}
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="order-4 sm:order-1 w-full sm:w-auto px-5 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2 " >
-              <Printer size={18} />
-              {t("fr104_3.print")}
-            </button>
             </>}
           </div>
         </div>

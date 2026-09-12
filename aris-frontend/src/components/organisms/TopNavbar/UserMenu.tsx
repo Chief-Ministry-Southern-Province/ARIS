@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, KeyRound, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLogout } from "@/hooks/useAuth";
+import { swalConfirm } from "@/utils/swal";
 
 interface UserMenuProps {
   userName: string;
@@ -41,8 +42,17 @@ export default function UserMenu({
   const { logoutUser } = useLogout();
 
   const handleLogout = async () => {
+    setOpen(false);
+
+    const isConfirmed = await swalConfirm(
+      "Logout",
+      "Are you sure you want to logout?"
+    );
+
+    if (!isConfirmed) return;
+
     await logoutUser();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (

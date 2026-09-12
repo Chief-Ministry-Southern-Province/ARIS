@@ -1,4 +1,4 @@
-import { Users, Building, Car, FileText, GitBranch } from "lucide-react";
+import { Users, Building, Car, FileText, GitBranch, ArchiveRestore } from "lucide-react";
 
 export const adminTabs = [
   { id: "users", icon: Users, label: "Users",  i18n: "adminPanel.tabs.users" },
@@ -6,6 +6,7 @@ export const adminTabs = [
   { id: "vehicles", icon: Car, label: "Vehicles", i18n: "adminPanel.tabs.vehicles" },
   { id: "workflow", icon: GitBranch, label: "Workflow Rules", i18n: "adminPanel.tabs.workflow", roles: ["system_admin"] },
   { id: "audit", icon: FileText, label: "Audit Logs", i18n: "adminPanel.tabs.audit", roles: ["system_admin"] },
+  { id: "backup", icon: ArchiveRestore, label: "Backup", i18n: "adminPanel.backup.title", roles: ["system_admin"] },
 ];
 
 

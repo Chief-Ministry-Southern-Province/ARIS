@@ -26,6 +26,14 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        // Newly created accounts have no password until their one-time setup link is used.
+        // Keep the outward response identical to all other failed logins.
+        if (blank(User::query()->where('nic', $credentials['nic'])->value('password'))) {
+            $this->auditLogs->log(AuditAction::LOGIN_FAILED, AuditModule::AUTH, null, [], [], 'Failed login attempt.', $request);
+
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             $request->session()->put('role_session_last_activity', now()->timestamp);

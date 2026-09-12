@@ -2,14 +2,12 @@
 
 namespace App\Services;
 
+use App\Http\Requests\Accident\StoreAccidentRequest;
 use App\Models\Accident;
 use App\Models\Institution;
 use App\Models\User;
-use App\Http\Requests\Accident\StoreAccidentRequest;
+use App\Services\Notifications\NotificationService;
 use Illuminate\Support\Facades\DB;
-use App\Services\EvidenceService;
-use App\Services\AccidentCaseService;
-use App\Services\AccidentTimelineService;
 
 class AccidentService
 {
@@ -19,14 +17,18 @@ class AccidentService
 
     protected AccidentTimelineService $timelineService;
 
+    protected NotificationService $notificationService;
+
     public function __construct(
         EvidenceService $evidenceService,
         AccidentCaseService $accidentCaseService,
-        AccidentTimelineService $timelineService
+        AccidentTimelineService $timelineService,
+        NotificationService $notificationService,
     ) {
         $this->evidenceService = $evidenceService;
         $this->accidentCaseService = $accidentCaseService;
         $this->timelineService = $timelineService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -44,7 +46,7 @@ class AccidentService
         }
 
         $segments[] = $year;
-        $prefix = implode('/', $segments) . '/';
+        $prefix = implode('/', $segments).'/';
 
         $lastAccident = Accident::withoutGlobalScopes()
             ->where('reference_number', 'like', "{$prefix}%")
@@ -75,7 +77,7 @@ class AccidentService
         }
 
         if ($institution->type === 'BASE_HOSPITAL') {
-            $location = config('case-codes.base_hospitals.' . strtolower(trim($institution->name)));
+            $location = config('case-codes.base_hospitals.'.strtolower(trim($institution->name)));
 
             abort_unless($location, 422, "A case-code location is not configured for {$institution->name}.");
 
@@ -104,7 +106,7 @@ class AccidentService
 
         while ($current) {
             if ($current->type === 'RDHS') {
-                $district = config('case-codes.districts.' . strtolower(trim((string) $current->district)));
+                $district = config('case-codes.districts.'.strtolower(trim((string) $current->district)));
 
                 abort_unless($district, 422, "A case-code district is not configured for {$current->name}.");
 
@@ -164,6 +166,8 @@ class AccidentService
 
             DB::commit();
 
+            $this->notificationService->notifyNewAccidentReported($accident);
+
             return $accident;
 
         } catch (\Throwable $e) {
@@ -213,5 +217,4 @@ class AccidentService
 
         return (bool) $accident->delete();
     }
-
 }

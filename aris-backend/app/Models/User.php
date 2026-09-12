@@ -108,5 +108,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserSignatureProfile::class);
     }
+
+    public function passwordSetupTokens()
+    {
+        return $this->hasMany(PasswordSetupToken::class);
+    }
     
 }

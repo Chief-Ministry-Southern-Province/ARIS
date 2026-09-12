@@ -21,7 +21,7 @@
         th {
             color: #000;
             font-family: iskoolapota, notosanstamil, sans-serif;
-            font-size: 9.5pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -120,7 +120,7 @@
         .subsection-sinhala-title,
         .table-header-sinhala,
         .table-header [lang="si"] {
-            font-size: 9.5pt !important;
+            font-size: 8.5pt !important;
             font-weight: normal !important;
             line-height: 1.02;
         }
@@ -130,13 +130,13 @@
         .insurance-title .label-local[lang="si"],
         .insurance-heading [lang="si"],
         .insurance-words-label [lang="si"] {
-            font-size: 9.5pt !important;
+            font-size: 8.5pt !important;
             font-weight: normal !important;
             line-height: 1.02;
         }
 
         .small {
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
         }
 
@@ -168,6 +168,10 @@
             font-size: 8.5pt;
         }
 
+        .field-title [lang="ta"] {
+            font-size: 7.5pt;
+        }
+
         .admin-cell {
             height: 14mm;
             padding: 0;
@@ -178,13 +182,13 @@
         .admin-block {
             display: inline-block;
             width: 48mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             line-height: 1.05;
             text-align: right;
         }
 
         .form-number {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
         }
 
@@ -214,7 +218,7 @@
 
         .form-title-ta {
             font-family: notosanstamil, sans-serif;
-            font-size: 10pt;
+            font-size: 11pt;
             font-weight: normal;
             line-height: 1.06;
         }
@@ -252,7 +256,7 @@
         .page-three-approval-signatures .page-three-signature-comment {
             height: 21mm;
             padding-right: 4mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: right;
             vertical-align: middle;
@@ -282,7 +286,7 @@
         .page-three-approval-signatures .signature-role,
         .page-three-approval-signatures .signature-institution,
         .page-three-approval-signatures .signature-date {
-            font-size: 6.8pt;
+            font-size: 8.5pt;
             line-height: 1;
             text-align: right;
         }
@@ -597,7 +601,7 @@
         }
 
         .signature-card-institution {
-            font-size: 9pt;
+            font-size: 8.5pt;
             font-weight: bold;
             line-height: 1.15;
         }
@@ -613,7 +617,7 @@
         }
 
         .signature-card-date {
-            font-size: 7.5pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             white-space: nowrap;
         }
@@ -632,7 +636,7 @@
             width: 105mm;
             height: 21mm;
             padding: 2mm 2mm 0 0 !important;
-            font-size: 7.2pt;
+            font-size: 8.5pt;
             line-height: 1.08;
             text-align: left;
             vertical-align: middle !important;
@@ -667,12 +671,12 @@
         .signature-grid-name,
         .signature-grid-label,
         .signature-grid-institution {
-            font-size: 8pt;
+            font-size: 8.5pt;
         }
 
         .signature-grid-date {
             margin-top: 0.5mm;
-            font-size: 8pt;
+            font-size: 8.5pt;
             white-space: nowrap;
         }
 
@@ -695,7 +699,7 @@
         }
 
         .signature-label {
-            font-size: 9pt;
+            font-size: 8.5pt;
             line-height: 1.12;
         }
 
@@ -752,7 +756,7 @@
         }
 
         .workflow-signature-comment {
-            font-size: 8pt;
+            font-size: 8.5pt;
             line-height: 1.15;
             text-align: left;
             vertical-align: middle;
@@ -773,7 +777,7 @@
 
         .footer-note {
             height: 3mm;
-            font-size: 7.8pt;
+            font-size: 8.5pt;
             text-align: left;
             vertical-align: bottom;
         }
@@ -789,6 +793,9 @@
         // The official form must render the stored value, not a shortened
         // preview with an ellipsis. Fixed table geometry remains unchanged.
         $text = static fn(mixed $value, int $limit): string => trim((string) $value);
+        $currencyAmount = static fn(mixed $value): string => filled($value)
+            ? 'රු. '.trim((string) $value)
+            : '';
 
         $lostItems = collect(data_get($documentData, 'lostItems', []))
             ->filter(static fn($item): bool => is_array($item) || is_object($item))
@@ -825,7 +832,7 @@
             }
 
             try {
-                return \Illuminate\Support\Carbon::parse($value)->format('Y-m-d H:i:s');
+                return \Illuminate\Support\Carbon::parse($value)->toDateString();
             } catch (\Throwable) {
                 return '';
             }
@@ -1080,13 +1087,13 @@
                                 <td class="repeating-item-row-cell" style="width: 16mm; text-align: center;">
                                     {{ $text(data_get($item, 'quantity', ''), 15) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'estimatedCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'estimatedCost')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'replacementCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'replacementCost')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'fr105Value', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'fr105Value')) }}</td>
                                 <td class="repeating-item-row-cell" style="width: 32mm; text-align: right;">
-                                    {{ $text(data_get($item, 'originalCost', ''), 20) }}</td>
+                                    {{ $currencyAmount(data_get($item, 'originalCost')) }}</td>
                             </tr>
                         @endforeach
                         <tr>
@@ -1095,7 +1102,7 @@
                                 / Total Value
                             </td>
                             <td class="item-total-row" style="text-align: right;">
-                                {{ number_format($totalOriginalCost, 2) }}</td>
+                                රු. {{ number_format($totalOriginalCost, 2) }}</td>
                         </tr>
                     </table>
 
@@ -1232,7 +1239,7 @@
                         {{ $text(data_get($recovery, 'officer', ''), 40) }}
                     </td>
                     <td class="recovery-row-cell" style="width: 50mm; text-align: right;">
-                        {{ $text(data_get($recovery, 'amount', ''), 25) }}
+                        {{ $currencyAmount(data_get($recovery, 'amount')) }}
                     </td>
                     <td class="recovery-row-cell" style="width: 80mm;">
                         {{ $text(data_get($recovery, 'method', ''), 55) }}
@@ -1288,10 +1295,10 @@
             <tr>
                 <td class="insurance-value insurance-divider" style="width: 40mm;">
                     {{ $text(data_get($documentData, 'policyNo', ''), 25) }}</td>
-                <td class="insurance-value insurance-divider" style="width: 115mm;">
-                    {{ $text(data_get($documentData, 'amountInsured', ''), 25) }}</td>
-                <td class="insurance-value" style="width: 45mm;">
-                    {{ $text(data_get($documentData, 'amountRecoverable', ''), 25) }}</td>
+                <td class="insurance-value insurance-divider" style="width: 115mm; text-align: right;">
+                    {{ $currencyAmount(data_get($documentData, 'amountInsured')) }}</td>
+                <td class="insurance-value" style="width: 45mm; text-align: right;">
+                    {{ $currencyAmount(data_get($documentData, 'amountRecoverable')) }}</td>
             </tr>
         </table>
 
@@ -1446,11 +1453,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span
-                                                lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span
-                                                lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date /
-                                            {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}
-                                        </div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>
@@ -1497,11 +1500,7 @@
                                         @endif
                                     @endforeach
                                     @if (data_get($signatureRow['signature'], 'signature_data_uri'))
-                                        <div class="signature-grid-date"><span
-                                                lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span
-                                                lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date /
-                                            {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}
-                                        </div>
+                                        <div class="signature-grid-date"><span lang="si">&#x0DAF;&#x0DD2;&#x0DB1;&#x0DBA;</span> / <span lang="ta">&#x0BA4;&#x0BBF;&#x0B95;&#x0BA4;&#x0BBF;</span> / Date: {{ $signatureDate(data_get($signatureRow['signature'], 'approved_at')) }}</div>
                                     @endif
                                 </td>
                             </tr>

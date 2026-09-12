@@ -1,25 +1,22 @@
 import { InputField } from "@/components/atoms/InputField";
 import { FormField } from "@/components/molecules/FormField";
 import { useTranslation } from "react-i18next";
-import type {createUserRequest} from "@/types/User.type"
+import type {createUserRequest, User} from "@/types/User.type"
 import { useState } from "react";
 import { rolesForInstitution, formatRole } from "@/utils/formatRole"
 import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries"
 import { useCreateUserMutation } from "@/hooks/mutations/useResourceMutations"
 
-export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
+export default function AddUserForm({onSuccess}:{onSuccess:(user: User)=>void}) {
   const { t } = useTranslation();
   const [user,setUser] = useState<createUserRequest>({
     name: "",
     nic: "",
     role: "",
     institution_id: 0,
-    password: "",
     mobile: "",
     districts: [],
   });
-
-  const [seePassword, setSeePassword] = useState(false);
 
   const { data: institutions = [], isLoading: loading } = useVisibleInstitutions();
 
@@ -46,8 +43,8 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
   const handleCreateUser = async () => {
     if (createUserLoading) return;
     try {
-      await createUserData(user);
-      onSuccess();
+      const createdUser = await createUserData(user);
+      onSuccess(createdUser);
     } catch (e) {
       // Handled by hook
     }
@@ -114,24 +111,6 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
           <InputField placeholder="0712345678" onChange={handleInputChange} name="mobile" />
         </FormField>
 
-        <FormField label="Password" required>
-          <div className="relative">
-            <InputField
-              type={seePassword ? "text" : "password"}
-              placeholder="********"
-              onChange={handleInputChange}
-              name="password"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-2.5 text-gray-500"
-              onClick={() => setSeePassword(!seePassword)}
-            >
-              {seePassword ? "Hide" : "Show"}
-            </button>
-          </div>
-        </FormField>
-
         {showDistrictSelection && (
           <div className="md:col-span-2">
             <FormField label={t("adminPanel.users.assignedDistricts")} required>
@@ -168,6 +147,10 @@ export default function AddUserForm({onSuccess}:{onSuccess:()=>void}) {
           {createUserError}
         </div>
       )}
+
+      <p className="mt-4 text-sm text-gray-600">
+        The user will receive a one-time password setup link by SMS. No password is set by the administrator.
+      </p>
 
       <div className="flex justify-end gap-3 mt-6">
         <button className="px-5 py-2 border border-gray-300 rounded-lg">

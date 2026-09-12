@@ -9,6 +9,7 @@ use App\Services\VehicleService;
 use App\Http\Requests\Vehicle\StoreVehicleRequest;
 use App\Http\Requests\Vehicle\UpdateVehicleRequest;
 use App\Models\Vehicle;
+use App\Models\Scopes\InstitutionScope;
 
 class VehicleController extends Controller
 {
@@ -21,17 +22,22 @@ class VehicleController extends Controller
         $search = $request->search;
         $user = $request->user();
 
-        $vehicles = Vehicle::query()
+        $vehicleQuery = Vehicle::query()
             ->with([
                 'institution',
                 'driver',
-            ])
+            ]);
 
-            // If logged-in user is a driver, only show their assigned vehicles
-            ->when($user->hasRole('driver'), function ($query) use ($user) {
-                $query->where('driver_id', $user->id);
-            })
+        // A driver may report only against a vehicle explicitly assigned to
+        // their account. The direct assignment is authoritative, even when an
+        // administrator assigned a vehicle from a different institution.
+        if ($user->hasRole('driver')) {
+            $vehicleQuery
+                ->withoutGlobalScope(InstitutionScope::class)
+                ->where('driver_id', $user->id);
+        }
 
+        $vehicles = $vehicleQuery
             // Search
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
