@@ -54,6 +54,13 @@ const UserTab = () => {
   const handleResendSetup = async (user: User) => {
     if (resendingUserId !== null) return;
 
+    const confirmed = await swalConfirm(
+      "Resend password setup link?",
+      `Send a new password setup link to ${user.name}. Any earlier unused link will stop working.`
+    );
+
+    if (!confirmed) return;
+
     try {
       setResendingUserId(user.id);
       const response = await resendPasswordSetup(user.id);
