@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class NotificationService
 {
-    private function storeAndBroadcast(array $attributes): UserNotification
+    protected function storeAndBroadcast(array $attributes): UserNotification
     {
         $notification = UserNotification::create($attributes);
 
@@ -113,6 +113,16 @@ class NotificationService
             'read' => false,
             'data' => $payload,
         ]);
+
+        // Keep the SMS delivery asynchronous. This method is invoked only
+        // after the approval workflow transaction commits, so the recipient
+        // can immediately open the pending approval from the notification.
+        if (filled($approval->approver->mobile)) {
+            SendTextitSmsNotification::dispatch(
+                $approval->approver->id,
+                $payload['message'],
+            )->afterCommit();
+        }
     }
 
     public function notifyWorkflowCompleted(User $recipient, Model $document, Approval $approval): void
