@@ -1,4 +1,4 @@
-import { CheckCircle, Lock, ShieldAlert } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, Lock, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -16,6 +16,8 @@ export default function SetPassword() {
   const [linkError, setLinkError] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -68,10 +70,20 @@ export default function SetPassword() {
         ) : (
           <form onSubmit={submit} className="space-y-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">New password
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={12} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900" />
+              <span className="relative mt-1 block">
+                <input type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required minLength={12} className="w-full rounded-lg border border-gray-300 py-2.5 pr-11 pl-3 text-gray-900" />
+                <button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide new password" : "Show new password"} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-500 hover:text-blue-700">
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </span>
             </label>
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-200">Confirm password
-              <input type="password" value={confirmation} onChange={(e) => setConfirmation(e.target.value)} required minLength={12} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900" />
+              <span className="relative mt-1 block">
+                <input type={showConfirmation ? "text" : "password"} value={confirmation} onChange={(e) => setConfirmation(e.target.value)} required minLength={12} className="w-full rounded-lg border border-gray-300 py-2.5 pr-11 pl-3 text-gray-900" />
+                <button type="button" onClick={() => setShowConfirmation((visible) => !visible)} aria-label={showConfirmation ? "Hide confirmed password" : "Show confirmed password"} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-gray-500 hover:text-blue-700">
+                  {showConfirmation ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </span>
             </label>
             <p className="text-xs text-gray-500">Use at least 12 characters, including upper- and lower-case letters, a number, and a symbol.</p>
             <button type="submit" disabled={submitting} className="w-full rounded-lg bg-blue-700 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-60">{submitting ? "Saving password…" : "Set password"}</button>
