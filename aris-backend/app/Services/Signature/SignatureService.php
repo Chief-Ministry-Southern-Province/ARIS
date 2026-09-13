@@ -69,6 +69,36 @@ final readonly class SignatureService
         }
     }
 
+    /**
+     * Verify that the stored signature file has not been tampered with.
+     *
+     * Reads and decrypts the file from the private disk, recomputes its
+     * SHA-256 hash, and compares it timing-safely against the value that
+     * was recorded at upload time. Throws a RuntimeException when they
+     * do not match so callers can abort the operation immediately.
+     */
+    public function verify(UserSignature $signature): void
+    {
+        $storedHash = $signature->sha256;
+
+        if (! $storedHash) {
+            throw new \RuntimeException(
+                'Signature integrity cannot be verified: no hash record found.'
+            );
+        }
+
+        $fileContents = $this->storage->contents($signature->path);
+        $computedHash = $this->hasher->hash(
+            new \Intervention\Image\EncodedImage($fileContents, 'image/png')
+        );
+
+        if (! hash_equals($storedHash, $computedHash)) {
+            throw new \RuntimeException(
+                'Signature integrity check failed: the stored signature has been modified.'
+            );
+        }
+    }
+
     /** Delete the persisted signature record and its private image. */
     public function delete(UserSignature $signature): void
     {

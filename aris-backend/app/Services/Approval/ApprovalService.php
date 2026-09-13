@@ -23,6 +23,7 @@ use App\Services\AuditLogService;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Services\Signature\SignatureCaptionService;
+use App\Services\Signature\SignatureService;
 
 class ApprovalService
 {
@@ -32,6 +33,7 @@ class ApprovalService
         protected NotificationService $notificationService,
         protected AuditLogService $auditLogs,
         protected SignatureCaptionService $signatureCaptionService,
+        protected SignatureService $signatureService,
     ) {}
 
     /**
@@ -613,6 +615,10 @@ class ApprovalService
                 'signature' => 'Active signature not found. Please upload your signature before approving.',
             ]);
         }
+
+        // Verify that the signature file on disk has not been tampered with
+        // by recomputing its SHA-256 and comparing against the stored hash.
+        $this->signatureService->verify($signature);
 
         return $signature;
     }
