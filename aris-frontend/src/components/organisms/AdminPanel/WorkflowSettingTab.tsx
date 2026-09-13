@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Save, Settings2 } from "lucide-react";
+import { Pencil, Save, Settings2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Loader from "@/components/atoms/Loader";
 import { useUpdateWorkflowSettings, useWorkflowSettings } from "@/hooks/useWorkflowSetting";
 import type { WorkflowSetting } from "@/types/workflow-setting.type";
+import { swalConfirm } from "@/utils/swal";
 
 const EMPTY_WORKFLOW_SETTINGS: WorkflowSetting[] = [];
 
@@ -17,6 +18,7 @@ const WorkflowSettingTab = () => {
   const { data: settings = EMPTY_WORKFLOW_SETTINGS, isLoading, isError } = useWorkflowSettings();
   const updateSettings = useUpdateWorkflowSettings();
   const [values, setValues] = useState<Record<string, string>>({});
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     setValues(Object.fromEntries(settings.map((setting) => [setting.key, setting.value])));
@@ -29,7 +31,16 @@ const WorkflowSettingTab = () => {
     }));
   };
 
-  const save = () => {
+  const save = async () => {
+    if (!isEditing) return;
+
+    const confirmed = await swalConfirm(
+      t("adminPanel.workflow.saveConfirmationTitle"),
+      t("adminPanel.workflow.saveConfirmationText"),
+    );
+
+    if (!confirmed) return;
+
     updateSettings.mutate({
       settings: settings.map((setting) => ({
         key: setting.key,
@@ -37,6 +48,8 @@ const WorkflowSettingTab = () => {
           ? values[setting.key] === "true"
           : values[setting.key] ?? setting.value,
       })),
+    }, {
+      onSuccess: () => setIsEditing(false),
     });
   };
 
@@ -53,17 +66,28 @@ const WorkflowSettingTab = () => {
           <h2 className="text-lg font-semibold text-gray-900">{t("adminPanel.workflow.title")}</h2>
           <p className="mt-1 text-sm text-gray-500">{t("adminPanel.workflow.subtitle")}</p>
         </div>
-        <button
-          type="button"
-          onClick={save}
-          disabled={updateSettings.isPending || settings.length === 0}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          <Save className="h-4 w-4" />
-          {updateSettings.isPending
-            ? t("adminPanel.workflow.saving")
-            : t("adminPanel.workflow.saveSettings")}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            disabled={isEditing || settings.length === 0}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-blue-800 px-4 py-2.5 text-sm font-medium text-blue-800 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Pencil className="h-4 w-4" />
+            {t("adminPanel.workflow.editSettings")}
+          </button>
+          <button
+            type="button"
+            onClick={() => void save()}
+            disabled={!isEditing || updateSettings.isPending || settings.length === 0}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Save className="h-4 w-4" />
+            {updateSettings.isPending
+              ? t("adminPanel.workflow.saving")
+              : t("adminPanel.workflow.saveSettings")}
+          </button>
+        </div>
       </div>
 
       {settings.length === 0 ? (
@@ -84,11 +108,12 @@ const WorkflowSettingTab = () => {
               </div>
 
               {setting.type === "boolean" ? (
-                <label className="inline-flex shrink-0 cursor-pointer items-center gap-3 text-sm text-gray-700">
+                <label className={`inline-flex shrink-0 items-center gap-3 text-sm text-gray-700 ${isEditing ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}>
                   <input
                     type="checkbox"
                     checked={(values[setting.key] ?? setting.value) === "true"}
                     onChange={(event) => updateValue(setting, event.target.checked)}
+                    disabled={!isEditing}
                     className="h-4 w-4 rounded border-gray-300 text-blue-700 focus:ring-blue-500"
                   />
                   {t("adminPanel.workflow.enabled")}
@@ -99,7 +124,8 @@ const WorkflowSettingTab = () => {
                   min={setting.type === "integer" ? 0 : undefined}
                   value={values[setting.key] ?? setting.value}
                   onChange={(event) => updateValue(setting, event.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 sm:w-56"
+                  disabled={!isEditing}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:w-56"
                 />
               )}
             </div>

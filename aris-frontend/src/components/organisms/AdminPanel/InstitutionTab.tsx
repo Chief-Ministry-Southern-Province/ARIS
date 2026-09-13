@@ -122,9 +122,6 @@ const InstitutionTab = () => {
               >
                 View
               </button>
-
-              <button className="flex-1 py-1.5 border border-blue-200 rounded text-xs text-blue-600 hover:bg-blue-50">View Cases</button>
-
             </div>
           </div>
         ))}
