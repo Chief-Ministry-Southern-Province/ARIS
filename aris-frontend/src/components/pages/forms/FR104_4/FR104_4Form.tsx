@@ -490,7 +490,7 @@ export default function FR104_4Form({
                 <>
                   <button type="button" onClick={downloadPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Download size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Download PDF"}</button>
                   <button type="button" onClick={previewPdf} disabled={downloadPdfMutation.isPending} className="px-5 py-3 border rounded-lg flex items-center justify-center gap-2"><Eye size={18} />{downloadPdfMutation.isPending ? "Generating PDF..." : "Preview PDF"}</button>
-                  {status !== "APPROVED" && (
+                  {editable && (
                     <>
                       <button
                         type="submit"
