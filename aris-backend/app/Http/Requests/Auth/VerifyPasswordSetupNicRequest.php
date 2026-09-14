@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-class CompletePasswordSetupRequest extends FormRequest
+class VerifyPasswordSetupNicRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,7 +16,6 @@ class CompletePasswordSetupRequest extends FormRequest
         return [
             'token' => ['required', 'string', 'max:128'],
             'nic' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'string', 'confirmed', Password::min(12)->mixedCase()->numbers()->symbols()],
         ];
     }
 }

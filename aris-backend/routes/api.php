@@ -34,6 +34,7 @@ Route::post('/forgot-password/verify-otp', [ForgotPasswordController::class, 've
 Route::post('/forgot-password/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 Route::post('/auth/password/setup/validate', [PasswordSetupController::class, 'validateToken'])->middleware('throttle:10,1');
+Route::post('/auth/password/setup/verify-nic', [PasswordSetupController::class, 'verifyNic'])->middleware('throttle:5,1');
 Route::post('/auth/password/setup', [PasswordSetupController::class, 'setup'])->middleware('throttle:10,1');
 
 

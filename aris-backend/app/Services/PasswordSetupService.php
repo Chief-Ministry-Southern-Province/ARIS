@@ -57,9 +57,15 @@ class PasswordSetupService
         $this->findValidToken($token);
     }
 
-    public function complete(string $token, string $password): User
+    public function verifyNic(string $token, string $nic): void
     {
-        return DB::transaction(function () use ($token, $password): User {
+        $record = $this->findValidToken($token);
+        $this->ensureNicMatches($record->user, $nic);
+    }
+
+    public function complete(string $token, string $password, string $nic): User
+    {
+        return DB::transaction(function () use ($token, $password, $nic): User {
             $record = PasswordSetupToken::query()
                 ->where('token_hash', hash('sha256', $token))
                 ->lockForUpdate()
@@ -68,6 +74,7 @@ class PasswordSetupService
             $this->ensureUsable($record);
 
             $user = $record->user()->lockForUpdate()->firstOrFail();
+            $this->ensureNicMatches($user, $nic);
             $user->forceFill(['password' => Hash::make($password)])->save();
 
             $record->forceFill(['used_at' => now()])->save();
@@ -105,6 +112,18 @@ class PasswordSetupService
         if ($record->expires_at->isPast()) {
             throw new RuntimeException('This password setup link has expired. Please ask an administrator to resend it.');
         }
+    }
+
+    private function ensureNicMatches(User $user, string $nic): void
+    {
+        if (! hash_equals($this->normaliseNic($user->nic), $this->normaliseNic($nic))) {
+            throw new RuntimeException('The NIC does not match the account for this password setup link.');
+        }
+    }
+
+    private function normaliseNic(string $nic): string
+    {
+        return strtoupper(preg_replace('/\s+/', '', trim($nic)) ?? '');
     }
 
     private function setupUrl(string $token): string

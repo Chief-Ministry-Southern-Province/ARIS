@@ -42,12 +42,12 @@ class PasswordSetupTest extends TestCase
         $this->assertSame(hash('sha256', $token), $record->token_hash);
         $this->assertNotSame($token, $record->token_hash);
 
-        app(PasswordSetupService::class)->complete($token, 'StrongPassword!2026');
+        app(PasswordSetupService::class)->complete($token, 'StrongPassword!2026', $user->nic);
 
         $this->assertTrue(Hash::check('StrongPassword!2026', $user->fresh()->password));
         $this->assertNotNull($record->fresh()->used_at);
         $this->expectException(RuntimeException::class);
-        app(PasswordSetupService::class)->complete($token, 'AnotherStrong!2026');
+        app(PasswordSetupService::class)->complete($token, 'AnotherStrong!2026', $user->nic);
     }
 
     public function test_a_resend_invalidates_the_earlier_unused_link(): void
@@ -92,12 +92,46 @@ class PasswordSetupTest extends TestCase
 
         $this->postJson('/api/auth/password/setup', [
             'token' => $token,
+            'nic' => $user->nic,
             'password' => 'StrongPassword!2026',
             'password_confirmation' => 'StrongPassword!2026',
         ])->assertOk()
             ->assertJsonPath('message', 'Password set successfully. You can now log in.');
 
         $this->assertTrue(Hash::check('StrongPassword!2026', $user->fresh()->password));
+    }
+
+    public function test_nic_must_match_before_a_password_can_be_set(): void
+    {
+        $token = 'nic-verification-token';
+        $user = $this->newUser();
+        PasswordSetupToken::create([
+            'user_id' => $user->id,
+            'token_hash' => hash('sha256', $token),
+            'expires_at' => now()->addHours(8),
+        ]);
+
+        $this->postJson('/api/auth/password/setup/verify-nic', [
+            'token' => $token,
+            'nic' => 'WRONG-NIC',
+        ])->assertUnprocessable()
+            ->assertJsonPath('message', 'The NIC does not match the account for this password setup link.');
+
+        $this->postJson('/api/auth/password/setup/verify-nic', [
+            'token' => $token,
+            'nic' => strtolower($user->nic),
+        ])->assertOk()
+            ->assertJsonPath('verified', true);
+
+        $this->postJson('/api/auth/password/setup', [
+            'token' => $token,
+            'nic' => 'WRONG-NIC',
+            'password' => 'StrongPassword!2026',
+            'password_confirmation' => 'StrongPassword!2026',
+        ])->assertUnprocessable();
+
+        $this->assertNull($user->fresh()->password);
+        $this->assertNull(PasswordSetupToken::sole()->used_at);
     }
 
     private function newUser(): User

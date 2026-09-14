@@ -26,7 +26,8 @@ class VehicleController extends Controller
             ->with([
                 'institution',
                 'driver',
-            ]);
+            ])
+            ->withCount('accidents');
 
         // A driver may report only against a vehicle explicitly assigned to
         // their account. The direct assignment is authoritative, even when an
