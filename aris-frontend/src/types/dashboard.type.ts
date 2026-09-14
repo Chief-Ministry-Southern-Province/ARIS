@@ -7,6 +7,8 @@ export interface DashboardTrendPoint {
 export interface VehicleRiskPoint {
   vehicle: string;
   incidents: number;
+  affected_vehicles: number;
+  fleet_size: number;
   risk: number;
 }
 

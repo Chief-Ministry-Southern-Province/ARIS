@@ -50,7 +50,7 @@ export const VehicleRisks = () => {
             contentStyle={tooltipStyle}
             cursor={false}
             formatter={(value, _name, item) => [
-              `${value}% (${item.payload.incidents} incident${item.payload.incidents === 1 ? "" : "s"})`,
+              `${value}% (${item.payload.affected_vehicles} of ${item.payload.fleet_size} vehicles; ${item.payload.incidents} incident${item.payload.incidents === 1 ? "" : "s"})`,
               "Risk score",
             ]}
           />
