@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\CompletePasswordSetupRequest;
 use App\Http\Requests\Auth\ValidatePasswordSetupTokenRequest;
+use App\Http\Requests\Auth\VerifyPasswordSetupNicRequest;
 use App\Services\PasswordSetupService;
 use Illuminate\Http\JsonResponse;
 use RuntimeException;
@@ -32,11 +33,26 @@ class PasswordSetupController extends Controller
             $this->passwordSetup->complete(
                 $request->string('token')->toString(),
                 $request->string('password')->toString(),
+                $request->string('nic')->toString(),
             );
         } catch (RuntimeException $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
         }
 
         return response()->json(['message' => 'Password set successfully. You can now log in.']);
+    }
+
+    public function verifyNic(VerifyPasswordSetupNicRequest $request): JsonResponse
+    {
+        try {
+            $this->passwordSetup->verifyNic(
+                $request->string('token')->toString(),
+                $request->string('nic')->toString(),
+            );
+        } catch (RuntimeException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json(['verified' => true]);
     }
 }

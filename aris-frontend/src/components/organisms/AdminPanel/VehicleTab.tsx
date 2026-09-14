@@ -139,18 +139,17 @@ const VehicleTab = () => {
                   </td>
 
                   <td className="px-4 py-3 ">
-                    {/* <span
+                    <span
                       className={`font-bold text-sm items-center ${
-                        vehicle.incidents >= 5
+                        vehicle.accidents_count >= 5
                           ? "text-red-600"
-                          : vehicle.incidents >= 3
-                          ? "text-orange-600"
-                          : "text-green-600"
+                          : vehicle.accidents_count >= 3
+                            ? "text-orange-600"
+                            : "text-green-600"
                       }`}
                     >
-                      {vehicle.incidents}
-                    </span> */}
-                    3
+                      {vehicle.accidents_count}
+                    </span>
                   </td>
 
                   <td className="px-4 py-3">

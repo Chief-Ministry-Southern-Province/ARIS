@@ -56,6 +56,8 @@ export interface Vehicle {
 
   driver_id: number | null;
 
+  accidents_count: number;
+
   created_at: string;
   updated_at: string;
 }
@@ -90,6 +92,8 @@ export interface VehicleResponse {
   institution_id: number;
 
   driver_id: number | null;
+
+  accidents_count: number;
 
   created_at: string;
   updated_at: string;
