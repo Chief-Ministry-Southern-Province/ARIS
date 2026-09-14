@@ -114,15 +114,7 @@ class NotificationService
             'data' => $payload,
         ]);
 
-        // Keep the SMS delivery asynchronous. This method is invoked only
-        // after the approval workflow transaction commits, so the recipient
-        // can immediately open the pending approval from the notification.
-        if (filled($approval->approver->mobile)) {
-            SendTextitSmsNotification::dispatch(
-                $approval->approver->id,
-                $payload['message'],
-            )->afterCommit();
-        }
+        $this->queueSms($approval->approver, $payload['message']);
     }
 
     public function notifyWorkflowCompleted(User $recipient, Model $document, Approval $approval): void
@@ -139,6 +131,11 @@ class NotificationService
             'read' => false,
             'data' => $payload,
         ]);
+
+        $this->queueSms(
+            $recipient,
+            "ARIS: {$payload['document_type']} {$payload['reference_number']} has completed all approval steps.",
+        );
     }
 
     public function notifyRejected(User $recipient, Model $document, Approval $approval, string $reason): void
@@ -155,6 +152,23 @@ class NotificationService
             'read' => false,
             'data' => $payload,
         ]);
+
+        // Do not include the rejection comments in SMS. They can be lengthy
+        // or sensitive, and are available to the creator after sign-in.
+        $this->queueSms(
+            $recipient,
+            "ARIS: Changes were requested for {$payload['document_type']} {$payload['reference_number']}. Sign in to review comments and resubmit.",
+        );
+    }
+
+    /** Queue an optional SMS without delaying the workflow transaction. */
+    protected function queueSms(User $recipient, string $message): void
+    {
+        if (blank($recipient->mobile)) {
+            return;
+        }
+
+        SendTextitSmsNotification::dispatch($recipient->id, $message)->afterCommit();
     }
 
     public function notifyRevisionRequested(User $user, Model $document, string $comments): void

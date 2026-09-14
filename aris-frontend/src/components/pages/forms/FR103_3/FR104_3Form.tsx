@@ -533,7 +533,7 @@ useEffect(() => {
               </>
             )}
 
-            {formStatus !== "APPROVED" && (
+            {isEditable && (
               <>
                 <button
                   type="submit"
