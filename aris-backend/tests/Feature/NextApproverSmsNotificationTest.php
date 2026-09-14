@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\SendTextitSmsNotification;
 use App\Models\AccidentCase;
 use App\Models\Approval;
+use App\Models\FR1043;
 use App\Models\Notification as UserNotification;
 use App\Models\User;
 use App\Services\Notifications\NotificationService;
@@ -41,6 +42,38 @@ class NextApproverSmsNotificationTest extends TestCase
         $this->notificationService()->notifyNextApprover($approval);
 
         Queue::assertNotPushed(SendTextitSmsNotification::class);
+    }
+
+    public function test_workflow_completion_sends_the_creator_a_concise_sms(): void
+    {
+        Queue::fake();
+
+        $creator = $this->user('0712345678');
+        $approval = $this->pendingApprovalFor($creator);
+        $document = new FR1043(['reference_number' => 'FR1043/TEST/001']);
+
+        $this->notificationService()->notifyWorkflowCompleted($creator, $document, $approval);
+
+        Queue::assertPushed(SendTextitSmsNotification::class, function (SendTextitSmsNotification $job) use ($creator): bool {
+            return $job->userId === $creator->id
+                && $job->message === 'ARIS: FR1043 FR1043/TEST/001 has completed all approval steps.';
+        });
+    }
+
+    public function test_rejection_sends_the_creator_an_sms_without_the_private_comments(): void
+    {
+        Queue::fake();
+
+        $creator = $this->user('0712345678');
+        $approval = $this->pendingApprovalFor($creator);
+        $document = new FR1043(['reference_number' => 'FR1043/TEST/001']);
+
+        $this->notificationService()->notifyRejected($creator, $document, $approval, 'Private rejection detail');
+
+        Queue::assertPushed(SendTextitSmsNotification::class, function (SendTextitSmsNotification $job) use ($creator): bool {
+            return $job->userId === $creator->id
+                && $job->message === 'ARIS: Changes were requested for FR1043 FR1043/TEST/001. Sign in to review comments and resubmit.';
+        });
     }
 
     private function user(string $mobile): User
