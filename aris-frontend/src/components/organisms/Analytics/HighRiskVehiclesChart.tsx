@@ -27,7 +27,7 @@ export default function HighRiskVehiclesChart({ data = [], isLoading }: HighRisk
               contentStyle={tooltipStyle}
               cursor={false}
               formatter={(value, _name, item) => [
-                `${value}% (${item.payload.incidents} ${t("analytics.table.incidents").toLowerCase()})`,
+                `${value}% (${item.payload.affected_vehicles} of ${item.payload.fleet_size} vehicles; ${item.payload.incidents} ${t("analytics.table.incidents").toLowerCase()})`,
                 t("analytics.legend.riskScore"),
               ]}
             />

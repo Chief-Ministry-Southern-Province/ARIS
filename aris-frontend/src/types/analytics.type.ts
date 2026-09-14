@@ -27,6 +27,8 @@ export interface LossDistributionPoint {
 export interface HighRiskVehicleTypePoint {
   vehicle: string;
   incidents: number;
+  affected_vehicles: number;
+  fleet_size: number;
   risk: number;
 }
 

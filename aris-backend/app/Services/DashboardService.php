@@ -142,12 +142,17 @@ class DashboardService
 
         return $fleetByType
             ->map(function ($fleet, string $vehicleType) use ($incidentsByType) {
-                $incidents = $incidentsByType->get($vehicleType)?->count() ?? 0;
-                $risk = min(100, (int) round(($incidents / $fleet->count()) * 100));
+                $typeIncidents = $incidentsByType->get($vehicleType, collect());
+                $incidents = $typeIncidents->count();
+                $affectedVehicles = $typeIncidents->pluck('vehicle_id')->unique()->count();
+                $fleetSize = $fleet->count();
+                $risk = (int) round(($affectedVehicles / $fleetSize) * 100);
 
                 return [
                     'vehicle' => ucwords(strtolower(str_replace('_', ' ', $vehicleType))),
                     'incidents' => $incidents,
+                    'affected_vehicles' => $affectedVehicles,
+                    'fleet_size' => $fleetSize,
                     'risk' => $risk,
                 ];
             })
