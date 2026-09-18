@@ -33,7 +33,9 @@ class TextitService
             ]);
 
         if (! $response->successful()) {
-            throw new RuntimeException('Textit.biz could not send the verification code.');
+            throw new RuntimeException(
+                sprintf('Textit.biz could not send the verification code. HTTP %d: %s', $response->status(), $response->body())
+            );
         }
     }
 
