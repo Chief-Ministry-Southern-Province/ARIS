@@ -48,7 +48,7 @@ echo "  → Copy docker/nginx/default.conf to /etc/nginx/sites-available/aris ma
 echo "[7/8] Installing Certbot..."
 sudo snap install --classic certbot
 sudo ln -sf /snap/bin/certbot /usr/bin/certbot
-echo "  → After DNS is ready, run: sudo certbot --nginx -d yourdomain.com"
+echo "  → After DNS is ready, run: sudo certbot --nginx -d www.aris.thilinarodrigo.me -d aris.thilinarodrigo.me"
 
 # ── 8. Configure UFW Firewall ─────────────────────────────────────────────────
 echo "[8/8] Configuring UFW firewall..."
@@ -71,6 +71,6 @@ echo "  5. On EC2:              sudo cp /tmp/default.conf /etc/nginx/sites-avail
 echo "                          sudo ln -s /etc/nginx/sites-available/aris /etc/nginx/sites-enabled/"
 echo "                          sudo rm /etc/nginx/sites-enabled/default"
 echo "                          sudo nginx -t && sudo systemctl reload nginx"
-echo "  6. Run certbot:         sudo certbot --nginx -d yourdomain.com"
+echo "  6. Run certbot:         sudo certbot --nginx -d www.aris.thilinarodrigo.me -d aris.thilinarodrigo.me"
 echo "  7. Push to main branch → GitHub Actions will deploy automatically"
 echo ""
