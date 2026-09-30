@@ -202,6 +202,10 @@ jobs:
 
       - name:  SSH into EC2 & deploy
         uses: appleboy/ssh-action@v1
+        env:
+          ARIS_ENV_FILE:            ${{ secrets.ARIS_ENV_FILE }}
+          ARIS_DOCKER_HUB_USERNAME: ${{ secrets.ARIS_DOCKER_HUB_USERNAME }}
+          ARIS_DOCKER_HUB_TOKEN:    ${{ secrets.ARIS_DOCKER_HUB_TOKEN }}
         with:
           host:     ${{ secrets.ARIS_EC2_HOST }}
           username: ${{ secrets.ARIS_EC2_USER }}
