@@ -1,0 +1,108 @@
+version: "3.9"
+
+# ─── Networks ────────────────────────────────────────────────────────────────
+networks:
+  aris-net:
+    driver: bridge
+
+# ─── Volumes ─────────────────────────────────────────────────────────────────
+volumes:
+  mysql-data:
+    driver: local
+  storage-data:
+    driver: local
+
+# ─── Services ────────────────────────────────────────────────────────────────
+services:
+
+  # ── MySQL 8.4 ──────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.4
+    container_name: aris-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - aris-net
+    # NOT exposed to host; only backend/queue/reverb reach it via aris-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Laravel Backend (API) ──────────────────────────────────────────────────
+  backend:
+    image: ${DOCKER_HUB_USERNAME}/aris-backend:latest
+    container_name: aris-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_HOST: mysql
+      DB_PORT: 3306
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - aris-net
+    volumes:
+      # Persist uploaded files across deployments
+      - storage-data:/var/www/html/storage/app/public
+
+  # ── React Frontend (Nginx static) ─────────────────────────────────────────
+  frontend:
+    image: ${DOCKER_HUB_USERNAME}/aris-frontend:latest
+    container_name: aris-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - aris-net
+
+  # ── Laravel Queue Worker ───────────────────────────────────────────────────
+  queue:
+    image: ${DOCKER_HUB_USERNAME}/aris-backend:latest
+    container_name: aris-queue
+    restart: unless-stopped
+    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
+    env_file: .env
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - aris-net
+    volumes:
+      - storage-data:/var/www/html/storage/app/public
+
+  # ── Laravel Reverb (WebSocket server) ─────────────────────────────────────
+  reverb:
+    image: ${DOCKER_HUB_USERNAME}/aris-backend:latest
+    container_name: aris-reverb
+    restart: unless-stopped
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    env_file: .env
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - aris-net
