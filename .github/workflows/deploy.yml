@@ -243,6 +243,7 @@ jobs:
 
             echo "━━━ [5/6] Running Laravel post-deploy tasks ━━━━━━━━━━━━━━━━━"
             sudo docker exec aris-backend php artisan migrate --force
+            sudo docker exec aris-backend php artisan db:seed --force
             sudo docker exec aris-backend php artisan config:cache
             sudo docker exec aris-backend php artisan route:cache
             sudo docker exec aris-backend php artisan view:cache
