@@ -209,6 +209,17 @@ jobs:
           envs:     ARIS_ENV_FILE,ARIS_DOCKER_HUB_USERNAME,ARIS_DOCKER_HUB_TOKEN,IMAGE_BACKEND,IMAGE_FRONTEND
           script: |
             set -e
+            export PATH=$PATH:/usr/bin:/usr/local/bin:/usr/sbin
+
+            # Ensure Docker and Docker Compose are installed on EC2
+            if ! command -v docker &> /dev/null; then
+              echo "━━━ [0/6] Installing Docker & Docker Compose on EC2 ━━━━━━━━━━"
+              sudo apt-get update -qq
+              sudo apt-get install -y -qq docker.io docker-buildx-plugin docker-compose-v2
+              sudo systemctl enable --now docker
+              sudo usermod -aG docker $USER || true
+            fi
+
             cd /opt/aris
 
             echo "━━━ [1/6] Writing production .env ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -216,26 +227,26 @@ jobs:
             chmod 600 /opt/aris/.env
 
             echo "━━━ [2/6] Logging into Docker Hub ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            echo "$ARIS_DOCKER_HUB_TOKEN" | docker login -u "$ARIS_DOCKER_HUB_USERNAME" --password-stdin
+            echo "$ARIS_DOCKER_HUB_TOKEN" | sudo docker login -u "$ARIS_DOCKER_HUB_USERNAME" --password-stdin
 
             echo "━━━ [3/6] Pulling latest images ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            docker pull $IMAGE_BACKEND:latest
-            docker pull $IMAGE_FRONTEND:latest
+            sudo docker pull $IMAGE_BACKEND:latest
+            sudo docker pull $IMAGE_FRONTEND:latest
 
             echo "━━━ [4/6] Starting containers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            docker compose up -d --no-build --remove-orphans
+            sudo docker compose up -d --no-build --remove-orphans
             echo " Waiting for backend to be healthy (10s)..."
             sleep 10
 
             echo "━━━ [5/6] Running Laravel post-deploy tasks ━━━━━━━━━━━━━━━━━"
-            docker exec aris-backend php artisan migrate --force
-            docker exec aris-backend php artisan config:cache
-            docker exec aris-backend php artisan route:cache
-            docker exec aris-backend php artisan view:cache
-            docker exec aris-backend php artisan storage:link || true
+            sudo docker exec aris-backend php artisan migrate --force
+            sudo docker exec aris-backend php artisan config:cache
+            sudo docker exec aris-backend php artisan route:cache
+            sudo docker exec aris-backend php artisan view:cache
+            sudo docker exec aris-backend php artisan storage:link || true
 
             echo "━━━ [6/6] Cleaning up old Docker images ━━━━━━━━━━━━━━━━━━━━━"
-            docker image prune -f
+            sudo docker image prune -f
 
             echo ""
             echo " Deployment complete!"
