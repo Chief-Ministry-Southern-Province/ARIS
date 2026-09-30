@@ -178,6 +178,28 @@ jobs:
     needs: [build-backend, build-frontend]
 
     steps:
+      - name:  Checkout repository
+        uses: actions/checkout@v4
+
+      - name:  Ensure /opt/aris directory exists on EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host:     ${{ secrets.ARIS_EC2_HOST }}
+          username: ${{ secrets.ARIS_EC2_USER }}
+          key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
+          script: |
+            sudo mkdir -p /opt/aris
+            sudo chown -R $USER:$USER /opt/aris
+
+      - name:  Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host:     ${{ secrets.ARIS_EC2_HOST }}
+          username: ${{ secrets.ARIS_EC2_USER }}
+          key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
+          source:   "docker-compose.yml"
+          target:   "/opt/aris"
+
       - name:  SSH into EC2 & deploy
         uses: appleboy/ssh-action@v1
         with:
