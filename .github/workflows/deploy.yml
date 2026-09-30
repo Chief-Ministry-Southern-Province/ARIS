@@ -1,24 +1,26 @@
-name: Build, Push & Deploy to EC2
+name: CI/CD — Test, Build & Deploy to EC2
 
+# ─── Triggers ────────────────────────────────────────────────────────────────
 on:
   push:
     branches: [feature/docker-ec2-deployment]
+  workflow_dispatch:          # Allow manual run from GitHub Actions UI
 
-  # Allow manual trigger from GitHub UI
-  workflow_dispatch:
-
+# ─── Shared image name variables ─────────────────────────────────────────────
 env:
   IMAGE_BACKEND:  ${{ secrets.ARIS_DOCKER_HUB_USERNAME }}/aris-backend
   IMAGE_FRONTEND: ${{ secrets.ARIS_DOCKER_HUB_USERNAME }}/aris-frontend
 
+# ─────────────────────────────────────────────────────────────────────────────
 jobs:
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # JOB 1 — Run Laravel backend tests (blocks build if tests fail)
-  # Uses SQLite in-memory — no MySQL service needed (per phpunit.xml config)
-  # ────────────────────────────────────────────────────────────────────────────
+# ╔══════════════════════════════════════════════════════════════════════════════
+# ║  JOB 1 — Backend Tests
+# ║  Runs PHPUnit against SQLite in-memory (no MySQL needed)
+# ║  Blocks the entire pipeline if any test fails
+# ╚══════════════════════════════════════════════════════════════════════════════
   backend-tests:
-    name: 🧪 Backend Tests (Laravel)
+    name:  Backend Tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -26,59 +28,93 @@ jobs:
         working-directory: aris-backend
 
     steps:
-      - name: Checkout code
+      - name:  Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up PHP 8.3
+      - name:  Set up PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: "8.4"
           extensions: pdo, pdo_sqlite, sqlite3, mbstring, zip, exif, bcmath, gd, pcntl
           coverage: none
 
-      - name: Cache Composer packages
+      - name:  Cache Composer dependencies
         uses: actions/cache@v4
         with:
           path: aris-backend/vendor
           key: composer-${{ hashFiles('aris-backend/composer.lock') }}
           restore-keys: composer-
 
-      - name: Install Composer dependencies
+      - name:  Install Composer dependencies
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Copy .env for testing
-        run: cp .env.example .env
+      - name:  Prepare test environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
 
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Run PHPUnit tests
+      - name:  Run PHPUnit test suite
         run: php artisan test --parallel --stop-on-failure
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # JOB 2 — Build & Push Docker images to Docker Hub
-  # Only runs if backend-tests passes
-  # ────────────────────────────────────────────────────────────────────────────
-  build-and-push:
-    name: 🐳 Build & Push Images
+
+# ╔══════════════════════════════════════════════════════════════════════════════
+# ║  JOB 2 — Frontend CI
+# ║  Runs ESLint + TypeScript type-check in parallel with backend-tests
+# ║  Blocks frontend build if lint or types fail
+# ╚══════════════════════════════════════════════════════════════════════════════
+  frontend-ci:
+    name: Frontend CI (Lint & Types)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: aris-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: aris-frontend/package-lock.json
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
+
+# ╔══════════════════════════════════════════════════════════════════════════════
+# ║  JOB 3 — Build & Push Backend Image
+# ║  Builds the Laravel Docker image and pushes to Docker Hub
+# ║  Runs only after backend-tests passes
+# ╚══════════════════════════════════════════════════════════════════════════════
+  build-backend:
+    name: Build Backend Image
     runs-on: ubuntu-latest
     needs: backend-tests
 
     steps:
-      - name: Checkout code
+      - name:  Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
+      - name:  Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
+      - name:  Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.ARIS_DOCKER_HUB_USERNAME }}
           password: ${{ secrets.ARIS_DOCKER_HUB_TOKEN }}
 
-      # ── Backend ────────────────────────────────────────────────────────────
-      - name: Build & Push — Backend (Laravel)
+      - name:  Build & push Laravel image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -87,18 +123,41 @@ jobs:
           tags: |
             ${{ env.IMAGE_BACKEND }}:latest
             ${{ env.IMAGE_BACKEND }}:${{ github.sha }}
-          # GitHub Actions cache speeds up subsequent builds significantly
           cache-from: type=gha
           cache-to:   type=gha,mode=max
 
-      # ── Frontend ───────────────────────────────────────────────────────────
-      - name: Build & Push — Frontend (React/Vite)
+
+# ╔══════════════════════════════════════════════════════════════════════════════
+# ║  JOB 4 — Build & Push Frontend Image
+# ║  Builds the React/Vite Docker image and pushes to Docker Hub
+# ║  Runs only after frontend-ci passes
+# ╚══════════════════════════════════════════════════════════════════════════════
+  build-frontend:
+    name: Build Frontend Image
+    runs-on: ubuntu-latest
+    needs: frontend-ci
+
+    steps:
+      - name:  Checkout repository
+        uses: actions/checkout@v4
+
+      - name:  Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name:  Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.ARIS_DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.ARIS_DOCKER_HUB_TOKEN }}
+
+      - name:  Build & push React/Vite image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: docker/frontend/Dockerfile
           push: true
-          # ARIS_VITE_API_URL secret must be set to: https://www.aris.thilinarodrigo.me/api
+          # VITE_ vars are baked into the bundle at build time (not runtime)
+          # ARIS_VITE_API_URL = https://www.aris.thilinarodrigo.me/api
           build-args: |
             VITE_API_URL=${{ secrets.ARIS_VITE_API_URL }}
           tags: |
@@ -107,63 +166,56 @@ jobs:
           cache-from: type=gha
           cache-to:   type=gha,mode=max
 
-  # ────────────────────────────────────────────────────────────────────────────
-  # JOB 2 — SSH into EC2 and deploy
-  # ────────────────────────────────────────────────────────────────────────────
+
+# ╔══════════════════════════════════════════════════════════════════════════════
+# ║  JOB 4 — Deploy to EC2
+# ║  SSHs into the EC2 instance and performs a rolling update
+# ║  Runs only after BOTH build jobs succeed
+# ╚══════════════════════════════════════════════════════════════════════════════
   deploy:
-    name: 🚀 Deploy to EC2
+    name:  Deploy to EC2
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: [build-backend, build-frontend]
 
     steps:
-      - name: Deploy via SSH
+      - name:  SSH into EC2 & deploy
         uses: appleboy/ssh-action@v1
         with:
           host:     ${{ secrets.ARIS_EC2_HOST }}
           username: ${{ secrets.ARIS_EC2_USER }}
           key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
-          # Pass secrets as environment variables into the SSH session
-          envs: ARIS_ENV_FILE,ARIS_DOCKER_HUB_USERNAME,ARIS_DOCKER_HUB_TOKEN,IMAGE_BACKEND,IMAGE_FRONTEND
+          envs:     ARIS_ENV_FILE,ARIS_DOCKER_HUB_USERNAME,ARIS_DOCKER_HUB_TOKEN,IMAGE_BACKEND,IMAGE_FRONTEND
           script: |
             set -e
-
-            echo "📂 Moving to app directory..."
             cd /opt/aris
 
-            # ── Write .env file from GitHub Secret ────────────────────────────
-            # The entire content of your production .env is stored in ARIS_ENV_FILE.
-            # This overwrites /opt/aris/.env on every deploy (keeps it in sync).
-            echo "📝 Writing .env file..."
+            echo "━━━ [1/6] Writing production .env ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             printf '%s' "$ARIS_ENV_FILE" > /opt/aris/.env
             chmod 600 /opt/aris/.env
 
-            # ── Log in to Docker Hub ─────────────────────────────────────────
-            echo "🔐 Logging into Docker Hub..."
-            echo "$ARIS_DOCKER_HUB_TOKEN" | \
-              docker login -u "$ARIS_DOCKER_HUB_USERNAME" --password-stdin
+            echo "━━━ [2/6] Logging into Docker Hub ━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "$ARIS_DOCKER_HUB_TOKEN" | docker login -u "$ARIS_DOCKER_HUB_USERNAME" --password-stdin
 
-            # ── Pull latest images ───────────────────────────────────────────
-            echo "📥 Pulling latest images..."
+            echo "━━━ [3/6] Pulling latest images ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             docker pull $IMAGE_BACKEND:latest
             docker pull $IMAGE_FRONTEND:latest
 
-            # ── Restart containers ───────────────────────────────────────────
-            echo "♻️  Restarting containers..."
+            echo "━━━ [4/6] Starting containers ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             docker compose up -d --no-build --remove-orphans
-
-            echo "⏳ Waiting for backend to be healthy..."
+            echo " Waiting for backend to be healthy (10s)..."
             sleep 10
 
-            # ── Laravel post-deploy tasks ────────────────────────────────────
-            echo "🗄️  Running Laravel post-deploy tasks..."
+            echo "━━━ [5/6] Running Laravel post-deploy tasks ━━━━━━━━━━━━━━━━━"
             docker exec aris-backend php artisan migrate --force
             docker exec aris-backend php artisan config:cache
             docker exec aris-backend php artisan route:cache
             docker exec aris-backend php artisan view:cache
             docker exec aris-backend php artisan storage:link || true
 
-            # ── Clean up old images ──────────────────────────────────────────
-            echo "🧹 Pruning old images..."
+            echo "━━━ [6/6] Cleaning up old Docker images ━━━━━━━━━━━━━━━━━━━━━"
             docker image prune -f
 
-            echo "✅ Deployment complete! SHA: ${{ github.sha }}"
+            echo ""
+            echo " Deployment complete!"
+            echo "   SHA : ${{ github.sha }}"
+            echo "   URL : https://www.aris.thilinarodrigo.me"

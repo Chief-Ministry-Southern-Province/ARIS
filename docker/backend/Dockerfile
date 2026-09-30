@@ -12,8 +12,8 @@ RUN composer install \
     --optimize-autoloader \
     --no-scripts
 
-# ─── Stage 2: Production image ───────────────────────────────────────────────
-FROM php:8.3-fpm-alpine
+# ─── Stage 2: Production image (PHP 8.4 — required by Symfony 8.1.x) ────────
+FROM php:8.4-fpm-alpine
 
 LABEL maintainer="ARIS Team"
 LABEL description="ARIS Laravel 13 Backend"
