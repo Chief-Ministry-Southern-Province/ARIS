@@ -20,7 +20,11 @@ class EnforceRoleSessionTimeout
 
         // API requests authenticated via Sanctum token do not have a session.
         // Skip session-based timeout logic for those requests.
-        if (! $request->hasSession() || ! $request->session()->isStarted()) {
+        try {
+            if (! $request->hasSession() || ! $request->session()->isStarted()) {
+                return $next($request);
+            }
+        } catch (\RuntimeException $e) {
             return $next($request);
         }
 

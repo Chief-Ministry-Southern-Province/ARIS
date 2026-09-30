@@ -10,7 +10,8 @@ RUN composer install \
     --no-interaction \
     --prefer-dist \
     --optimize-autoloader \
-    --no-scripts
+    --no-scripts \
+    --ignore-platform-reqs
 
 # ─── Stage 2: Production image (PHP 8.4 — required by Symfony 8.1.x) ────────
 FROM php:8.4-fpm-alpine
