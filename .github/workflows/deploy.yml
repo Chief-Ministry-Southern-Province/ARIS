@@ -54,7 +54,7 @@ jobs:
           php artisan key:generate
 
       - name:  Run PHPUnit test suite
-        run: php artisan test --parallel --stop-on-failure
+        run: php artisan test --stop-on-failure
 
 
 # ╔══════════════════════════════════════════════════════════════════════════════
