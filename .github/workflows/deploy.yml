@@ -181,16 +181,6 @@ jobs:
       - name:  Checkout repository
         uses: actions/checkout@v4
 
-      - name:  Ensure /opt/aris directory exists on EC2
-        uses: appleboy/ssh-action@v1
-        with:
-          host:     ${{ secrets.ARIS_EC2_HOST }}
-          username: ${{ secrets.ARIS_EC2_USER }}
-          key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
-          script: |
-            sudo mkdir -p /opt/aris
-            sudo chown -R $USER:$USER /opt/aris
-
       - name:  Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -198,7 +188,7 @@ jobs:
           username: ${{ secrets.ARIS_EC2_USER }}
           key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
           source:   "docker-compose.yml"
-          target:   "/opt/aris"
+          target:   "~/"
 
       - name:  SSH into EC2 & deploy
         uses: appleboy/ssh-action@v1
@@ -214,6 +204,15 @@ jobs:
           script: |
             set -e
             export PATH=$PATH:/usr/bin:/usr/local/bin:/usr/sbin
+
+            # Create deployment folder if missing
+            sudo mkdir -p /opt/aris
+            sudo chown -R $USER:$USER /opt/aris
+
+            # Move uploaded docker-compose.yml to /opt/aris/
+            if [ -f ~/docker-compose.yml ]; then
+              mv ~/docker-compose.yml /opt/aris/docker-compose.yml
+            fi
 
             # Ensure Docker and Docker Compose are installed on EC2
             if ! command -v docker &> /dev/null; then
