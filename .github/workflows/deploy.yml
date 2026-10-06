@@ -262,4 +262,4 @@ jobs:
             echo ""
             echo " Deployment complete!"
             echo "   SHA : ${{ github.sha }}"
-            echo "   URL : https://www.aris.thilinarodrigo.me"
+            echo "   URL : https://cmsp.aris.thilinarodrigo.me"
