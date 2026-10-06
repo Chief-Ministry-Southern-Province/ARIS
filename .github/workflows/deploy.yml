@@ -240,7 +240,7 @@ jobs:
             sudo docker compose up -d --no-build --remove-orphans
             echo " Waiting for MySQL database to accept connections..."
             for i in {1..15}; do
-              if sudo docker exec aris-backend php artisan db:monitor > /dev/null 2>&1 || sudo docker exec aris-backend php artisan db:show > /dev/null 2>&1; do
+              if sudo docker exec aris-backend php artisan db:monitor > /dev/null 2>&1 || sudo docker exec aris-backend php artisan db:show > /dev/null 2>&1; then
                 echo " Database connection successful!"
                 break
               fi
@@ -249,8 +249,8 @@ jobs:
             done
 
             echo "━━━ [5/6] Running Laravel post-deploy tasks ━━━━━━━━━━━━━━━━━"
-            sudo docker exec aris-backend php artisan migrate
-            sudo docker exec aris-backend php artisan db:seed 
+            sudo docker exec aris-backend php artisan migrate --force
+            sudo docker exec aris-backend php artisan db:seed --force
             sudo docker exec aris-backend php artisan config:cache
             sudo docker exec aris-backend php artisan route:cache
             sudo docker exec aris-backend php artisan view:cache
