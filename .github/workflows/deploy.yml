@@ -159,6 +159,7 @@ jobs:
           # VITE_ vars are baked into the bundle at build time (not runtime)
           # ARIS_VITE_API_URL = https://www.aris.thilinarodrigo.me/api
           build-args: |
+            VITE_API_BASE_URL=${{ secrets.ARIS_VITE_API_URL }}
             VITE_API_URL=${{ secrets.ARIS_VITE_API_URL }}
           tags: |
             ${{ env.IMAGE_FRONTEND }}:latest

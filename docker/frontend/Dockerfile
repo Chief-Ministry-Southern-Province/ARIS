@@ -13,9 +13,11 @@ RUN npm ci
 # Copy source and build
 COPY aris-frontend/ .
 
-# VITE_API_URL is injected at build time from GitHub Actions secrets
+# VITE_API_URL / VITE_API_BASE_URL is injected at build time from GitHub Actions secrets
 # React/Vite bakes env vars into the static bundle at compile time
+ARG VITE_API_BASE_URL
 ARG VITE_API_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 ENV VITE_API_URL=$VITE_API_URL
 
 RUN npm run build
