@@ -200,6 +200,7 @@ jobs:
           host:     ${{ secrets.ARIS_EC2_HOST }}
           username: ${{ secrets.ARIS_EC2_USER }}
           key:      ${{ secrets.ARIS_EC2_SSH_PRIVATE_KEY }}
+          command_timeout: 30m
           envs:     ARIS_ENV_FILE,ARIS_DOCKER_HUB_USERNAME,ARIS_DOCKER_HUB_TOKEN,IMAGE_BACKEND,IMAGE_FRONTEND
           script: |
             set -e
