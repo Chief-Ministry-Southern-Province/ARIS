@@ -4,14 +4,13 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\UserSignature;
-use Illuminate\Auth\Access\Response;
 
 class UserSignaturePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user,UserSignature $signature): bool
+    public function viewAny(User $user, UserSignature $signature): bool
     {
         return $user->id === $signature->user_id;
     }

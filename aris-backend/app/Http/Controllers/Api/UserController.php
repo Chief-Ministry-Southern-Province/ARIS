@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Models\User;
 use App\Services\InstitutionService;
 use App\Services\PasswordSetupService;
-use App\Models\Institution;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use RuntimeException;
 
@@ -33,20 +32,21 @@ class UserController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%")
-                    ->orWhere('nic', 'LIKE', "%{$search}%")
-                    ->orWhere('mobile', 'LIKE', "%{$search}%")
-                    ->orWhereHas('institution', function ($institutionQuery) use ($search) {
-                        $institutionQuery->where('name', 'LIKE', "%{$search}%");
-                    })
-                    ->orWhereHas('roles', function ($roleQuery) use ($search) {
-                        $roleQuery->where('name', 'LIKE', "%{$search}%");
-                    });
+                        ->orWhere('nic', 'LIKE', "%{$search}%")
+                        ->orWhere('mobile', 'LIKE', "%{$search}%")
+                        ->orWhereHas('institution', function ($institutionQuery) use ($search) {
+                            $institutionQuery->where('name', 'LIKE', "%{$search}%");
+                        })
+                        ->orWhereHas('roles', function ($roleQuery) use ($search) {
+                            $roleQuery->where('name', 'LIKE', "%{$search}%");
+                        });
                 });
             })
             ->paginate(10);
 
         return response()->json($users);
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -122,7 +122,7 @@ class UserController extends Controller
         return User::with([
             'institution',
             'roles',
-            'districts'
+            'districts',
         ])->findOrFail($user->id);
     }
 
@@ -167,14 +167,13 @@ class UserController extends Controller
 
     public function getAvailableDrivers(Request $request)
     {
-       return User::role('driver')
-        ->whereIn(
-            'institution_id',
-            app(InstitutionService::class)
-                ->accessibleInstitutionIds($request->user())
-        )
-        ->orderBy('name')
-        ->get();
+        return User::role('driver')
+            ->whereIn(
+                'institution_id',
+                app(InstitutionService::class)
+                    ->accessibleInstitutionIds($request->user())
+            )
+            ->orderBy('name')
+            ->get();
     }
-    
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Services\AccidentTimelineService;
-use App\Http\Resources\CaseHistoryResource;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CaseHistoryResource;
 use App\Models\AccidentCase;
 use App\Models\CaseHistory;
+use App\Services\AccidentTimelineService;
+use Illuminate\Http\Request;
 
 class CaseHistoryController extends Controller
 {

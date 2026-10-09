@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\FR1043\StoreFR1043Request;
 use App\Http\Requests\FR1043\UpdateFR1043Request;
 use App\Http\Resources\FR1043Resource;
@@ -10,7 +11,6 @@ use App\Models\FR1043;
 use App\Services\FR1043\FR1043Service;
 use App\Services\PDF\FR1043PdfGenerator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class FR1043Controller extends Controller
 {
@@ -29,9 +29,9 @@ class FR1043Controller extends Controller
         $fr1043 = $this->fr1043Service
             ->getLatest($accidentCase);
 
-        if (!$fr1043) {
+        if (! $fr1043) {
             return response()->json([
-                'message' => 'FR104(3) not found.'
+                'message' => 'FR104(3) not found.',
             ], 404);
         }
 
@@ -53,7 +53,7 @@ class FR1043Controller extends Controller
     /**
      * Create draft.
      */
-    public function store(StoreFR1043Request $request,AccidentCase $accidentCase) 
+    public function store(StoreFR1043Request $request, AccidentCase $accidentCase)
     {
         $this->authorize('create', [FR1043::class, $accidentCase]);
 
@@ -73,7 +73,7 @@ class FR1043Controller extends Controller
     /**
      * Update draft.
      */
-    public function update(UpdateFR1043Request $request,FR1043 $fr1043) 
+    public function update(UpdateFR1043Request $request, FR1043 $fr1043)
     {
         $this->authorize('update', $fr1043);
 
@@ -84,6 +84,7 @@ class FR1043Controller extends Controller
             data: $request->validated()['data']
 
         );
+
         return new FR1043Resource($fr1043);
     }
 

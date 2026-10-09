@@ -2,10 +2,10 @@
 
 namespace App\Models\Scopes;
 
+use App\Services\InstitutionService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use App\Services\InstitutionService;
 
 class InstitutionScope implements Scope
 {
@@ -14,7 +14,7 @@ class InstitutionScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -24,7 +24,7 @@ class InstitutionScope implements Scope
             return;
         }
 
-         $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
+        $institutionIds = app(InstitutionService::class)->accessibleInstitutionIds($user);
 
         $builder->whereIn(
             $model->qualifyColumn('institution_id'),

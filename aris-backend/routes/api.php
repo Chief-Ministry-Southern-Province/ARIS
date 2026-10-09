@@ -1,29 +1,28 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\InstitutionController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ForgotPasswordController;
-use App\Http\Controllers\Api\PasswordSetupController;
-use App\Http\Controllers\Api\VehicleController;
-use App\Http\Controllers\Api\AccidentController;
-use App\Http\Controllers\Api\EvidenceController;
 use App\Http\Controllers\Api\AccidentCaseController;
-use App\Http\Controllers\Api\CaseHistoryController;
+use App\Http\Controllers\Api\AccidentController;
+use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\ApprovalController;
+use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\CaseHistoryController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\EvidenceController;
+use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\FR1043Controller;
 use App\Http\Controllers\Api\FR1044Controller;
 use App\Http\Controllers\Api\FR109Controller;
-use App\Http\Controllers\Api\UserSignatureController;
+use App\Http\Controllers\Api\InstitutionController;
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\WorkflowSettingController;
-use App\Http\Controllers\Api\AuditLogController;
+use App\Http\Controllers\Api\PasswordSetupController;
 use App\Http\Controllers\Api\PushSubscriptionController;
-use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\AnalyticsController;
-use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\UserSignatureController;
+use App\Http\Controllers\Api\VehicleController;
+use App\Http\Controllers\Api\WorkflowSettingController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -36,7 +35,6 @@ Route::post('/forgot-password/reset-password', [ForgotPasswordController::class,
 Route::post('/auth/password/setup/validate', [PasswordSetupController::class, 'validateToken'])->middleware('throttle:10,1');
 Route::post('/auth/password/setup/verify-nic', [PasswordSetupController::class, 'verifyNic'])->middleware('throttle:5,1');
 Route::post('/auth/password/setup', [PasswordSetupController::class, 'setup'])->middleware('throttle:10,1');
-
 
 Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned'])->group(function () {
 
@@ -106,62 +104,62 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::delete('/accidents/{accident}/evidence/{evidence}', [EvidenceController::class, 'destroy']);
 
     // Protected routes for accident cases
-    Route::get('/cases',[AccidentCaseController::class, 'index']);
+    Route::get('/cases', [AccidentCaseController::class, 'index']);
 
-    Route::get('/cases/export',[AccidentCaseController::class, 'export']);
+    Route::get('/cases/export', [AccidentCaseController::class, 'export']);
 
-    Route::get('/cases/{accidentCase}',[AccidentCaseController::class, 'show']);
+    Route::get('/cases/{accidentCase}', [AccidentCaseController::class, 'show']);
 
-    Route::put('/cases/{accidentCase}',[AccidentCaseController::class, 'update']);
+    Route::put('/cases/{accidentCase}', [AccidentCaseController::class, 'update']);
     Route::post('/cases/{accidentCase}/assign', [AccidentCaseController::class, 'assign']);
 
     // Protected routes for case history
-    Route::get('/cases/{accidentCase}/history',[CaseHistoryController::class, 'index']);
+    Route::get('/cases/{accidentCase}/history', [CaseHistoryController::class, 'index']);
 
     // Protected routes for approvals
-    Route::get('/approvals/pending',[ApprovalController::class, 'pending']);
+    Route::get('/approvals/pending', [ApprovalController::class, 'pending']);
 
-    Route::get('/approvals/decided',[ApprovalController::class, 'decided']);
+    Route::get('/approvals/decided', [ApprovalController::class, 'decided']);
 
-    Route::get('/approvals/stats',[ApprovalController::class, 'stats']);
+    Route::get('/approvals/stats', [ApprovalController::class, 'stats']);
 
-    Route::get('/approvals/{approval}/document',[ApprovalController::class, 'document']);
+    Route::get('/approvals/{approval}/document', [ApprovalController::class, 'document']);
 
-    Route::get('/cases/{accidentCase}/approvals',[ApprovalController::class, 'history']);
+    Route::get('/cases/{accidentCase}/approvals', [ApprovalController::class, 'history']);
 
-    Route::post('/approvals/{approval}/approve',[ApprovalController::class, 'approve']);
+    Route::post('/approvals/{approval}/approve', [ApprovalController::class, 'approve']);
 
-    Route::post('/approvals/{approval}/reject',[ApprovalController::class, 'reject']);
+    Route::post('/approvals/{approval}/reject', [ApprovalController::class, 'reject']);
 
     // Protected routes for FR1043
     Route::prefix('cases')->group(function () {
 
-        Route::get('/{accidentCase}/fr1043',[FR1043Controller::class, 'show']);
+        Route::get('/{accidentCase}/fr1043', [FR1043Controller::class, 'show']);
 
-        Route::get('/{accidentCase}/fr1043/history',[FR1043Controller::class, 'history']);
+        Route::get('/{accidentCase}/fr1043/history', [FR1043Controller::class, 'history']);
 
-        Route::post('/{accidentCase}/fr1043',[FR1043Controller::class, 'store']);
+        Route::post('/{accidentCase}/fr1043', [FR1043Controller::class, 'store']);
     });
 
-    Route::put('/fr1043/{fr1043}',[FR1043Controller::class, 'update']);
+    Route::put('/fr1043/{fr1043}', [FR1043Controller::class, 'update']);
 
-    Route::post('/fr1043/{fr1043}/submit',[FR1043Controller::class, 'submit']);
+    Route::post('/fr1043/{fr1043}/submit', [FR1043Controller::class, 'submit']);
 
-    Route::get('/fr1043/{fr1043}/pdf',[FR1043Controller::class, 'downloadPdf']);
+    Route::get('/fr1043/{fr1043}/pdf', [FR1043Controller::class, 'downloadPdf']);
 
     // Protected routes for FR1044
     Route::prefix('cases')->group(function () {
-        Route::get('/{accidentCase}/fr1044',[FR1044Controller::class, 'show']);
-        Route::get('/{accidentCase}/fr1044/history',[FR1044Controller::class, 'history']);
-        Route::post('/{accidentCase}/fr1044',[FR1044Controller::class, 'store']);
+        Route::get('/{accidentCase}/fr1044', [FR1044Controller::class, 'show']);
+        Route::get('/{accidentCase}/fr1044/history', [FR1044Controller::class, 'history']);
+        Route::post('/{accidentCase}/fr1044', [FR1044Controller::class, 'store']);
     });
 
-    Route::put('/fr1044/{fr1044}',[FR1044Controller::class, 'update']);
-    Route::post('/fr1044/{fr1044}/submit',[FR1044Controller::class, 'submit']);
-    Route::get('/fr1044/{fr1044}/pdf',[FR1044Controller::class, 'downloadPdf']);
-    Route::post('/fr1044/{fr1044}/attachments',[FR1044Controller::class, 'attachment']);
-    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}/download',[FR1044Controller::class, 'attachmentDownload']);
-    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}',[FR1044Controller::class, 'attachmentPreview']);
+    Route::put('/fr1044/{fr1044}', [FR1044Controller::class, 'update']);
+    Route::post('/fr1044/{fr1044}/submit', [FR1044Controller::class, 'submit']);
+    Route::get('/fr1044/{fr1044}/pdf', [FR1044Controller::class, 'downloadPdf']);
+    Route::post('/fr1044/{fr1044}/attachments', [FR1044Controller::class, 'attachment']);
+    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}/download', [FR1044Controller::class, 'attachmentDownload']);
+    Route::get('/fr1044/{fr1044}/attachments/{fieldKey}', [FR1044Controller::class, 'attachmentPreview']);
 
     // Protected routes for FR109
     Route::get('/cases/{accidentCase}/fr109', [FR109Controller::class, 'show']);
@@ -172,7 +170,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::put('/fr109/{fr109}/chief-accounting-order', [FR109Controller::class, 'updateChiefAccountingOrder']);
     Route::put('/fr109/{fr109}/chief-secretary-decision', [FR109Controller::class, 'updateChiefSecretaryDecision']);
 
-    //Protected routes for user signature
+    // Protected routes for user signature
     Route::post('/user/signature', [UserSignatureController::class, 'store']);
 
     Route::get('/user/signature/status', [UserSignatureController::class, 'status']);
@@ -186,9 +184,9 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::delete('/user/signature', [UserSignatureController::class, 'destroy']);
 
     // Protected routes for workflow settings
-    Route::get('/workflow-settings',[WorkflowSettingController::class, 'index']);
+    Route::get('/workflow-settings', [WorkflowSettingController::class, 'index']);
 
-    Route::put('/workflow-settings',[WorkflowSettingController::class, 'update']);
+    Route::put('/workflow-settings', [WorkflowSettingController::class, 'update']);
 });
 
 Route::get('/phpinfo', fn () => phpinfo());

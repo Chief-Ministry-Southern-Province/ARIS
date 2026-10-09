@@ -6,15 +6,10 @@ use App\Models\Traits\BelongsToInstitution;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Institution;
-use App\Models\Vehicle;
-use App\Models\User;
-use App\Models\AccidentEvidence;
-
 class Accident extends Model
 {
-    use HasFactory;
     use BelongsToInstitution;
+    use HasFactory;
 
     protected $fillable = [
 

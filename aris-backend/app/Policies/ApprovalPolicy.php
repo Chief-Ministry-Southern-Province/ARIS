@@ -8,7 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class ApprovalPolicy
 {
-    
     public function viewAny(User $user): bool
     {
         return true;

@@ -2,23 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-use App\Models\Accident;
-use App\Models\Institution;
-use App\Models\User;
-use App\Models\CaseHistory;
-use App\Models\Approval;
-use App\Models\FR1043;
-use App\Models\FR1044;
-use App\Models\FR109;
-
 use App\Models\Traits\BelongsToInstitution;
+use Illuminate\Database\Eloquent\Model;
 
 class AccidentCase extends Model
 {
     use BelongsToInstitution;
-    
+
     protected $fillable = [
         'case_number',
         'accident_id',
@@ -54,7 +44,7 @@ class AccidentCase extends Model
     public function histories()
     {
         return $this->hasMany(CaseHistory::class)
-                ->latest();
+            ->latest();
     }
 
     public function approvals()

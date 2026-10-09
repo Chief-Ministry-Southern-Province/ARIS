@@ -188,8 +188,13 @@
         }
 
         .form-number {
-            font-size: 8.5pt;
+            font-size: 11.5pt;
             font-weight: bold;
+        }
+
+        .admin-subcode {
+            font-size: 7.5pt;
+            line-height: 1.05;
         }
 
         /* Shared FR109/FR1044 form-header structure. */
@@ -218,15 +223,17 @@
 
         .form-title-ta {
             font-family: notosanstamil, sans-serif;
-            font-size: 11pt;
+            font-size: 10pt;
             font-weight: normal;
             line-height: 1.06;
         }
 
         .form-title-en {
             font-family: dejavuserifcondensed, serif;
-            font-size: 9pt;
-            line-height: 1.02;
+            font-size: 11pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.05;
         }
 
         /* Fixed FR109-compatible approval grid. Keep this local so the
@@ -846,9 +853,9 @@
                 <td class="admin-cell">
                     <div class="admin-block">
                         <span lang="si">පොදු</span> / <span lang="ta">பொது</span> / General
-                        <span class="form-number"> - 284</span><br>
-                        (F* S., T. &amp; E.) 2/77<br>
-                        [A4* S., T. &amp; E. 06/2023 - Amended]
+                        <span class="form-number">284</span><br>
+                        <span class="admin-subcode">(F* S., T. &amp; E.) 2/77</span><br>
+                        <span class="admin-subcode">[A4* S., T. &amp; E. 06/2023 - Amended]</span>
                     </div>
                 </td>
             </tr>

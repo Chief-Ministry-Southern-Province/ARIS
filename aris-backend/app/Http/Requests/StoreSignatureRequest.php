@@ -23,7 +23,7 @@ class StoreSignatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'signature' => [    
+            'signature' => [
                 'required',
                 'file',
                 'mimes:png',

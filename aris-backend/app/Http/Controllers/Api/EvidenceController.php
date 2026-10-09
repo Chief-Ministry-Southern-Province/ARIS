@@ -18,7 +18,8 @@ class EvidenceController extends Controller
     /**
      * Upload evidence.
      */
-    public function store(StoreEvidenceRequest $request,Accident $accident): JsonResponse {
+    public function store(StoreEvidenceRequest $request, Accident $accident): JsonResponse
+    {
 
         $this->authorize('create', AccidentEvidence::class);
 
@@ -46,7 +47,8 @@ class EvidenceController extends Controller
     /**
      * List evidence.
      */
-    public function index(Accident $accident): JsonResponse {
+    public function index(Accident $accident): JsonResponse
+    {
 
         return response()->json(
 
@@ -58,14 +60,16 @@ class EvidenceController extends Controller
     /**
      * Download evidence.
      */
-    public function download(Accident $accident,AccidentEvidence $evidence) {
+    public function download(Accident $accident, AccidentEvidence $evidence)
+    {
         return $this->evidenceService->download($evidence, $accident);
     }
 
     /**
      * Delete evidence.
      */
-    public function destroy(AccidentEvidence $evidence): JsonResponse {
+    public function destroy(AccidentEvidence $evidence): JsonResponse
+    {
 
         $this->authorize('delete', $evidence);
 
@@ -73,7 +77,7 @@ class EvidenceController extends Controller
 
         return response()->json([
 
-            'message' => 'Evidence deleted successfully.'
+            'message' => 'Evidence deleted successfully.',
 
         ]);
     }

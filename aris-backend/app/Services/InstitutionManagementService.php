@@ -71,15 +71,14 @@ class InstitutionManagementService
         return $parent->type === $this->expectedParentType($institutionType);
     }
 
-    
-    public function createInstitution(array $data,User $user): Institution 
+    public function createInstitution(array $data, User $user): Institution
     {
 
         if (! $this->canCreateInstitution($user, $data['type'])) {
             abort(403, 'You are not allowed to create this institution.');
         }
 
-        if (!empty($data['parent_institution_id'])) {
+        if (! empty($data['parent_institution_id'])) {
 
             $parent = Institution::findOrFail(
                 $data['parent_institution_id']
@@ -97,10 +96,10 @@ class InstitutionManagementService
         return Institution::create($data);
     }
 
-    public function updateInstitution(Institution $institution,array $data,User $user): Institution 
+    public function updateInstitution(Institution $institution, array $data, User $user): Institution
     {
 
-        if (!empty($data['parent_institution_id'])) {
+        if (! empty($data['parent_institution_id'])) {
 
             $parent = Institution::findOrFail(
                 $data['parent_institution_id']
@@ -120,7 +119,7 @@ class InstitutionManagementService
         return $institution->fresh();
     }
 
-    public function canDeleteInstitution(User $user, Institution $institution): bool 
+    public function canDeleteInstitution(User $user, Institution $institution): bool
     {
 
         if ($user->isSystemAdmin()) {
@@ -130,13 +129,14 @@ class InstitutionManagementService
         if ($institution->childInstitutions()->exists()) {
             return false;
         }
+
         return false;
     }
 
-    public function deleteInstitution(Institution $institution,User $user): bool 
+    public function deleteInstitution(Institution $institution, User $user): bool
     {
 
-        if (! $this->canDeleteInstitution( $user,$institution)) {
+        if (! $this->canDeleteInstitution($user, $institution)) {
 
             abort(403, 'You are not allowed to delete this institution.');
 
@@ -155,7 +155,7 @@ class InstitutionManagementService
             return Institution::where(
                 'parent_institution_id',
                 $user->institution_id
-            )->orWhere('id',$user->institution_id);
+            )->orWhere('id', $user->institution_id);
         }
 
         return Institution::whereRaw('1 = 0');
@@ -173,6 +173,4 @@ class InstitutionManagementService
 
         return collect();
     }
-
-  
 }

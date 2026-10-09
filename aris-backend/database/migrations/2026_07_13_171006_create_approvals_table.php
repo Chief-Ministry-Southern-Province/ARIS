@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedInteger('step');
 
             $table->unsignedInteger('revision')->default(1);
-            
+
             $table->foreignId('institution_id')
                 ->constrained()
                 ->cascadeOnDelete();

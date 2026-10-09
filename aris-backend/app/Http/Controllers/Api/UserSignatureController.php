@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSignatureRequest;
 use App\Http\Requests\UpdateSignatureProfileRequest;
 use App\Models\UserSignature;
+use App\Services\Signature\SignatureCaptionService;
 use App\Services\Signature\SignatureService;
 use App\Services\Signature\SignatureStorageService;
-use App\Services\Signature\SignatureCaptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use App\Http\Controllers\Controller;
 
 class UserSignatureController extends Controller
 {
@@ -35,10 +35,10 @@ class UserSignatureController extends Controller
             'success' => true,
             'message' => 'Signature uploaded successfully.',
             'data' => [
-                'public_id'=>$signature->public_id,
+                'public_id' => $signature->public_id,
                 'is_active' => $signature->is_active,
                 'created_at' => $signature->created_at,
-            ]
+            ],
         ], 201);
     }
 
@@ -103,10 +103,10 @@ class UserSignatureController extends Controller
             ->latest()
             ->first();
 
-        if (!$signature) {
+        if (! $signature) {
             return response()->json([
                 'success' => false,
-                'message' => 'No active signature found.'
+                'message' => 'No active signature found.',
             ], 404);
         }
 
@@ -114,7 +114,7 @@ class UserSignatureController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Signature removed successfully.'
+            'message' => 'Signature removed successfully.',
         ]);
     }
 }

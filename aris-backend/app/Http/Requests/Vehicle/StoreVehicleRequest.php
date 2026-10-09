@@ -69,7 +69,7 @@ class StoreVehicleRequest extends FormRequest
                 'digits:4',
                 'integer',
                 'min:1950',
-                'max:' . date('Y'),
+                'max:'.date('Y'),
             ],
 
             'engine_number' => [
@@ -144,20 +144,16 @@ class StoreVehicleRequest extends FormRequest
         ];
     }
 
-     public function messages(): array
+    public function messages(): array
     {
         return [
-            'vehicle_number.unique' =>
-                'This registration number already exists.',
+            'vehicle_number.unique' => 'This registration number already exists.',
 
-            'engine_number.unique' =>
-                'This engine number already exists.',
+            'engine_number.unique' => 'This engine number already exists.',
 
-            'chassis_number.unique' =>
-                'This chassis number already exists.',
+            'chassis_number.unique' => 'This chassis number already exists.',
 
-            'insurance_expiry_date.after' =>
-                'Insurance expiry date must be a future date.',
+            'insurance_expiry_date.after' => 'Insurance expiry date must be a future date.',
         ];
     }
 

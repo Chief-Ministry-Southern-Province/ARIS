@@ -56,7 +56,7 @@ class ApprovalController extends Controller
      * Approval history of a case, grouped by document type and revision.
      * /api/cases/15/approvals?document_type=FR1043&revision=2
      */
-    public function history(Request $request,AccidentCase $accidentCase)
+    public function history(Request $request, AccidentCase $accidentCase)
     {
         $filters = $request->validate([
             'document_type' => ['nullable', 'in:FR1043,FR1044,FR109'],
@@ -92,13 +92,14 @@ class ApprovalController extends Controller
     public function document(Approval $approval)
     {
         $this->authorize('view', $approval);
+
         return $this->approvalService->getDocument($approval);
     }
 
     /**
      * Approve.
      */
-    public function approve(ApproveRequest $request,Approval $approval) 
+    public function approve(ApproveRequest $request, Approval $approval)
     {
         $this->authorize('approve', $approval);
 
@@ -115,7 +116,7 @@ class ApprovalController extends Controller
     /**
      * Reject.
      */
-    public function reject(RejectRequest $request,Approval $approval) 
+    public function reject(RejectRequest $request, Approval $approval)
     {
         $this->authorize('reject', $approval);
         $approval = $this->approvalService

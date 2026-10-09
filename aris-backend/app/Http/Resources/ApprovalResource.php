@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\FR109;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ApprovalResource extends JsonResource
 {
@@ -31,7 +31,7 @@ class ApprovalResource extends JsonResource
         return [
             'id' => $this->id,
             'document_type' => $this->document_type,
-            'reference_number'=> $referenceNumber,
+            'reference_number' => $referenceNumber,
             'revision' => $this->revision,
             'step' => $this->step,
             'status' => $this->status,

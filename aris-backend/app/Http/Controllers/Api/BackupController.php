@@ -36,6 +36,7 @@ class BackupController extends Controller
             ->when($filters['type'] ?? null, fn ($q, $type) => $q->where('type', $type))
             ->when($filters['status'] ?? null, fn ($q, $status) => $q->where('status', $status))
             ->paginate(15)->withQueryString();
+
         return BackupResource::collection($backups);
     }
 
@@ -43,6 +44,7 @@ class BackupController extends Controller
     {
         $backup = $this->backups->createRecord('manual', $request->user()->id);
         CreateBackupJob::dispatch($backup);
+
         return (new BackupResource($backup))->response()->setStatusCode(202);
     }
 
@@ -92,6 +94,7 @@ class BackupController extends Controller
     public function show(Backup $backup)
     {
         $this->authorize('view', $backup);
+
         return new BackupResource($backup->load(['creator:id,name', 'latestRestore']));
     }
 
@@ -103,6 +106,7 @@ class BackupController extends Controller
         if ($nextScheduledBackup->isPast()) {
             $nextScheduledBackup->addDay();
         }
+
         return response()->json([
             'last_successful_backup' => $last ? new BackupResource($last) : null,
             'next_scheduled_backup' => $nextScheduledBackup->toIso8601String(),
@@ -116,6 +120,7 @@ class BackupController extends Controller
         $this->authorize('download', $backup);
         abort_unless($backup->status === 'completed' && $backup->file_path && Storage::disk($backup->disk)->exists($backup->file_path), 404);
         $this->auditLogs->log(AuditAction::BACKUP_DOWNLOADED, AuditModule::BACKUP, $backup, [], [], 'Backup downloaded.', $request);
+
         return Storage::disk($backup->disk)->download($backup->file_path, $backup->file_name);
     }
 
@@ -123,6 +128,7 @@ class BackupController extends Controller
     {
         $this->authorize('delete', $backup);
         $this->backups->delete($backup);
+
         return response()->noContent();
     }
 

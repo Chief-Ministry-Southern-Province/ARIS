@@ -11,9 +11,7 @@ use Carbon\CarbonImmutable;
 
 class AnalyticsService
 {
-    public function __construct(private readonly InstitutionService $institutions)
-    {
-    }
+    public function __construct(private readonly InstitutionService $institutions) {}
 
     public function contextFor(User $user, ?string $period): array
     {
@@ -209,7 +207,7 @@ class AnalyticsService
             ->whereBetween('accident_date', [$start->toDateString(), $end->toDateString()])
             ->get(['id', 'latitude', 'longitude', 'location'])
             ->filter(fn (Accident $accident) => $this->hasSriLankanCoordinates($accident))
-            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2) . ':' . round((float) $accident->longitude, 2))
+            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2).':'.round((float) $accident->longitude, 2))
             ->map(function ($nearbyAccidents) {
                 $count = $nearbyAccidents->count();
 

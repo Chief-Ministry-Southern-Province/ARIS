@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\FR1044\StoreFR1044AttachmentRequest;
 use App\Http\Requests\FR1044\StoreFR1044Request;
 use App\Http\Requests\FR1044\UpdateFR1044Request;
-use App\Http\Requests\FR1044\StoreFR1044AttachmentRequest;
-use App\Http\Resources\FR1044Resource;
 use App\Http\Resources\EvidenceResource;
+use App\Http\Resources\FR1044Resource;
 use App\Models\AccidentCase;
-use App\Models\FR1044;
 use App\Models\AccidentEvidence;
-use App\Services\FR1044\FR1044Service;
+use App\Models\FR1044;
 use App\Services\EvidenceService;
+use App\Services\FR1044\FR1044Service;
 use App\Services\PDF\FR1044PdfGenerator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 
 class FR1044Controller extends Controller
 {
@@ -99,9 +98,9 @@ class FR1044Controller extends Controller
         $fr1044 = $this->fr1044Service
             ->getLatest($accidentCase);
 
-        if (!$fr1044) {
+        if (! $fr1044) {
             return response()->json([
-                'message' => 'FR104(4) not found.'
+                'message' => 'FR104(4) not found.',
             ], 404);
         }
 
@@ -123,7 +122,7 @@ class FR1044Controller extends Controller
     /**
      * Create draft.
      */
-    public function store(StoreFR1044Request $request,AccidentCase $accidentCase) 
+    public function store(StoreFR1044Request $request, AccidentCase $accidentCase)
     {
         $this->authorize('create', [FR1044::class, $accidentCase]);
 
@@ -143,7 +142,7 @@ class FR1044Controller extends Controller
     /**
      * Update draft.
      */
-    public function update(UpdateFR1044Request $request,FR1044 $fr1044) 
+    public function update(UpdateFR1044Request $request, FR1044 $fr1044)
     {
         $this->authorize('update', $fr1044);
 
@@ -154,6 +153,7 @@ class FR1044Controller extends Controller
             data: $request->validated()['data']
 
         );
+
         return new FR1044Resource($fr1044);
     }
 

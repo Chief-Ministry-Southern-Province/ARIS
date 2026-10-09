@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
@@ -28,7 +27,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return  $user->hasRole('system_admin') || $user->hasRole('subject_officer');
+        return $user->hasRole('system_admin') || $user->hasRole('subject_officer');
     }
 
     /**
@@ -36,7 +35,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return  $user->hasRole('system_admin') || $user->hasRole('subject_officer');
+        return $user->hasRole('system_admin') || $user->hasRole('subject_officer');
     }
 
     /**
@@ -44,7 +43,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return  $user->hasRole('system_admin') || $user->hasRole('subject_officer');
+        return $user->hasRole('system_admin') || $user->hasRole('subject_officer');
     }
 
     /**

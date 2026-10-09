@@ -2,12 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Models\Accident;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-
-use App\Models\Accident;
 
 class NewAccidentReportedNotification extends Notification
 {
@@ -16,8 +14,7 @@ class NewAccidentReportedNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Accident $accident)
-    {}
+    public function __construct(protected Accident $accident) {}
 
     /**
      * Get the notification's delivery channels.

@@ -73,7 +73,7 @@ class UpdateVehicleRequest extends FormRequest
                 'digits:4',
                 'integer',
                 'min:1950',
-                'max:' . date('Y'),
+                'max:'.date('Y'),
             ],
 
             'engine_number' => [
@@ -102,13 +102,11 @@ class UpdateVehicleRequest extends FormRequest
                 'date',
             ],
 
-
             'value' => [
                 'nullable',
                 'numeric',
                 'min:0',
             ],
-
 
             'registered_owner' => [
                 'required',

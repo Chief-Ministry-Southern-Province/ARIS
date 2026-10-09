@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Models\Institution;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Models\Institution;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -24,7 +24,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return  [
+        return [
             'name' => 'required|string|max:255',
             'nic' => [
                 'required',
@@ -34,7 +34,7 @@ class UpdateUserRequest extends FormRequest
             ],
             'mobile' => 'required|string|max:15',
             'institution_id' => 'required|exists:institutions,id',
-            'role'=> 'required|exists:roles,name',
+            'role' => 'required|exists:roles,name',
             'districts' => 'nullable|array',
             'districts.*' => 'string|in:Galle,Matara,Hambantota',
         ];

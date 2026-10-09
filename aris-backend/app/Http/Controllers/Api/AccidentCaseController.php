@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\AccidentCase\UpdateAccidentCaseRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\AccidentCase\AssignAccidentCaseRequest;
+use App\Http\Requests\AccidentCase\UpdateAccidentCaseRequest;
 use App\Http\Resources\AccidentCaseResource;
 use App\Models\AccidentCase;
 use App\Models\User;
 use App\Services\AccidentCaseService;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class AccidentCaseController extends Controller
 {
     protected AccidentCaseService $accidentCaseService;
-    
+
     public function __construct(AccidentCaseService $accidentCaseService)
     {
         $this->accidentCaseService = $accidentCaseService;
@@ -73,7 +73,7 @@ class AccidentCaseController extends Controller
             }
 
             fclose($output);
-        }, 'case-management-' . now()->format('Y-m-d') . '.csv', [
+        }, 'case-management-'.now()->format('Y-m-d').'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
@@ -134,5 +134,4 @@ class AccidentCaseController extends Controller
 
         return new AccidentCaseResource($case);
     }
-
 }

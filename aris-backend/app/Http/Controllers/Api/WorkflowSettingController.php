@@ -13,8 +13,7 @@ class WorkflowSettingController extends Controller
 {
     public function __construct(
         protected WorkflowSettingService $service
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -44,7 +43,7 @@ class WorkflowSettingController extends Controller
 
         return response()->json([
 
-            'message' => 'Workflow settings updated successfully.'
+            'message' => 'Workflow settings updated successfully.',
 
         ]);
     }

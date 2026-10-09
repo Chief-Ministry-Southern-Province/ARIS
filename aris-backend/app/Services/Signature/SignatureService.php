@@ -9,6 +9,7 @@ use App\Models\UserSignature;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Intervention\Image\EncodedImage;
 use Throwable;
 
 /**
@@ -89,7 +90,7 @@ final readonly class SignatureService
 
         $fileContents = $this->storage->contents($signature->path);
         $computedHash = $this->hasher->hash(
-            new \Intervention\Image\EncodedImage($fileContents, 'image/png')
+            new EncodedImage($fileContents, 'image/png')
         );
 
         if (! hash_equals($storedHash, $computedHash)) {

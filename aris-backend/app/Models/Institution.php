@@ -2,13 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use \App\Models\Scopes\InstitutionScope;
-
-use App\Models\Vehicle;
-use App\Models\Accident;
-use App\Models\AccidentCase;
+use Illuminate\Database\Eloquent\Model;
 
 class Institution extends Model
 {
@@ -23,7 +18,7 @@ class Institution extends Model
         'province',
         'head_of_institution',
         'parent_institution_id',
-        'direct_to_rdhs'
+        'direct_to_rdhs',
     ];
 
     public function parentInstitution()
@@ -55,5 +50,4 @@ class Institution extends Model
     {
         return $this->hasMany(AccidentCase::class);
     }
-
 }

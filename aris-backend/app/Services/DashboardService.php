@@ -13,9 +13,7 @@ use Carbon\CarbonImmutable;
 
 class DashboardService
 {
-    public function __construct(private readonly InstitutionService $institutions)
-    {
-    }
+    public function __construct(private readonly InstitutionService $institutions) {}
 
     public function statisticsFor(User $user): array
     {
@@ -212,7 +210,7 @@ class DashboardService
     {
         return $accidents
             ->filter(fn (Accident $accident) => $this->hasSriLankanCoordinates($accident))
-            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2) . ':' . round((float) $accident->longitude, 2))
+            ->groupBy(fn (Accident $accident) => round((float) $accident->latitude, 2).':'.round((float) $accident->longitude, 2))
             ->map(function ($nearbyAccidents) {
                 $count = $nearbyAccidents->count();
 

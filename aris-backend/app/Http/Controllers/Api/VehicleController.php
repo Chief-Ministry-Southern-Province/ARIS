@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\VehicleService;
-
 use App\Http\Requests\Vehicle\StoreVehicleRequest;
 use App\Http\Requests\Vehicle\UpdateVehicleRequest;
-use App\Models\Vehicle;
 use App\Models\Scopes\InstitutionScope;
+use App\Models\Vehicle;
+use App\Services\VehicleService;
+use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
     public function __construct(private VehicleService $vehicleService) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -43,8 +43,8 @@ class VehicleController extends Controller
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('vehicle_number', 'like', "%{$search}%")
-                    ->orWhere('brand', 'like', "%{$search}%")
-                    ->orWhere('model', 'like', "%{$search}%");
+                        ->orWhere('brand', 'like', "%{$search}%")
+                        ->orWhere('model', 'like', "%{$search}%");
                 });
             })
 

@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Institution;
 use App\Models\Accident;
+use App\Models\Institution;
 use App\Models\User;
 use App\Models\Vehicle;
-use App\Observers\InstitutionAuditObserver;
 use App\Observers\AccidentAuditObserver;
+use App\Observers\InstitutionAuditObserver;
 use App\Observers\UserAuditObserver;
 use App\Observers\VehicleAuditObserver;
 use Illuminate\Support\ServiceProvider;

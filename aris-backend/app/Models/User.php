@@ -12,18 +12,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-use App\Models\Institution;
-use App\Models\Vehicle;
-use App\Models\Accident;
-use App\Models\AccidentCase;
-use App\Models\AccidentEvidence;
-
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens,HasRoles;
+    use HasApiTokens, HasFactory,HasRoles,Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -56,7 +50,7 @@ class User extends Authenticatable
 
     public function hasInstitution(): bool
     {
-        return !is_null($this->institution_id);
+        return ! is_null($this->institution_id);
     }
 
     public function isSystemAdmin(): bool
@@ -71,7 +65,7 @@ class User extends Authenticatable
 
     public function driverAccidents()
     {
-        return $this->hasMany(Accident::class,'driver_id');
+        return $this->hasMany(Accident::class, 'driver_id');
     }
 
     public function uploadedEvidence()
@@ -113,5 +107,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(PasswordSetupToken::class);
     }
-    
 }

@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Models\Vehicle;
 use App\Models\User;
+use App\Models\Vehicle;
 
 class VehicleService
 {
-   public function createVehicle(array $data, User $user): Vehicle
+    public function createVehicle(array $data, User $user): Vehicle
     {
         return Vehicle::create($data);
     }
 
-    public function updateVehicle(Vehicle $vehicle,array $data): Vehicle 
+    public function updateVehicle(Vehicle $vehicle, array $data): Vehicle
     {
 
         $vehicle->update($data);

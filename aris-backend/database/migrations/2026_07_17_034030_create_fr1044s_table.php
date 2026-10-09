@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fr1044s', function (Blueprint $table) {
-            
+
             $table->id();
 
             // A resubmission keeps the same reference number and gets a new revision.

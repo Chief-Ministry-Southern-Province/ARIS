@@ -17,22 +17,22 @@ class EnsureInstitutionAssigned
     {
         $user = auth()->user();
 
-        if(!$user){
+        if (! $user) {
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 401);
         }
 
-        if($user->hasRole('system_admin')){
+        if ($user->hasRole('system_admin')) {
             return $next($request);
         }
 
-        if(!$user->institution_id){
+        if (! $user->institution_id) {
             return response()->json([
-                'message' => 'User does not have an institution assigned'
+                'message' => 'User does not have an institution assigned',
             ], 403);
         }
-        
+
         return $next($request);
     }
 }

@@ -8,6 +8,7 @@ use Minishlink\WebPush\VAPID;
 class GenerateWebPushVapidKeys extends Command
 {
     protected $signature = 'webpush:generate-vapid';
+
     protected $description = 'Generate a VAPID key pair for Web Push configuration';
 
     public function handle(): int

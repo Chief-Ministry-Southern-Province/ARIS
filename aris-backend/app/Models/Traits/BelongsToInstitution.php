@@ -11,7 +11,7 @@ trait BelongsToInstitution
         /**
          * Apply the InstitutionScope to the model.
          */
-        static::addGlobalScope(new InstitutionScope());
+        static::addGlobalScope(new InstitutionScope);
 
         /**
          * Set the institution_id to the authenticated user's institution_id.
@@ -20,7 +20,7 @@ trait BelongsToInstitution
 
         //     if (!auth()->check()) {
         //         return;
-        //     } 
+        //     }
 
         //     $user = auth()->user();
 

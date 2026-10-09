@@ -4,8 +4,6 @@ namespace App\Policies;
 
 use App\Models\Institution;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
-use App\Services\InstitutionManagementService;
 use App\Services\InstitutionService;
 
 class InstitutionPolicy
@@ -23,7 +21,7 @@ class InstitutionPolicy
      */
     public function view(User $user, Institution $institution): bool
     {
-         return app(InstitutionService::class)->canAccessInstitution($user, $institution);
+        return app(InstitutionService::class)->canAccessInstitution($user, $institution);
     }
 
     /**

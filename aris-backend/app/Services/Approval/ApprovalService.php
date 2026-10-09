@@ -3,27 +3,27 @@
 namespace App\Services\Approval;
 
 use App\DTOs\WorkflowStep;
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
+use App\Http\Resources\FR1043Resource;
+use App\Http\Resources\FR1044Resource;
+use App\Http\Resources\FR109Resource;
 use App\Models\AccidentCase;
 use App\Models\Approval;
 use App\Models\FR1043;
 use App\Models\FR1044;
 use App\Models\FR109;
 use App\Models\User;
-use App\Http\Resources\FR1043Resource;
-use App\Http\Resources\FR1044Resource;
-use App\Http\Resources\FR109Resource;
-use App\Services\Workflow\WorkflowResolverService;
-use App\Services\AccidentTimelineService;
-use Illuminate\Support\Facades\DB;
-use RuntimeException;
 use App\Models\UserSignature;
-use Illuminate\Validation\ValidationException;
-use App\Services\Notifications\NotificationService;
+use App\Services\AccidentTimelineService;
 use App\Services\AuditLogService;
-use App\Enums\AuditAction;
-use App\Enums\AuditModule;
+use App\Services\Notifications\NotificationService;
 use App\Services\Signature\SignatureCaptionService;
 use App\Services\Signature\SignatureService;
+use App\Services\Workflow\WorkflowResolverService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class ApprovalService
 {
@@ -70,10 +70,10 @@ class ApprovalService
     /**
      * Create approval workflow for a document.
      */
-    public function submit(AccidentCase $case,string $documentType,int $revision): void 
+    public function submit(AccidentCase $case, string $documentType, int $revision): void
     {
         set_time_limit(120);
-        
+
         $exists = Approval::query()
             ->where('accident_case_id', $case->id)
             ->where('document_type', $documentType)
@@ -135,7 +135,7 @@ class ApprovalService
     /**
      * Resolve the user who should approve a workflow step.
      */
-    protected function findApprover(WorkflowStep $step): User 
+    protected function findApprover(WorkflowStep $step): User
     {
         if ($step->approverId) {
             return User::query()
@@ -188,7 +188,7 @@ class ApprovalService
     /**
      * Approve current step.
      */
-    public function approve(Approval $approval,User $user,?string $comments = null): Approval 
+    public function approve(Approval $approval, User $user, ?string $comments = null): Approval
     {
 
         abort_unless(
@@ -283,8 +283,8 @@ class ApprovalService
             if ($nextApproval) {
                 $nextApproval->update([
                     'status' => 'PENDING',
-                ]);   
-                
+                ]);
+
                 DB::afterCommit(function () use ($nextApproval) {
                     $this->notificationService->notifyNextApprover($nextApproval);
                 });
@@ -338,9 +338,8 @@ class ApprovalService
                 $approval->revision,
                 step: $approval->step,
             );
-           
 
-            if (!$nextApproval) {
+            if (! $nextApproval) {
                 if ($approval->document_type === 'FR109' && $document) {
                     $this->timelineService->create(
                         accidentCase: $accidentCase,
@@ -381,7 +380,7 @@ class ApprovalService
     /**
      * Reject current step.
      */
-    public function reject(Approval $approval,User $user,string $comments): Approval 
+    public function reject(Approval $approval, User $user, string $comments): Approval
     {
         abort_unless(
             $approval->approver_id === $user->id,
@@ -471,7 +470,7 @@ class ApprovalService
     /**
      * Pending approvals for logged-in user.
      */
-    public function getPendingApprovals(User $user,?string $search = null)
+    public function getPendingApprovals(User $user, ?string $search = null)
     {
         return Approval::query()
 
@@ -564,6 +563,7 @@ class ApprovalService
             'total' => (int) $counts->total,
         ];
     }
+
     /**
      * Approval history.
      */
@@ -622,5 +622,4 @@ class ApprovalService
 
         return $signature;
     }
-
 }

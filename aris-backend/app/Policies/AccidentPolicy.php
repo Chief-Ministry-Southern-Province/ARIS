@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Accident;
 use App\Models\User;
 use App\Services\InstitutionService;
-use Illuminate\Auth\Access\Response;
 
 class AccidentPolicy
 {

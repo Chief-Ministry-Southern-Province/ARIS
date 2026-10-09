@@ -9,9 +9,9 @@ use App\Models\Institution;
 use App\Models\User;
 use App\Services\BackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -36,6 +36,7 @@ class BackupManagementTest extends TestCase
         }
         $role->syncPermissions($permissions);
         $user->assignRole($role);
+
         return $user;
     }
 

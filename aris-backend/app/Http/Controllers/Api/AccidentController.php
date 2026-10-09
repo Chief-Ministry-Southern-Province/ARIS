@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\AccidentService;
-
 use App\Http\Requests\Accident\StoreAccidentRequest;
 use App\Http\Requests\Accident\UpdateAccidentRequest;
 use App\Models\Accident;
+use App\Services\AccidentService;
+use Illuminate\Http\Request;
 
 class AccidentController extends Controller
 {
@@ -87,6 +86,7 @@ class AccidentController extends Controller
             ]),
         ], 201);
     }
+
     /**
      * Display the specified resource.
      */

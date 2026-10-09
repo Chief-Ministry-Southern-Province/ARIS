@@ -61,8 +61,8 @@ final class PDFService
 
         File::ensureDirectoryExists($tempDir, 0755, true);
 
-        $defaultConfig = (new ConfigVariables())->getDefaults();
-        $defaultFontConfig = (new FontVariables())->getDefaults();
+        $defaultConfig = (new ConfigVariables)->getDefaults();
+        $defaultFontConfig = (new FontVariables)->getDefaults();
 
         $config = array_merge([
             'mode' => config('mpdf.mode'),
@@ -81,7 +81,7 @@ final class PDFService
             'default_font' => config('mpdf.default_font'),
             'autoScriptToLang' => true,
             'autoLangToFont' => true,
-            'languageToFont' => new ArisLanguageToFont(),
+            'languageToFont' => new ArisLanguageToFont,
         ], $this->renderingOptions($options));
 
         return new Mpdf($config);
@@ -100,7 +100,7 @@ final class PDFService
     {
         return [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => sprintf('%s; filename="%s"', $disposition, addcslashes($filename, "\\\"")),
+            'Content-Disposition' => sprintf('%s; filename="%s"', $disposition, addcslashes($filename, '\\"')),
             // PDFs are rendered from the latest document data and Blade template.
             // Prevent the browser from reusing an earlier preview/download.
             'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',

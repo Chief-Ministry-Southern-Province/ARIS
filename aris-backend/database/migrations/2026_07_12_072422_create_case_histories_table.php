@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('case_histories', function (Blueprint $table) {
-            
+
             $table->id();
 
             $table->foreignId('accident_case_id')
@@ -31,10 +31,10 @@ return new class extends Migration
 
             $table->json('old_value')
                 ->nullable();
-            
+
             $table->json('new_value')
                 ->nullable();
-            
+
             $table->timestamps();
         });
     }

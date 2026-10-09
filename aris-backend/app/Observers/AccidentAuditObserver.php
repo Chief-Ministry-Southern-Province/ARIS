@@ -6,5 +6,8 @@ use App\Enums\AuditModule;
 
 class AccidentAuditObserver extends AuditsModelChanges
 {
-    protected function module(): AuditModule { return AuditModule::ACCIDENTS; }
+    protected function module(): AuditModule
+    {
+        return AuditModule::ACCIDENTS;
+    }
 }

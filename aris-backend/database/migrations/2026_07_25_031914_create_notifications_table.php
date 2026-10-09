@@ -33,7 +33,7 @@ return new class extends Migration
 
             $table->json('data')->nullable();
 
-             $table->foreignId('user_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
 

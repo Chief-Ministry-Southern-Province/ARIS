@@ -17,7 +17,7 @@ class UpdateAccidentCaseRequest extends FormRequest
 
             'priority' => [
                 'nullable',
-                'in:LOW,MEDIUM,HIGH,URGENT'
+                'in:LOW,MEDIUM,HIGH,URGENT',
             ],
         ];
     }

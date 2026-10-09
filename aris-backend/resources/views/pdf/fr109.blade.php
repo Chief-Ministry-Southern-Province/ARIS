@@ -186,8 +186,10 @@
             }
             .form-title-en {
                 font-family: dejavuserifcondensed, serif;
-                font-size: 10pt;
-                line-height: 1.02;
+                font-size: 11pt;
+                font-weight: bold;
+                text-transform: uppercase;
+                line-height: 1.05;
             }
             .admin {
                 height: 14mm;
@@ -196,10 +198,18 @@
             }
             .admin-block {
                 display: inline-block;
-                width: 45mm;
+                width: 48mm;
                 text-align: right;
                 font-size: 8.5pt;
-                line-height: 1.02;
+                line-height: 1.05;
+            }
+            .form-number {
+                font-size: 11.5pt;
+                font-weight: bold;
+            }
+            .admin-subcode {
+                font-size: 7.5pt;
+                line-height: 1.05;
             }
             .form-reference {
                 padding: 3mm 3.5mm !important;
@@ -735,9 +745,9 @@
                     <td class="admin">
                         <div class="admin-block">
                             <span lang="si">පොදු</span> /
-                            <span lang="ta">பொது</span> / General <b>285</b
-                            ><br />(F* S., T. &amp; E.) 12/76<br />[A4* S., T.
-                            &amp; E.06/2023-Amended]
+                            <span lang="ta">பொது</span> / General <span class="form-number">285</span><br />
+                            <span class="admin-subcode">(F* S., T. &amp; E.) 12/76</span><br />
+                            <span class="admin-subcode">[A4* S., T. &amp; E. 06/2023 - Amended]</span>
                         </div>
                     </td>
                 </tr>
@@ -749,10 +759,10 @@
                         <div class="form-title-si" style="font-family: iskoolapota, sans-serif; font-size: 14pt; font-weight: bold; line-height: 1;">
                             මූ. රෙ. 109 යටතේ අලාභයන් පොතෙන් කපා හැරීම සඳහා<br />ඉල්ලුම් පත්‍රය
                         </div>
-                        <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 14pt; line-height: 2">
+                        <div class="form-title-ta" lang="ta" style="font-family: notosanstamil, sans-serif; font-size: 10pt; line-height: 1.06">
                             நி. பி. 109 இன் படி இழப்புக்களை பதியறித்ததற்கான<br />விண்ணப்பம்
                         </div>
-                        <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 9pt; line-height: 1.02;">
+                        <div class="form-title-en" style="font-family: dejavuserifcondensed, serif; font-size: 11pt; font-weight: bold; text-transform: uppercase; line-height: 1.05;">
                             APPLICATION FOR WRITE OFF OF LOSSES IN TERMS OF F.R. 109
                         </div>
                     </td>

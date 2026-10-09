@@ -40,7 +40,7 @@ class Approval extends Model
 
     public function approver()
     {
-        return $this->belongsTo(User::class,'approver_id');
+        return $this->belongsTo(User::class, 'approver_id');
     }
 
     public function signature()

@@ -17,8 +17,7 @@ class DocumentRejectedNotification extends Notification
         private readonly Model $document,
         private readonly Approval $approval,
         private readonly string $reason,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the notification's delivery channels.

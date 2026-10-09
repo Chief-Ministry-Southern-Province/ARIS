@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Models\AuditLog;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class AuditLogService
 {

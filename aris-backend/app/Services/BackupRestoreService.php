@@ -36,7 +36,9 @@ class BackupRestoreService
             $this->validateArchive($archivePath);
 
             $emergencyBackup = $this->backups->createRecord('automatic', $requestedBy);
-            if (! $this->backups->run($emergencyBackup)) throw new RuntimeException('Emergency backup failed; restore was not started.');
+            if (! $this->backups->run($emergencyBackup)) {
+                throw new RuntimeException('Emergency backup failed; restore was not started.');
+            }
             $restore->update(['emergency_backup_id' => $emergencyBackup->id]);
 
             Artisan::call('down', ['--retry' => 60]);
@@ -69,26 +71,34 @@ class BackupRestoreService
             $this->auditLogs->log(AuditAction::BACKUP_RESTORE_FAILED, AuditModule::BACKUP, $backup, [], [], 'Backup restore failed; review protected server logs and emergency backup.');
             throw $exception;
         } finally {
-            if ($maintenanceEnabled) Artisan::call('up');
+            if ($maintenanceEnabled) {
+                Artisan::call('up');
+            }
             File::deleteDirectory($temporaryDirectory);
         }
     }
 
     private function assertRestorable(Backup $backup): void
     {
-        if ($backup->status !== 'completed' || ! $backup->file_path || ! $backup->checksum || ! Storage::disk($backup->disk)->exists($backup->file_path)) throw new RuntimeException('The selected backup is not available for restoration.');
+        if ($backup->status !== 'completed' || ! $backup->file_path || ! $backup->checksum || ! Storage::disk($backup->disk)->exists($backup->file_path)) {
+            throw new RuntimeException('The selected backup is not available for restoration.');
+        }
     }
 
     private function copyAndVerifyArchive(Backup $backup, string $destination): void
     {
         $source = Storage::disk($backup->disk)->readStream($backup->file_path);
         $target = fopen($destination, 'wb');
-        if ($source === false || $target === false) throw new RuntimeException('Unable to prepare the backup archive for restoration.');
+        if ($source === false || $target === false) {
+            throw new RuntimeException('Unable to prepare the backup archive for restoration.');
+        }
         $hash = hash_init('sha256');
         try {
             while (! feof($source)) {
                 $chunk = fread($source, 8192);
-                if ($chunk === false) throw new RuntimeException('Unable to read the backup archive.');
+                if ($chunk === false) {
+                    throw new RuntimeException('Unable to read the backup archive.');
+                }
                 hash_update($hash, $chunk);
                 fwrite($target, $chunk);
             }
@@ -96,23 +106,35 @@ class BackupRestoreService
             fclose($source);
             fclose($target);
         }
-        if (! hash_equals($backup->checksum, hash_final($hash))) throw new RuntimeException('Backup checksum verification failed.');
+        if (! hash_equals($backup->checksum, hash_final($hash))) {
+            throw new RuntimeException('Backup checksum verification failed.');
+        }
     }
 
     private function validateArchive(string $archivePath): void
     {
         $zip = new ZipArchive;
-        if ($zip->open($archivePath) !== true) throw new RuntimeException('The backup archive cannot be opened.');
+        if ($zip->open($archivePath) !== true) {
+            throw new RuntimeException('The backup archive cannot be opened.');
+        }
         try {
             $databaseFound = false;
             $manifest = null;
             for ($index = 0; $index < $zip->numFiles; $index++) {
                 $name = $zip->getNameIndex($index);
-                if ($name === 'database/aris.sql') $databaseFound = true;
-                if ($name === 'backup-manifest.json') $manifest = json_decode($zip->getFromIndex($index), true);
-                if (! $this->isAllowedArchivePath($name)) throw new RuntimeException('Backup archive contains an unsafe file path.');
+                if ($name === 'database/aris.sql') {
+                    $databaseFound = true;
+                }
+                if ($name === 'backup-manifest.json') {
+                    $manifest = json_decode($zip->getFromIndex($index), true);
+                }
+                if (! $this->isAllowedArchivePath($name)) {
+                    throw new RuntimeException('Backup archive contains an unsafe file path.');
+                }
             }
-            if (! $databaseFound || ! is_array($manifest) || ($manifest['format_version'] ?? null) !== 1 || ($manifest['source_directories'] ?? null) !== config('backups.source_directories')) throw new RuntimeException('Backup archive is not compatible with the current safe restore format.');
+            if (! $databaseFound || ! is_array($manifest) || ($manifest['format_version'] ?? null) !== 1 || ($manifest['source_directories'] ?? null) !== config('backups.source_directories')) {
+                throw new RuntimeException('Backup archive is not compatible with the current safe restore format.');
+            }
         } finally {
             $zip->close();
         }
@@ -121,7 +143,9 @@ class BackupRestoreService
     private function extractArchive(string $archivePath, string $destination): void
     {
         $zip = new ZipArchive;
-        if ($zip->open($archivePath) !== true || ! $zip->extractTo($destination)) throw new RuntimeException('Backup archive extraction failed.');
+        if ($zip->open($archivePath) !== true || ! $zip->extractTo($destination)) {
+            throw new RuntimeException('Backup archive extraction failed.');
+        }
         $zip->close();
     }
 
@@ -129,13 +153,17 @@ class BackupRestoreService
     {
         foreach (config('backups.source_directories') as $source) {
             $archiveDirectory = $contentsDirectory.DIRECTORY_SEPARATOR.'uploads'.DIRECTORY_SEPARATOR.$source['disk'].DIRECTORY_SEPARATOR.$source['path'];
-            if (! is_dir($archiveDirectory)) throw new RuntimeException('Backup archive is missing a managed upload directory.');
+            if (! is_dir($archiveDirectory)) {
+                throw new RuntimeException('Backup archive is missing a managed upload directory.');
+            }
             $disk = Storage::disk($source['disk']);
             $disk->deleteDirectory($source['path']);
             foreach (File::allFiles($archiveDirectory) as $file) {
                 $relativePath = str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
                 $stream = fopen($file->getPathname(), 'rb');
-                if ($stream === false || ! $disk->put($source['path'].'/'.$relativePath, $stream)) throw new RuntimeException('Unable to restore an uploaded file.');
+                if ($stream === false || ! $disk->put($source['path'].'/'.$relativePath, $stream)) {
+                    throw new RuntimeException('Unable to restore an uploaded file.');
+                }
                 fclose($stream);
             }
         }
@@ -143,15 +171,21 @@ class BackupRestoreService
 
     private function restoreDatabase(string $sqlPath): void
     {
-        if (! is_file($sqlPath)) throw new RuntimeException('Database export is missing from the backup.');
+        if (! is_file($sqlPath)) {
+            throw new RuntimeException('Database export is missing from the backup.');
+        }
         $connection = config('database.default');
-        if (config("database.connections.{$connection}.driver") !== 'mysql') throw new RuntimeException('Only MySQL restores are enabled.');
+        if (config("database.connections.{$connection}.driver") !== 'mysql') {
+            throw new RuntimeException('Only MySQL restores are enabled.');
+        }
         $settings = config("database.connections.{$connection}");
         $process = new Process([
             config('backups.mysql_binary'), '--host='.$settings['host'], '--port='.(string) $settings['port'], '--user='.$settings['username'], '--database='.$settings['database'], '--execute=source '.str_replace('\\', '/', $sqlPath),
         ], null, ['MYSQL_PWD' => $settings['password']], null, 3600);
         $process->run();
-        if (! $process->isSuccessful()) throw new RuntimeException('Database restore failed.');
+        if (! $process->isSuccessful()) {
+            throw new RuntimeException('Database restore failed.');
+        }
     }
 
     private function preserveCompletedBackup(Backup $backup): void
@@ -179,12 +213,19 @@ class BackupRestoreService
 
     private function isAllowedArchivePath(string $path): bool
     {
-        if (str_contains($path, '\\') || str_starts_with($path, '/') || str_contains($path, '../')) return false;
-        if (in_array($path, ['database/', 'database/aris.sql', 'backup-manifest.json'], true)) return true;
+        if (str_contains($path, '\\') || str_starts_with($path, '/') || str_contains($path, '../')) {
+            return false;
+        }
+        if (in_array($path, ['database/', 'database/aris.sql', 'backup-manifest.json'], true)) {
+            return true;
+        }
         foreach (config('backups.source_directories') as $source) {
             $directory = 'uploads/'.$source['disk'].'/'.$source['path'];
-            if ($path === $directory.'/' || str_starts_with($path, $directory.'/')) return true;
+            if ($path === $directory.'/' || str_starts_with($path, $directory.'/')) {
+                return true;
+            }
         }
+
         return false;
     }
 }

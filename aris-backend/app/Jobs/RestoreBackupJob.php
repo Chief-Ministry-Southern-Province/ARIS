@@ -15,6 +15,7 @@ class RestoreBackupJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $timeout = 7200;
+
     public int $tries = 1;
 
     public function __construct(public BackupRestore $restore) {}

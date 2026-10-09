@@ -31,11 +31,11 @@ class PushSubscriptionController extends Controller
             ->first();
 
         $attributes = [
-                'user_id' => $request->user()->id,
-                'endpoint' => $validated['endpoint'],
-                'public_key' => $validated['keys']['p256dh'],
-                'auth_token' => $validated['keys']['auth'],
-                'content_encoding' => $validated['contentEncoding'] ?? 'aes128gcm',
+            'user_id' => $request->user()->id,
+            'endpoint' => $validated['endpoint'],
+            'public_key' => $validated['keys']['p256dh'],
+            'auth_token' => $validated['keys']['auth'],
+            'content_encoding' => $validated['contentEncoding'] ?? 'aes128gcm',
         ];
 
         if ($subscription) {

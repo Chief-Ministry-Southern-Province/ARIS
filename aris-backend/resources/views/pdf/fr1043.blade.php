@@ -189,8 +189,13 @@
         }
 
         .form-number {
-            font-size: 8.5pt;
+            font-size: 11.5pt;
             font-weight: bold;
+        }
+
+        .admin-subcode {
+            font-size: 7.5pt;
+            line-height: 1.05;
         }
 
         /* Shared FR109-style document header. */
@@ -220,8 +225,10 @@
 
         .form-title-en {
             font-family: dejavuserifcondensed, serif;
-            font-size: 9pt;
-            line-height: 1.02;
+            font-size: 11pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 1.05;
         }
 
         /* Fixed FR109-compatible approval grid. Keep this local so the
@@ -810,8 +817,8 @@
                     <div class="admin-block">
                         <span lang="si">පොදු</span> / <span lang="ta">பொது</span> / General
                         <span class="form-number">283</span><br>
-                        (F2* S., T. &amp; E.) 12/76<br>
-                        (A4* S., T. &amp; E. 06/2023 - Amended)
+                        <span class="admin-subcode">(F2* S., T. &amp; E.) 12/76</span><br>
+                        <span class="admin-subcode">(A4* S., T. &amp; E. 06/2023 - Amended)</span>
                     </div>
                 </td>
             </tr>

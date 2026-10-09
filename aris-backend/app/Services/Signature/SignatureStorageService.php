@@ -40,7 +40,7 @@ final readonly class SignatureStorageService
             $this->extensionFor($image),
         );
 
-        if (!$this->disk()->put($path, $this->encryption->encrypt($image->toString()))) {
+        if (! $this->disk()->put($path, $this->encryption->encrypt($image->toString()))) {
             throw new RuntimeException("Unable to store image at [{$path}].");
         }
 

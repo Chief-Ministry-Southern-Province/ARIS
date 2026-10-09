@@ -11,9 +11,7 @@ use RuntimeException;
 
 class PasswordSetupService
 {
-    public function __construct(private TextitService $textit)
-    {
-    }
+    public function __construct(private TextitService $textit) {}
 
     /**
      * Creates a new one-time token, invalidates all earlier unused links and sends it by SMS.
@@ -40,7 +38,7 @@ class PasswordSetupService
         try {
             $this->textit->send(
                 $user->mobile,
-                'ARIS account setup: '. $this->setupUrl($token).' This link expires in 8 hours.'
+                'ARIS account setup: '.$this->setupUrl($token).' This link expires in 8 hours.'
             );
         } catch (\Throwable $exception) {
             PasswordSetupToken::query()

@@ -11,7 +11,18 @@ class BackupRestore extends Model
 
     protected $casts = ['started_at' => 'datetime', 'completed_at' => 'datetime'];
 
-    public function backup(): BelongsTo { return $this->belongsTo(Backup::class); }
-    public function requester(): BelongsTo { return $this->belongsTo(User::class, 'requested_by'); }
-    public function emergencyBackup(): BelongsTo { return $this->belongsTo(Backup::class, 'emergency_backup_id'); }
+    public function backup(): BelongsTo
+    {
+        return $this->belongsTo(Backup::class);
+    }
+
+    public function requester(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'requested_by');
+    }
+
+    public function emergencyBackup(): BelongsTo
+    {
+        return $this->belongsTo(Backup::class, 'emergency_backup_id');
+    }
 }

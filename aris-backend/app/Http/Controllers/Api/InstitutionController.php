@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Institution;
 use App\Http\Requests\Institution\StoreInstitutionRequest;
 use App\Http\Requests\Institution\UpdateInstitutionRequest;
+use App\Models\Institution;
 use App\Services\InstitutionManagementService;
+use Illuminate\Http\Request;
 
 class InstitutionController extends Controller
 {
-
-    public function __construct(protected InstitutionManagementService $institutionManagementService){    
-    }
-       
+    public function __construct(protected InstitutionManagementService $institutionManagementService) {}
 
     /**
      * Display a listing of the resource.
@@ -29,9 +26,9 @@ class InstitutionController extends Controller
         $query->when($search, function ($query) use ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
-                ->orWhere('district', 'LIKE', "%{$search}%")
-                ->orWhere('province', 'LIKE', "%{$search}%")
-                ->orWhere('type', 'LIKE', "%{$search}%");
+                    ->orWhere('district', 'LIKE', "%{$search}%")
+                    ->orWhere('province', 'LIKE', "%{$search}%")
+                    ->orWhere('type', 'LIKE', "%{$search}%");
             });
         });
 
@@ -53,7 +50,7 @@ class InstitutionController extends Controller
 
         return response()->json([
             'message' => 'Institution created successfully',
-            'institution' => $institution
+            'institution' => $institution,
         ], 201);
     }
 
@@ -89,7 +86,7 @@ class InstitutionController extends Controller
 
         return response()->json([
             'message' => 'Institution updated successfully',
-            'institution' => $institution
+            'institution' => $institution,
         ]);
     }
 
@@ -107,13 +104,15 @@ class InstitutionController extends Controller
         return response()->json(['message' => 'Institution deleted successfully']);
     }
 
-    public function allowedTypes(InstitutionManagementService $service,Request $request) {
+    public function allowedTypes(InstitutionManagementService $service, Request $request)
+    {
         return response()->json([
-            'types' => $service->allowedInstitutionTypes($request->user())
+            'types' => $service->allowedInstitutionTypes($request->user()),
         ]);
     }
 
-    public function getParentInstitutions(Request $request, InstitutionManagementService $service) {
+    public function getParentInstitutions(Request $request, InstitutionManagementService $service)
+    {
         if (! $this->authorize('viewAny', Institution::class)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -123,12 +122,12 @@ class InstitutionController extends Controller
         return response()->json($parentInstitutions);
     }
 
-      public function getVisibleInstitutionsForUser(InstitutionManagementService $service,Request $request)
+    public function getVisibleInstitutionsForUser(InstitutionManagementService $service, Request $request)
     {
-        if(! $this->authorize('viewAny', Institution::class)) {
+        if (! $this->authorize('viewAny', Institution::class)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        return  $service->getVisibleInstitutions($request->user())->get();
+        return $service->getVisibleInstitutions($request->user())->get();
     }
 }

@@ -13,9 +13,7 @@ use Illuminate\Validation\Rule;
 
 class AuditLogController extends Controller
 {
-    public function __construct(private AuditLogService $auditLogs)
-    {
-    }
+    public function __construct(private AuditLogService $auditLogs) {}
 
     public function index(Request $request)
     {

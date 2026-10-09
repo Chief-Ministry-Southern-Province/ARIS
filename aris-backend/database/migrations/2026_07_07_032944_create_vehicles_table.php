@@ -50,20 +50,19 @@ return new class extends Migration
                 'PETROL',
                 'DIESEL',
                 'HYBRID',
-                'ELECTRIC'
+                'ELECTRIC',
             ]);
 
             $table->enum('status', [
                 'ACTIVE',
                 'UNDER_MAINTENANCE',
                 'OUT_OF_SERVICE',
-                'DISPOSED'
+                'DISPOSED',
             ])->default('ACTIVE');
 
             $table->foreignId('institution_id')
-            ->constrained()
-            ->cascadeOnDelete();
-
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });

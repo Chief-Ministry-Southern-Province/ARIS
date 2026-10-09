@@ -11,13 +11,13 @@ class NextApprovalNotification extends Notification
     use Queueable;
 
     public const TYPE = 'APPROVAL_REQUIRED';
+
     public const RECOMMENDATION_TYPE = 'RECOMMENDATION_REQUIRED';
 
     public function __construct(
         private readonly Approval $approval,
         private readonly ?string $referenceNumber,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the notification's delivery channels.

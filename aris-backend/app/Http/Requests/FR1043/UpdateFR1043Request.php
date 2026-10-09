@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\FR1043;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateFR1043Request extends FormRequest
@@ -31,7 +30,7 @@ class UpdateFR1043Request extends FormRequest
 
             'status' => [
                 'required',
-                'in:DRAFT,CHANGES_REQUESTED'
+                'in:DRAFT,CHANGES_REQUESTED',
             ],
 
             'data' => [
@@ -42,61 +41,61 @@ class UpdateFR1043Request extends FormRequest
             'data.department' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'data.date' => [
                 'required',
-                'date'
+                'date',
             ],
 
             'data.place' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'data.natureOfLoss' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.causeOfLoss' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.policeStation' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.policeReportDate' => [
                 'nullable',
-                'date'
+                'date',
             ],
 
             'data.investigation' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.securityArrangements' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.preventionArrangements' => [
                 'nullable',
-                'string'
+                'string',
             ],
 
             'data.items' => [
-                'array'
+                'array',
             ],
 
             'data.officers' => [
-                'array'
+                'array',
             ],
 
         ];

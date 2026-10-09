@@ -17,8 +17,7 @@ class FR109Service
         protected ApprovalService $approvalService,
         protected AccidentTimelineService $timelineService,
         protected FRSubmissionValidationService $submissionValidator,
-    ) {
-    }
+    ) {}
 
     public function saveDraft(AccidentCase $case, User $user, array $data): FR109
     {
@@ -258,5 +257,4 @@ class FR109Service
 
         return $data;
     }
-
 }

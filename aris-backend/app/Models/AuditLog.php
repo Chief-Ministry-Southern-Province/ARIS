@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AuditLog extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'user_id',
         'institution_id',
@@ -24,12 +24,12 @@ class AuditLog extends Model
         'ip_address',
         'user_agent',
         'url',
-        'method'
+        'method',
     ];
 
     protected $casts = [
         'old_values' => 'array',
-        'new_values' => 'array'
+        'new_values' => 'array',
     ];
 
     public function user(): BelongsTo

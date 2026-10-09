@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FR1044 extends Model
 {
     protected $table = 'fr1044s';
-    
+
     protected $fillable = [
         'accident_case_id',
         'reference_number',

@@ -2,19 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Institution;
-
 use App\Models\Traits\BelongsToInstitution;
-
-use App\Models\User;
-use App\Models\Accident;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Vehicle extends Model
 {
-    use HasFactory;
     use BelongsToInstitution;
+    use HasFactory;
 
     protected $fillable = [
         'vehicle_number',
@@ -32,7 +27,7 @@ class Vehicle extends Model
         'fuel_type',
         'status',
         'institution_id',
-        'driver_id'
+        'driver_id',
     ];
 
     public function institution()

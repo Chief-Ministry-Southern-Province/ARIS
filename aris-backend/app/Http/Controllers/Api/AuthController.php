@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Enums\AuditAction;
 use App\Enums\AuditModule;
-use App\Services\AuditLogService;
+use App\Http\Controllers\Controller;
 use App\Models\PushSubscription;
+use App\Models\User;
+use App\Services\AuditLogService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuditLogService $auditLogs)
-    {
-    }
+    public function __construct(private AuditLogService $auditLogs) {}
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
 
         $credentials = $request->validate([
             'nic' => ['required'],
@@ -51,10 +50,12 @@ class AuthController extends Controller
         }
 
         $this->auditLogs->log(AuditAction::LOGIN_FAILED, AuditModule::AUTH, null, [], [], 'Failed login attempt.', $request);
+
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
 
         $user = $request->user();
         $this->auditLogs->log(AuditAction::LOGOUT, AuditModule::AUTH, $user, [], [], 'Logged out.', $request);
@@ -66,19 +67,21 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-    public function profile(Request $request){
+    public function profile(Request $request)
+    {
         return response()->json([
             'user' => $request->user()->load('institution'),
             'role' => $request->user()->getRoleNames(),
         ]);
     }
 
-    public function updateProfile(Request $request){
+    public function updateProfile(Request $request)
+    {
         $user = $request->user();
 
         $validatedData = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'nic' => 'sometimes|required|string|max:20|unique:users,nic,' . $user->id,
+            'nic' => 'sometimes|required|string|max:20|unique:users,nic,'.$user->id,
             'mobile' => 'sometimes|required|string|max:15',
             'password' => 'sometimes|required|string|min:8|confirmed',
         ]);
@@ -92,7 +95,8 @@ class AuthController extends Controller
         return response()->json(['message' => 'Profile updated successfully', 'user' => $user]);
     }
 
-    public function changePassword(Request $request){
+    public function changePassword(Request $request)
+    {
 
         $user = $request->user();
 
@@ -101,7 +105,7 @@ class AuthController extends Controller
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        if (!Hash::check($validatedData['current_password'], $user->password)) {
+        if (! Hash::check($validatedData['current_password'], $user->password)) {
             return response()->json(['message' => 'Current password is incorrect'], 400);
         }
 
@@ -122,5 +126,4 @@ class AuthController extends Controller
             'message' => 'Password changed successfully. Please log in again.',
         ]);
     }
-
 }

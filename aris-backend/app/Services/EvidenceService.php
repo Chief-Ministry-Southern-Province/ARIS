@@ -2,15 +2,13 @@
 
 namespace App\Services;
 
+use App\Http\Resources\EvidenceResource;
 use App\Models\Accident;
 use App\Models\AccidentEvidence;
-use App\Models\User;
 use App\Models\FR1044;
-use App\Services\FileStorageService;
-use App\Services\AccidentTimelineService;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\EvidenceResource;
 
 class EvidenceService
 {
@@ -47,7 +45,7 @@ class EvidenceService
                     user: $user,
                     action: 'EVIDENCE_UPLOADED',
                     description: count($savedEvidence) > 1
-                        ? count($savedEvidence) . ' evidence files uploaded'
+                        ? count($savedEvidence).' evidence files uploaded'
                         : "Evidence uploaded: {$savedEvidence[0]->original_name}",
                 );
             }

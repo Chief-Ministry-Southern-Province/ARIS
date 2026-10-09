@@ -10,5 +10,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 class PruneExpiredBackupsJob implements ShouldQueue
 {
     use Dispatchable, Queueable;
-    public function handle(BackupService $service): void { $service->pruneExpired(); }
+
+    public function handle(BackupService $service): void
+    {
+        $service->pruneExpired();
+    }
 }

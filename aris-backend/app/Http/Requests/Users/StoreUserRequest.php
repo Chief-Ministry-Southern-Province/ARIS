@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Models\Institution;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Institution;
 
 class StoreUserRequest extends FormRequest
 {
@@ -28,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'nic' => 'required|string|max:20|unique:users',
             'mobile' => 'required|string|max:15',
             'institution_id' => 'required|exists:institutions,id',
-            'role'=> 'required|exists:roles,name',
+            'role' => 'required|exists:roles,name',
             'districts' => 'nullable|array',
             'districts.*' => 'string|in:Galle,Matara,Hambantota',
         ];

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FR109\SaveFR109Request;
-use App\Http\Requests\FR109\UpdateFR109WriteOffRequest;
 use App\Http\Requests\FR109\UpdateFR109ChiefAccountingOrderRequest;
 use App\Http\Requests\FR109\UpdateFR109ChiefSecretaryDecisionRequest;
+use App\Http\Requests\FR109\UpdateFR109WriteOffRequest;
 use App\Http\Resources\FR109Resource;
 use App\Models\AccidentCase;
 use App\Models\FR109;
@@ -18,9 +18,7 @@ class FR109Controller extends Controller
     public function __construct(
         private readonly FR109Service $fr109Service,
         private readonly FR109PdfGenerator $pdfGenerator,
-    )
-    {
-    }
+    ) {}
 
     public function show(AccidentCase $accidentCase)
     {
@@ -33,6 +31,7 @@ class FR109Controller extends Controller
     public function save(SaveFR109Request $request, AccidentCase $accidentCase)
     {
         $this->authorize('create', [FR109::class, $accidentCase]);
+
         return new FR109Resource($this->fr109Service->saveDraft($accidentCase, $request->user(), $request->validated('data')));
     }
 

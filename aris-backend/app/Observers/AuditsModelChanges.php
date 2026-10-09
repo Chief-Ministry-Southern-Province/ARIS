@@ -14,9 +14,7 @@ abstract class AuditsModelChanges
     /** @var array<int, array<string, mixed>> */
     private array $beforeUpdate = [];
 
-    public function __construct(protected AuditLogService $auditLogs)
-    {
-    }
+    public function __construct(protected AuditLogService $auditLogs) {}
 
     abstract protected function module(): AuditModule;
 

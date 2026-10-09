@@ -2,17 +2,18 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Institution;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class UserDistrictAssignmentTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $admin;
+
     protected $ministry;
 
     protected function setUp(): void

@@ -12,9 +12,7 @@ use RuntimeException;
 
 class PasswordSetupController extends Controller
 {
-    public function __construct(private PasswordSetupService $passwordSetup)
-    {
-    }
+    public function __construct(private PasswordSetupService $passwordSetup) {}
 
     public function validateToken(ValidatePasswordSetupTokenRequest $request): JsonResponse
     {

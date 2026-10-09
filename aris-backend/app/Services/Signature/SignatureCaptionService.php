@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\Signature;
 
 use App\Models\User;
-use App\Models\UserSignatureProfile;
 
 final class SignatureCaptionService
 {

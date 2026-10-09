@@ -41,13 +41,13 @@ class AccidentCasePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(["subject_officer", "driver"]) &&
+        return $user->hasRole(['subject_officer', 'driver']) &&
                 app(InstitutionService::class)
-                ->accessibleInstitutionIds($user)
+                    ->accessibleInstitutionIds($user)
                 !== [];
     }
 
-    /** 
+    /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, AccidentCase $accidentCase): bool
