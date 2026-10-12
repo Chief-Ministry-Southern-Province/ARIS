@@ -30,6 +30,7 @@ RUN apk add --no-cache \
     curl \
     shadow \
     mysql-client \
+    mariadb-connector-c \
     && docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
