@@ -46,6 +46,9 @@ RUN apk add --no-cache \
 # PHP OPcache tuning for production
 COPY docker/backend/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
+# PHP upload and resource limits (backups, attachments)
+COPY docker/backend/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 # Suppress PHP 8.4 3rd-party vendor deprecation warnings in production
 RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED" > /usr/local/etc/php/conf.d/error-reporting.ini
 
