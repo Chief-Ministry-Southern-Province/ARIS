@@ -148,7 +148,7 @@ class BackupRestoreService
         if (config("database.connections.{$connection}.driver") !== 'mysql') throw new RuntimeException('Only MySQL restores are enabled.');
         $settings = config("database.connections.{$connection}");
         $process = new Process([
-            config('backups.mysql_binary'), '--host='.$settings['host'], '--port='.(string) $settings['port'], '--user='.$settings['username'], '--database='.$settings['database'], '--execute=source '.str_replace('\\', '/', $sqlPath),
+            config('backups.mysql_binary'), '--skip-ssl', '--host='.$settings['host'], '--port='.(string) $settings['port'], '--user='.$settings['username'], '--database='.$settings['database'], '--execute=source '.str_replace('\\', '/', $sqlPath),
         ], null, ['MYSQL_PWD' => $settings['password']], null, 3600);
         $process->run();
         if (! $process->isSuccessful()) throw new RuntimeException('Database restore failed.');

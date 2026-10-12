@@ -42,7 +42,8 @@ RUN apk add --no-cache \
         bcmath \
         gd \
         opcache \
-        pcntl
+        pcntl \
+    && printf "[client]\nssl=0\n" > /etc/my.cnf
 
 # PHP OPcache tuning for production
 COPY docker/backend/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
