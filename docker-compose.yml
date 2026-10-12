@@ -9,6 +9,8 @@ volumes:
     driver: local
   storage-data:
     driver: local
+  storage-private:
+    driver: local
 
 # ─── Services ────────────────────────────────────────────────────────────────
 services:
@@ -56,6 +58,7 @@ services:
     volumes:
       # Persist uploaded files across deployments
       - storage-data:/var/www/html/storage/app/public
+      - storage-private:/var/www/html/storage/app/private
 
   # ── React Frontend (Nginx static) ─────────────────────────────────────────
   frontend:
@@ -85,6 +88,7 @@ services:
       - aris-net
     volumes:
       - storage-data:/var/www/html/storage/app/public
+      - storage-private:/var/www/html/storage/app/private
 
   # ── Laravel Reverb (WebSocket server) ─────────────────────────────────────
   reverb:

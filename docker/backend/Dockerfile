@@ -29,6 +29,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     curl \
     shadow \
+    mysql-client \
     && docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
