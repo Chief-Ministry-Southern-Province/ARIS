@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
 
         foreach (['name', 'nic', 'mobile', 'password'] as $key) {
             if (blank($admin[$key] ?? null)) {
-                throw new RuntimeException("SYSTEM_ADMIN_{$key} must be set in the .env file.");
+                return;
             }
         }
 

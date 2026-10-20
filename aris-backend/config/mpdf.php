@@ -35,8 +35,6 @@ return [
         'notosanstamil' => [
             'R' => 'NotoSansTamil-Regular.ttf',
             'B' => 'NotoSansTamil-Bold.ttf',
-            // Tamil is a complex script and needs OpenType substitutions/positioning.
-            'useOTL' => 0x80,
         ],
     ],
 ];

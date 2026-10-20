@@ -13,6 +13,10 @@ class Approval extends Model
         'institution_id',
         'revision',
         'approver_id',
+        'acted_by_id',
+        'delegation_id',
+        'reassigned_from_id',
+        'reassign_reason',
         'user_signature_id',
         'signature_caption_snapshot',
         'status',
@@ -41,6 +45,21 @@ class Approval extends Model
     public function approver()
     {
         return $this->belongsTo(User::class,'approver_id');
+    }
+
+    public function actedBy()
+    {
+        return $this->belongsTo(User::class, 'acted_by_id');
+    }
+
+    public function delegation()
+    {
+        return $this->belongsTo(OfficerDelegation::class, 'delegation_id');
+    }
+
+    public function reassignedFrom()
+    {
+        return $this->belongsTo(User::class, 'reassigned_from_id');
     }
 
     public function signature()

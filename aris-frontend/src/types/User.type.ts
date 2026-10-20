@@ -22,6 +22,9 @@ export interface User {
   mobile: string;
   signature_path: string | null;
   institution_id: number;
+  is_active?: boolean;
+  deactivated_at?: string | null;
+  deactivation_reason?: string | null;
   created_at: string;
   updated_at: string;
   institution: Institution;

@@ -127,4 +127,28 @@ class ApprovalController extends Controller
 
         return new ApprovalResource($approval);
     }
+
+    /**
+     * Reassign an approval step to another approver.
+     */
+    public function reassign(Request $request, Approval $approval)
+    {
+        $this->authorize('reassign', $approval);
+
+        $validated = $request->validate([
+            'approver_id' => ['required', 'integer', 'exists:users,id'],
+            'reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        $newApprover = User::findOrFail($validated['approver_id']);
+
+        $updated = $this->approvalService->reassignApproval(
+            approval: $approval,
+            newApprover: $newApprover,
+            actor: $request->user(),
+            reason: $validated['reason'],
+        );
+
+        return new ApprovalResource($updated);
+    }
 }

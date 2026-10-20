@@ -18,6 +18,16 @@ class EnforceRoleSessionTimeout
             return $next($request);
         }
 
+        // API requests authenticated via Sanctum token do not have a session.
+        // Skip session-based timeout logic for those requests.
+        try {
+            if (! $request->hasSession() || ! $request->session()->isStarted()) {
+                return $next($request);
+            }
+        } catch (\RuntimeException $e) {
+            return $next($request);
+        }
+
         $timeoutMinutes = $user->hasRole('driver')
             ? 60 * 24 * 30
             : 60 * 8;

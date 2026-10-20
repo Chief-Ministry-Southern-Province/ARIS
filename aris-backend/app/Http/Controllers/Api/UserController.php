@@ -158,6 +158,24 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
+        $activeCasesCount = $user->assignedAccidentCases()
+            ->whereIn('status', ['OPEN', 'IN_PROGRESS'])
+            ->count();
+
+        $pendingApprovalsCount = \App\Models\Approval::query()
+            ->where('approver_id', $user->id)
+            ->whereIn('status', ['PENDING', 'WAITING'])
+            ->count();
+
+        if ($activeCasesCount > 0 || $pendingApprovalsCount > 0) {
+            return response()->json([
+                'message' => "Cannot delete user. The officer has {$activeCasesCount} active assigned case(s) and {$pendingApprovalsCount} pending approval step(s). Please handover their workload first or deactivate their account.",
+                'requires_handover' => true,
+                'active_cases_count' => $activeCasesCount,
+                'pending_approvals_count' => $pendingApprovalsCount,
+            ], 422);
+        }
+
         $user->delete();
 
         return response()->json([

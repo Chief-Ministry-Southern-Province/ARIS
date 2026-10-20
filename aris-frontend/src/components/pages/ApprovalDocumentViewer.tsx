@@ -9,6 +9,7 @@ import FR109Form from "@/components/pages/forms/FR109/FR109Form";
 import ApprovalDecisionDialog from "@/components/approval/ApprovalDecisionDialog";
 import Loader from "@/components/atoms/Loader";
 import Modal from "@/components/molecules/Modal";
+import { ShieldCheck, RefreshCw } from "lucide-react";
 import {
   useApprovalDocument,
   useApprovalHistory,
@@ -143,6 +144,42 @@ export default function ApprovalDocumentViewer() {
 
   return (
     <>
+      {approval?.is_acting || approval?.delegation ? (
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-amber-100 p-2 text-amber-700">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold">{t("approvalCenter.actingOfficerMode")}</p>
+              <p className="text-xs text-amber-700">
+                {t("approvalCenter.actingOfficerDescription", {
+                  name: approval.delegation?.officer_name || approval.approver.name,
+                  role: approval.approver.role || "Officer",
+                })}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {approval?.reassigned_from ? (
+        <div className="mb-4 rounded-xl border border-purple-200 bg-purple-50 p-4 text-purple-900 shadow-sm flex items-center gap-3">
+          <div className="rounded-lg bg-purple-100 p-2 text-purple-700">
+            <RefreshCw className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold">{t("approvalCenter.reassignedBannerTitle")}</p>
+            <p className="text-xs text-purple-700">
+              {t("approvalCenter.reassignedBannerDescription", {
+                name: approval.reassigned_from.name,
+                reason: approval.reassign_reason || "Administrative reassignment",
+              })}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
       {form}
 
       {isDecisionPickerOpen && (

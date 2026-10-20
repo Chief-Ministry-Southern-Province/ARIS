@@ -11,12 +11,19 @@ export interface Approval {
   submitted_by: { id: number; name: string };
   institution: { id: number; name: string };
   approver: { id: number; name: string; role: string | null };
+  acted_by?: { id: number; name: string; role: string | null } | null;
+  is_acting?: boolean;
+  delegation?: { id: number; reason: string; officer_name?: string } | null;
+  reassigned_from?: { id: number; name: string } | null;
+  reassign_reason?: string | null;
   signature: { public_id: string } | null;
   signature_caption: {
     display_name: string;
     designation: string | null;
     institution_name: string | null;
     institution_lines: string[];
+    is_acting?: boolean;
+    acting_for?: string;
   } | null;
 }
 

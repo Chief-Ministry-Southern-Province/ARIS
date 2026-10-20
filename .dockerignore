@@ -1,0 +1,40 @@
+# ─── Backend .dockerignore ───────────────────────────────────────────────────
+# Prevents unnecessary files from being sent to Docker build context.
+# Place this at the repo root — Docker uses it for the build context.
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI / IDE
+.github
+.agents
+.codex
+.vscode
+.idea
+
+# Frontend (not needed for backend image)
+aris-frontend/node_modules
+aris-frontend/dist
+
+# Backend dev artifacts
+aris-backend/vendor
+aris-backend/node_modules
+aris-backend/.env
+aris-backend/.env.*
+aris-backend/storage/logs/*
+aris-backend/storage/framework/cache/*
+aris-backend/storage/framework/sessions/*
+aris-backend/storage/framework/views/*
+aris-backend/bootstrap/cache/*
+
+# Test artifacts
+aris-backend/tests
+aris-backend/phpunit.xml
+aris-backend/.phpunit.cache
+
+# Docs
+*.md
+README*
+LICENSE

@@ -102,7 +102,7 @@ class BackupService
         if (config("database.connections.{$connection}.driver") !== 'mysql') throw new RuntimeException('Only MySQL production backups are enabled.');
         $settings = config("database.connections.{$connection}");
         $process = new Process([
-            config('backups.mysqldump_binary'), '--single-transaction', '--routines', '--events', '--host='.$settings['host'], '--port='.(string) $settings['port'], '--user='.$settings['username'], '--result-file='.$destination, $settings['database'],
+            config('backups.mysqldump_binary'), '--single-transaction', '--routines', '--events', '--skip-ssl', '--host='.$settings['host'], '--port='.(string) $settings['port'], '--user='.$settings['username'], '--result-file='.$destination, $settings['database'],
         ], null, ['MYSQL_PWD' => $settings['password']], null, 1800);
         $process->run();
         if (! $process->isSuccessful() || ! is_file($destination) || filesize($destination) < 1) throw new RuntimeException('Database export failed.');
