@@ -37,7 +37,18 @@ class User extends Authenticatable
         'mobile',
         'signature_path',
         'institution_id',
+        'is_active',
+        'deactivated_at',
+        'deactivation_reason',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'deactivated_at' => 'datetime',
+        ];
+    }
 
     protected $hidden = [
         'password',
@@ -113,5 +124,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(PasswordSetupToken::class);
     }
-    
+
+    public function delegationsAsOfficer()
+    {
+        return $this->hasMany(OfficerDelegation::class, 'officer_id');
+    }
+
+    public function delegationsAsActing()
+    {
+        return $this->hasMany(OfficerDelegation::class, 'acting_officer_id');
+    }
+
+    public function activeDelegationAsOfficer()
+    {
+        return $this->hasOne(OfficerDelegation::class, 'officer_id')->active();
+    }
+
+    public function activeDelegationsAsActing()
+    {
+        return $this->hasMany(OfficerDelegation::class, 'acting_officer_id')->active();
+    }
 }

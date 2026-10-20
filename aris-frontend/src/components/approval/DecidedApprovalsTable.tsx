@@ -76,9 +76,18 @@ export default function DecidedApprovalsTable({
                     <div className="w-10 h-10 rounded-lg bg-[#0F4C81]/10 flex items-center justify-center">
                       <FileText className="w-5 h-5 text-[#0F4C81]" />
                     </div>
-                    <span className="font-medium text-slate-900">
-                      {approval.reference_number || "—"}
-                    </span>
+                    <div>
+                      <span className="font-medium text-slate-900 block">
+                        {approval.reference_number || "—"}
+                      </span>
+                      {approval.is_acting || approval.acted_by ? (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 border border-amber-200 mt-1">
+                          {t("approvalCenter.actedBy", {
+                            name: approval.acted_by?.name || "Acting Officer",
+                          })}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                 </td>
                 <td className="px-6 py-5 font-medium text-slate-700">

@@ -146,11 +146,21 @@ export default function ApprovalTable({
                     </div>
 
                     <div>
-
                       <p className="font-medium text-slate-900">
                         {approval.reference_number}
                       </p>
-
+                      {approval.is_acting || approval.delegation ? (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700 border border-amber-200 mt-1">
+                          {t("approvalCenter.actingFor", {
+                            name: approval.delegation?.officer_name || approval.approver.name,
+                          })}
+                        </span>
+                      ) : null}
+                      {approval.reassigned_from ? (
+                        <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-0.5 text-[11px] font-medium text-purple-700 border border-purple-200 mt-1" title={approval.reassign_reason ?? undefined}>
+                          {t("approvalCenter.reassigned")}
+                        </span>
+                      ) : null}
                     </div>
 
                   </div>

@@ -725,8 +725,15 @@
       "role": "Role",
       "institution": "Institution",
       "status": "Status",
+      "duties": "Duties & Delegation",
       "actions": "Actions",
       "active": "Active",
+      "inactive": "Inactive",
+      "acting": "Acting",
+      "handover": "Handover",
+      "appointActingOfficer": "Appoint Acting / Covering Officer",
+      "workloadHandover": "Workload Handover / Reassign",
+      "resendPasswordSetup": "Resend password setup link",
       "edit": "Edit",
       "delete": "Delete",
       "viewUser": "View User",
@@ -990,7 +997,14 @@
     "reject": "Reject",
     "pageInfo": "Showing page {{current}} of {{total}}",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "actingFor": "Acting for {{name}}",
+    "reassigned": "Reassigned",
+    "actingOfficerMode": "Acting Officer Mode (Covering Duties)",
+    "actingOfficerDescription": "You are reviewing this document step on behalf of {{name}} ({{role}}). Your decision and signature will be recorded in this acting capacity.",
+    "reassignedBannerTitle": "Reassigned Approval Step",
+    "reassignedBannerDescription": "This workflow step was reassigned from {{name}}. Reason: {{reason}}",
+    "actedBy": "Acted by {{name}}"
   },
    "approvalWorkflow": {
     "title": "Approval Workflow",
@@ -1164,6 +1178,43 @@
     "trend": {
       "increasing": "Increasing"
     }
+  },
+  "delegation": {
+    "title": "Appoint Acting Officer (Covering Duties)",
+    "subtitle": "Covering duties for {{name}} ({{role}})",
+    "actingOfficer": "Acting / Covering Officer",
+    "selectActingOfficer": "Select covering officer...",
+    "startDate": "Start Date",
+    "endDate": "End Date (Optional)",
+    "reason": "Reason",
+    "reasons": {
+      "SICK_LEAVE": "Medical / Sick Leave",
+      "DUTY_LEAVE": "Official Duty / Training",
+      "VACATION": "Vacation / Leave",
+      "RESIGNATION": "Pending Replacement (Interim)",
+      "OTHER": "Other Administrative Reason"
+    },
+    "notes": "Notes / Reference",
+    "notesPlaceholder": "e.g. Official letter ref, medical certificate number...",
+    "save": "Save Acting Appointment",
+    "success": "Acting officer appointed successfully for {{name}}.",
+    "selectOfficerPrompt": "Please select an acting officer.",
+    "selectDatePrompt": "Please specify a start date.",
+    "error": "Failed to appoint acting officer."
+  },
+  "handover": {
+    "title": "Workload Handover & Offboarding",
+    "subtitle": "Transfer all active cases and pending approvals from {{name}}",
+    "notice": "Government procedure requires that all open cases and pending workflow steps are formally reassigned to a designated successor before an officer is deactivated or departs.",
+    "successorOfficer": "Successor Officer",
+    "selectSuccessor": "Select an active officer...",
+    "reason": "Reason for Handover",
+    "reasonPlaceholder": "e.g., Resignation, Transfer to another ministry, Retirement",
+    "deactivateCheckbox": "Deactivate {{name}} after successful handover (blocks login, preserves historical data)",
+    "confirmHandover": "Confirm Handover",
+    "success": "Handover completed: {{cases}} case(s) and {{approvals}} approval(s) transferred.",
+    "selectSuccessorPrompt": "Please select a successor officer.",
+    "provideReasonPrompt": "Please provide a reason for the workload handover.",
+    "error": "Failed to handover workload."
   }
-  
 }

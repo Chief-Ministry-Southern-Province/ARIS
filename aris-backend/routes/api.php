@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\PushSubscriptionController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\BackupController;
+use App\Http\Controllers\Api\DelegationController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -77,7 +78,14 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     });
 
     Route::post('/users/{user}/password-setup/resend', [UserController::class, 'resendPasswordSetup'])->middleware('throttle:5,1');
+    Route::put('/users/{user}/status', [DelegationController::class, 'updateStatus']);
+    Route::post('/users/{user}/handover', [DelegationController::class, 'handover']);
     Route::apiResource('users', UserController::class);
+
+    // Protected routes for officer delegations (acting / covering duties)
+    Route::get('/delegations', [DelegationController::class, 'index']);
+    Route::post('/delegations', [DelegationController::class, 'store']);
+    Route::delete('/delegations/{delegation}', [DelegationController::class, 'destroy']);
 
     Route::get('/available-drivers', [UserController::class, 'getAvailableDrivers']);
 
@@ -132,6 +140,8 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::post('/approvals/{approval}/approve',[ApprovalController::class, 'approve']);
 
     Route::post('/approvals/{approval}/reject',[ApprovalController::class, 'reject']);
+
+    Route::post('/approvals/{approval}/reassign',[ApprovalController::class, 'reassign']);
 
     // Protected routes for FR1043
     Route::prefix('cases')->group(function () {

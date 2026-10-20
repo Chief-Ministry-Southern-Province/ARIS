@@ -54,6 +54,22 @@ class ApprovalResource extends JsonResource
                 'name' => $this->approver?->name,
                 'role' => $this->approver?->roles->first()?->name,
             ],
+            'acted_by' => $this->actedBy ? [
+                'id' => $this->actedBy->id,
+                'name' => $this->actedBy->name,
+                'role' => $this->actedBy->roles->first()?->name,
+            ] : null,
+            'is_acting' => (bool) ($this->acted_by_id && $this->acted_by_id !== $this->approver_id),
+            'delegation' => $this->delegation ? [
+                'id' => $this->delegation->id,
+                'reason' => $this->delegation->reason,
+                'officer_name' => $this->delegation->officer?->name,
+            ] : null,
+            'reassigned_from' => $this->reassignedFrom ? [
+                'id' => $this->reassignedFrom->id,
+                'name' => $this->reassignedFrom->name,
+            ] : null,
+            'reassign_reason' => $this->reassign_reason,
             'signature' => $this->signature ? [
                 'public_id' => $this->signature->public_id,
             ] : null,

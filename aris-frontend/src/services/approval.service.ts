@@ -21,3 +21,13 @@ export const getApprovalDocument = async (approvalId: number): Promise<FR1043Res
 export const approve = async ({ id, comments }: { id: number; comments?: string }) => (await api.post<{ data: Approval }>(`/approvals/${id}/approve`, { comments })).data.data;
 
 export const reject = async ({ id, comments }: { id: number; comments: string }) => (await api.post<{ data: Approval }>(`/approvals/${id}/reject`, { comments })).data.data;
+
+export const reassignApproval = async ({
+  id,
+  approver_id,
+  reason,
+}: {
+  id: number;
+  approver_id: number;
+  reason: string;
+}) => (await api.post<{ data: Approval }>(`/approvals/${id}/reassign`, { approver_id, reason })).data.data;

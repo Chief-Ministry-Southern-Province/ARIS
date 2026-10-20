@@ -24,6 +24,7 @@ use App\Enums\AuditAction;
 use App\Enums\AuditModule;
 use App\Services\Signature\SignatureCaptionService;
 use App\Services\Signature\SignatureService;
+use App\Services\Delegation\DelegationService;
 
 class ApprovalService
 {
@@ -34,6 +35,7 @@ class ApprovalService
         protected AuditLogService $auditLogs,
         protected SignatureCaptionService $signatureCaptionService,
         protected SignatureService $signatureService,
+        protected DelegationService $delegationService,
     ) {}
 
     /**
@@ -191,9 +193,14 @@ class ApprovalService
     public function approve(Approval $approval,User $user,?string $comments = null): Approval 
     {
 
+        $isDesignated = $approval->approver_id === $user->id;
+        $delegation = $this->delegationService->findActiveDelegation($user, $approval->approver_id);
+        $isActing = ! is_null($delegation);
+
         abort_unless(
-            $approval->approver_id === $user->id,
-            403
+            $isDesignated || $isActing,
+            403,
+            'You are not authorized to approve this workflow step.'
         );
 
         abort_unless(
@@ -204,7 +211,8 @@ class ApprovalService
         $accidentCase = $this->resolveApprovalCase($approval);
 
         // Determine if the approver requires a signature for this approval step
-        $signatureRequired = $user->hasAnyRole([
+        $designatedRole = $approval->approver?->roles->first()?->name;
+        $signatureRoles = [
             'medical_superintendent',
             'regional_director',
             'provincial_director',
@@ -212,7 +220,8 @@ class ApprovalService
             'accountant',
             'secretary',
             'chief_secretary',
-        ]);
+        ];
+        $signatureRequired = $user->hasAnyRole($signatureRoles) || in_array($designatedRole, $signatureRoles, true);
 
         $signature = $signatureRequired
             ? $this->getActiveSignature($user)
@@ -222,6 +231,16 @@ class ApprovalService
             ? $this->signatureCaptionService->forUser($user)
             : null;
 
+        if ($signatureCaption && $isActing) {
+            $designatedUser = $approval->approver;
+            $formattedRole = $designatedRole ? ucwords(str_replace('_', ' ', $designatedRole)) : 'Officer';
+            $signatureCaption['is_acting'] = true;
+            $signatureCaption['acting_for'] = $designatedUser?->name;
+            if (! empty($signatureCaption['designation'])) {
+                $signatureCaption['designation'] .= " (Acting for {$formattedRole})";
+            }
+        }
+
         DB::transaction(function () use (
             $approval,
             $comments,
@@ -229,6 +248,7 @@ class ApprovalService
             $accidentCase,
             $signature,
             $signatureCaption,
+            $delegation,
         ) {
 
             $document = null;
@@ -263,6 +283,8 @@ class ApprovalService
                 'status' => $decisionStatus,
                 'comments' => $comments,
                 'acted_at' => now(),
+                'acted_by_id' => $user->id,
+                'delegation_id' => $delegation?->id,
                 'user_signature_id' => $signature?->id,
                 'signature_caption_snapshot' => $signatureCaption,
             ]);
@@ -383,9 +405,14 @@ class ApprovalService
      */
     public function reject(Approval $approval,User $user,string $comments): Approval 
     {
+        $isDesignated = $approval->approver_id === $user->id;
+        $delegation = $this->delegationService->findActiveDelegation($user, $approval->approver_id);
+        $isActing = ! is_null($delegation);
+
         abort_unless(
-            $approval->approver_id === $user->id,
-            403
+            $isDesignated || $isActing,
+            403,
+            'You are not authorized to reject this workflow step.'
         );
 
         abort_unless(
@@ -399,14 +426,16 @@ class ApprovalService
             $approval,
             $comments,
             $user,
-            $accidentCase
+            $accidentCase,
+            $delegation,
         ) {
 
             $approval->update([
                 'status' => 'REJECTED',
                 'comments' => $comments,
                 'acted_at' => now(),
-
+                'acted_by_id' => $user->id,
+                'delegation_id' => $delegation?->id,
             ]);
 
             DB::afterCommit(function () use ($approval, $comments) {
@@ -469,15 +498,17 @@ class ApprovalService
     }
 
     /**
-     * Pending approvals for logged-in user.
+     * Pending approvals for logged-in user (including officers they are acting for).
      */
     public function getPendingApprovals(User $user,?string $search = null)
     {
+        $approverIds = array_merge([$user->id], $this->delegationService->getActingForOfficerIds($user));
+
         return Approval::query()
 
-            ->where(
+            ->whereIn(
                 'approver_id',
-                $user->id
+                $approverIds
             )
 
             ->where(
@@ -511,6 +542,12 @@ class ApprovalService
 
                 'approver.roles',
 
+                'actedBy.roles',
+
+                'delegation.officer',
+
+                'reassignedFrom',
+
                 'signature',
 
                 'accidentCase.accident',
@@ -522,11 +559,14 @@ class ApprovalService
             ->paginate(10);
     }
 
-    /** Decisions already made by the logged-in approver. */
+    /** Decisions already made by the logged-in approver (or acted on by them). */
     public function getDecidedApprovals(User $user, ?string $documentType = null, ?string $status = null, ?string $search = null)
     {
         return Approval::query()
-            ->where('approver_id', $user->id)
+            ->where(function ($query) use ($user) {
+                $query->where('approver_id', $user->id)
+                    ->orWhere('acted_by_id', $user->id);
+            })
             ->whereIn('status', ['RECOMMENDED', 'APPROVED', 'REJECTED'])
             ->when($documentType, fn ($query) => $query->where('document_type', $documentType))
             ->when($status, fn ($query) => $query->where('status', $status))
@@ -536,6 +576,9 @@ class ApprovalService
             ->with([
                 'institution',
                 'approver.roles',
+                'actedBy.roles',
+                'delegation.officer',
+                'reassignedFrom',
                 'accidentCase.accident',
                 'accidentCase.creator',
                 'signature',
@@ -547,8 +590,13 @@ class ApprovalService
     /** Summary counts for the Approval Center cards. */
     public function getApprovalStats(User $user): array
     {
+        $approverIds = array_merge([$user->id], $this->delegationService->getActingForOfficerIds($user));
+
         $counts = Approval::query()
-            ->where('approver_id', $user->id)
+            ->where(function ($query) use ($approverIds, $user) {
+                $query->whereIn('approver_id', $approverIds)
+                    ->orWhere('acted_by_id', $user->id);
+            })
             ->selectRaw("SUM(CASE WHEN status = 'PENDING' THEN 1 ELSE 0 END) as pending")
             ->selectRaw("SUM(CASE WHEN status = 'RECOMMENDED' THEN 1 ELSE 0 END) as recommended")
             ->selectRaw("SUM(CASE WHEN status = 'APPROVED' THEN 1 ELSE 0 END) as approved")
@@ -592,6 +640,9 @@ class ApprovalService
             ->with([
                 'accidentCase.creator',
                 'approver.roles',
+                'actedBy.roles',
+                'delegation.officer',
+                'reassignedFrom',
                 'institution',
                 'signature',
             ])
@@ -601,6 +652,119 @@ class ApprovalService
             ->orderBy('step')
 
             ->get();
+    }
+
+    /**
+     * Reassign an approval step to another approver.
+     */
+    public function reassignApproval(Approval $approval, User $newApprover, User $actor, string $reason): Approval
+    {
+        abort_unless(
+            in_array($approval->status, ['PENDING', 'WAITING'], true),
+            400,
+            'Only pending or waiting approvals can be reassigned.'
+        );
+
+        if (! $newApprover->is_active) {
+            throw ValidationException::withMessages([
+                'approver_id' => 'The selected new approver is not active.',
+            ]);
+        }
+
+        $oldApprover = $approval->approver;
+
+        DB::transaction(function () use ($approval, $newApprover, $actor, $reason, $oldApprover) {
+            $approval->update([
+                'reassigned_from_id' => $oldApprover?->id,
+                'approver_id' => $newApprover->id,
+                'reassign_reason' => $reason,
+            ]);
+
+            $accidentCase = $this->resolveApprovalCase($approval);
+
+            $oldName = $oldApprover?->name ?? 'Unassigned';
+            $this->timelineService->createDocumentEvent(
+                $accidentCase,
+                $actor,
+                $approval->document_type,
+                'REASSIGNED',
+                $approval->revision,
+                comments: "Step {$approval->step} reassigned from {$oldName} to {$newApprover->name}. Reason: {$reason}",
+            );
+
+            $this->auditLogs->log(
+                AuditAction::ASSIGN,
+                AuditModule::APPROVAL,
+                $approval,
+                ['approver_id' => $oldApprover?->id],
+                ['approver_id' => $newApprover->id, 'reason' => $reason],
+                "Reassigned approval step {$approval->step} from {$oldName} to {$newApprover->name}.",
+            );
+
+            if ($approval->status === 'PENDING') {
+                DB::afterCommit(function () use ($approval) {
+                    $this->notificationService->notifyNextApprover($approval);
+                });
+            }
+        });
+
+        return $approval->fresh(['approver.roles', 'actedBy', 'reassignedFrom', 'institution']);
+    }
+
+    /**
+     * Handover all pending approvals and active cases from a departing user to a successor.
+     */
+    public function handoverWorkload(User $departingUser, User $successorUser, User $actor, string $reason): array
+    {
+        return DB::transaction(function () use ($departingUser, $successorUser, $actor, $reason) {
+            $openCases = AccidentCase::query()
+                ->where('assigned_to', $departingUser->id)
+                ->whereIn('status', ['OPEN', 'IN_PROGRESS'])
+                ->get();
+
+            $caseCount = 0;
+            foreach ($openCases as $case) {
+                $case->update(['assigned_to' => $successorUser->id]);
+                $this->timelineService->create(
+                    accidentCase: $case,
+                    user: $actor,
+                    action: 'ASSIGNED',
+                    description: "Case reassigned from {$departingUser->name} to {$successorUser->name} (Handover: {$reason})",
+                    oldValue: ['assigned_to' => $departingUser->id],
+                    newValue: ['assigned_to' => $successorUser->id],
+                );
+                $caseCount++;
+            }
+
+            $openApprovals = Approval::query()
+                ->where('approver_id', $departingUser->id)
+                ->whereIn('status', ['PENDING', 'WAITING'])
+                ->get();
+
+            $approvalCount = 0;
+            foreach ($openApprovals as $approval) {
+                $approval->update([
+                    'reassigned_from_id' => $departingUser->id,
+                    'approver_id' => $successorUser->id,
+                    'reassign_reason' => $reason,
+                ]);
+                $approvalCount++;
+            }
+
+            $this->auditLogs->log(
+                AuditAction::ASSIGN,
+                AuditModule::WORKFLOW,
+                $departingUser,
+                ['assigned_cases' => $caseCount, 'pending_approvals' => $approvalCount],
+                ['successor_id' => $successorUser->id, 'reason' => $reason],
+                "Handed over {$caseCount} cases and {$approvalCount} approvals from {$departingUser->name} to {$successorUser->name}.",
+            );
+
+            return [
+                'reassigned_cases' => $caseCount,
+                'reassigned_approvals' => $approvalCount,
+            ];
+        });
     }
 
     protected function getActiveSignature(User $user): UserSignature
