@@ -35,8 +35,8 @@ const showDesktopNotification = (notification: NotificationBroadcast) => {
     notification.data?.title ?? notification.title ?? "ARIS notification",
     {
       body: notification.data?.message ?? notification.message ?? "You have a new notification.",
-      icon: "/pwa-192x192-icon.png",
-      badge: "/pwa-192x192-icon.png",
+      icon: `${import.meta.env.BASE_URL}pwa-192x192-icon.png`,
+      badge: `${import.meta.env.BASE_URL}pwa-192x192-icon.png`,
       tag: `aris-notification-${notification.id}`,
     },
   );

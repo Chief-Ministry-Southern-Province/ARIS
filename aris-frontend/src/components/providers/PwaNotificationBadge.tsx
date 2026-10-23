@@ -6,7 +6,7 @@ type BadgingNavigator = Navigator & {
   clearAppBadge?: () => Promise<void>;
 };
 
-const FAVICON_PATH = "/pwa-192x192-icon.png";
+const FAVICON_PATH = `${import.meta.env.BASE_URL}pwa-192x192-icon.png`;
 
 const updateFavicon = (href: string) => {
   let icon = document.querySelector<HTMLLinkElement>("link[rel~='icon']");

@@ -26,6 +26,14 @@ use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\BackupController;
 use App\Http\Controllers\Api\DelegationController;
 
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'service' => 'ARIS API',
+        'timestamp' => now()->toIso8601String(),
+    ]);
+});
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/forgot-password/send-otp', [ForgotPasswordController::class, 'sendOtp']);

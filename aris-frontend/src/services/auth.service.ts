@@ -1,4 +1,4 @@
-import api, { API_ORIGIN } from "./api";
+import api, { API_ROOT } from "./api";
 import type{ProfileResponse} from '../types/User.type';
 
 export interface LoginResponse {
@@ -10,11 +10,7 @@ export interface LoginResponse {
 }
 
 export const login = async (nic: string, password: string): Promise<LoginResponse> => {
-  try {
-    await api.get("/sanctum/csrf-cookie", { baseURL: API_ORIGIN });
-  } catch {
-    await api.get("/sanctum/csrf-cookie");
-  }
+  await api.get("/sanctum/csrf-cookie", { baseURL: API_ROOT || "/" });
   const response = await api.post("/login", { 
     nic, 
     password 
