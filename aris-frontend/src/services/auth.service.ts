@@ -10,7 +10,11 @@ export interface LoginResponse {
 }
 
 export const login = async (nic: string, password: string): Promise<LoginResponse> => {
-  await api.get("/sanctum/csrf-cookie", { baseURL: API_ORIGIN });
+  try {
+    await api.get("/sanctum/csrf-cookie", { baseURL: API_ORIGIN });
+  } catch {
+    await api.get("/sanctum/csrf-cookie");
+  }
   const response = await api.post("/login", { 
     nic, 
     password 

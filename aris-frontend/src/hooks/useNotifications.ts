@@ -18,6 +18,7 @@ export const useUnreadNotificationCount = () =>
     queryKey: queryKeys.notifications.unreadCount,
     queryFn: getUnreadNotificationCount,
     refetchInterval: 60_000,
+    retry: false,
   });
 
 export const useMarkNotificationAsRead = () => {

@@ -7,6 +7,7 @@ import { VitePWA } from "vite-plugin-pwa";
 console.log("PWA CONFIG LOADED");
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/aris/',
   plugins: [
     react(),
     tailwindcss(),
@@ -24,7 +25,7 @@ export default defineConfig({
       ],
 
       manifest: {
-        id: "/",
+        id: process.env.VITE_BASE_PATH || "/aris/",
         name: 'ARIS',
         short_name: 'ARIS',
         description:
@@ -37,7 +38,7 @@ export default defineConfig({
         display_override: ["standalone", "window-controls-overlay"],
         
         orientation: "portrait",
-        start_url: "/",
+        start_url: process.env.VITE_BASE_PATH || "/aris/",
 
         icons: [
           {
