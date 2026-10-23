@@ -2,7 +2,7 @@ import axios from "axios";
 import { normalizeApiError } from "@/utils/errorMessage";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || "http://localhost:8000/api";
-export const API_ORIGIN = new URL(API_BASE_URL).origin;
+export const API_ORIGIN = new URL(API_BASE_URL, window.location.origin).origin;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
