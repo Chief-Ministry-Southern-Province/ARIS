@@ -130,6 +130,9 @@ class AccidentService
 
         $data['reported_by'] = $user->id;
         $data['institution_id'] = $user->institution_id;
+        if ($user->hasRole('driver')) {
+            $data['driver_id'] = $user->id;
+        }
 
         DB::beginTransaction();
 

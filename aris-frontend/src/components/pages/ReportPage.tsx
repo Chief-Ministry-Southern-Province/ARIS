@@ -340,6 +340,17 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
         </div>
       )}
 
+      {/* No Active Vehicle Warning for Drivers */}
+      {isDriver && !isEditing && vehicles.length === 0 && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+          <div className="text-sm">
+            <p className="font-semibold">{t("report.noActiveVehicleTitle", "No Active Vehicle Assigned")}</p>
+            <p className="mt-1">{t("report.noActiveVehicle")}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-6">
         {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
@@ -590,7 +601,7 @@ const ReportPage = ({ mode = "create" }: ReportPageProps) => {
         <div className="flex justify-end">
           <Button
             onClick={handleSubmit}
-            disabled={submitting}
+            disabled={submitting || (isDriver && !form.vehicle_id)}
             className="bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
           >
             {submitting ? (

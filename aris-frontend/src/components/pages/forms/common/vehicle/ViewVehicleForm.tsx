@@ -123,9 +123,42 @@ export default function ViewVehicleForm({vehicleId,onClose,}: ViewVehicleFormPro
 
         {/* Driver */}
 
-        <FormField label='Driver'>
-          <FieldValue value={loadingDrivers ? "Loading..." : driverName} />
+        <FormField label='Active Driver'>
+          <div className="flex min-h-10.5 w-full items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-700">
+            <span>{loadingDrivers ? "Loading..." : driverName ?? "No Active Driver"}</span>
+            {driverName && (
+              <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-100 text-green-700">
+                Active
+              </span>
+            )}
+          </div>
         </FormField>
+
+        {vehicle.drivers && vehicle.drivers.length > 0 && (
+          <div className="md:col-span-2">
+            <FormField label={`Driver Pool (${vehicle.drivers.length})`}>
+              <div className="flex flex-wrap gap-2 p-3 rounded-lg border border-gray-200 bg-gray-50/50">
+                {vehicle.drivers.map((d) => (
+                  <span
+                    key={d.id}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border ${
+                      d.id === vehicle.driver_id
+                        ? "bg-green-50 border-green-300 text-green-800 font-semibold"
+                        : "bg-white border-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <span>{d.name}</span>
+                    {d.id === vehicle.driver_id && (
+                      <span className="text-[10px] bg-green-200 text-green-800 px-1.5 py-0.2 rounded font-bold">
+                        ACTIVE
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </FormField>
+          </div>
+        )}
 
         {/* Fuel */}
 

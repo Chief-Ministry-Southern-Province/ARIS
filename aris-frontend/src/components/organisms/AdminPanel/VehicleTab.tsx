@@ -1,4 +1,4 @@
-import { Search, Plus, Edit2, Trash2, Eye } from "lucide-react";
+import { Search, Plus, Edit2, Trash2, Eye, UserCheck } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +9,8 @@ import EditVehicleForm  from "@/components/pages/forms/common/vehicle/EditVehicl
 import { useVehicles } from "@/hooks/queries/useVehicleQueries";
 
 import ViewVehicleForm from "@/components/pages/forms/common/vehicle/ViewVehicleForm";
+import ManageVehicleDriversModal from "@/components/organisms/AdminPanel/ManageVehicleDriversModal";
+import type { VehicleResponse } from "@/types/vehicle.type";
 import { useDeleteVehicleMutation } from "@/hooks/mutations/useResourceMutations";
 import {swalConfirm} from "@/utils/swal";
 import {toast} from "react-toastify";
@@ -26,6 +28,8 @@ const VehicleTab = () => {
 
   const [viewingVehicle, setViewingVehicle] = useState<number | null>(null);
   const [showViewVehicle, setShowViewVehicle] = useState(false);
+
+  const [managingDriversVehicle, setManagingDriversVehicle] = useState<VehicleResponse | null>(null);
   
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -153,17 +157,39 @@ const VehicleTab = () => {
                   </td>
 
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <img
-                        src={vehicle.driver?.name ? `https://ui-avatars.com/api/?name=${encodeURIComponent(vehicle.driver.name)}&background=1E40AF&color=fff` : "https://ui-avatars.com/api/?name=No+Driver&background=1E40AF&color=fff"}
-                        alt={vehicle.driver?.name ?? t("adminPanel.vehicles.noDriver")}
-                        className="w-7 h-7 rounded-full object-cover"
+                        src={vehicle.driver?.name ? `https://ui-avatars.com/api/?name=${encodeURIComponent(vehicle.driver.name)}&background=1E40AF&color=fff` : "https://ui-avatars.com/api/?name=No+Driver&background=9CA3AF&color=fff"}
+                        alt={vehicle.driver?.name ?? t("adminPanel.vehicles.noDriver", "No Driver")}
+                        className="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-gray-200"
                       />
 
-                      <div>
-                        <p className="text-xs font-medium text-gray-800">
-                          {vehicle.driver?.name}
-                        </p>
+                      <div className="min-w-0">
+                        {vehicle.driver?.name ? (
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p className="text-xs font-semibold text-gray-900 truncate">
+                              {vehicle.driver.name}
+                            </p>
+                            <span className="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-bold bg-green-100 text-green-700">
+                              Active
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-400 italic">
+                            {t("adminPanel.vehicles.noActiveDriver", "No Active Driver")}
+                          </p>
+                        )}
+
+                        {vehicle.drivers && vehicle.drivers.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setManagingDriversVehicle(vehicle)}
+                            className="text-[11px] text-blue-600 hover:text-blue-800 font-medium hover:underline cursor-pointer block mt-0.5 text-left"
+                          >
+                            {vehicle.drivers.length} {t("adminPanel.vehicles.inPool", "in pool")}
+                            {vehicle.drivers.length > 1 && !vehicle.driver_id ? " (activate one)" : ""}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </td>
@@ -187,34 +213,45 @@ const VehicleTab = () => {
                   </td>
 
                   <td className="px-4 py-3">
-                    <button
-                      className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                      title={t("adminPanel.vehicles.viewVehicle")}
-                      onClick={() => {
-                        setViewingVehicle(Number(vehicle.id));
-                        setShowViewVehicle(true);
-                      }}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
-                      title={t("adminPanel.vehicles.editVehicle")}
-                      onClick={() => {
-                        setSelectedVehicle(Number(vehicle.id));
-                        setShowEditVehicle(true);
-                      }}
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        className="p-1.5 rounded-lg hover:bg-emerald-50 text-emerald-600 transition-colors cursor-pointer"
+                        title={t("adminPanel.vehicles.manageDrivers", "Manage Drivers & Active Status")}
+                        onClick={() => setManagingDriversVehicle(vehicle)}
+                      >
+                        <UserCheck className="w-4 h-4" />
+                      </button>
 
-                    <button
-                      className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
-                      title={t("adminPanel.vehicles.deleteVehicle")}
-                      onClick={()=> handleDeleteVehicle(Number(vehicle.id))}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <button
+                        className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
+                        title={t("adminPanel.vehicles.viewVehicle")}
+                        onClick={() => {
+                          setViewingVehicle(Number(vehicle.id));
+                          setShowViewVehicle(true);
+                        }}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-600 transition-colors cursor-pointer"
+                        title={t("adminPanel.vehicles.editVehicle")}
+                        onClick={() => {
+                          setSelectedVehicle(Number(vehicle.id));
+                          setShowEditVehicle(true);
+                        }}
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 transition-colors cursor-pointer"
+                        title={t("adminPanel.vehicles.deleteVehicle")}
+                        onClick={()=> handleDeleteVehicle(Number(vehicle.id))}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -253,6 +290,17 @@ const VehicleTab = () => {
           <div className="w-full max-w-5xl">
             <ViewVehicleForm vehicleId={Number(viewingVehicle)} onClose={viewOnSuccess} />
           </div>
+        </Modal>
+      )}
+
+      {/* Manage Vehicle Drivers Modal */}
+      {managingDriversVehicle !== null && (
+        <Modal onClose={() => setManagingDriversVehicle(null)}>
+          <ManageVehicleDriversModal
+            vehicleId={managingDriversVehicle.id}
+            initialVehicle={managingDriversVehicle}
+            onClose={() => setManagingDriversVehicle(null)}
+          />
         </Modal>
       )}
     </div>

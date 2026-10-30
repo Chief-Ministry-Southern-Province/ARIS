@@ -18,6 +18,8 @@ type VehicleFormProps = {
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
+  onDriverPoolToggle?: (driverId: number) => void;
+  onActiveDriverChange?: (driverId: number | null) => void;
 };
 
 export default function VehicleForm({
@@ -28,6 +30,8 @@ export default function VehicleForm({
   driversLoading,
   errors = {},
   onChange,
+  onDriverPoolToggle,
+  onActiveDriverChange,
 }: VehicleFormProps) {
 
   return (
@@ -258,26 +262,91 @@ export default function VehicleForm({
       </div>
 
       {/* Driver Assignment */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h2 className="mb-6 text-lg font-semibold">Driver Assignment</h2>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900">Driver Assignment</h2>
+          <p className="text-xs text-gray-500 mt-0.5">
+            Assign multiple drivers to this vehicle's pool and designate one as the currently active driver.
+          </p>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <FormField label="Assigned Driver" error={errors.driver_id}>
+          <FormField label="Active Driver" error={errors.driver_id || errors.active_driver_id}>
             <SelectField
               name="driver_id"
               value={values.driver_id?.toString() ?? ""}
-              onChange={onChange}
-              options={
-                driversLoading
-                  ? [{ value: "", label: "Loading drivers..." }]
-                  : drivers.map((driver) => ({
-                      value: driver.id.toString(),
-                      label: driver.name,
-                    }))
-              }
+              onChange={(e) => {
+                const val = e.target.value ? Number(e.target.value) : null;
+                if (onActiveDriverChange) {
+                  onActiveDriverChange(val);
+                } else {
+                  onChange(e);
+                }
+              }}
+              options={[
+                { value: "", label: "No Active Driver (Unassigned)" },
+                ...drivers.map((driver) => ({
+                  value: driver.id.toString(),
+                  label: `${driver.name} ${driver.mobile ? `(${driver.mobile})` : ""}`,
+                })),
+              ]}
               disabled={driversLoading}
             />
           </FormField>
+        </div>
+
+        {/* Multiple Driver Pool Selection */}
+        <div className="pt-3 border-t border-gray-100">
+          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+            Driver Pool (Select all drivers authorized for this vehicle)
+          </label>
+
+          {driversLoading ? (
+            <p className="text-xs text-gray-400">Loading drivers...</p>
+          ) : drivers.length === 0 ? (
+            <p className="text-xs text-gray-400 italic">No drivers found in this institution.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-48 overflow-y-auto p-2 border border-gray-100 rounded-lg bg-gray-50/50">
+              {drivers.map((driver) => {
+                const isSelected =
+                  values.driver_ids?.includes(driver.id) || values.driver_id === driver.id;
+                const isActive = values.driver_id === driver.id;
+
+                return (
+                  <label
+                    key={driver.id}
+                    className={`flex items-center gap-2.5 p-2 rounded-lg border text-xs cursor-pointer transition ${
+                      isActive
+                        ? "bg-green-50 border-green-300 font-semibold text-green-900"
+                        : isSelected
+                        ? "bg-blue-50 border-blue-200 text-blue-900"
+                        : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected || false}
+                      onChange={() => {
+                        if (onDriverPoolToggle) {
+                          onDriverPoolToggle(driver.id);
+                        }
+                      }}
+                      className="rounded text-blue-600 focus:ring-blue-500 w-3.5 h-3.5"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-medium">{driver.name}</div>
+                      {driver.mobile && <div className="text-[10px] text-gray-400">{driver.mobile}</div>}
+                    </div>
+                    {isActive && (
+                      <span className="shrink-0 px-1.5 py-0.2 rounded text-[9px] font-bold bg-green-200 text-green-800">
+                        Active
+                      </span>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

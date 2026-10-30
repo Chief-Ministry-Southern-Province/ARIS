@@ -141,6 +141,20 @@ class StoreVehicleRequest extends FormRequest
                 'exists:users,id',
             ],
 
+            'active_driver_id' => [
+                'nullable',
+                'exists:users,id',
+            ],
+
+            'driver_ids' => [
+                'nullable',
+                'array',
+            ],
+
+            'driver_ids.*' => [
+                'integer',
+                'exists:users,id',
+            ],
         ];
     }
 

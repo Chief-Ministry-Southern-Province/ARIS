@@ -26,6 +26,7 @@ class VehicleController extends Controller
             ->with([
                 'institution',
                 'driver',
+                'drivers',
             ])
             ->withCount('accidents');
 
@@ -77,7 +78,7 @@ class VehicleController extends Controller
         $this->authorize('view', $vehicle);
 
         return response()->json(
-            $vehicle->load(['institution', 'driver'])
+            $vehicle->load(['institution', 'driver', 'drivers'])
         );
     }
 
@@ -88,11 +89,51 @@ class VehicleController extends Controller
     {
         $this->authorize('update', $vehicle);
 
-        $this->vehicleService->updateVehicle($vehicle, $request->validated());
+        $updatedVehicle = $this->vehicleService->updateVehicle($vehicle, $request->validated());
 
         return response()->json([
             'message' => 'Vehicle updated successfully.',
-            'vehicle' => $vehicle,
+            'vehicle' => $updatedVehicle,
+        ]);
+    }
+
+    public function activateDriver(Request $request, Vehicle $vehicle)
+    {
+        $this->authorize('update', $vehicle);
+
+        $request->validate([
+            'driver_id' => 'nullable|exists:users,id',
+        ]);
+
+        $driverId = $request->filled('driver_id') ? (int) $request->input('driver_id') : null;
+
+        $updatedVehicle = $this->vehicleService->activateDriver($vehicle, $driverId);
+
+        return response()->json([
+            'message' => $driverId ? 'Active driver updated successfully.' : 'Active driver unassigned successfully.',
+            'vehicle' => $updatedVehicle,
+        ]);
+    }
+
+    public function syncDrivers(Request $request, Vehicle $vehicle)
+    {
+        $this->authorize('update', $vehicle);
+
+        $request->validate([
+            'driver_ids' => 'required|array',
+            'driver_ids.*' => 'integer|exists:users,id',
+            'active_driver_id' => 'nullable|integer|exists:users,id',
+        ]);
+
+        $updatedVehicle = $this->vehicleService->syncDrivers(
+            $vehicle,
+            $request->input('driver_ids', []),
+            $request->input('active_driver_id')
+        );
+
+        return response()->json([
+            'message' => 'Vehicle drivers updated successfully.',
+            'vehicle' => $updatedVehicle,
         ]);
     }
 

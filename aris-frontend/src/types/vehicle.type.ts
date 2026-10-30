@@ -60,6 +60,10 @@ export interface Vehicle {
 
   created_at: string;
   updated_at: string;
+
+  institution?: Institution;
+  driver?: User | null;
+  drivers?: (User & { pivot?: { is_active: boolean } })[];
 }
 
 export interface VehicleResponse {
@@ -100,6 +104,7 @@ export interface VehicleResponse {
 
   institution?: Institution;
   driver?: User | null;
+  drivers?: (User & { pivot?: { is_active: boolean } })[];
 }
 
 export interface CreateVehicleRequest {
@@ -109,7 +114,9 @@ export interface CreateVehicleRequest {
 
   vehicle_type: VehicleType;
 
-  driver_id?: number;
+  driver_id?: number | null;
+  active_driver_id?: number | null;
+  driver_ids?: number[];
 
   brand: string;
 
@@ -167,5 +174,8 @@ export interface UpdateVehicleRequest {
 
   institution_id?: number;
 
-  driver_id?: number;
-} 
+  driver_id?: number | null;
+  active_driver_id?: number | null;
+  driver_ids?: number[];
+}
+ 

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAccident, deleteAccident, updateAccident } from "@/services/accident.service";
 import { createInstitution, deleteInstitution, updateInstitution } from "@/services/institution.service";
 import { createUser, deleteUser, updateUser } from "@/services/user.service";
-import { createVehicle, deleteVehicle, updateVehicle } from "@/services/vehicle.service";
+import { activateVehicleDriver, createVehicle, deleteVehicle, syncVehicleDrivers, updateVehicle } from "@/services/vehicle.service";
 import { queryKeys } from "@/hooks/queryKeys";
 import type { CreateAccidentRequest, UpdateAccidentRequest } from "@/types/accident.type";
 import type { createInstitutionRequest, updateInstitutionRequest } from "@/types/Institution.type";
@@ -68,6 +68,37 @@ export const useDeleteVehicleMutation = () => {
     mutationFn: deleteVehicle,
     onSuccess: (_, id) => {
       client.removeQueries({ queryKey: queryKeys.vehicles.detail(id) });
+      invalidate(client, queryKeys.vehicles.all);
+    },
+  });
+};
+
+export const useActivateVehicleDriverMutation = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, driverId }: { id: number; driverId: number | null }) =>
+      activateVehicleDriver(id, driverId),
+    onSuccess: (_, { id }) => {
+      invalidate(client, queryKeys.vehicles.detail(id));
+      invalidate(client, queryKeys.vehicles.all);
+    },
+  });
+};
+
+export const useSyncVehicleDriversMutation = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      driverIds,
+      activeDriverId,
+    }: {
+      id: number;
+      driverIds: number[];
+      activeDriverId?: number | null;
+    }) => syncVehicleDrivers(id, driverIds, activeDriverId),
+    onSuccess: (_, { id }) => {
+      invalidate(client, queryKeys.vehicles.detail(id));
       invalidate(client, queryKeys.vehicles.all);
     },
   });

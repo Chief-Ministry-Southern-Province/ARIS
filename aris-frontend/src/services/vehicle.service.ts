@@ -59,3 +59,29 @@ export const deleteVehicle = async (
 
     return response.data;
 };
+
+export const activateVehicleDriver = async (
+    id: number,
+    driverId: number | null
+) => {
+    const response = await api.post(
+        `/vehicles/${id}/activate-driver`,
+        { driver_id: driverId }
+    );
+
+    return response.data;
+};
+
+export const syncVehicleDrivers = async (
+    id: number,
+    driverIds: number[],
+    activeDriverId?: number | null
+) => {
+    const response = await api.post(
+        `/vehicles/${id}/drivers`,
+        { driver_ids: driverIds, active_driver_id: activeDriverId }
+    );
+
+    return response.data;
+};
+

@@ -92,6 +92,35 @@ export default function AddVehicleForm({onSuccess}: {onSuccess: () => void}) {
     }
   };
 
+  const handleDriverPoolToggle = (driverId: number) => {
+    setValues((prev) => {
+      const current = prev.driver_ids ?? (prev.driver_id ? [prev.driver_id] : []);
+      const exists = current.includes(driverId);
+      const updated = exists ? current.filter((id) => id !== driverId) : [...current, driverId];
+      const newActive = prev.driver_id === driverId && exists ? undefined : prev.driver_id;
+      return {
+        ...prev,
+        driver_ids: updated,
+        driver_id: newActive,
+        active_driver_id: newActive,
+      };
+    });
+  };
+
+  const handleActiveDriverChange = (driverId: number | null) => {
+    setValues((prev) => {
+      const current = prev.driver_ids ?? [];
+      const updatedIds =
+        driverId && !current.includes(driverId) ? [...current, driverId] : current;
+      return {
+        ...prev,
+        driver_id: driverId ?? undefined,
+        active_driver_id: driverId ?? undefined,
+        driver_ids: updatedIds,
+      };
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit}>
 
@@ -99,10 +128,12 @@ export default function AddVehicleForm({onSuccess}: {onSuccess: () => void}) {
         values={values}
         institutions={institutions}
         institutionsLoading={loadingInstitutions}
-        drivers = {drivers}
+        drivers={drivers}
         driversLoading={loadingDrivers}
         errors={errors}
         onChange={handleChange}
+        onDriverPoolToggle={handleDriverPoolToggle}
+        onActiveDriverChange={handleActiveDriverChange}
       />
 
       <div className="flex justify-end gap-3 mt-8">

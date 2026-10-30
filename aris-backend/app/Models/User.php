@@ -65,6 +65,18 @@ class User extends Authenticatable
         return $this->hasOne(Vehicle::class, 'driver_id');
     }
 
+    public function activeVehicle()
+    {
+        return $this->hasOne(Vehicle::class, 'driver_id');
+    }
+
+    public function assignedVehicles()
+    {
+        return $this->belongsToMany(Vehicle::class, 'vehicle_drivers', 'driver_id', 'vehicle_id')
+            ->withPivot('is_active')
+            ->withTimestamps();
+    }
+
     public function hasInstitution(): bool
     {
         return !is_null($this->institution_id);

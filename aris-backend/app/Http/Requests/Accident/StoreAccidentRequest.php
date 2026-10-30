@@ -189,4 +189,19 @@ class StoreAccidentRequest extends FormRequest
             'files' => 'Evidence Files',
         ];
     }
+
+    public function after(): array
+    {
+        return [function ($validator) {
+            $user = $this->user();
+            if ($user && $user->hasRole('driver')) {
+                $vehicleId = $this->integer('vehicle_id');
+                $vehicle = \App\Models\Vehicle::withoutGlobalScopes()->find($vehicleId);
+
+                if (! $vehicle || (int) $vehicle->driver_id !== (int) $user->id) {
+                    $validator->errors()->add('vehicle_id', 'You can only report an accident for a vehicle where you are currently the active driver.');
+                }
+            }
+        }];
+    }
 }

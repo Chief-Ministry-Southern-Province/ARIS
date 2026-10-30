@@ -161,6 +161,8 @@
       "yes": "Yes",
       "no": "No"
     },
+    "noActiveVehicleTitle": "No Active Vehicle Assigned",
+    "noActiveVehicle": "You are not currently designated as the active driver for any vehicle. Please contact your Subject Officer or System Administrator to activate your assignment before reporting an accident.",
     "severityOptions": {
         "MINOR": "Minor",
         "MAJOR": "Major",
