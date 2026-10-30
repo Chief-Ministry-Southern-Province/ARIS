@@ -17,9 +17,11 @@ import { resendPasswordSetup } from "@/services/user.service";
 import UserHandoverModal from "./UserHandoverModal";
 import DelegationModal from "./DelegationModal";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/context/auth/AuthContext";
 
 const UserTab = () => {
   const [showAddUser, setShowAddUser] = useState(false);
+  const [addUserInitialRole, setAddUserInitialRole] = useState<string>("");
   const [showViewUser, setShowViewUser] = useState(false);
   const [viewingUser, setViewingUser] = useState<User | null>(null);
   const [showEditUser, setShowEditUser] = useState(false);
@@ -31,8 +33,10 @@ const UserTab = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { role: currentUserRoles, id: currentUserId } = useAuth();
+  const isCurrentSystemAdmin = currentUserRoles?.includes("system_admin");
 
   const { data, isLoading: loading } = useUsers(page, search);
   const users = data?.data ?? [];
@@ -112,14 +116,32 @@ const UserTab = () => {
             value={search} onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-        <button
-          onClick={() => setShowAddUser(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90"
-          style={{ background: "#1E40AF" }}
-        >
-          <Plus className="w-4 h-4" />
-          {t("adminPanel.users.addUser")}
-        </button>
+        <div className="flex items-center gap-2">
+          {isCurrentSystemAdmin && (
+            <button
+              onClick={() => {
+                setAddUserInitialRole("system_admin");
+                setShowAddUser(true);
+              }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-white text-sm font-medium shadow-sm transition hover:opacity-95"
+              style={{ background: "#4338CA" }}
+            >
+              <ShieldCheck className="w-4 h-4" />
+              {t("adminPanel.users.addSystemAdmin", "Add System Admin")}
+            </button>
+          )}
+          <button
+            onClick={() => {
+              setAddUserInitialRole("");
+              setShowAddUser(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90"
+            style={{ background: "#1E40AF" }}
+          >
+            <Plus className="w-4 h-4" />
+            {t("adminPanel.users.addUser")}
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto border border-gray-200 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900">
@@ -147,19 +169,28 @@ const UserTab = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-            {(users ?? []).map(user => (
+            {(users ?? []).map(user => {
+              const isSelf = user.id === currentUserId;
+              const isUserAdmin = user.roles.some((r) => r.name === "system_admin");
+
+              return (
                 <tr key={user.id} className="hover:bg-blue-50/20 dark:hover:bg-slate-800/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-                        style={{ background: "#1E40AF" }}
+                        style={{ background: isUserAdmin ? "#4338CA" : "#1E40AF" }}
                       >
                         {user.name.charAt(0).toUpperCase() + (user.name.charAt(1) || "").toUpperCase()}
                       </div>
                       <div className="min-w-0">
-                        <div className="font-medium text-gray-900 dark:text-slate-100 text-xs">
-                          {user.name}
+                        <div className="font-medium text-gray-900 dark:text-slate-100 text-xs flex items-center gap-1.5">
+                          <span>{user.name}</span>
+                          {isSelf && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 font-normal">
+                              {t("common.you", "You")}
+                            </span>
+                          )}
                         </div>
                         {user.nic && (
                           <div className="text-[11px] text-gray-500 dark:text-slate-400">
@@ -170,9 +201,16 @@ const UserTab = () => {
                     </div>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950/80 dark:text-blue-200">
-                      {formatRole(user.roles[0]?.name ?? "")}
-                    </span>
+                    {isUserAdmin ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 dark:bg-indigo-950/80 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-200 border border-indigo-200/80 dark:border-indigo-800">
+                        <ShieldCheck className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-300" />
+                        {formatRole("system_admin")}
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950/80 dark:text-blue-200">
+                        {formatRole(user.roles[0]?.name ?? "")}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-xs text-gray-600 dark:text-slate-300">
                     {user.institution?.name || "-"}
@@ -191,27 +229,29 @@ const UserTab = () => {
                     )}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setDelegatingUser(user)}
-                        title={t("adminPanel.users.appointActingOfficer")}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 dark:bg-purple-950/50 dark:text-purple-300 dark:border-purple-800/60 dark:hover:bg-purple-900/50 transition-colors cursor-pointer"
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                        <span>{t("adminPanel.users.acting")}</span>
-                      </button>
+                    {!isUserAdmin && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setDelegatingUser(user)}
+                          title={t("adminPanel.users.appointActingOfficer")}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 dark:bg-purple-950/50 dark:text-purple-300 dark:border-purple-800/60 dark:hover:bg-purple-900/50 transition-colors cursor-pointer"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                          <span>{t("adminPanel.users.acting")}</span>
+                        </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setHandoverUser(user)}
-                        title={t("adminPanel.users.workloadHandover")}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60 dark:hover:bg-amber-900/50 transition-colors cursor-pointer"
-                      >
-                        <UserCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>{t("adminPanel.users.handover")}</span>
-                      </button>
-                    </div>
+                        <button
+                          type="button"
+                          onClick={() => setHandoverUser(user)}
+                          title={t("adminPanel.users.workloadHandover")}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60 dark:hover:bg-amber-900/50 transition-colors cursor-pointer"
+                        >
+                          <UserCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                          <span>{t("adminPanel.users.handover")}</span>
+                        </button>
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center justify-end gap-1">
@@ -227,17 +267,19 @@ const UserTab = () => {
                         <Eye className="w-4 h-4" />
                       </button>
 
-                      <button
-                        type="button"
-                        className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
-                        onClick={() => {
-                          setEditingUser(user);
-                          setShowEditUser(true);
-                        }}
-                        title={t("adminPanel.users.editUser")}
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
+                      {(!isUserAdmin || isCurrentSystemAdmin) && (
+                        <button
+                          type="button"
+                          className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 cursor-pointer transition-colors"
+                          onClick={() => {
+                            setEditingUser(user);
+                            setShowEditUser(true);
+                          }}
+                          title={t("adminPanel.users.editUser")}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      )}
 
                       <button
                         type="button"
@@ -251,16 +293,26 @@ const UserTab = () => {
 
                       <button
                         type="button"
-                        className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 text-red-500 dark:text-red-400 cursor-pointer transition-colors"
-                        onClick={() => handleDeleteUser(user)}
-                        title={t("adminPanel.users.delete")}
+                        disabled={isSelf || (isUserAdmin && !isCurrentSystemAdmin)}
+                        className={`p-1.5 rounded-lg transition-colors ${
+                          isSelf || (isUserAdmin && !isCurrentSystemAdmin)
+                            ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
+                            : "hover:bg-red-50 dark:hover:bg-red-950/40 text-red-500 dark:text-red-400 cursor-pointer"
+                        }`}
+                        onClick={() => !isSelf && handleDeleteUser(user)}
+                        title={
+                          isSelf
+                            ? t("adminPanel.users.cannotDeleteSelf", "You cannot delete your own account")
+                            : t("adminPanel.users.delete")
+                        }
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
                 </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>}
       </div>
@@ -278,7 +330,11 @@ const UserTab = () => {
 
       {showAddUser && (
         <Modal onClose={() => setShowAddUser(false)}>
-          <AddUserForm onSuccess={onSuccess} />
+          <AddUserForm
+            onSuccess={onSuccess}
+            onCancel={() => setShowAddUser(false)}
+            initialRole={addUserInitialRole}
+          />
         </Modal>
       )}
 

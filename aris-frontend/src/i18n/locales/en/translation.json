@@ -720,6 +720,8 @@
     "users": {
       "searchPlaceholder": "Search users...",
       "addUser": "Add User",
+      "addSystemAdmin": "Add System Admin",
+      "systemAdmin": "System Administrator",
       "user": "User",
       "username": "Username",
       "role": "Role",
@@ -742,7 +744,9 @@
       "updateUser": "Update User",
       "assignedDistricts": "Assigned Districts",
       "deleteConfirmationTitle": "Delete User",
-      "deleteConfirmationText": "Are you sure you want to delete this user? This action cannot be undone."
+      "deleteConfirmationText": "Are you sure you want to delete this user? This action cannot be undone.",
+      "cannotDeleteSelf": "You cannot delete your own account",
+      "systemAdminNotice": "System administrators have full privileges across ARIS and must belong to a Ministry-level institution."
     },
 
     "roles": {
@@ -755,9 +759,14 @@
       "district": "District",
       "director": "Director",
       "edit": "Edit",
+      "view": "View",
+      "delete": "Delete",
       "viewCases": "View Cases",
       "headOfInstitution": "Head of Institution",
-      "editInstitution": "Edit Institution"
+      "editInstitution": "Edit Institution",
+      "deleteConfirmationTitle": "Delete Institution",
+      "deleteConfirmationText": "Are you sure you want to delete this institution? This action cannot be undone.",
+      "deleteSuccess": "Institution deleted successfully"
     },
 
     "vehicles": {

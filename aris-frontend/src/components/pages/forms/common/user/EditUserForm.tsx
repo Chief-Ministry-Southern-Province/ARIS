@@ -13,6 +13,7 @@ import { formatRole, rolesForInstitution } from "@/utils/formatRole";
 import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import { useUser } from "@/hooks/queries/useUserQueries";
 import { useUpdateUserMutation } from "@/hooks/mutations/useResourceMutations";
+import { useAuth } from "@/context/auth/AuthContext";
 
 interface EditUserFormProps {
   userId: string;
@@ -22,6 +23,8 @@ interface EditUserFormProps {
 
 export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormProps) {
   const { t } = useTranslation();
+  const { role: currentUserRoles } = useAuth();
+  const isCurrentSystemAdmin = currentUserRoles?.includes("system_admin");
 
   const [user, setUser] = useState<updateUserRequest>({
     name: "",
@@ -80,7 +83,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
   };
 
   const selectedInstitution = institutions.find(inst => inst.id === Number(user.institution_id));
-  const roleList = rolesForInstitution(selectedInstitution?.type);
+  const roleList = rolesForInstitution(selectedInstitution?.type, isCurrentSystemAdmin || user.role === "system_admin");
   const isMinistry = selectedInstitution?.type === "MINISTRY";
   const isSubjectOfficer = user.role === "subject_officer";
   const showDistrictSelection = isMinistry && isSubjectOfficer;
@@ -139,6 +142,10 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
             <option value="">
               {t("common.select")}
             </option>
+
+            {(isCurrentSystemAdmin || user.role === "system_admin") && !roleList.includes("system_admin") && (
+              <option value="system_admin">{formatRole("system_admin")}</option>
+            )}
 
             {roleList.map((role) => (
               <option

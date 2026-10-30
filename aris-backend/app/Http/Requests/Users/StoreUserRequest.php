@@ -37,8 +37,13 @@ class StoreUserRequest extends FormRequest
     public function after(): array
     {
         return [function ($validator) {
+            if ($this->input('role') === 'system_admin' && ! $this->user()?->hasRole('system_admin')) {
+                $validator->errors()->add('role', 'Only system administrators can create another system administrator.');
+                return;
+            }
+
             $allowedInstitutionTypes = match ($this->input('role')) {
-                'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
+                'system_admin', 'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
                 'chief_accountant' => ['MINISTRY', 'PDHS'],
                 'accountant' => ['RDHS', 'BASE_HOSPITAL'],
                 default => null,
@@ -52,6 +57,7 @@ class StoreUserRequest extends FormRequest
 
             if (! $institution || ! in_array($institution->type, $allowedInstitutionTypes, true)) {
                 $roleName = match ($this->input('role')) {
+                    'system_admin' => 'System Administrator',
                     'chief_accountant' => 'Chief Accountant',
                     'ministry_account_subject_officer' => 'Ministry Account Subject Officer',
                     'accountant' => 'Accountant',

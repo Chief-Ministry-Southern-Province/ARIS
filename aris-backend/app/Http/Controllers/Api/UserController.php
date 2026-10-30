@@ -131,6 +131,8 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+
         $user->update($request->validated());
         $user->syncRoles($request->role);
 
@@ -157,6 +159,21 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $this->authorize('delete', $user);
+
+        if (auth()->id() === $user->id) {
+            return response()->json([
+                'message' => 'You cannot delete your own account.',
+            ], 422);
+        }
+
+        if ($user->hasRole('system_admin')) {
+            $adminCount = User::role('system_admin')->count();
+            if ($adminCount <= 1) {
+                return response()->json([
+                    'message' => 'Cannot delete the only system administrator account.',
+                ], 422);
+            }
+        }
 
         $activeCasesCount = $user->assignedAccidentCases()
             ->whereIn('status', ['OPEN', 'IN_PROGRESS'])

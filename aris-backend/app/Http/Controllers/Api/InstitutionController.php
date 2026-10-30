@@ -98,9 +98,7 @@ class InstitutionController extends Controller
      */
     public function destroy(Institution $institution)
     {
-        if (! $this->authorize('delete', $institution)) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('delete', $institution);
 
         $this->institutionManagementService->deleteInstitution($institution, request()->user());
 

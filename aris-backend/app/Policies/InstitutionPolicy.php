@@ -47,7 +47,27 @@ class InstitutionPolicy
      */
     public function delete(User $user, Institution $institution): bool
     {
-        return ($user->isSystemAdmin() || $user->hasRole('subject_officer')) && app(InstitutionService::class)->canAccessInstitution($user, $institution);
+        // Root ministry cannot be deleted
+        if ($institution->type === 'MINISTRY' || is_null($institution->parent_institution_id)) {
+            return false;
+        }
+
+        if ($user->isSystemAdmin()) {
+            return true;
+        }
+
+        if ($user->hasRole('subject_officer')) {
+            // Subject officers cannot delete their own institution
+            if ($user->institution_id === $institution->id) {
+                return false;
+            }
+
+            // Subject officers can only delete subordinate institutions under their institution
+            return $institution->parent_institution_id === $user->institution_id
+                && app(InstitutionService::class)->canAccessInstitution($user, $institution);
+        }
+
+        return false;
     }
 
     /**

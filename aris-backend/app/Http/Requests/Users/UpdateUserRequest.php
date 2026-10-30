@@ -43,8 +43,26 @@ class UpdateUserRequest extends FormRequest
     public function after(): array
     {
         return [function ($validator) {
+            $targetUser = $this->route('user');
+
+            if ($this->input('role') === 'system_admin' && ! $this->user()?->hasRole('system_admin')) {
+                $validator->errors()->add('role', 'Only system administrators can assign the system administrator role.');
+                return;
+            }
+
+            if ($targetUser instanceof \App\Models\User && $targetUser->hasRole('system_admin') && $this->input('role') !== 'system_admin') {
+                if (! $this->user()?->hasRole('system_admin')) {
+                    $validator->errors()->add('role', 'Only system administrators can change the role of a system administrator.');
+                    return;
+                }
+                if (\App\Models\User::role('system_admin')->count() <= 1) {
+                    $validator->errors()->add('role', 'Cannot change the role of the only system administrator.');
+                    return;
+                }
+            }
+
             $allowedInstitutionTypes = match ($this->input('role')) {
-                'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
+                'system_admin', 'chief_secretary', 'ministry_account_subject_officer' => ['MINISTRY'],
                 'chief_accountant' => ['MINISTRY', 'PDHS'],
                 'accountant' => ['RDHS', 'BASE_HOSPITAL'],
                 default => null,
@@ -58,6 +76,7 @@ class UpdateUserRequest extends FormRequest
 
             if (! $institution || ! in_array($institution->type, $allowedInstitutionTypes, true)) {
                 $roleName = match ($this->input('role')) {
+                    'system_admin' => 'System Administrator',
                     'chief_accountant' => 'Chief Accountant',
                     'ministry_account_subject_officer' => 'Ministry Account Subject Officer',
                     'accountant' => 'Accountant',

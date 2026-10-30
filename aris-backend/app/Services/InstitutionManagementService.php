@@ -122,24 +122,49 @@ class InstitutionManagementService
 
     public function canDeleteInstitution(User $user, Institution $institution): bool 
     {
+        if ($institution->type === 'MINISTRY' || is_null($institution->parent_institution_id)) {
+            return false;
+        }
 
         if ($user->isSystemAdmin()) {
             return true;
         }
 
-        if ($institution->childInstitutions()->exists()) {
-            return false;
+        if ($user->hasRole('subject_officer')) {
+            if ($user->institution_id === $institution->id) {
+                return false;
+            }
+
+            return $institution->parent_institution_id === $user->institution_id
+                && app(InstitutionService::class)->canAccessInstitution($user, $institution);
         }
+
         return false;
     }
 
-    public function deleteInstitution(Institution $institution,User $user): bool 
+    public function deleteInstitution(Institution $institution, User $user): bool 
     {
-
-        if (! $this->canDeleteInstitution( $user,$institution)) {
-
+        if (! $this->canDeleteInstitution($user, $institution)) {
             abort(403, 'You are not allowed to delete this institution.');
+        }
 
+        if ($institution->childInstitutions()->exists()) {
+            $count = $institution->childInstitutions()->count();
+            abort(422, "Cannot delete institution. It has {$count} subordinate institution(s). Please reassign or delete them first.");
+        }
+
+        if ($institution->users()->exists()) {
+            $count = $institution->users()->count();
+            abort(422, "Cannot delete institution. There are {$count} user(s) assigned to this institution. Please reassign them first.");
+        }
+
+        if ($institution->vehicles()->exists()) {
+            $count = $institution->vehicles()->count();
+            abort(422, "Cannot delete institution. There are {$count} vehicle(s) registered under this institution.");
+        }
+
+        if ($institution->accidentCases()->whereIn('status', ['OPEN', 'IN_PROGRESS'])->exists()) {
+            abort(422, 'Cannot delete institution with active accident cases.');
         }
 
         return (bool) $institution->delete();

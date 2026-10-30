@@ -36,7 +36,11 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return  $user->hasRole('system_admin') || $user->hasRole('subject_officer');
+        if ($model->hasRole('system_admin') && ! $user->hasRole('system_admin')) {
+            return false;
+        }
+
+        return $user->hasRole('system_admin') || $user->hasRole('subject_officer');
     }
 
     /**
@@ -44,7 +48,15 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return  $user->hasRole('system_admin') || $user->hasRole('subject_officer');
+        if ($user->id === $model->id) {
+            return false;
+        }
+
+        if ($model->hasRole('system_admin') && ! $user->hasRole('system_admin')) {
+            return false;
+        }
+
+        return $user->hasRole('system_admin') || $user->hasRole('subject_officer');
     }
 
     /**
