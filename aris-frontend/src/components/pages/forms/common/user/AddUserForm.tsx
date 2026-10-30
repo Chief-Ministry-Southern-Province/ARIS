@@ -68,8 +68,42 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
     error: createUserMutationError,
   } = useCreateUserMutation();
 
-  const createUserError =
-    createUserMutationError instanceof Error ? createUserMutationError.message : "";
+  const extractValidationErrors = (error: unknown) => {
+    if (!error) return { generalError: "", fieldErrors: {} as Record<string, string> };
+    const err = error as {
+      response?: {
+        data?: {
+          message?: string;
+          errors?: Record<string, string[]>;
+        };
+      };
+      message?: string;
+    };
+
+    const responseErrors = err.response?.data?.errors;
+    const fieldErrors: Record<string, string> = {};
+    if (responseErrors && typeof responseErrors === "object") {
+      for (const [key, msgs] of Object.entries(responseErrors)) {
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          fieldErrors[key] = msgs[0];
+        }
+      }
+    }
+
+    const allMessages = Object.values(fieldErrors);
+    let generalError = "";
+    if (allMessages.length > 0) {
+      generalError = allMessages.join(" ");
+    } else if (err.response?.data?.message) {
+      generalError = err.response.data.message;
+    } else if (err.message) {
+      generalError = err.message;
+    }
+
+    return { generalError, fieldErrors };
+  };
+
+  const { generalError: createUserError, fieldErrors } = extractValidationErrors(createUserMutationError);
 
   const handleCreateUser = async () => {
     if (createUserLoading) return;
@@ -140,7 +174,7 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
       )}
 
       <div className="grid md:grid-cols-2 gap-4">
-        <FormField label={t("adminPanel.users.user")} required>
+        <FormField label={t("adminPanel.users.user")} required error={fieldErrors.name}>
           <InputField
             placeholder="John Doe"
             value={user.name}
@@ -149,7 +183,7 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
           />
         </FormField>
 
-        <FormField label="NIC" required>
+        <FormField label="NIC" required error={fieldErrors.nic}>
           <InputField
             placeholder="199912345678"
             value={user.nic}
@@ -158,7 +192,7 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
           />
         </FormField>
 
-        <FormField label={t("adminPanel.users.institution")} required>
+        <FormField label={t("adminPanel.users.institution")} required error={fieldErrors.institution_id}>
           <select
             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             value={user.institution_id}
@@ -178,7 +212,7 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
           </select>
         </FormField>
 
-        <FormField label={t("adminPanel.users.role")} required>
+        <FormField label={t("adminPanel.users.role")} required error={fieldErrors.role}>
           <select
             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             value={user.role}
@@ -198,7 +232,7 @@ export default function AddUserForm({ onSuccess, onCancel, initialRole }: AddUse
           </select>
         </FormField>
 
-        <FormField label={t("adminPanel.users.contactNumber")} required>
+        <FormField label={t("adminPanel.users.contactNumber")} required error={fieldErrors.mobile}>
           <InputField
             placeholder="0712345678"
             value={user.mobile}

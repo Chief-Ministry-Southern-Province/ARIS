@@ -14,6 +14,11 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $targetUser = $this->route('user');
+        if ($targetUser instanceof \App\Models\User) {
+            return $this->user()?->can('update', $targetUser) ?? false;
+        }
+
         return true;
     }
 
@@ -24,7 +29,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return  [
+        return [
             'name' => 'required|string|max:255',
             'nic' => [
                 'required',
@@ -32,11 +37,26 @@ class UpdateUserRequest extends FormRequest
                 'max:20',
                 Rule::unique('users', 'nic')->ignore($this->route('user')),
             ],
-            'mobile' => 'required|string|max:15',
+            'mobile' => [
+                'required',
+                'string',
+                'max:15',
+                Rule::unique('users', 'mobile')->ignore($this->route('user')),
+            ],
             'institution_id' => 'required|exists:institutions,id',
             'role'=> 'required|exists:roles,name',
             'districts' => 'nullable|array',
             'districts.*' => 'string|in:Galle,Matara,Hambantota',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nic.unique' => 'A user with this National Identity Card (NIC) number already exists.',
+            'mobile.unique' => 'A user with this contact number already exists.',
+            'institution_id.exists' => 'The selected institution is invalid.',
+            'role.exists' => 'The selected role is invalid.',
         ];
     }
 

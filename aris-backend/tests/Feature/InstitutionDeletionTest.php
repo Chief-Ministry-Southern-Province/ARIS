@@ -198,11 +198,17 @@ class InstitutionDeletionTest extends TestCase
         ]);
 
         Vehicle::create([
-            'registration_number' => 'SP-CAB-1234',
-            'type' => 'AMBULANCE',
-            'make' => 'Toyota',
+            'vehicle_number' => 'SP-CAB-1234',
+            'vehicle_type' => 'AMBULANCE',
+            'brand' => 'Toyota',
             'model' => 'HiAce',
-            'year' => 2020,
+            'manufactured_year' => 2020,
+            'engine_number' => 'ENG-1234',
+            'chassis_number' => 'CHS-1234',
+            'insurance_number' => 'INS-1234',
+            'insurance_expiry_date' => now()->addYear()->toDateString(),
+            'registered_owner' => 'Ministry of Health',
+            'fuel_type' => 'DIESEL',
             'institution_id' => $hospital->id,
         ]);
 

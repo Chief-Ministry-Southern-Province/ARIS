@@ -13,7 +13,7 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', \App\Models\User::class) ?? false;
     }
 
     /**
@@ -25,12 +25,22 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'nic' => 'required|string|max:20|unique:users',
-            'mobile' => 'required|string|max:15',
+            'nic' => 'required|string|max:20|unique:users,nic',
+            'mobile' => 'required|string|max:15|unique:users,mobile',
             'institution_id' => 'required|exists:institutions,id',
             'role'=> 'required|exists:roles,name',
             'districts' => 'nullable|array',
             'districts.*' => 'string|in:Galle,Matara,Hambantota',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'nic.unique' => 'A user with this National Identity Card (NIC) number already exists.',
+            'mobile.unique' => 'A user with this contact number already exists.',
+            'institution_id.exists' => 'The selected institution is invalid.',
+            'role.exists' => 'The selected role is invalid.',
         ];
     }
 

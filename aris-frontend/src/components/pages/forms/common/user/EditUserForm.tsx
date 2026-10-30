@@ -38,7 +38,43 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
   const { data: institutions = [], isLoading: institutionLoading } = useVisibleInstitutions();
   const { data: userData, isLoading: userLoading } = useUser(Number(userId));
   const { mutateAsync: updateUserData, isPending: updateLoading, error: updateMutationError } = useUpdateUserMutation();
-  const updateError = updateMutationError instanceof Error ? updateMutationError.message : "";
+
+  const extractValidationErrors = (error: unknown) => {
+    if (!error) return { generalError: "", fieldErrors: {} as Record<string, string> };
+    const err = error as {
+      response?: {
+        data?: {
+          message?: string;
+          errors?: Record<string, string[]>;
+        };
+      };
+      message?: string;
+    };
+
+    const responseErrors = err.response?.data?.errors;
+    const fieldErrors: Record<string, string> = {};
+    if (responseErrors && typeof responseErrors === "object") {
+      for (const [key, msgs] of Object.entries(responseErrors)) {
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          fieldErrors[key] = msgs[0];
+        }
+      }
+    }
+
+    const allMessages = Object.values(fieldErrors);
+    let generalError = "";
+    if (allMessages.length > 0) {
+      generalError = allMessages.join(" ");
+    } else if (err.response?.data?.message) {
+      generalError = err.response.data.message;
+    } else if (err.message) {
+      generalError = err.message;
+    }
+
+    return { generalError, fieldErrors };
+  };
+
+  const { generalError: updateError, fieldErrors } = extractValidationErrors(updateMutationError);
 
   useEffect(() => {
     if (!userData) return;
@@ -108,6 +144,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
         <FormField
           label={t("adminPanel.users.user")}
           required
+          error={fieldErrors.name}
         >
           <InputField
             name="name"
@@ -120,6 +157,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
         <FormField
           label="NIC"
           required
+          error={fieldErrors.nic}
         >
           <InputField
             name="nic"
@@ -132,6 +170,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
         <FormField
           label={t("adminPanel.users.role")}
           required
+          error={fieldErrors.role}
         >
           <select
             name="role"
@@ -161,6 +200,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
         <FormField
           label={t("adminPanel.users.institution")}
           required
+          error={fieldErrors.institution_id}
         >
           <select
             name="institution_id"
@@ -189,6 +229,7 @@ export default function EditUserForm({userId,onSuccess,onClose,}: EditUserFormPr
 
         <FormField
           label={t("adminPanel.users.contactNumber")}
+          error={fieldErrors.mobile}
         >
           <InputField
             name="mobile"
