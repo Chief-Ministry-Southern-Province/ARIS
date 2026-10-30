@@ -14,21 +14,21 @@ class WorkflowSettingSeeder extends Seeder
      */
     public function run(): void
     {
-        WorkflowSetting::firstOrCreate(
+        WorkflowSetting::updateOrCreate(
             ['key' => 'workflow.pdhs_threshold'],
             [
                 'value' => '0',
                 'type' => 'integer',
-                'description' => 'Maximum loss amount handled by PDHS for FR1043 and FR1044',
+                'description' => 'Maximum loss amount handled by PDHS for FR1043 ,FR1044 and FR109',
             ]
         );
 
-        WorkflowSetting::firstOrCreate(
+        WorkflowSetting::updateOrCreate(
             ['key' => 'workflow.ministry_threshold'],
             [
                 'value' => '0',
                 'type' => 'integer',
-                'description' => 'Maximum loss amount handled by Ministry for FR1043 and FR1044',
+                'description' => 'Maximum loss amount handled by Ministry for FR1043 ,FR1044 and FR109',
             ]
         );
 

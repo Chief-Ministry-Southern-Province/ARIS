@@ -853,8 +853,8 @@
       "description": "Configure the approval chain and escalation rules for accident cases.",
       "appliesTo": "Applies to",
       "settings": {
-        "pdhsThreshold": "Maximum loss amount handled by PDHS for FR1043 and FR1044",
-        "ministryThreshold": "Maximum loss amount handled by Ministry for FR1043 and FR1044"
+        "pdhsThreshold": "Maximum loss amount handled by PDHS for FR1043 ,FR1044 and FR109",
+        "ministryThreshold": "Maximum loss amount handled by Ministry for FR1043 ,FR1044 and FR109"
       },
 
       "rules": {
