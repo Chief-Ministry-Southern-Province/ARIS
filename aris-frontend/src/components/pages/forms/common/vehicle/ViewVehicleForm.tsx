@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { FormField } from "@/components/molecules/FormField";
 
-import { useVehicle } from "@/hooks/queries/useVehicleQueries";
+import { useVehicle, useVehicleDriverHistory } from "@/hooks/queries/useVehicleQueries";
 import { useVisibleInstitutions } from "@/hooks/queries/useInstitutionQueries";
 import { useAvailableDrivers } from "@/hooks/queries/useUserQueries";
 
@@ -27,6 +27,7 @@ export default function ViewVehicleForm({vehicleId,onClose,}: ViewVehicleFormPro
   const { t } = useTranslation();
 
   const { data: vehicle, isLoading: loadingVehicle } = useVehicle(vehicleId);
+  const { data: driverHistories = [] } = useVehicleDriverHistory(vehicleId);
   const { data: institutions = [] } = useVisibleInstitutions();
   const { data: drivers = [], isLoading: loadingDrivers } = useAvailableDrivers();
 
@@ -183,6 +184,56 @@ export default function ViewVehicleForm({vehicleId,onClose,}: ViewVehicleFormPro
             {vehicle.status.replaceAll("_", " ")}
           </div>
         </FormField>
+
+        {/* Driver Activation History */}
+        {driverHistories.length > 0 && (
+          <div className="md:col-span-2 mt-2">
+            <FormField label={`Driver Activation History (${driverHistories.length})`}>
+              <div className="space-y-2 max-h-56 overflow-y-auto rounded-lg border border-gray-200 bg-gray-50/50 p-3">
+                {driverHistories.map((h) => {
+                  const isActivated = h.action === "ACTIVATED";
+                  const dateStr = new Date(h.created_at).toLocaleString([], {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+
+                  return (
+                    <div
+                      key={h.id}
+                      className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-2.5 text-xs"
+                    >
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
+                            isActivated
+                              ? "bg-green-100 text-green-800"
+                              : "bg-amber-100 text-amber-800"
+                          }`}
+                        >
+                          {h.action}
+                        </span>
+                        <span className="font-semibold text-gray-800">
+                          {h.driver?.name ?? `Driver #${h.driver_id}`}
+                        </span>
+                        {h.notes && (
+                          <span className="text-gray-500 italic">
+                            ({h.notes})
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-gray-400">
+                        {dateStr} • By {h.performer?.name ?? "Admin"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </FormField>
+          </div>
+        )}
       </div>
 
       <div className="mt-6 flex justify-end">

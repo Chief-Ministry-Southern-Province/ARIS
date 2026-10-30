@@ -80,6 +80,7 @@ export const useActivateVehicleDriverMutation = () => {
       activateVehicleDriver(id, driverId),
     onSuccess: (_, { id }) => {
       invalidate(client, queryKeys.vehicles.detail(id));
+      invalidate(client, queryKeys.vehicles.driverHistory(id));
       invalidate(client, queryKeys.vehicles.all);
     },
   });
@@ -99,6 +100,7 @@ export const useSyncVehicleDriversMutation = () => {
     }) => syncVehicleDrivers(id, driverIds, activeDriverId),
     onSuccess: (_, { id }) => {
       invalidate(client, queryKeys.vehicles.detail(id));
+      invalidate(client, queryKeys.vehicles.driverHistory(id));
       invalidate(client, queryKeys.vehicles.all);
     },
   });

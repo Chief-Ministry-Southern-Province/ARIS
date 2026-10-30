@@ -107,6 +107,7 @@ Route::middleware(['auth:sanctum', 'role.session.timeout', 'institution.assigned
     Route::get('/visible-institutions', [InstitutionController::class, 'getVisibleInstitutionsForUser']);
 
     // Protected routes for vehicles with assigned institutions
+    Route::get('/vehicles/{vehicle}/driver-history', [VehicleController::class, 'driverHistory']);
     Route::post('/vehicles/{vehicle}/activate-driver', [VehicleController::class, 'activateDriver']);
     Route::post('/vehicles/{vehicle}/drivers', [VehicleController::class, 'syncDrivers']);
     Route::apiResource('vehicles', VehicleController::class);

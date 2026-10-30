@@ -78,8 +78,22 @@ class VehicleController extends Controller
         $this->authorize('view', $vehicle);
 
         return response()->json(
-            $vehicle->load(['institution', 'driver', 'drivers'])
+            $vehicle->load(['institution', 'driver', 'drivers', 'driverHistories.driver', 'driverHistories.performer'])
         );
+    }
+
+    /**
+     * Display the driver activation history for the specified vehicle.
+     */
+    public function driverHistory(Vehicle $vehicle)
+    {
+        $this->authorize('view', $vehicle);
+
+        $histories = $vehicle->driverHistories()
+            ->with(['driver', 'performer'])
+            ->get();
+
+        return response()->json($histories);
     }
 
     /**
@@ -89,7 +103,7 @@ class VehicleController extends Controller
     {
         $this->authorize('update', $vehicle);
 
-        $updatedVehicle = $this->vehicleService->updateVehicle($vehicle, $request->validated());
+        $updatedVehicle = $this->vehicleService->updateVehicle($vehicle, $request->validated(), $request->user());
 
         return response()->json([
             'message' => 'Vehicle updated successfully.',
@@ -103,11 +117,12 @@ class VehicleController extends Controller
 
         $request->validate([
             'driver_id' => 'nullable|exists:users,id',
+            'notes' => 'nullable|string|max:255',
         ]);
 
         $driverId = $request->filled('driver_id') ? (int) $request->input('driver_id') : null;
 
-        $updatedVehicle = $this->vehicleService->activateDriver($vehicle, $driverId);
+        $updatedVehicle = $this->vehicleService->activateDriver($vehicle, $driverId, $request->user(), $request->input('notes'));
 
         return response()->json([
             'message' => $driverId ? 'Active driver updated successfully.' : 'Active driver unassigned successfully.',
@@ -128,7 +143,8 @@ class VehicleController extends Controller
         $updatedVehicle = $this->vehicleService->syncDrivers(
             $vehicle,
             $request->input('driver_ids', []),
-            $request->input('active_driver_id')
+            $request->input('active_driver_id'),
+            $request->user()
         );
 
         return response()->json([

@@ -796,7 +796,31 @@
         "UNDER_MAINTENANCE": "නඩත්තු කටයුතුවල පවතී",
         "OUT_OF_SERVICE": "සේවයෙන් ඉවත් කර ඇත",
         "DISPOSED": "අපහරණය කර ඇත"
-      }
+      },
+      "manageDriversTitle": "වාහන රියදුරන් කළමනාකරණය",
+      "driverPoolTab": "රියදුරු සංචිතය",
+      "activationHistoryTab": "සක්‍රීය කිරීමේ ඉතිහාසය",
+      "activationTimeline": "රියදුරු සක්‍රීය කිරීමේ කාලරේඛාව",
+      "singleActiveRuleTitle": "තනි සක්‍රීය රියදුරු නීතිය:",
+      "singleActiveRuleDesc": "වාහනයක් සඳහා රියදුරු සංචිතයේ රියදුරන් කිහිප දෙනෙකු සිටිය හැකි නමුත්, එක් වරකට සක්‍රීය විය හැක්කේ එක් රියදුරෙකුට පමණි. මෙම වාහනය වෙනුවෙන් අනතුරු වාර්තා කිරීමට අවසර ඇත්තේ සක්‍රීය රියදුරුට පමණි.",
+      "assignedDriverPool": "පවරා ඇති රියදුරු සංචිතය",
+      "noDriversInPool": "මෙම වාහනය සඳහා දැනට රියදුරන් පවරා නොමැත.",
+      "activeDriver": "සක්‍රීය රියදුරු",
+      "inactiveInPool": "සංචිතයේ රියදුරු",
+      "deactivate": "අක්‍රීය කරන්න",
+      "setAsActive": "සක්‍රීය ලෙස පත් කරන්න",
+      "removeFromPool": "සංචිතයෙන් ඉවත් කරන්න",
+      "addDriverToPool": "රියදුරෙකු සංචිතයට එක් කරන්න",
+      "noMoreDriversAvailable": "ආයතනයේ වෙනත් රියදුරන් නොමැත",
+      "selectDriverToAdd": "එක් කිරීමට රියදුරෙකු තෝරන්න...",
+      "addAsInactive": "සංචිතයට එක් කරන්න",
+      "addAndActivate": "එක් කර සක්‍රීය කරන්න",
+      "noHistoryYet": "මෙම වාහනය සඳහා කිසිදු සක්‍රීය හෝ අක්‍රීය කිරීමේ සිදුවීමක් වාර්තා වී නොමැත.",
+      "driverActivatedSuccess": "සක්‍රීය රියදුරු සාර්ථකව යාවත්කාලීන කරන ලදී.",
+      "driverDeactivatedSuccess": "රියදුරු සාර්ථකව අක්‍රීය කරන ලදී.",
+      "driverAddedToPool": "රියදුරු වාහන සංචිතයට එක් කරන ලදී.",
+      "driverRemovedFromPool": "රියදුරු වාහන සංචිතයෙන් ඉවත් කරන ලදී.",
+      "driverActionFailed": "රියදුරු තත්ත්වය යාවත්කාලීන කිරීම අසාර්ථක විය."
     },
 
     "workflow": {

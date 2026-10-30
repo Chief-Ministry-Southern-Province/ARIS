@@ -34,8 +34,8 @@ function AdminPanel() {
   return (
     <div className="p-6 space-y-5">
       <div>
-        <h1 className="text-gray-900 dark:text-slate-100">{t("adminPanel.title")}</h1>
-        <p className="mt-0.5 text-sm text-gray-500 dark:text-slate-400">{t("adminPanel.subtitle")}</p>
+        <h1 className="text-gray-900 dark:text-slate-100">{t("adminPanel.title", "Admin Panel")}</h1>
+        <p className="mt-0.5 text-sm text-gray-500 dark:text-slate-400">{t("adminPanel.subtitle", "System administration and configuration")}</p>
       </div>
 
       {/* Tab Navigation */}
@@ -45,7 +45,7 @@ function AdminPanel() {
             <button key={tab.id} onClick={() => selectTab(tab.id)}
               className={`flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === tab.id ? "border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-950/80 dark:text-blue-200" : "border-transparent text-gray-500 hover:bg-slate-50 hover:text-gray-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"}`}>
               <tab.icon className="w-4 h-4" />
-              {t(tab.i18n)}
+              {t(tab.i18n, tab.label)}
             </button>
           ))}
         </div>

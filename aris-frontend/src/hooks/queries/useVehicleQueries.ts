@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getVehicle, getVehicles } from "@/services/vehicle.service";
+import { getVehicle, getVehicles, getVehicleDriverHistory } from "@/services/vehicle.service";
 import { queryKeys } from "@/hooks/queryKeys";
 
 export const useVehicles = (page = 1, search = "") =>
@@ -7,3 +7,10 @@ export const useVehicles = (page = 1, search = "") =>
 
 export const useVehicle = (id?: number) =>
   useQuery({ queryKey: queryKeys.vehicles.detail(id ?? 0), queryFn: () => getVehicle(id as number), enabled: Boolean(id && id > 0) });
+
+export const useVehicleDriverHistory = (id?: number) =>
+  useQuery({
+    queryKey: queryKeys.vehicles.driverHistory(id ?? 0),
+    queryFn: () => getVehicleDriverHistory(id as number),
+    enabled: Boolean(id && id > 0),
+  });

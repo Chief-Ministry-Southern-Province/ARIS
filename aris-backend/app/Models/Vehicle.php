@@ -59,13 +59,32 @@ class Vehicle extends Model
             ->withTimestamps();
     }
 
-    public function activateDriver(?int $driverId): void
+    public function driverHistories()
     {
-        DB::transaction(function () use ($driverId) {
+        return $this->hasMany(VehicleDriverHistory::class)->latest('id');
+    }
+
+    public function activateDriver(?int $driverId, ?int $performedById = null, ?string $notes = null): void
+    {
+        DB::transaction(function () use ($driverId, $performedById, $notes) {
+            $performerId = $performedById ?? auth()->id();
+            $oldDriverId = $this->driver_id ? (int) $this->driver_id : null;
+
             if ($driverId === null) {
                 DB::table('vehicle_drivers')
                     ->where('vehicle_id', $this->id)
                     ->update(['is_active' => false, 'updated_at' => now()]);
+
+                if ($oldDriverId !== null) {
+                    VehicleDriverHistory::create([
+                        'vehicle_id' => $this->id,
+                        'driver_id' => $oldDriverId,
+                        'performed_by' => $performerId,
+                        'action' => 'DEACTIVATED',
+                        'notes' => $notes ?? 'Driver deactivated from vehicle',
+                    ]);
+                }
+
                 $this->update(['driver_id' => null]);
                 return;
             }
@@ -81,6 +100,15 @@ class Vehicle extends Model
                     ->where('vehicle_id', $otherVehicle->id)
                     ->where('driver_id', $driverId)
                     ->update(['is_active' => false, 'updated_at' => now()]);
+
+                VehicleDriverHistory::create([
+                    'vehicle_id' => $otherVehicle->id,
+                    'driver_id' => $driverId,
+                    'performed_by' => $performerId,
+                    'action' => 'DEACTIVATED',
+                    'notes' => "Transferred to vehicle {$this->vehicle_number}",
+                ]);
+
                 $otherVehicle->update(['driver_id' => null]);
             }
 
@@ -108,13 +136,35 @@ class Vehicle extends Model
                 ]);
             }
 
+            // If a previous driver was replaced on this vehicle, record deactivation
+            if ($oldDriverId !== null && $oldDriverId !== (int) $driverId) {
+                VehicleDriverHistory::create([
+                    'vehicle_id' => $this->id,
+                    'driver_id' => $oldDriverId,
+                    'performed_by' => $performerId,
+                    'action' => 'DEACTIVATED',
+                    'notes' => 'Replaced by newly active driver',
+                ]);
+            }
+
+            // If the driver was not already the active driver, record activation
+            if ($oldDriverId !== (int) $driverId) {
+                VehicleDriverHistory::create([
+                    'vehicle_id' => $this->id,
+                    'driver_id' => $driverId,
+                    'performed_by' => $performerId,
+                    'action' => 'ACTIVATED',
+                    'notes' => $notes ?? 'Designated as active driver',
+                ]);
+            }
+
             $this->update(['driver_id' => $driverId]);
         });
     }
 
-    public function syncDrivers(array $driverIds, ?int $activeDriverId = null): void
+    public function syncDrivers(array $driverIds, ?int $activeDriverId = null, ?int $performedById = null): void
     {
-        DB::transaction(function () use ($driverIds, $activeDriverId) {
+        DB::transaction(function () use ($driverIds, $activeDriverId, $performedById) {
             $driverIds = array_unique(array_filter(array_map('intval', $driverIds)));
 
             if ($activeDriverId && ! in_array($activeDriverId, $driverIds, true)) {
@@ -137,9 +187,9 @@ class Vehicle extends Model
             $this->drivers()->sync($pivotData);
 
             if ($activeDriverId) {
-                $this->activateDriver($activeDriverId);
+                $this->activateDriver($activeDriverId, $performedById);
             } else {
-                $this->update(['driver_id' => null]);
+                $this->activateDriver(null, $performedById);
             }
         });
     }

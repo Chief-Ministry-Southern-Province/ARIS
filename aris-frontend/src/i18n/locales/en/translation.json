@@ -810,7 +810,31 @@
         "UNDER_MAINTENANCE": "Under Maintenance",
         "OUT_OF_SERVICE": "Out of Service",
         "DISPOSED": "Disposed"
-      }
+      },
+      "manageDriversTitle": "Manage Vehicle Drivers",
+      "driverPoolTab": "Driver Pool",
+      "activationHistoryTab": "Activation History",
+      "activationTimeline": "Driver Activation Timeline",
+      "singleActiveRuleTitle": "Single Active Driver Rule:",
+      "singleActiveRuleDesc": "A vehicle can have multiple assigned drivers in its pool, but only ONE driver can be active at a time. The active driver is the only driver permitted to report accidents for this vehicle.",
+      "assignedDriverPool": "Assigned Driver Pool",
+      "noDriversInPool": "No drivers are currently assigned to this vehicle.",
+      "activeDriver": "Active Driver",
+      "inactiveInPool": "Pool Driver",
+      "deactivate": "Deactivate",
+      "setAsActive": "Set as Active",
+      "removeFromPool": "Remove from pool",
+      "addDriverToPool": "Add Driver to Vehicle Pool",
+      "noMoreDriversAvailable": "No other drivers available in institution",
+      "selectDriverToAdd": "Select driver to add...",
+      "addAsInactive": "Add to Pool",
+      "addAndActivate": "Add & Activate",
+      "noHistoryYet": "No activation or deactivation events recorded yet for this vehicle.",
+      "driverActivatedSuccess": "Active driver updated successfully.",
+      "driverDeactivatedSuccess": "Driver deactivated successfully.",
+      "driverAddedToPool": "Driver added to vehicle pool.",
+      "driverRemovedFromPool": "Driver removed from vehicle pool.",
+      "driverActionFailed": "Failed to update driver status."
     },
 
     "workflow": {

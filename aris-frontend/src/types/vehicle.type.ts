@@ -64,6 +64,20 @@ export interface Vehicle {
   institution?: Institution;
   driver?: User | null;
   drivers?: (User & { pivot?: { is_active: boolean } })[];
+  driver_histories?: VehicleDriverHistory[];
+}
+
+export interface VehicleDriverHistory {
+  id: number;
+  vehicle_id: number;
+  driver_id: number | null;
+  performed_by: number | null;
+  action: "ACTIVATED" | "DEACTIVATED";
+  notes?: string | null;
+  created_at: string;
+  updated_at: string;
+  driver?: User | null;
+  performer?: User | null;
 }
 
 export interface VehicleResponse {

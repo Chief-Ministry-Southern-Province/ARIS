@@ -13,6 +13,7 @@ export const queryKeys = {
     all: ["vehicles"] as const,
     list: (page: number, search = "") => ["vehicles", "list", { page, search }] as const,
     detail: (id: number) => ["vehicles", "detail", id] as const,
+    driverHistory: (id: number) => ["vehicles", "driver-history", id] as const,
   },
   users: {
     all: ["users"] as const,

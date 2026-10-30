@@ -16,13 +16,13 @@ class VehicleService
         $vehicle = Vehicle::create($data);
 
         if (! empty($driverIds) || $activeDriverId) {
-            $vehicle->syncDrivers($driverIds ?? ($activeDriverId ? [$activeDriverId] : []), $activeDriverId ? (int) $activeDriverId : null);
+            $vehicle->syncDrivers($driverIds ?? ($activeDriverId ? [$activeDriverId] : []), $activeDriverId ? (int) $activeDriverId : null, $user->id);
         }
 
         return $vehicle->fresh(['institution', 'driver', 'drivers']);
     }
 
-    public function updateVehicle(Vehicle $vehicle, array $data): Vehicle 
+    public function updateVehicle(Vehicle $vehicle, array $data, ?User $user = null): Vehicle 
     {
         $hasDriverIds = array_key_exists('driver_ids', $data);
         $driverIds = Arr::pull($data, 'driver_ids');
@@ -34,21 +34,21 @@ class VehicleService
         if ($hasDriverIds || $hasActiveDriverId) {
             $currentDrivers = $driverIds ?? $vehicle->drivers()->pluck('users.id')->toArray();
             $targetActive = $hasActiveDriverId ? ($activeDriverId ? (int) $activeDriverId : null) : (int) $vehicle->driver_id;
-            $vehicle->syncDrivers($currentDrivers, $targetActive);
+            $vehicle->syncDrivers($currentDrivers, $targetActive, $user?->id);
         }
 
         return $vehicle->fresh(['institution', 'driver', 'drivers']);
     }
 
-    public function activateDriver(Vehicle $vehicle, ?int $driverId): Vehicle
+    public function activateDriver(Vehicle $vehicle, ?int $driverId, ?User $user = null, ?string $notes = null): Vehicle
     {
-        $vehicle->activateDriver($driverId);
+        $vehicle->activateDriver($driverId, $user?->id, $notes);
         return $vehicle->fresh(['institution', 'driver', 'drivers']);
     }
 
-    public function syncDrivers(Vehicle $vehicle, array $driverIds, ?int $activeDriverId = null): Vehicle
+    public function syncDrivers(Vehicle $vehicle, array $driverIds, ?int $activeDriverId = null, ?User $user = null): Vehicle
     {
-        $vehicle->syncDrivers($driverIds, $activeDriverId);
+        $vehicle->syncDrivers($driverIds, $activeDriverId, $user?->id);
         return $vehicle->fresh(['institution', 'driver', 'drivers']);
     }
 

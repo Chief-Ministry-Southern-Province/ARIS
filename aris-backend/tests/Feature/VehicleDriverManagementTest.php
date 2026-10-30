@@ -243,4 +243,83 @@ class VehicleDriverManagementTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['vehicle_id']);
     }
+
+    public function test_activating_driver_logs_history(): void
+    {
+        $response = $this->actingAs($this->subjectOfficer)
+            ->postJson("/api/vehicles/{$this->vehicle1->id}/activate-driver", [
+                'driver_id' => $this->driver1->id,
+                'notes' => 'Assigned for emergency response',
+            ]);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('vehicle_driver_histories', [
+            'vehicle_id' => $this->vehicle1->id,
+            'driver_id' => $this->driver1->id,
+            'performed_by' => $this->subjectOfficer->id,
+            'action' => 'ACTIVATED',
+            'notes' => 'Assigned for emergency response',
+        ]);
+
+        // Now activate driver2, replacing driver1
+        $this->actingAs($this->subjectOfficer)
+            ->postJson("/api/vehicles/{$this->vehicle1->id}/activate-driver", [
+                'driver_id' => $this->driver2->id,
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('vehicle_driver_histories', [
+            'vehicle_id' => $this->vehicle1->id,
+            'driver_id' => $this->driver1->id,
+            'action' => 'DEACTIVATED',
+        ]);
+
+        $this->assertDatabaseHas('vehicle_driver_histories', [
+            'vehicle_id' => $this->vehicle1->id,
+            'driver_id' => $this->driver2->id,
+            'action' => 'ACTIVATED',
+        ]);
+
+        // Check the driver-history endpoint
+        $historyResponse = $this->actingAs($this->subjectOfficer)
+            ->getJson("/api/vehicles/{$this->vehicle1->id}/driver-history");
+
+        $historyResponse->assertStatus(200);
+        $historyData = $historyResponse->json();
+
+        $this->assertGreaterThanOrEqual(2, count($historyData));
+        $this->assertEquals($this->driver2->id, $historyData[0]['driver_id']);
+        $this->assertEquals('ACTIVATED', $historyData[0]['action']);
+        $this->assertEquals($this->subjectOfficer->id, $historyData[0]['performed_by']);
+    }
+
+    public function test_driver_switch_across_vehicles_logs_deactivation_on_previous_vehicle(): void
+    {
+        // Initially driver1 is active on vehicle1
+        $this->actingAs($this->admin)
+            ->postJson("/api/vehicles/{$this->vehicle1->id}/activate-driver", [
+                'driver_id' => $this->driver1->id,
+            ]);
+
+        // Admin activates driver1 on vehicle2
+        $this->actingAs($this->admin)
+            ->postJson("/api/vehicles/{$this->vehicle2->id}/activate-driver", [
+                'driver_id' => $this->driver1->id,
+            ]);
+
+        // Vehicle1 should have a DEACTIVATED log for driver1
+        $this->assertDatabaseHas('vehicle_driver_histories', [
+            'vehicle_id' => $this->vehicle1->id,
+            'driver_id' => $this->driver1->id,
+            'action' => 'DEACTIVATED',
+        ]);
+
+        // Vehicle2 should have an ACTIVATED log for driver1
+        $this->assertDatabaseHas('vehicle_driver_histories', [
+            'vehicle_id' => $this->vehicle2->id,
+            'driver_id' => $this->driver1->id,
+            'action' => 'ACTIVATED',
+        ]);
+    }
 }

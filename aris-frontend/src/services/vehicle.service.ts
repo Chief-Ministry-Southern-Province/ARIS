@@ -1,7 +1,7 @@
 import api from "./api";
 import type {PaginatedResponse} from "@/types/Pagination.type";
 
-import type {VehicleResponse,CreateVehicleRequest,UpdateVehicleRequest,} from "@/types/vehicle.type";
+import type {VehicleResponse,CreateVehicleRequest,UpdateVehicleRequest,VehicleDriverHistory} from "@/types/vehicle.type";
 
 export const getVehicles = async (page: number = 1,search: string = "") : Promise<PaginatedResponse<VehicleResponse>> => {
 
@@ -84,4 +84,15 @@ export const syncVehicleDrivers = async (
 
     return response.data;
 };
+
+export const getVehicleDriverHistory = async (
+    id: number
+): Promise<VehicleDriverHistory[]> => {
+    const response = await api.get<VehicleDriverHistory[]>(
+        `/vehicles/${id}/driver-history`
+    );
+
+    return response.data;
+};
+
 
